@@ -1,4 +1,4 @@
-# Chinese Postman Problem
+# Hierholzer's Algorithm
 
 ### Description
 

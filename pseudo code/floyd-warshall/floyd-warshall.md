@@ -1,4 +1,4 @@
-# Chinese Postman Problem
+# Floyd–Warshall Algorithm
 
 ### Description
 

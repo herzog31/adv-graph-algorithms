@@ -1,4 +1,4 @@
-# Chinese Postman Problem
+# Hopcroft–Karp Algorithm
 
 ### Description
 
