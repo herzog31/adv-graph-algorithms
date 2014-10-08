@@ -1,0 +1,30 @@
+var graphs = new Array();
+
+graphs[1] = ["% Graph 1: Graph mit 4 Knoten und Kanten ohne negative Gewichte",
+"n 139 212",
+"n 266 94",
+"n 478 203",
+"n 273 285",
+"e 0 1 4",
+"e 0 2 40",
+"e 0 3 18",
+"e 1 2 16",
+"e 1 3 4",
+"e 3 2 6"];
+
+graphs[2] = ["% Graph 2: Graph mit 6 Knoten und Kanten ohne negative Gewichte",
+"n 100 250",
+"n 266 100",
+"n 266 400",
+"n 433 100",
+"n 433 300",
+"n 600 250",
+"e 2 4 267",
+"e 3 5 317",
+"e 3 4 200",
+"e 4 5 217",
+"e 2 3 467",
+"e 1 4 367",
+"e 1 3 167",
+"e 0 2 316",
+"e 0 1 316"];

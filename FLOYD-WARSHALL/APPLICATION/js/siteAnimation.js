@@ -99,8 +99,9 @@ function initializeSiteLayout() {
                 $("#tab_tg").data("algo", algo);
             }
             if (ui.newPanel[0].id == "tab_ta") {
-                algo = new DijkstraAlgorithm($("body").data("graph"), $("#ta_canvas_graph"), $("#tab_ta"));
+                algo = new FloydWarshallAlgorithm($("body").data("graph"), $("#ta_canvas_graph"), $("#tab_ta"));
                 $("#tab_ta").data("algo", algo);
+                algo.initializeAlgorithm();
             }
             if (ui.newPanel[0].id == "tab_tf1") {
                 algo = new Forschungsaufgabe1($("body").data("graph"), $("#tf1_canvas_graph"), $("#tab_tf1"));
@@ -246,7 +247,6 @@ function CanvasDrawer(p_graph, p_canvas, p_tab) {
     this.drawCanvas = function() {
         if (this.needRedraw) {
             var ctx = this.canvas[0].getContext("2d");
-            console.log(ctx);
             ctx.clearRect(0, 0, this.canvas.width(), this.canvas.height());
 
             // Zeichne unfertige Kante

@@ -19,7 +19,6 @@ function CanvasDrawMethods() {
  */
 CanvasDrawMethods.drawArrow = function(ctx, layout, source, target, label, additionalLabel) {
     // Linie zeichnen
-    console.log(ctx.lineTo);
     CanvasDrawMethods.drawLine(ctx, layout, source, target);
     var arrowHeadColor = layout.lineColor;
 

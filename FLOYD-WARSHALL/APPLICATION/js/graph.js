@@ -724,6 +724,7 @@ function Graph(filename, canvas) {
      * @return {GraphNode}
      */
     this.addNode = function(xC, yC) {
+        $("#tg_button_gotoAlgorithmTab").button("option", "disabled", false);
         var node = new GraphNode({
             x : xC,
             y : yC
@@ -864,15 +865,16 @@ function Graph(filename, canvas) {
      * @private
      * @method
      */
-    function parseGraphfromFile(file) {
-        var request = $.ajax({
-            url : file,
-            async : false,
-            dataType : "text"
-        });
+    function parseGraphfromFile(graphID) {
+        // var request = $.ajax({
+        //     url : file,
+        //     async : false,
+        //     dataType : "text"
+        // });
 
-        request.done(function(text) {
-            var lines = text.split("\n");
+        // request.done(function(text) {
+        //     console.log(text);
+            var lines = graphs[graphID];
             // Nach Zeilen aufteilen
             for (var line in lines) {
                 var parameter = lines[line].split(" ");
@@ -900,7 +902,7 @@ function Graph(filename, canvas) {
                     ;
                 };
             };
-        });
+        // });
     };
 
     /**
@@ -1041,6 +1043,7 @@ function GraphDrawer(p_graph, p_canvas, p_tab) {
         $("#tg_button_gotoAlgorithmTab").click(function() {
             $("#tabs").tabs("option", "active", 2);
         });
+        $("#tg_button_gotoAlgorithmTab").button("option", "disabled", true);
     };
 
     /**
@@ -1339,7 +1342,7 @@ function GraphDrawer(p_graph, p_canvas, p_tab) {
             case "Standardbeispiel":
                 this.canvas.css("background", "");
                 $("#tg_p_bildlizenz").remove();
-                this.graph = new Graph("graphs/graph1.txt");
+                this.graph = new Graph(1);
                 break;
             case "Kreis":
                 this.canvas.css("background", "");

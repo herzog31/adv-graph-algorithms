@@ -7,14 +7,20 @@
     <meta name="author" content="Lisa Velden">
     <link rel="stylesheet" type="text/css" href="css/tum-theme2/jquery-ui-1.10.1.custom.min.css" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script src="js/jquery-1.11.0.min.js" type="text/javascript"></script>
+    <script src="js/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
     <script src="js/underscore-min.js" type="text/javascript"></script>
     <script src="js/utilities.js" type="text/javascript"></script>
     <script src="js/siteAnimation.js" type="text/javascript"></script>
     <script src="js/canvasDrawing.js" type="text/javascript"></script>
     <script src="js/graph.js" type="text/javascript"></script>
     <script src="js/lib/priorityQueueArray.js" type="text/javascript"></script>
-    <script src="js/jquery-1.11.0.min.js" type="text/javascript"></script>
-    <script src="js/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
+    <script src="js/textDB.js" type="text/javascript"></script>
+    <script src="js/algorithm.js" type="text/javascript"></script>
+    <script src="graphs/graphs.js" type="text/javascript"></script>
+    <!--<script src="js/aufgabe1.js" type="text/javascript"></script>
+    <script src="js/aufgabe2.js" type="text/javascript"></script>
+    <script src="js/aufgabe3.js" type="text/javascript"></script>-->
 
     <title>Graphalgorithmen</title>
 </head>
@@ -24,8 +30,9 @@
     </script>
     <header>
         <img src="img/dijkstra_kette.png" id="picTitle" alt="Logo">
-        <img src="img/title_dijkstra.png" id="figTitle" alt="Kürzeste Wege in Graphen: Der Floyd-Warshall-Algorithmus">
+        <img src="img/title_floyd_warshall.png" id="figTitle" alt="Der Floyd-Warshall Algorithmus">
         <img src="img/TUMLogo_cropped.png" id="tumTitle" alt="Technische Universität München">
+        <div></div>
     </header>
     <div id="tabs">
         <ul>
@@ -61,14 +68,11 @@
                         Wie komme ich am günstigsten von links nach rechts?
                     </p>
                 </div>
-                <h1>Der Klassiker unter den Kürzeste-Wege-Algorithmen</h1>
+                <h1>Kürzeste Pfade zwischen allen Paaren von Knoten</h1>
                 <p>
-                    Du würdest gerne wissen, ob du von München aus schneller in Köln bist, wenn du über Stuttgart fährst oder Würzburg fährst? Dann könnte der Dijkstra-Algorithmus hilfreich für dich sein! Mit diesem Algorithmus kannst du unter anderem in einem Graphen, dessen Kanten beispielsweise mit den Distanzen zwischen verschiedenen Städten beschriftet sind, den kürzesten Weg zwischen zwei Städten ermitteln. Aber auch der kürzeste Weg von einer Stadt aus zu allen anderen Städten lässt sich mit dem Dijkstra-Algorithmus leicht bestimmen. Natürlich können die Kantenbeschriftungen auch etwas anderes repräsentieren, wie zum Beispiel die Mautkosten auf den Autobahnen zwischen den Städten.
+                    It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
                 </p>
-                <p>
-                    Wichtig beim Dijkstra-Algorithmus ist, dass die Kantenkosten (so nennt man die Kantenbeschriftungen im Allgemeinen) nicht negativ sein dürfen.
-                </p>
-                <h2>Hier wird der Dijkstra-Algorithmus vorgestellt, der günstigste Wege bei nicht-negativen Kosten berechnet.</h2>
+                <h2>Hier wird der Floyd-Warshall-Algorithmus vorgestellt, der günstigste Wege berechnet.</h2>
                 <div id ="te_div_Entscheidung">
                     <h2>Was möchtest du zuerst tun?</h2>
                     <button id="te_button_gotoDrawGraph">
@@ -188,15 +192,7 @@
                             </li>
                         </ul>
                         <div id="ta_div_statusErklaerung">
-                            <div id="ta_div_statusText">
-                                <h3>Wähle zuerst einen Startknoten aus!</h3>
-                                <p>
-                                    Von diesem Knoten aus werden die Abstände zu den anderen Knoten berechnet.
-                                </p>
-                                <p>
-                                    Klicke einfach auf den entsprechenden Knoten im Zeichenbereich.
-                                </p>
-                            </div>
+                            <div id="ta_div_statusText"></div>
                         </div>
                         <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
                             <p class="pseudocode" id="ta_p_l1">BEGIN</p>
