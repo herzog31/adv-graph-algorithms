@@ -119,8 +119,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
                         +"<button id=\"ta_button_stoppVorspulen\">"+LNG.K('algorithm_btn_paus')+"</button>");
         $("#ta_button_stoppVorspulen").hide();
         $("#ta_button_Zurueck").button({icons:{primary: "ui-icon-seek-start"}, disabled: true});
-        $("#ta_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: true});
-        $("#ta_button_vorspulen").button({icons:{primary: "ui-icon-seek-next"}, disabled: true});
+        $("#ta_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: false}); <!-- TODO -->
+        $("#ta_button_vorspulen").button({icons:{primary: "ui-icon-seek-next"}, disabled: false}); <!-- TODO -->
         $("#ta_button_stoppVorspulen").button({icons:{primary: "ui-icon-pause"}});
         $("#ta_div_statusTabs").tabs();
         $(".marked").removeClass("marked");
@@ -191,6 +191,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * Wird aufgerufen, sobald auf das Canvas geklickt wird. 
      * @param {jQuery.Event} e jQuery Event Objekt, gibt Koordinaten
      */
+     /* 
     this.canvasClickHandler = function(e) {
         if(startNode == null) {
             var mx = e.pageX - canvas.offset().left;
@@ -210,7 +211,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
                 }
             }
         }
-    };
+    }; */
     
     /**
      * Wird aufgerufen, wenn der "1 Schritt" Button gedrückt wird.

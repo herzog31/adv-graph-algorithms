@@ -4,11 +4,11 @@
 
 The hierholzer algorithm finds a circle in the graph that traverses the entire graph whereas every edge is traversed only once. This path is called Eulerian trail.
 
-The input graph has to be Eulerian or Semi Eulerian.
+The input graph has to be eulerian or semi eulerian. If the graph is eulerian an eulerian cicle can be found. For semi eulerian graphs only an eulerian path / trail can be found.
 
 Eulerian: Every vertice has an even degree.
 
-Semi Eulerian: Every vertice has an even degree except two. Eulerian Trail has to start and end at a vertice with uneven degree
+Semi Eulerian: Every vertice has an even degree except two. The eulerian trail has to start and end at a vertice with an uneven degree.
 
 ### Pseudo Code
 
@@ -83,7 +83,7 @@ function findTour(start, graph) {
 
 	currentVertice = start
 
-	while |graph.vertices| > 0
+	while true
 
 		nextEdge = null
 
@@ -92,6 +92,10 @@ function findTour(start, graph) {
 				nextEdge = e
 				nextEdge.visited = true
 				break
+
+		if(nextEdge == null) {					// exit with eulerian path not tour / circle
+			return tour
+		}
 
 		currentVertice = (e.vertices \ currentVertice)[0]
 		tour.add(currentVertice)
