@@ -27,10 +27,10 @@ function initializeSiteLayout() {
     $("#tw_Accordion").accordion({heightStyle: "content"});
     $( "#tabs" ).tabs({
         beforeActivate: function( event, ui ) {
-            if(ui.oldPanel[0].id == "tab_tg") {
+            if(ui.oldPanel[0].id == "tab_tg") {             // Tab Graph erstellen
                 $("#tab_tg").data("algo").destroy();
             }
-            if(ui.oldPanel[0].id == "tab_ta") {
+            if(ui.oldPanel[0].id == "tab_ta") {             // Tab Graph ausführen
                 if($("#tab_ta").data("algo").getStatusID() != null && $("#tab_ta").data("algo").getStatusID() < 5) {
                     if($("#tabs").data("tabChangeDialogOpen") == null) {
                         event.preventDefault();
@@ -46,7 +46,7 @@ function initializeSiteLayout() {
                     $("#tab_ta").data("algo").destroy();
                 }
             }
-            if(ui.oldPanel[0].id == "tab_tf1") {
+            /* if(ui.oldPanel[0].id == "tab_tf1") {            // Tab Forschungsaufgabe 1
                 if($("#tab_tf1").data("algo").getStatusID() != null && $("#tab_tf1").data("algo").getStatusID() < 5) {
                     if($("#tabs").data("tabChangeDialogOpen") == null) {
                         event.preventDefault();
@@ -62,7 +62,7 @@ function initializeSiteLayout() {
                     $("#tab_tf1").data("algo").destroy();
                 }
             }
-            if(ui.oldPanel[0].id == "tab_tf2") {
+            if(ui.oldPanel[0].id == "tab_tf2") {            // Tab Forschungsaufgabe 2
                 if($("#tabs").data("tabChangeDialogOpen") == null && $("#tab_tf2").data("algo").getWarnBeforeLeave()) {
                     event.preventDefault();
                     $( "#tabs" ).data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);
@@ -72,7 +72,7 @@ function initializeSiteLayout() {
                 else {
                     $("#tab_tf2").data("algo").destroy();
                 }
-            }
+            } */
         },
         activate: function(event, ui) {
             var algo;
@@ -84,14 +84,14 @@ function initializeSiteLayout() {
                 algo = new BFAlgorithm($("body").data("graph"),$("#ta_canvas_graph"),$("#tab_ta"));
                 $("#tab_ta").data("algo",algo);
             }
-            if(ui.newPanel[0].id == "tab_tf1") {
+            /* if(ui.newPanel[0].id == "tab_tf1") {
                 algo = new Forschungsaufgabe1($("body").data("graph"),$("#tf1_canvas_graph"),$("#tab_tf1"));
                 $("#tab_tf1").data("algo",algo);
             }
             if(ui.newPanel[0].id == "tab_tf2") {
                 algo = new Forschungsaufgabe2($("body").data("graph"),$("#tf2_canvas_graph"),$("#tab_tf2"));
                 $("#tab_tf2").data("algo",algo);
-            }
+            } */
             if(algo) {
                 algo.run();
             }

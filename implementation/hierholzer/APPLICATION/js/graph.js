@@ -32,13 +32,13 @@ var global_KnotenRadius = 15;                           // Radius der Knoten
  * Standardaussehen einer Kante.
  * @type Object
  */
-var global_Edgelayout = {'arrowAngle' : Math.PI/8,	// Winkel des Pfeilkopfs relativ zum Pfeilkörper
-			 'arrowHeadLength' : 15,        // Länge des Pfeilkopfs
-                         'lineColor' : "black",		// Farbe des Pfeils
-			 'lineWidth' : 2,		// Dicke des Pfeils
-                         'font'	: 'Arial',		// Schrifart 
-                         'fontSize' : 14,		// Schriftgrösse in Pixeln
-                         'isHighlighted': false         // Ob die Kante eine besondere Markierung haben soll
+var global_Edgelayout = {'arrowAngle' : Math.PI/8,	         // Winkel des Pfeilkopfs relativ zum Pfeilkörper
+			             'arrowHeadLength' : 15,             // Länge des Pfeilkopfs
+                         'lineColor' : "black",		         // Farbe des Pfeils
+			             'lineWidth' : 2,		             // Dicke des Pfeils
+                         'font'	: 'Arial',		             // Schrifart 
+                         'fontSize' : 14,		             // Schriftgrösse in Pixeln
+                         'isHighlighted': false              // Ob die Kante eine besondere Markierung haben soll
 			};
                         
 /**
@@ -603,7 +603,7 @@ function Graph(filename,canvas) {
      * Für zukünftige Nutzung, gerichtete Graphen
      *  @type Boolean 
      */
-    var directed = true;
+    var directed = false;
     /**
      *  Knoten des Graphen, assoziatives Array mit den KnotenIDs als Schlüssel
      *  und den Knoten als Wert.
@@ -667,9 +667,10 @@ function Graph(filename,canvas) {
                 return null;
             }
         }
-        if(weight == null) {
+        /* if(weight == null) {
             weight = Math.round(Math.random()*200 -100);			// Zufälliges Gewicht zwischen -100 und 100
-        }
+        } */
+        weight = 0;
         var edge = new Edge(source,target,weight,edgeIDCounter,directed);
         this.edges[edgeIDCounter] = edge;
         edgeIDCounter++;
@@ -1002,7 +1003,8 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.dblClickHandler = function(e) {
-        if(selectedNode == null) {
+        // Kantengewichte entfernt
+        /* if(selectedNode == null) {
             for(var kantenID in graph.edges) {
                 if (graph.edges[kantenID].contains(e.pageX - canvas.offset().left, e.pageY - canvas.offset().top,this.canvas[0].getContext("2d"))) {
                     selectedEdge = graph.edges[kantenID];
@@ -1011,7 +1013,7 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
                     return;
                 }
             }
-        }
+        } */
         graph.addNode(e.pageX - canvas.offset().left, e.pageY - canvas.offset().top);
         this.needRedraw = true;
     };
@@ -1100,6 +1102,7 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
      * @param {Number} kantenID ID der Kante, deren Gewicht geändert wird.
      * @method
      */
+     /* 
     this.showWeightChangeField = function(event,kantenID) {
         $("#WeightChangePopup_" +kantenID.toString()).remove();
         $("body").append("<div id=\"WeightChangePopup_" +kantenID.toString() +"\"></div>");
@@ -1137,7 +1140,7 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
         });
         $("#WeightInput_" +kantenID.toString()).focus();
         $("#WeightInput_" +kantenID.toString()).on("focusout",function() {$("#WeightSave_" +kantenID.toString()).trigger('click');});
-    };
+    }; */
     
     /**
      * Entfernt die Auswahl eines Knotens und setzt alle entsprechenden Parameter und Layouts
