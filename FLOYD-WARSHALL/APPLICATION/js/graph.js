@@ -129,6 +129,13 @@ function GraphNode(coordinates, nodeID) {
     };
     /**
      * @method
+     * @param {Number} Legt die neue NodeID fest.
+     */
+    this.setNodeID = function(newID) {
+        id = newID;
+    };
+    /**
+     * @method
      * @return {Object} Gibt die Koordinaten des Knotens zurück.
      */
     this.getCoordinates = function() {
@@ -396,10 +403,24 @@ function Edge(sourceNode, targetNode, weight, edgeID, directedEdge) {
     };
     /**
      * @method
+     * @param {Number} Legt die neue ID des Ausgangsknotens fest.
+     */
+    this.setSourceID = function(newID) {
+        sourceID = newID;
+    };
+    /**
+     * @method
      * @returns {Number} ID des Zielknotens
      */
     this.getTargetID = function() {
         return targetID;
+    };
+    /**
+     * @method
+     * @param {Number} Legt die neue ID des Zielknotens fest.
+     */
+    this.setTargetID = function(newID) {
+        targetID = newID;
     };
     /**
      * @method

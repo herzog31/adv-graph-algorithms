@@ -283,16 +283,36 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 	};
 
 	this.initializeAlgorithm = function(){
+		var i = 0;
+		var keyDictionary = new Object();
+		for(var key in graph.nodes){
+			keyDictionary[key] = i;
+			// console.log("key = " + key + " i = " + i);
+			// console.log(graph.nodes);
+			graph.nodes[i] = graph.nodes[key];
+			graph.nodes[i].setNodeID(i);
+			if(i != key){
+				delete graph.nodes[key];
+			}
+			// console.log(graph.nodes);
+			i++;
+		}
+		for(var key in graph.edges){
+			var sourceID = keyDictionary[graph.edges[key].getSourceID()];
+			var targetID = keyDictionary[graph.edges[key].getTargetID()];
+			graph.edges[key].setSourceID(sourceID);
+			graph.edges[key].setTargetID(targetID);
+		}
+
 		for(var i = 0; i < Object.keys(graph.nodes).length; i++){
 			distance[i] = new Array();
 			for(var j = 0; j < Object.keys(graph.nodes).length; j++){
 				distance[i][j] = "inf";
-
 			}
 			keyToIndex[Object.keys(graph.nodes)[i]] = i;
 		}
 
-		for(var key in Object.keys(graph.edges)){
+		for(var key in graph.edges){
 			distance[keyToIndex[graph.edges[key].getSourceID()]][keyToIndex[graph.edges[key].getTargetID()]] = graph.edges[key].weight;
 		}
 
