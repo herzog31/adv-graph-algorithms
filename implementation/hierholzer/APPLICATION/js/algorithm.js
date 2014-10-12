@@ -1166,6 +1166,10 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
         tourCurrentVertex = tourStartVertex;
 
+        euclideanSubTour = new Array();
+        euclideanSubTour.push(graph.nodes[tourCurrentVertex].getLabel());
+        console.log("Subtour: "+euclideanSubTour);
+
         this.needRedraw = true;
 
         statusID = 4;
@@ -1222,6 +1226,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             return false;
         }
 
+        euclideanSubTour.push(graph.edges[nextEdge].getAdditionalLabel());
+        console.log("Subtour: "+ euclideanSubTour);
+
         graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFilling);
 
         // Get other Vertex
@@ -1230,6 +1237,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         }else{
             tourCurrentVertex = graph.edges[nextEdge].getSourceID();
         }
+
+        euclideanSubTour.push(graph.nodes[tourCurrentVertex].getLabel());
+        console.log("Subtour: "+ euclideanSubTour);
 
         graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
 
@@ -1270,6 +1280,29 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
 
+        if(euclideanTour.length === 0) {
+            euclideanTour = euclideanSubTour;
+            euclideanSubTour = new Array();
+        }else{
+            var startOfSubTour = euclideanSubTour[0];
+            var newTour = new Array();
+
+            for(var i = 0; euclideanTour.length; i++) {
+                if(euclideanTour[i] == startOfSubTour) {
+                    for(var j = 0; euclideanSubTour.length; j++) {
+                        newTour.push(euclideanSubTour[j]);
+                    }
+                }else{
+                    newTour.push(euclideanTour[i]);
+                }
+            }
+
+            euclideanTour = newTour;
+
+        }
+
+        console.log("Current Complete Euclidean Tour: " + euclideanTour);
+
         statusID = 7;
 
     };
@@ -1304,6 +1337,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Erster Knoten, dessen Grad unbesuchter Kanten größer 0 ist -> findNextVertexForTour()
     this.findNewStartingVertex = function() {
         $("#ta_div_statusErklaerung").html("<h3>Finde neuen Startpunkt für eine neue Subtour</h3>");
+
+        euclideanSubTour = new Array();
 
         statusID = 4;
 
