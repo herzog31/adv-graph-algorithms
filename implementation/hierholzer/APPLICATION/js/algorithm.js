@@ -1280,18 +1280,47 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
 
+        var replaced = false;
+
         if(euclideanTour.length === 0) {
             euclideanTour = euclideanSubTour;
             euclideanSubTour = new Array();
+        }else if(euclideanSubTour[0] != euclideanSubTour[(euclideanSubTour.length - 1)]) {
+            console.log("Spezialfall mit 2 Odd Vertices");
+
+            var startOfSubTour = euclideanSubTour[0];
+            var newTour = new Array();
+            var specialLast = null;
+
+            for(var i = 0; i < euclideanTour.length; i++) {
+                if(euclideanTour[i] == startOfSubTour) {
+                    specialLast = i;
+                }
+            }
+
+            for(var i = 0; i < euclideanTour.length; i++) {
+                if(specialLast == i) {
+                    for(var j = 0; j < euclideanSubTour.length; j++) {
+                        newTour.push(euclideanSubTour[j]);
+                    }
+                    replaced = true;
+                }else{
+                    newTour.push(euclideanTour[i]);
+                }
+            }
+
+            euclideanTour = newTour;
+
         }else{
             var startOfSubTour = euclideanSubTour[0];
             var newTour = new Array();
 
-            for(var i = 0; euclideanTour.length; i++) {
-                if(euclideanTour[i] == startOfSubTour) {
-                    for(var j = 0; euclideanSubTour.length; j++) {
+            for(var i = 0; i < euclideanTour.length; i++) {
+                if(euclideanTour[i] == startOfSubTour && !replaced) {
+                    for(var j = 0; j < euclideanSubTour.length; j++) {
                         newTour.push(euclideanSubTour[j]);
                     }
+                    replaced = true;
                 }else{
                     newTour.push(euclideanTour[i]);
                 }
@@ -1314,10 +1343,23 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     this.checkForEuclideanTour = function() {
         $("#ta_div_statusErklaerung").html("<h3>Prüfe ob Tour ein Euclidischer Kreis/Tour ist</h3>");
 
-        if(true) {
+        var numberOfEdgesInGraph = Object.keys(graph.edges).length;
+        var numberOfEdgesInTour = 0;
+
+        for(var i = 0; i < euclideanTour.length; i++) {
+            if(new String(euclideanTour[i]).substr(0, 1) == "e") {
+                numberOfEdgesInTour++;
+            }
+        }
+
+        console.log("Edges in Graph:" + numberOfEdgesInGraph + ", Edges in Tour: " + numberOfEdgesInTour);
+
+        if(numberOfEdgesInGraph == numberOfEdgesInTour) {
             statusID = 8;
+            return true;
         }else{
             statusID = 9;
+            return false;
         }
 
     };
@@ -1325,6 +1367,15 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Zeige Tour
     this.returnTour = function() {
         $("#ta_div_statusErklaerung").html("<h3>Zeige Ergebnis</h3>");
+
+        if(semiEuclideanGraph) {
+            console.log("Complete Euclidean Trail: " + euclideanTour);
+            $("#ta_div_statusErklaerung").append("<p>Zug:<br /> " + euclideanTour + "</p>");
+        }else{
+            console.log("Complete Euclidean Circle: " + euclideanTour);
+            $("#ta_div_statusErklaerung").append("<p>Kreis:<br /> " + euclideanTour + "</p>");
+        }
+        
 
         if(fastForwardIntervalID != null) {
             this.stopFastForward();
@@ -1339,6 +1390,31 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_div_statusErklaerung").html("<h3>Finde neuen Startpunkt für eine neue Subtour</h3>");
 
         euclideanSubTour = new Array();
+
+        // Temporär
+        for(var i = 0; i < euclideanTour.length; i++) {
+            if(new String(euclideanTour[i]).substr(0, 1) == "v") {
+                var matchingNode = null;
+                for(var knotenID in graph.nodes) {
+                    if(graph.nodes[knotenID].getLabel() == euclideanTour[i]) {
+                        matchingNode = knotenID;
+                        break;
+                    }
+                }
+                if(graph.nodes[matchingNode].getUnvisitedDegree() > 0) {
+                    tourStartVertex = matchingNode;
+                    graph.nodes[matchingNode].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+                    tourCurrentVertex = matchingNode;
+
+                    euclideanSubTour = new Array();
+                    euclideanSubTour.push(graph.nodes[matchingNode].getLabel());
+                    console.log("Subtour: " + euclideanSubTour);
+
+                    this.needRedraw = true;
+                    break;
+                }
+            }
+        }
 
         statusID = 4;
 
