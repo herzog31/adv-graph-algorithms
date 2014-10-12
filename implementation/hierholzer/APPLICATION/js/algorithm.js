@@ -108,9 +108,14 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
     var tourStartVertex = null;
     var tourStartOddVertex = null;
+    var tourCurrentVertex = null;
     var semiEuclideanGraph = false;
     var validGraph = false;
     var euclideanTour = new Array();
+    var euclideanSubTour = new Array();
+
+    var tourColors = new Array("blue", "green", "red", "yellow", "orange", "purple", "brown");
+    var tourColorIndex = 0;
 
     
     /**
@@ -1058,6 +1063,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
         this.needRedraw = true;
 
+        return true;
+
     };
 
     // Check ob Graph Euclidisch oder Semi Euclidisch ist
@@ -1066,6 +1073,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
         var numberOfOddVertices = 0;
         var firstOddVertex = null;
+
+        this.needRedraw = true;
 
         
         if(Object.keys(graph.nodes).length < 2) {       // Graph to small
@@ -1093,12 +1102,14 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             validGraph = true;
             statusID = 3;
             semiEuclideanGraph = false;
+            return true;
 
         }else if(numberOfOddVertices === 2) {        // Semi Euclidean Graph
             validGraph = true;
             statusID = 3;
             semiEuclideanGraph = true;
             tourStartOddVertex = firstOddVertex;
+            return true;
 
         }else{                                       // Invalid Graph
             statusID = 2;
@@ -1117,11 +1128,31 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         }
         $("#ta_button_1Schritt").button("option", "disabled", true);
         $("#ta_button_vorspulen").button("option", "disabled", true);
+
+        return true;
+
     };
 
     // Selectiere Start Vertice, entweder #1 (Euclidisch) oder #1 mit ungeradem Grad (Semi Euclidisch)
     this.findStartingVertex = function() {
         $("#ta_div_statusErklaerung").html("<h3>Finde Start Knoten</h3>");
+
+        // Restore Naming
+
+        var edgeCounter = 1;
+        var nodeCounter = 1;
+
+        for(var kantenID in graph.edges) {
+            graph.edges[kantenID].setAdditionalLabel("e"+edgeCounter);
+            edgeCounter++;
+        };
+
+        for(var knotenID in graph.nodes) {
+            graph.nodes[knotenID].setLabel("v"+nodeCounter);
+            nodeCounter++;
+        };
+
+        // Set Starting & Current Vertex
 
         if(semiEuclideanGraph) {
             tourStartVertex = tourStartOddVertex;
@@ -1133,8 +1164,13 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         }
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+        tourCurrentVertex = tourStartVertex;
+
+        this.needRedraw = true;
 
         statusID = 4;
+
+        return true;
 
     };
 
@@ -1143,11 +1179,63 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn gefunden -> findNextVertexForTour()
     this.findNextVertexForTour = function() {
         $("#ta_div_statusErklaerung").html("<h3>Finde nächsten Knoten</h3>");
-        if(true) {
-            statusID = 5;
-        }else{
-            statusID = 6;
+
+        graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
+
+        var outEdges = graph.nodes[tourCurrentVertex].getOutEdges();
+        var inEdges = graph.nodes[tourCurrentVertex].getInEdges();
+
+        var nextEdge = null;
+
+        // Find first unvisited Edge
+        for(var kantenID in outEdges) {
+            if(!outEdges[kantenID].getVisited()) {
+                if(nextEdge === null) {
+                    nextEdge = kantenID;
+                    outEdges[kantenID].setVisited(true);
+                    outEdges[kantenID].setLayout("lineColor", tourColors[tourColorIndex]);
+                    outEdges[kantenID].setLayout("lineWidth", 3);
+                }else{
+                    break;
+                }   
+            }
         }
+
+        for(var kantenID in inEdges) {
+            if(!inEdges[kantenID].getVisited()) {
+                if(nextEdge === null) {
+                    nextEdge = kantenID;
+                    inEdges[kantenID].setVisited(true);
+                    inEdges[kantenID].setLayout("lineColor", tourColors[tourColorIndex]);
+                    inEdges[kantenID].setLayout("lineWidth", 3);
+                }else{
+                    break;
+                }  
+            }
+        }
+
+        this.needRedraw = true;
+
+        // Merge Tour if stuck
+        if(nextEdge === null) {
+            statusID = 6;
+            return false;
+        }
+
+        graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFilling);
+
+        // Get other Vertex
+        if(graph.edges[nextEdge].getSourceID() == tourCurrentVertex) {
+            tourCurrentVertex = graph.edges[nextEdge].getTargetID();
+        }else{
+            tourCurrentVertex = graph.edges[nextEdge].getSourceID();
+        }
+
+        graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+
+        statusID = 5;
+
+        return true;
 
     };
 
@@ -1157,10 +1245,16 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     this.compareVertexWithStart = function() {
         $("#ta_div_statusErklaerung").html("<h3>Vergleiche Knoten mit Startknoten</h3>");
 
-        if(true) {
+        graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+
+        console.log("Start: " + tourStartVertex + ", Current: "+ tourCurrentVertex);
+
+        if(tourStartVertex == tourCurrentVertex) {
             statusID = 6;
+            return true;
         }else{
             statusID = 4;
+            return false;
         }
 
     };
@@ -1170,6 +1264,11 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Bei vorhandener Tour, Replace Start mit Subtour
     this.mergeTour = function() {
         $("#ta_div_statusErklaerung").html("<h3>Integriere Tour in Gesamttour</h3>");
+
+        tourColorIndex++;
+        tourColorIndex = tourColorIndex % tourColors.length;
+
+        graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
 
         statusID = 7;
 
