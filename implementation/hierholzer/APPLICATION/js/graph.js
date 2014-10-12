@@ -99,6 +99,31 @@ function GraphNode(coordinates,nodeID) {
      * @type String
      */
     var label = null;
+
+
+    this.getDegree = function() {
+        return inEdges.length + outEdges.length;
+    };
+
+    this.getUnvisitedDegree = function() {
+        var degree = 0;
+
+        for(var i = 0; inEdges.length; i++) {
+            if(!inEdges[i].getVisited) {
+                degree++;
+            }
+        }
+
+        for(var i = 0; outEdges.length; i++) {
+            if(!outEdges[i].getVisited) {
+                degree++;
+            }
+        }
+
+        return degree;
+
+    };
+
     /**
     * @method
     * @return {Number} Gibt die NodeID zurück.
@@ -316,6 +341,12 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
      * @type Object
      */
     var layout = jQuery.extend(true, {}, global_Edgelayout);
+
+    var visited = false;
+
+    var additionalLabel = false;
+
+
     /**
      * Gewicht der Kante.
      * @type Number
@@ -323,9 +354,18 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
     this.weight = weight;
     /** 
      * Zusätzliche Beschriftung der Kante, z.B. für Nummerierung
-     * @type Boolean
+     * @type String or Boolean
      */
-    this.additionalLabel = null;
+    
+
+
+    this.setVisited = function(bool) {
+        visited = bool;
+    };
+
+    this.getVisited = function() {
+        return visited;
+    };
 
     /**
      * @method
@@ -442,6 +482,14 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
         return targetNodeCoordinates;
     };
 
+    this.setAdditionalLabel = function(label) {
+        additionalLabel = label;
+    };
+
+    this.getAdditionalLabel = function() {
+        return additionalLabel;
+    };
+
     /**
      * Gibt das Layout des Knotens zurück. 
      * Falls dieses nicht gesondert definiert wurde, ist es das Standardlayout
@@ -496,10 +544,14 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
  */
 Edge.prototype.draw = function(ctx) {
     if(this.getDirected()) {
-         CanvasDrawMethods.drawArrow(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),this.weight.toString(), this.additionalLabel);
+         CanvasDrawMethods.drawArrow(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),this.weight.toString(), this.getAdditionalLabel());
     }
     else {
-        CanvasDrawMethods.drawLine(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates());
+        //CanvasDrawMethods.drawAdditionalTextOnLine(ctx, this.getLayout(), this.getSourceCoordinates(), this.getTargetCoordinates(), this.additionalLabel);
+        CanvasDrawMethods.drawLine(ctx, this.getLayout(), this.getSourceCoordinates(), this.getTargetCoordinates());
+        if(this.getAdditionalLabel() !== false) {
+            CanvasDrawMethods.drawTextOnLine(ctx, this.getLayout(), this.getSourceCoordinates(), this.getTargetCoordinates(), this.getAdditionalLabel());
+        }
     }
 };
 
@@ -683,6 +735,7 @@ function Graph(filename,canvas) {
                 this.edges[opposite].shift();
             }
         }
+        // TODO
         source.addOutEdge(edge);
         target.addInEdge(edge);
         return edge;

@@ -105,6 +105,13 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * @type Number[]
      */
     var vorgaengerIDUpdateStack = new Array();
+
+    var tourStartVertex = null;
+    var tourStartOddVertex = null;
+    var semiEuclideanGraph = false;
+    var validGraph = false;
+    var euclideanTour = new Array();
+
     
     /**
      * Startet die Ausführung des Algorithmus.
@@ -660,7 +667,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * Blendet die Vorgängerkanten ein und aus.
      * @method
      */
-    this.changeVorgaengerVisualization = function() {
+    /* this.changeVorgaengerVisualization = function() {
         showVorgaenger = !showVorgaenger;
         for(var knotenID in vorgaenger) {
             if(vorgaenger[knotenID] != null) {
@@ -669,7 +676,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         }
         $("#ta_tr_LegendeClickable").toggleClass("greyedOutBackground");
         this.needRedraw = true;
-    };
+    }; */
     
     /**
      * Ermittelt basierend auf der StatusID und anderen den vorherigen Schritt aus
@@ -705,7 +712,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * @param {Boolean} afterUpdate Zeigt an, ob das Update schon ausgeführt wurde.
      * @method
      */
-    this.reverseLastUpdate = function(afterUpdate) {
+    /* this.reverseLastUpdate = function(afterUpdate) {
         var aktKante = graph.edges[kantenIDs[nextKantenID]];
         if(afterUpdate) {
             weightUpdates--;
@@ -816,13 +823,13 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
                 this.showVariableStatusField(weightUpdates,aktKante);
             }
         }
-    };
+    }; */
     
     /**
      * Setzt den zuletzt ausgeführten Negative Cyclce Check Schritt zurück
      * @method
      */
-    this.reverseNegativeCycleCheck = function() {
+    /* this.reverseNegativeCycleCheck = function() {
         if(nextKantenID == 0) {
             // War bei der Eingangsmeldung vom negative Kreise suchen
             this.reverseLastUpdate(true);
@@ -869,9 +876,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
                 this.showVariableStatusField(null,null);
             }
         }
-    };
+    }; */
     
-    this.reverseBacktrack = function() {
+    /* this.reverseBacktrack = function() {
         if(!negativeCycleFound) {
             // Algorithmus hätte im nächsten Schritt negativen Zyklus gezeigt
             statusID = 4;
@@ -934,9 +941,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             $("#ta_p_l9").addClass("marked");
             this.showVariableStatusField(null,aktKante);
         }
-    };
+    }; */
     
-    this.reverseSuccessEnding = function() {
+    /* this.reverseSuccessEnding = function() {
         $("#ta_button_1Schritt").button("option", "disabled", false);
         $("#ta_button_vorspulen").button("option", "disabled", false);
         statusID = 4;
@@ -978,7 +985,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             this.showVariableStatusField(null,null);
         }
         
-    };
+    }; */
     
     /**
      * Trägt den Status der Variablen in die entsprechenden Felder im Pseudocode
@@ -987,7 +994,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * @param {Edge} kante  Aktuell betrachtete Kante
      * @method
      */
-    this.showVariableStatusField = function(i,kante) {
+    /* this.showVariableStatusField = function(i,kante) {
         if(i == null) {
             $("#ta_td_vari").html("");
         }
@@ -1026,13 +1033,31 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         else {
             $("#ta_div_statusErklaerung").append("<p><strong>"+LNG.K('algorithm_status5')+"</strong></p>");
         }
-    };
+    }; */
 
     // Edge visited = false
     // Benennung v1, v2, ... & e1, e2, ...
     this.initializeGraph = function() {
         $("#ta_div_statusErklaerung").html("<h3>Initialisiere Graph</h3>");
+
+        var edgeCounter = 1;
+        var nodeCounter = 1;
+
+        for(var kantenID in graph.edges) {
+            graph.edges[kantenID].setVisited(false);
+            graph.edges[kantenID].setAdditionalLabel("e"+edgeCounter);
+            edgeCounter++;
+            console.log(graph.edges[kantenID]);
+        };
+
+        for(var knotenID in graph.nodes) {
+            graph.nodes[knotenID].setLabel("v"+nodeCounter);
+            nodeCounter++;
+        };
+
         statusID = 1;
+
+        this.needRedraw = true;
 
     };
 
