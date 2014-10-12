@@ -112,6 +112,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      */
     this.run = function() {
         this.initCanvasDrawer();
+
         // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
         $("#ta_div_abspielbuttons").append("<button id=\"ta_button_Zurueck\">"+LNG.K('algorithm_btn_prev')+"</button>"
                         +"<button id=\"ta_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button>"
@@ -126,8 +127,10 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         $(".marked").removeClass("marked");
         $("#ta_p_l1").addClass("marked");
         $("#ta_tr_LegendeClickable").removeClass("greyedOutBackground");
+
         this.registerEventHandlers();
         this.needRedraw = true;
+        statusID = 0;
     };
     
     /**
@@ -170,8 +173,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_button_1Schritt").on("click.BFAlgorithm",function() {algo.singleStepHandler();});
         $("#ta_button_vorspulen").on("click.BFAlgorithm",function() {algo.fastForwardAlgorithm();});
         $("#ta_button_stoppVorspulen").on("click.BFAlgorithm",function() {algo.stopFastForward();});
-        $("#ta_tr_LegendeClickable").on("click.BFAlgorithm",function() {algo.changeVorgaengerVisualization();});
-        $("#ta_button_Zurueck").on("click.BFAlgorithm",function() {algo.previousStepChoice();});
+        // TODO $("#ta_tr_LegendeClickable").on("click.BFAlgorithm",function() {algo.changeVorgaengerVisualization();});
+        // TODO $("#ta_button_Zurueck").on("click.BFAlgorithm",function() {algo.previousStepChoice();});
     };
     
     /**
@@ -183,8 +186,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_button_1Schritt").off(".BFAlgorithm");
         $("#ta_button_vorspulen").off(".BFAlgorithm");
         $("#ta_button_stoppVorspulen").off(".BFAlgorithm");
-        $("#ta_tr_LegendeClickable").off(".BFAlgorithm");
-        $("#ta_button_Zurueck").off(".BFAlgorithm");
+        // $("#ta_tr_LegendeClickable").off(".BFAlgorithm");
+        // $("#ta_button_Zurueck").off(".BFAlgorithm");
     };
     
     /**
@@ -218,9 +221,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.singleStepHandler = function() {
-        if(startNode != null) {
-            this.nextStepChoice();
-        }
+        this.nextStepChoice();
     };
 
     /**
@@ -228,11 +229,11 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.fastForwardAlgorithm = function() {
-        if(startNode == null) {
+        /* if(startNode == null) {
             // Auf Startknotenwahl hinweisen
             $("#ta_div_statusErklaerung").addClass("ui-state-error");
         }
-        else {
+        else { */
             $("#ta_button_vorspulen").hide();
             $("#ta_button_stoppVorspulen").show();
             $("#ta_button_1Schritt").button("option", "disabled", true);
@@ -240,7 +241,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             var geschwindigkeit = 200;	// Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
 
             fastForwardIntervalID = window.setInterval(function(){algo.nextStepChoice();},geschwindigkeit);
-        }
+        //}
     };
     
     /**
@@ -270,6 +271,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     *  @method
     */
     this.nextStepChoice = function() {
+
+        console.log("Current State: "+statusID);
+
        switch(statusID) {
         case 0:
             this.initializeGraph();
@@ -1027,21 +1031,37 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Edge visited = false
     // Benennung v1, v2, ... & e1, e2, ...
     this.initializeGraph = function() {
+        $("#ta_div_statusErklaerung").html("<h3>Initialisiere Graph</h3>");
+        statusID = 1;
 
     };
 
     // Check ob Graph Euclidisch oder Semi Euclidisch ist
     this.checkGraph = function() {
+        $("#ta_div_statusErklaerung").html("<h3>Prüfe ob Graph euclidisch oder semi-euclidisch ist</h3>");
+        if(true) {
+            statusID = 3;
+        }else{
+            statusID = 2;
+        }
 
     };
 
     // State wenn Graph invalid ist
     this.invalidGraph = function() {
+        $("#ta_div_statusErklaerung").html("<h3>Graph ist nicht euclidisch!</h3>").addClass("ui-state-error");
 
+        if(fastForwardIntervalID != null) {
+            this.stopFastForward();
+        }
+        $("#ta_button_1Schritt").button("option", "disabled", true);
+        $("#ta_button_vorspulen").button("option", "disabled", true);
     };
 
     // Selectiere Start Vertice, entweder #1 (Euclidisch) oder #1 mit ungeradem Grad (Semi Euclidisch)
     this.findStartingVertex = function() {
+        $("#ta_div_statusErklaerung").html("<h3>Finde Start Knoten</h3>");
+        statusID = 4;
 
     };
 
@@ -1049,6 +1069,12 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn keiner gefunden -> mergeTour()
     // Wenn gefunden -> findNextVertexForTour()
     this.findNextVertexForTour = function() {
+        $("#ta_div_statusErklaerung").html("<h3>Finde nächsten Knoten</h3>");
+        if(true) {
+            statusID = 5;
+        }else{
+            statusID = 6;
+        }
 
     };
 
@@ -1056,6 +1082,13 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn gleich -> mergeTour()
     // Wenn ungleich -> findNextVertexForTour()
     this.compareVertexWithStart = function() {
+        $("#ta_div_statusErklaerung").html("<h3>Vergleiche Knoten mit Startknoten</h3>");
+
+        if(true) {
+            statusID = 6;
+        }else{
+            statusID = 4;
+        }
 
     };
 
@@ -1063,6 +1096,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Bei leerer Tour, Tour = Subtour
     // Bei vorhandener Tour, Replace Start mit Subtour
     this.mergeTour = function() {
+        $("#ta_div_statusErklaerung").html("<h3>Integriere Tour in Gesamttour</h3>");
+
+        statusID = 7;
 
     };
 
@@ -1071,17 +1107,33 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn ja -> returnTour()
     // Wenn nein -> findNewStartingVertex()
     this.checkForEuclideanTour = function() {
+        $("#ta_div_statusErklaerung").html("<h3>Prüfe ob Tour ein Euclidischer Kreis/Tour ist</h3>");
+
+        if(true) {
+            statusID = 8;
+        }else{
+            statusID = 9;
+        }
 
     };
 
     // Zeige Tour
     this.returnTour = function() {
+        $("#ta_div_statusErklaerung").html("<h3>Zeige Ergebnis</h3>");
 
+        if(fastForwardIntervalID != null) {
+            this.stopFastForward();
+        }
+        $("#ta_button_1Schritt").button("option", "disabled", true);
+        $("#ta_button_vorspulen").button("option", "disabled", true);
     };
 
     // Finde neuen Startpunkt in Tour
     // Erster Knoten, dessen Grad unbesuchter Kanten größer 0 ist -> findNextVertexForTour()
     this.findNewStartingVertex = function() {
+        $("#ta_div_statusErklaerung").html("<h3>Finde neuen Startpunkt für eine neue Subtour</h3>");
+
+        statusID = 4;
 
     };
 
