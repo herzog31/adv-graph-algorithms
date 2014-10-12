@@ -165,8 +165,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.registerEventHandlers = function() {
-        canvas.on("click.BFAlgorithm",function(e) {algo.canvasClickHandler(e);});
-        canvas.on("mousemove.BFAlgorithm",function(e) {algo.canvasMouseMoveHandler(e);});
+        //canvas.on("click.BFAlgorithm",function(e) {algo.canvasClickHandler(e);});
+        //canvas.on("mousemove.BFAlgorithm",function(e) {algo.canvasMouseMoveHandler(e);});
         $("#ta_button_1Schritt").on("click.BFAlgorithm",function() {algo.singleStepHandler();});
         $("#ta_button_vorspulen").on("click.BFAlgorithm",function() {algo.fastForwardAlgorithm();});
         $("#ta_button_stoppVorspulen").on("click.BFAlgorithm",function() {algo.stopFastForward();});
@@ -271,7 +271,41 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     */
     this.nextStepChoice = function() {
        switch(statusID) {
-       case 0:
+        case 0:
+            this.initializeGraph();
+            break;
+        case 1:
+            this.checkGraph();
+            break;
+        case 2:
+            this.invalidGraph();
+            break;
+        case 3:
+            this.findStartingVertex();
+            break;
+        case 4:
+            this.findNextVertexForTour();
+            break;
+        case 5:
+            this.compareVertexWithStart();
+            break;
+        case 6:
+            this.mergeTour();
+            break;
+        case 7:
+            this.checkForEuclideanTour();
+            break;
+        case 8:
+            this.returnTour();
+            break;
+        case 9:
+            this.findNewStartingVertex();
+            break;
+        default:
+            console.log("Fehlerhafter State");
+            break;
+
+       /* case 0:
            this.initializeAlgorithm();
            break;
        case 1:
@@ -294,7 +328,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
            break;
        default:
            //console.log("Fehlerhafte StatusID.");
-           break;
+           break; */
        }
        this.needRedraw = true;
    };
@@ -302,7 +336,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
    /**
      * Initialisiere den Algorithmus, stelle die Felder auf ihre Startwerte.
      */
-   this.initializeAlgorithm = function() {
+   /* this.initializeAlgorithm = function() {
         distanz[startNode.getNodeID()] = 0;
         graph.nodes[startNode.getNodeID()].setLabel("0");
         for(var knotenID in graph.nodes) {
@@ -324,13 +358,13 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_p_l2").addClass("marked");
         $("#ta_p_l3").addClass("marked");
         $("#ta_p_l4").addClass("marked");
-   };
+   }; */
     
     /**
      * Geht in die nächste Runde und prüft, ob wir fertig sind.
      * @method
      */
-    this.updateWeightsInitialisation = function() {
+    /* this.updateWeightsInitialisation = function() {
         if($("#ta_button_Zurueck").button("option","disabled") && fastForwardIntervalID == null) {
             $("#ta_button_Zurueck").button("option", "disabled", false);
         }
@@ -375,13 +409,13 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             // Neuer Status -> checkEdgeForUpdate
             statusID = 2;
         }
-    };
+    }; */
     
     /**
      * Prüft, ob die aktuelle Kante ein Update benötigt
      * @method
      */
-    this.checkEdgeForUpdate = function() {
+    /* this.checkEdgeForUpdate = function() {
         if(kantenIDs.length <= nextKantenID) {
             // Alle Kanten betrachtet, beginne nächste Runde
             this.updateWeightsInitialisation();
@@ -403,13 +437,13 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         $(".marked").removeClass("marked");
         $("#ta_p_l7").addClass("marked");
         this.showVariableStatusField(weightUpdates,aktKante);
-    };
+    }; */
     
     /**
      * Aktualisiert, falls nötig, den Entfernungswert des aktuellen Knotens.
      * @method
      */
-    this.updateSingleNode = function() {
+    /* this.updateSingleNode = function() {
         var aktKante = graph.edges[kantenIDs[nextKantenID]];
         // Animation -> Zurück auf Normal
         aktKante.setLayout("lineColor","black");
@@ -433,13 +467,13 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         nextKantenID++;
 
         this.checkEdgeForUpdate();
-    };
+    }; */
     
     /**
      * Prüft die nächste Kante, ob sie Teil eines negativen Zyklus ist.
      * @method
      */
-    this.checkNextEdgeForNegativeCycle = function() {
+    /* this.checkNextEdgeForNegativeCycle = function() {
         // Animation
         if(nextKantenID>0) {
             var vorherigeKante = graph.edges[kantenIDs[nextKantenID-1]];
@@ -472,13 +506,13 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         else {
             nextKantenID++;
         }
-    };
+    }; */
 
     /**
      * Markiere den negativen Kreis, der gefunden wurde.
      * @method
      */
-    this.backtrackNegativeCycle = function() {
+    /* this.backtrackNegativeCycle = function() {
         negativeCycleFound = true;
         var aktKante = graph.edges[kantenIDs[nextKantenID]];
         aktKante.setLayout("lineColor","black");
@@ -507,13 +541,13 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         $(".marked").removeClass("marked");
         $("#ta_p_l10").addClass("marked");
         this.endAlgorithm();
-    };
+    }; */
 
     /**
      * Wird aufgerufen, wenn der Algorithmus erfolgreich geendet hat.
      * @method
      */
-    this.showNoNegativeCycle = function() {
+    /* this.showNoNegativeCycle = function() {
         // Erklärung im Statusfenster
         $("#ta_div_statusErklaerung").html("<h3>4 "+LNG.K('textdb_msg_case4_1')+"</h3>"
             + "<p>"+LNG.K('textdb_msg_case4_2')+"</p>"
@@ -521,7 +555,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         $(".marked").removeClass("marked");
         $("#ta_p_l11").addClass("marked");
         this.endAlgorithm();
-    };
+    }; */
     
     /**
      * Zeigt Texte und Buttons zum Ende des Algorithmus
@@ -556,7 +590,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * @param {jQuery.Event} e
      * @returns {void}
      */
-    this.canvasMouseMoveHandler = function(e) {
+    /* this.canvasMouseMoveHandler = function(e) {
         if(statusID != 6) {
             // Algorithmus noch nicht beendet
             return;
@@ -616,7 +650,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             }
             showWayOfNode = null;
         }
-    };
+    }; */
     
     /**
      * Blendet die Vorgängerkanten ein und aus.
@@ -989,6 +1023,68 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             $("#ta_div_statusErklaerung").append("<p><strong>"+LNG.K('algorithm_status5')+"</strong></p>");
         }
     };
+
+    // Edge visited = false
+    // Benennung v1, v2, ... & e1, e2, ...
+    this.initializeGraph = function() {
+
+    };
+
+    // Check ob Graph Euclidisch oder Semi Euclidisch ist
+    this.checkGraph = function() {
+
+    };
+
+    // State wenn Graph invalid ist
+    this.invalidGraph = function() {
+
+    };
+
+    // Selectiere Start Vertice, entweder #1 (Euclidisch) oder #1 mit ungeradem Grad (Semi Euclidisch)
+    this.findStartingVertex = function() {
+
+    };
+
+    // Finde nächsten Vertice über unbesuchte Kante
+    // Wenn keiner gefunden -> mergeTour()
+    // Wenn gefunden -> findNextVertexForTour()
+    this.findNextVertexForTour = function() {
+
+    };
+
+    // Vergleiche nächsten Vertex mit ursprünglichem Start Vertex
+    // Wenn gleich -> mergeTour()
+    // Wenn ungleich -> findNextVertexForTour()
+    this.compareVertexWithStart = function() {
+
+    };
+
+    // Merge Subtour in Tour
+    // Bei leerer Tour, Tour = Subtour
+    // Bei vorhandener Tour, Replace Start mit Subtour
+    this.mergeTour = function() {
+
+    };
+
+    // Check ob Tour ein Euclidischer Zug ist
+    // Anzahl Kanten in Tour gleich Anzahl Kanten im Graph
+    // Wenn ja -> returnTour()
+    // Wenn nein -> findNewStartingVertex()
+    this.checkForEuclideanTour = function() {
+
+    };
+
+    // Zeige Tour
+    this.returnTour = function() {
+
+    };
+
+    // Finde neuen Startpunkt in Tour
+    // Erster Knoten, dessen Grad unbesuchter Kanten größer 0 ist -> findNextVertexForTour()
+    this.findNewStartingVertex = function() {
+
+    };
+
 }
 
 // Vererbung realisieren
