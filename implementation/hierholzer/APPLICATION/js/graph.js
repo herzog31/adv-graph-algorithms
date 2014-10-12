@@ -102,20 +102,20 @@ function GraphNode(coordinates,nodeID) {
 
 
     this.getDegree = function() {
-        return inEdges.length + outEdges.length;
+        return Object.keys(inEdges).length + Object.keys(outEdges).length;
     };
 
     this.getUnvisitedDegree = function() {
         var degree = 0;
 
-        for(var i = 0; inEdges.length; i++) {
-            if(!inEdges[i].getVisited) {
+        for(var kantenID in inEdges) {
+            if(!inEdges[kantenID].getVisited()) {
                 degree++;
             }
         }
 
-        for(var i = 0; outEdges.length; i++) {
-            if(!outEdges[i].getVisited) {
+        for(var kantenID in outEdges) {
+            if(!outEdges[kantenID].getVisited()) {
                 degree++;
             }
         }

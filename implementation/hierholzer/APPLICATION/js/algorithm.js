@@ -1047,7 +1047,6 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             graph.edges[kantenID].setVisited(false);
             graph.edges[kantenID].setAdditionalLabel("e"+edgeCounter);
             edgeCounter++;
-            console.log(graph.edges[kantenID]);
         };
 
         for(var knotenID in graph.nodes) {
@@ -1064,10 +1063,47 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Check ob Graph Euclidisch oder Semi Euclidisch ist
     this.checkGraph = function() {
         $("#ta_div_statusErklaerung").html("<h3>Prüfe ob Graph euclidisch oder semi-euclidisch ist</h3>");
-        if(true) {
-            statusID = 3;
-        }else{
+
+        var numberOfOddVertices = 0;
+        var firstOddVertex = null;
+
+        
+        if(Object.keys(graph.nodes).length < 2) {       // Graph to small
             statusID = 2;
+            validGraph = false;
+            return false;
+        }
+
+        for(var knotenID in graph.nodes) {
+            var degree = graph.nodes[knotenID].getDegree();
+            graph.nodes[knotenID].setLabel(degree);
+            if(degree % 2 === 1) {
+                graph.nodes[knotenID].setLayout("borderColor", "red");
+                graph.nodes[knotenID].setLayout("borderWidth", 3);
+                numberOfOddVertices++;
+                if(firstOddVertex === null) {
+                    firstOddVertex = knotenID;
+                }
+            }else{
+                graph.nodes[knotenID].setLayout("borderColor", "green");
+            }
+        }
+
+        if(numberOfOddVertices === 0) {              // Euclidean Graph
+            validGraph = true;
+            statusID = 3;
+            semiEuclideanGraph = false;
+
+        }else if(numberOfOddVertices === 2) {        // Semi Euclidean Graph
+            validGraph = true;
+            statusID = 3;
+            semiEuclideanGraph = true;
+            tourStartOddVertex = firstOddVertex;
+
+        }else{                                       // Invalid Graph
+            statusID = 2;
+            validGraph = false;
+            return false;
         }
 
     };
@@ -1086,6 +1122,18 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Selectiere Start Vertice, entweder #1 (Euclidisch) oder #1 mit ungeradem Grad (Semi Euclidisch)
     this.findStartingVertex = function() {
         $("#ta_div_statusErklaerung").html("<h3>Finde Start Knoten</h3>");
+
+        if(semiEuclideanGraph) {
+            tourStartVertex = tourStartOddVertex;
+        }else{
+            for (var knotenID in graph.nodes) {
+                tourStartVertex = knotenID;
+                break;
+            };
+        }
+
+        graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+
         statusID = 4;
 
     };
