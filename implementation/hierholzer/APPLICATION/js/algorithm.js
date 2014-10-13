@@ -142,6 +142,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
         this.registerEventHandlers();
         this.needRedraw = true;
+        this.minimizeLegend();
         statusID = 0;
     };
     

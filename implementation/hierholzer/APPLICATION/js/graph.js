@@ -960,6 +960,7 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
         this.initCanvasDrawer();
         this.registerEventHandlers();
         this.needRedraw = true;
+        this.minimizeLegend();
         $("#tg_button_gotoAlgorithmTab").click(function() {
             $("#tabs").tabs("option","active",2);
         });
