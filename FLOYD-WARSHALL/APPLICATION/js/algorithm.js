@@ -1,10 +1,10 @@
 /**
- * @author Lisa Velden
- * Animation des Dijkstra-Algorithmus
+ * @author Aleksejs Voroncovs
+ * Animation des Floyd-Warshall-Algorithmus
  */"use strict";
 
 /**
- * Instanz des Dijkstra-Algorithmus, erweitert die Klasse CanvasDrawer
+ * Instanz des Floyd-Warshall-Algorithmus, erweitert die Klasse CanvasDrawer
  * @constructor
  * @extends CanvasDrawer
  * @param {Graph} p_graph Graph, auf dem der Algorithmus ausgeführt wird
@@ -32,7 +32,7 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 	var contextStack = new Array();
 	/**
      * Closure Variable für dieses Objekt
-     * @type DijkstraAlgorithm
+     * @type FloydWarshallAlgorithm
      */
     var algo = this;
     /**
@@ -253,7 +253,7 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
     		status = 3;
     	}
 
-		changeText(distance, "ta", contextNew, status);
+		changeText(distance, "ta", contextNew, graph.nodes, status);
 		console.log("now context is ");
 		console.log(contextStack);
         return algo.isFinished;
@@ -278,7 +278,7 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 			$("#ta_button_vorspulen").button("option", "disabled", false);
 			status = 1;
 		}
-		changeText(distance, "ta", lastStep, status);
+		changeText(distance, "ta", lastStep, graph.nodes, status);
 		return;
 	};
 
@@ -316,7 +316,7 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 			distance[keyToIndex[graph.edges[key].getSourceID()]][keyToIndex[graph.edges[key].getTargetID()]] = graph.edges[key].weight;
 		}
 
-		changeText(distance, "ta", null, 1);
+		changeText(distance, "ta", null, graph.nodes, 1);
 	};
 
 	this.visualize = function(){

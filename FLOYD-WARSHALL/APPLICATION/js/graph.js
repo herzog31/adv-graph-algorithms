@@ -1368,12 +1368,12 @@ function GraphDrawer(p_graph, p_canvas, p_tab) {
             case "Kreis":
                 this.canvas.css("background", "");
                 $("#tg_p_bildlizenz").remove();
-                this.graph = new Graph("graphs/graph7.txt");
+                this.graph = new Graph(2);
                 break;
             case "Großstädte Europas":
                 this.canvas.css("background", "url(img/europa.png)");
                 $("#tg_div_Legende").append("<p id=\"tg_p_bildlizenz\">Bild: <a href=\"https://www.cia.gov/library/publications/the-world-factbook/index.html\">CIA World Factbook</a></p>");
-                this.graph = new Graph("graphs/graph3.txt");
+                this.graph = new Graph(3);
                 break;
             case "Zufallsgraph":
                 this.canvas.css("background", "");

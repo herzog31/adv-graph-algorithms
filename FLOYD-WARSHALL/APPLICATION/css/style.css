@@ -394,3 +394,7 @@ header {
 html {
     overflow-y: scroll; 
 }
+
+.node_label{
+    font-weight: bold;
+}
