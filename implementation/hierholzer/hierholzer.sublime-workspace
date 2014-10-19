@@ -4,6 +4,98 @@
 		"selected_items":
 		[
 			[
+				"eucl",
+				"euclideanTour"
+			],
+			[
+				"number",
+				"numberOfEdgesInTour"
+			],
+			[
+				"euc",
+				"euclideanSubTour"
+			],
+			[
+				"euclid",
+				"euclideanTour"
+			],
+			[
+				"euclidean",
+				"euclideanSubTour"
+			],
+			[
+				"sub",
+				"euclideanSubTour"
+			],
+			[
+				"tourC",
+				"tourColors"
+			],
+			[
+				"tourColo",
+				"tourColorIndex"
+			],
+			[
+				"next",
+				"nextEdge"
+			],
+			[
+				"tourc",
+				"tourColorIndex"
+			],
+			[
+				"tourCo",
+				"tourColors"
+			],
+			[
+				"tour",
+				"tourStartOddVertex"
+			],
+			[
+				"semi",
+				"semiEuclideanGraph"
+			],
+			[
+				"fir",
+				"firstOddVertex"
+			],
+			[
+				"add",
+				"additionalLabel"
+			],
+			[
+				"edge",
+				"edgeCounter"
+			],
+			[
+				"sta",
+				"statusID"
+			],
+			[
+				"find",
+				"findNewStartingVertex"
+			],
+			[
+				"check",
+				"checkForEuclideanTour"
+			],
+			[
+				"merge",
+				"mergeTour"
+			],
+			[
+				"findNe",
+				"findNextVertexForTour"
+			],
+			[
+				"inv",
+				"invalidGraph"
+			],
+			[
+				"ini",
+				"initializeGraph"
+			],
+			[
 				"save",
 				"saveSection"
 			],
@@ -18,10 +110,6 @@
 			[
 				"deleteTem",
 				"deleteTemplateRequest"
-			],
-			[
-				"sub",
-				"submitContactForm"
 			],
 			[
 				"section",
@@ -46,14 +134,6 @@
 			[
 				"aj",
 				"ajax	$.ajax()"
-			],
-			[
-				"add",
-				"addClass	.addClass()"
-			],
-			[
-				"number",
-				"numberTwo"
 			]
 		]
 	},
@@ -63,7 +143,47 @@
 			"file": "APPLICATION/Hierholzer-Algorithmus.html",
 			"settings":
 			{
-				"buffer_size": 39586,
+				"buffer_size": 40108,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "APPLICATION/js/graph.js",
+			"settings":
+			{
+				"buffer_size": 44295,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "APPLICATION/js/canvasDrawing.js",
+			"settings":
+			{
+				"buffer_size": 8053,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "APPLICATION/js/siteAnimation.js",
+			"settings":
+			{
+				"buffer_size": 14749,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "APPLICATION/js/algorithm.js",
+			"settings":
+			{
+				"buffer_size": 55683,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Uni/IDP/GIT/pseudo code/hierholzer/hierholzer.md",
+			"settings":
+			{
+				"buffer_size": 2286,
 				"line_ending": "Unix"
 			}
 		}
@@ -71,7 +191,7 @@
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 47.0,
+		"height": 392.0,
 		"selected_items":
 		[
 			[
@@ -103,7 +223,7 @@
 				"Package Control: Install Package"
 			]
 		],
-		"width": 449.0
+		"width": 467.0
 	},
 	"console":
 	{
@@ -125,10 +245,14 @@
 	"expanded_folders":
 	[
 		"/Uni/IDP/GIT/implementation/hierholzer",
-		"/Uni/IDP/GIT/implementation/hierholzer/APPLICATION"
+		"/Uni/IDP/GIT/implementation/hierholzer/APPLICATION",
+		"/Uni/IDP/GIT/implementation/hierholzer/APPLICATION/css",
+		"/Uni/IDP/GIT/implementation/hierholzer/APPLICATION/js"
 	],
 	"file_history":
 	[
+		"/Uni/Advanced Computer Networking/GIT/03620474/git_task.txt",
+		"/Uni/IDP/GIT/implementation/hierholzer/APPLICATION/css/style.css",
 		"/Uni/IDP/GIT/pseudo code/hierholzer/hierholzer.md",
 		"/Users/Mark/Documents/opa2/single-page-app/static/js/main.js",
 		"/Users/Mark/Documents/opa2/single-page-app/static/js/admin.js",
@@ -153,13 +277,14 @@
 	],
 	"find":
 	{
-		"height": 25.0
+		"height": 35.0
 	},
 	"find_in_files":
 	{
 		"height": 93.0,
 		"where_history":
 		[
+			"/Uni/IDP/GIT/implementation/hierholzer/APPLICATION",
 			"/Users/Mark/Documents/opa2/single-page-app"
 		]
 	},
@@ -168,6 +293,38 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"legende",
+			"graphdrawer",
+			"Legende",
+			"LegendeText",
+			"legende",
+			"graphdrawer",
+			".length",
+			"euclideanSubTour",
+			"setLayout",
+			"getvisited",
+			"NodeFillingHighlight",
+			"findstart",
+			"NodeFillingHighlight",
+			"setLayout",
+			"layou",
+			"red",
+			"graph.nodes",
+			"initialize",
+			"redraw",
+			"additionalLabel",
+			"edge",
+			"setLabel",
+			"additionalLabel",
+			"drawAdditionalTextOnLine",
+			"edges",
+			"drawAdditionalTextOnLine",
+			"drawLine",
+			"showVariableStatusField",
+			"canvasMouseMoveHandler",
+			"canvasClickHandler",
+			"showWeightChangeField",
+			"graphdrawer",
 			"about",
 			"delete",
 			"smooth",
@@ -197,24 +354,24 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 4,
 			"sheets":
 			[
 				{
 					"buffer": 0,
 					"file": "APPLICATION/Hierholzer-Algorithmus.html",
-					"semi_transient": true,
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 39586,
+						"buffer_size": 40108,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								21765,
+								21776
 							]
 						],
 						"settings":
@@ -224,10 +381,159 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
+						"translation.y": 4987.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "APPLICATION/js/graph.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 44295,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								31340,
+								31340
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 15893.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "APPLICATION/js/canvasDrawing.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8053,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7476,
+								7476
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2086.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "APPLICATION/js/siteAnimation.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 14749,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								9906,
+								9913
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 4147.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "APPLICATION/js/algorithm.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 55683,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7235,
+								7235
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "/Uni/IDP/GIT/pseudo code/hierholzer/hierholzer.md",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2286,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1599,
+								1590
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Markdown/Markdown.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 890.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
 					"type": "text"
 				}
 			]
@@ -296,11 +602,15 @@
 	},
 	"select_symbol":
 	{
-		"height": 0.0,
+		"height": 392.0,
 		"selected_items":
 		[
+			[
+				"",
+				"addInEdge"
+			]
 		],
-		"width": 0.0
+		"width": 392.0
 	},
 	"selected_group": 0,
 	"settings":

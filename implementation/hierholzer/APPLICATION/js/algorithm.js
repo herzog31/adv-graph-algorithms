@@ -204,32 +204,6 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     };
     
     /**
-     * Wird aufgerufen, sobald auf das Canvas geklickt wird. 
-     * @param {jQuery.Event} e jQuery Event Objekt, gibt Koordinaten
-     */
-     /* 
-    this.canvasClickHandler = function(e) {
-        if(startNode == null) {
-            var mx = e.pageX - canvas.offset().left;
-            var my = e.pageY - canvas.offset().top;
-            for(var knotenID in graph.nodes) {
-                if (graph.nodes[knotenID].contains(mx, my)) {
-                    graph.nodes[knotenID].setLayout("fillStyle",const_Colors.NodeFillingHighlight); 
-                    graph.nodes[knotenID].setLabel("S");
-                    startNode = graph.nodes[knotenID];
-                    this.needRedraw = true;
-                    $("#ta_div_statusErklaerung").removeClass("ui-state-error");
-                    $("#ta_div_statusErklaerung").html("<h3>"+LNG.K('textdb_msg_case5_1')+"</h3>");
-                    $("#ta_button_1Schritt").button("option", "disabled", false);
-                    $("#ta_button_vorspulen").button("option", "disabled", false);
-                    statusID = 0;
-                    break;                   // Maximal einen Knoten auswählen
-                }
-            }
-        }
-    }; */
-    
-    /**
      * Wird aufgerufen, wenn der "1 Schritt" Button gedrückt wird.
      * @method
      */
@@ -242,19 +216,13 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.fastForwardAlgorithm = function() {
-        /* if(startNode == null) {
-            // Auf Startknotenwahl hinweisen
-            $("#ta_div_statusErklaerung").addClass("ui-state-error");
-        }
-        else { */
-            $("#ta_button_vorspulen").hide();
-            $("#ta_button_stoppVorspulen").show();
-            $("#ta_button_1Schritt").button("option", "disabled", true);
-            $("#ta_button_Zurueck").button("option", "disabled", true);
-            var geschwindigkeit = 200;	// Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
+        $("#ta_button_vorspulen").hide();
+        $("#ta_button_stoppVorspulen").show();
+        $("#ta_button_1Schritt").button("option", "disabled", true);
+        $("#ta_button_Zurueck").button("option", "disabled", true);
+        var geschwindigkeit = 200;	// Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
 
-            fastForwardIntervalID = window.setInterval(function(){algo.nextStepChoice();},geschwindigkeit);
-        //}
+        fastForwardIntervalID = window.setInterval(function(){algo.nextStepChoice();},geschwindigkeit);
     };
     
     /**
@@ -321,31 +289,6 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         default:
             console.log("Fehlerhafter State");
             break;
-
-       /* case 0:
-           this.initializeAlgorithm();
-           break;
-       case 1:
-           this.updateWeightsInitialisation();
-           break;
-       case 2:
-           this.checkEdgeForUpdate();
-           break;
-       case 3:
-           this.updateSingleNode();
-           break;
-       case 4:
-           this.checkNextEdgeForNegativeCycle();
-           break;
-       case 5:
-           this.backtrackNegativeCycle();
-           break;
-       case 6:
-           this.showNoNegativeCycle();
-           break;
-       default:
-           //console.log("Fehlerhafte StatusID.");
-           break; */
        }
        this.needRedraw = true;
    };
@@ -1049,16 +992,20 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         var edgeCounter = 1;
         var nodeCounter = 1;
 
+        for(var knotenID in graph.nodes) {
+            graph.nodes[knotenID].setLabel(String.fromCharCode("a".charCodeAt(0)+nodeCounter-1));
+            //graph.nodes[knotenID].setLabel("v"+nodeCounter);
+            nodeCounter++;
+        };
+
         for(var kantenID in graph.edges) {
             graph.edges[kantenID].setVisited(false);
-            graph.edges[kantenID].setAdditionalLabel("e"+edgeCounter);
+            graph.edges[kantenID].setAdditionalLabel("{"+graph.nodes[graph.edges[kantenID].getSourceID()].getLabel()+", "+graph.nodes[graph.edges[kantenID].getTargetID()].getLabel()+"}")
+            //graph.edges[kantenID].setAdditionalLabel("e"+edgeCounter);
             edgeCounter++;
         };
 
-        for(var knotenID in graph.nodes) {
-            graph.nodes[knotenID].setLabel("v"+nodeCounter);
-            nodeCounter++;
-        };
+        
 
         statusID = 1;
 
@@ -1371,10 +1318,10 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
         if(semiEuclideanGraph) {
             console.log("Complete Euclidean Trail: " + euclideanTour);
-            $("#ta_div_statusErklaerung").append("<p>Zug:<br /> " + euclideanTour + "</p>");
+            $("#ta_div_statusErklaerung").append("<p>Zug:<br /> " + euclideanTour.join("<br />") + "</p>");
         }else{
             console.log("Complete Euclidean Circle: " + euclideanTour);
-            $("#ta_div_statusErklaerung").append("<p>Kreis:<br /> " + euclideanTour + "</p>");
+            $("#ta_div_statusErklaerung").append("<p>Kreis:<br /> " + euclideanTour.join("<br />") + "</p>");
         }
         
 
