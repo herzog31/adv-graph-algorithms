@@ -45,7 +45,10 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 
 	var distance = new Array();
 
-	this.distance = distance;
+	var paths = new Array();
+
+	// this.distance = distance;
+	this.paths = paths;
 
 	this.isFinished = false;
 
@@ -194,6 +197,11 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 				context.changedRow = context.i;
 				context.changedColumn = context.j;
 				distance[context.i][context.j] = distance[context.i][context.k] + distance[context.k][context.j];
+				paths[context.i][context.j] = paths[context.i][context.k] + "," + paths[context.k][context.j];
+				context.formula = "d(" + graph.nodes[context.i].getLabel() + ", " + graph.nodes[context.j].getLabel() + ") = "
+					+ "min{d(" + graph.nodes[context.i].getLabel() + ", " + graph.nodes[context.j].getLabel() + "), "
+					+ "d(" + graph.nodes[context.i].getLabel() + ", " + graph.nodes[context.k].getLabel() + ") + "
+					+ "d(" + graph.nodes[context.k].getLabel() + ", " + graph.nodes[context.j].getLabel() + ")}";
 				isStepMade = true;
 			}
 
@@ -306,6 +314,7 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 
 		for(var i = 0; i < Object.keys(graph.nodes).length; i++){
 			distance[i] = new Array();
+			paths[i] = new Array();
 			for(var j = 0; j < Object.keys(graph.nodes).length; j++){
 				distance[i][j] = "inf";
 			}
@@ -314,9 +323,14 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 
 		for(var key in graph.edges){
 			distance[keyToIndex[graph.edges[key].getSourceID()]][keyToIndex[graph.edges[key].getTargetID()]] = graph.edges[key].weight;
+			paths[keyToIndex[graph.edges[key].getSourceID()]][keyToIndex[graph.edges[key].getTargetID()]] = "" + key;
 		}
 
 		changeText(distance, "ta", null, graph.nodes, 1);
+
+		$(".path-cell").hover(function(){
+	    	console.log(this);
+	    });
 	};
 
 	this.visualize = function(){
@@ -342,7 +356,8 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 		$("#ta_button_Zurueck").button("option", "disabled", false);
         $("#ta_button_1Schritt").button("option", "disabled", true);
         $("#ta_button_vorspulen").button("option", "disabled", true);
-
+		console.log("paths");
+        console.log(paths);
         return;
     };
 

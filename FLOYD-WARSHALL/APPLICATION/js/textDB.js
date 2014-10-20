@@ -22,7 +22,9 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
 
         case 2:
             var table = displayMatrix(distance, contextNew, nodes,  true);
+            var formula = "<p>" + contextNew.formula + "</p>";
             $("#" + tabprefix + "_div_statusText").html(table);
+            $("#" + tabprefix + "_div_statusText").append(formula);
             break;
 
         case 3:
@@ -63,9 +65,9 @@ function displayMatrix(distance, contextNew, nodes, markChanged){
         table += "<tr><td class='node_label'>" + nodes[i].getLabel() + "</td>";
         for(var j = 0; j < distance.length; j++){
             if(contextNew && markChanged && i == contextNew.changedRow && j == contextNew.changedColumn){
-                table += "<th><font color='red'>" + distance[i][j] + "</font></th>";
+                table += "<th style='background-color: rgb(255, 252, 0);' class='path-cell' i=" + i + " j=" + j + "><font color='red'>" + distance[i][j] + "</font></th>";
             }else{
-                table += "<td>" + distance[i][j] + "</td>";
+                table += "<td class='path-cell' i=" + i + " j=" + j + ">" + distance[i][j] + "</td>";
             }
         }
         table += "</tr>";
@@ -73,3 +75,5 @@ function displayMatrix(distance, contextNew, nodes, markChanged){
     table += "</table>";
     return table;
 };
+
+// onmouseover='markPath(" + i + ", + " + j + ")'

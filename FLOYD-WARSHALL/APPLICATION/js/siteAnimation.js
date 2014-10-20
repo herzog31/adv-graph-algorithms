@@ -430,4 +430,9 @@ function CanvasDrawer(p_graph, p_canvas, p_tab) {
         $("#tabs").find(".ui-icon-refresh").remove();
         $("#tabs").tabs("refresh");
     };
+
+}
+
+function markPath(i, j){
+    console.log(path[i][j]);
 }
