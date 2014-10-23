@@ -5,6 +5,9 @@
  * mit dem Canvas arbeiten.
  */"use strict";
 
+
+var algo;
+
 /**
  * Initialisiere Layout der Seite
  * Tabs, Buttons, ersten Tab<br>
@@ -93,7 +96,6 @@ function initializeSiteLayout() {
             }
         },
         activate : function(event, ui) {
-            var algo;
             if (ui.newPanel[0].id == "tab_tg") {
                 algo = new GraphDrawer($("body").data("graph"), $("#tg_canvas_graph"), $("#tab_tg"));
                 $("#tab_tg").data("algo", algo);
@@ -430,7 +432,6 @@ function CanvasDrawer(p_graph, p_canvas, p_tab) {
         $("#tabs").find(".ui-icon-refresh").remove();
         $("#tabs").tabs("refresh");
     };
-
 }
 
 function markPath(i, j){

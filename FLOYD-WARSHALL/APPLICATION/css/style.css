@@ -398,3 +398,7 @@ html {
 .node_label{
     font-weight: bold;
 }
+
+th.path-cell{
+    background-color: rgb(255, 252, 0);
+}

@@ -65,15 +65,36 @@ function displayMatrix(distance, contextNew, nodes, markChanged){
         table += "<tr><td class='node_label'>" + nodes[i].getLabel() + "</td>";
         for(var j = 0; j < distance.length; j++){
             if(contextNew && markChanged && i == contextNew.changedRow && j == contextNew.changedColumn){
-                table += "<th style='background-color: rgb(255, 252, 0);' class='path-cell' i=" + i + " j=" + j + "><font color='red'>" + distance[i][j] + "</font></th>";
+                table += "<th class='path-cell' i=" + i + " j=" + j + 
+                    " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'><font color='red'>" + distance[i][j] + "</font></th>";
             }else{
-                table += "<td class='path-cell' i=" + i + " j=" + j + ">" + distance[i][j] + "</td>";
+                table += "<td class='path-cell' i=" + i + " j=" + j + 
+                    " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "</td>";
             }
         }
         table += "</tr>";
     }
     table += "</table>";
     return table;
+};
+
+function markPath(object){
+    $(object).css("background-color", "rgb(0, 255, 0)");
+    if(algo.paths[$(object).attr("i")][$(object).attr("j")]){
+        var edges = algo.paths[$(object).attr("i")][$(object).attr("j")].split(",");
+        for(var i = 0; i < edges.length; i++){
+            algo.graph.edges[edges[i]].setLayout("lineColor", "red");
+        }
+        algo.needRedraw = true;
+    }
+};
+
+function unmarkPath(object){
+    $(object).css("background-color", "");
+    for(var edge in algo.graph.edges){
+        algo.graph.edges[edge].setLayout("lineColor", "black");
+    }
+    algo.needRedraw = true;
 };
 
 // onmouseover='markPath(" + i + ", + " + j + ")'

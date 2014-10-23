@@ -327,10 +327,6 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 		}
 
 		changeText(distance, "ta", null, graph.nodes, 1);
-
-		$(".path-cell").hover(function(){
-	    	console.log(this);
-	    });
 	};
 
 	this.visualize = function(){
@@ -369,3 +365,9 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 // while(!algo.nextStepChoice()){
 // 	algo.visualize();
 // }
+
+/***************************************************************************************************************************/
+
+// Vererbung realisieren
+FloydWarshallAlgorithm.prototype = new CanvasDrawer;
+FloydWarshallAlgorithm.prototype.constructor = FloydWarshallAlgorithm;
