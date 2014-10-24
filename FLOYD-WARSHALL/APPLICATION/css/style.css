@@ -402,3 +402,11 @@ html {
 th.path-cell{
     background-color: rgb(255, 252, 0);
 }
+
+.path-cell{
+    width: 16px;
+}
+
+.tableHeader{
+    width: 16px;   
+}

@@ -56,25 +56,53 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
 };
 
 function displayMatrix(distance, contextNew, nodes, markChanged){
-    var table = "<table><tr><td></td>";
+    // var table = "<table><tr><td></td>";
+    // for(var key in nodes){
+    //     table += "<td class='node_label'>" + nodes[key].getLabel() + "</td>";
+    // }
+    // table += "</tr>";
+    // for(var i = 0; i < distance.length; i++){
+    //     table += "<tr><td class='node_label'>" + nodes[i].getLabel() + "</td>";
+    //     for(var j = 0; j < distance.length; j++){
+    //         if(contextNew && markChanged && i == contextNew.changedRow && j == contextNew.changedColumn){
+    //             table += "<th class='path-cell' i=" + i + " j=" + j + 
+    //                 " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'><font color='red'>" + distance[i][j] + "</font></th>";
+    //         }else{
+    //             table += "<td class='path-cell' i=" + i + " j=" + j + 
+    //                 " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "</td>";
+    //         }
+    //     }
+    //     table += "</tr>";
+    // }
+    // table += "</table>";
+    var table = '<table cellspacing="0" cellpadding="0" border="0" ><tr><td id="firstTd"></td><td>' + 
+        '<div id="divHeader" style="overflow:hidden;width:284px;"><table id="upperRowTable" cellspacing="0" cellpadding="0"><tr>';
     for(var key in nodes){
-        table += "<td class='node_label'>" + nodes[key].getLabel() + "</td>";
+        table += '<td><div class="tableHeader">' + nodes[key].getLabel() + '</div></td>';
     }
-    table += "</tr>";
+    table += '</tr></table></div></td></tr><tr><td valign="top"><div id="firstcol" style="overflow: hidden;height:80px">' + 
+        '<table cellspacing="0" cellpadding="0">';
+    for(var key in nodes){
+        table += '<tr><td class="tableFirstCol">' + nodes[key].getLabel() + '</td></tr>';
+    }
+    table += '</table></div></td><td valign="top">' + 
+        '<div id="table_div" style="overflow: auto;width:300px;height:100px;position:relative" onscroll="fnScroll()" >' + 
+        '<table style="table-layout: fixed;" width="0px" cellspacing="0" cellpadding="0">';
+
     for(var i = 0; i < distance.length; i++){
-        table += "<tr><td class='node_label'>" + nodes[i].getLabel() + "</td>";
+        table += '<tr>';
         for(var j = 0; j < distance.length; j++){
-            if(contextNew && markChanged && i == contextNew.changedRow && j == contextNew.changedColumn){
+            if (contextNew && markChanged && i == contextNew.changedRow && j == contextNew.changedColumn){
                 table += "<th class='path-cell' i=" + i + " j=" + j + 
                     " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'><font color='red'>" + distance[i][j] + "</font></th>";
-            }else{
+            } else{
                 table += "<td class='path-cell' i=" + i + " j=" + j + 
                     " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "</td>";
             }
         }
-        table += "</tr>";
+        table += '</tr>';
     }
-    table += "</table>";
+    table += '</table></div></td></tr></table>';
     return table;
 };
 
@@ -97,4 +125,9 @@ function unmarkPath(object){
     algo.needRedraw = true;
 };
 
+//function to support scrolling of title and first column
+fnScroll = function(){
+    $('#divHeader').scrollLeft($('#table_div').scrollLeft());
+    $('#firstcol').scrollTop($('#table_div').scrollTop());
+};
 // onmouseover='markPath(" + i + ", + " + j + ")'
