@@ -5,6 +5,9 @@
 
 /********************************************** Erklärungstext / Anzeige in Pseudocode **********************************************/
 
+var scrollPositionI = 0;
+var scrollPositionJ = 0;
+
 /**
  * Passe Text in Erklärungs- und Pseudocodebereich an.
  * @method
@@ -25,6 +28,8 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
             var formula = "<p>" + contextNew.formula + "</p>";
             $("#" + tabprefix + "_div_statusText").html(table);
             $("#" + tabprefix + "_div_statusText").append(formula);
+            $("#table_div").scrollLeft((scrollPositionJ - 2) * 16);
+            $("#table_div").scrollTop((scrollPositionI - 2) * 16);
             break;
 
         case 3:
@@ -33,6 +38,8 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
                 $("#ta_div_statusText").append("<p>Nun wurden alle kürzesten beziehungsweise günstigsten Wege berechnet.</p><h3>Die Endmatrix sieht so aus:</h3>");
                 var table = displayMatrix(distance, contextNew, nodes, false);
                 $("#ta_div_statusText").append(table);
+                $("#table_div").scrollLeft(0);
+                $("#table_div").scrollTop(0);
             };
             break;
 
@@ -80,7 +87,7 @@ function displayMatrix(distance, contextNew, nodes, markChanged){
     for(var key in nodes){
         table += '<td><div class="tableHeader">' + nodes[key].getLabel() + '</div></td>';
     }
-    table += '</tr></table></div></td></tr><tr><td valign="top"><div id="firstcol" style="overflow: hidden;height:80px">' + 
+    table += '</tr></table></div></td></tr><tr><td valign="top"><div id="firstcol" style="overflow: hidden;height:85px">' + 
         '<table cellspacing="0" cellpadding="0">';
     for(var key in nodes){
         table += '<tr><td class="tableFirstCol">' + nodes[key].getLabel() + '</td></tr>';
@@ -95,6 +102,8 @@ function displayMatrix(distance, contextNew, nodes, markChanged){
             if (contextNew && markChanged && i == contextNew.changedRow && j == contextNew.changedColumn){
                 table += "<th class='path-cell' i=" + i + " j=" + j + 
                     " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'><font color='red'>" + distance[i][j] + "</font></th>";
+                scrollPositionI = i;
+                scrollPositionJ = j;
             } else{
                 table += "<td class='path-cell' i=" + i + " j=" + j + 
                     " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "</td>";
@@ -103,6 +112,15 @@ function displayMatrix(distance, contextNew, nodes, markChanged){
         table += '</tr>';
     }
     table += '</table></div></td></tr></table>';
+
+    $(document).ready(function(){
+        console.log("i=" + scrollPositionI);
+        console.log("j=" + scrollPositionJ);
+        $("#table_div").scrollLeft(1000);
+        // $("#table_div").scrollLeft((scrollPositionI - 2) * 16);
+        // $("#table_div").scrollTop((scrollPositionJ - 2) * 16);
+    });
+
     return table;
 };
 
