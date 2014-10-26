@@ -77,11 +77,11 @@ function initializeSiteLayout() {
         activate: function(event, ui) {
             var algo;
             if(ui.newPanel[0].id == "tab_tg") {
-                algo = new GraphDrawer($("body").data("graph"),$("#tg_canvas_graph"),$("#tab_tg"));
+                algo = new BipartiteGraphDrawer($("body").data("graph"),$("#tg_canvas_graph"),$("#tab_tg"));
                 $("#tab_tg").data("algo",algo);
             }
             if(ui.newPanel[0].id == "tab_ta") {
-                algo = new BFAlgorithm($("body").data("graph"),$("#ta_canvas_graph"),$("#tab_ta"));
+                algo = new HKAlgorithm($("body").data("graph"),$("#ta_canvas_graph"),$("#tab_ta"));
                 $("#tab_ta").data("algo",algo);
             }
             if(ui.newPanel[0].id == "tab_tf1") {
@@ -97,7 +97,7 @@ function initializeSiteLayout() {
             }
         }
     });
-    $("body").data("graph",new Graph("graphs/graph1.txt"));
+    $("body").data("graph",new BipartiteGraph("graphs/graph2.txt"));
 }
 
 /**

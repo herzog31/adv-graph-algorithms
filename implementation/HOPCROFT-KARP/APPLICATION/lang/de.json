@@ -19,26 +19,36 @@
     "textdb_text_edges": "Kanten",
     "textdb_text_phase": "Phase",
     "textdb_text_of": "von",
-    "textdb_msg_case0_1": "Initialisierung",
-    "textdb_msg_case0_2": "Der Algorithmus hat nun die erste Schätzung der Kosten für jeden Knoten eingetragen.",
-    "textdb_msg_case0_3": "Die Zahl im Knoten entspricht also der ersten Schätzung der Kosten des günstigsten Weges vom Startknoten zu diesem Knoten.",
-    "textdb_msg_case0_4": "Da noch keine Berechnungen durchgeführt wurden, schätzen wir zunächst unendliche Kosten für alle Knoten außer dem Startknoten selbst.",
-    "textdb_msg_case1_1": "Kürzeste Wege bestimmen",
-    "textdb_msg_case1_2": "Verbesserung über rote Kante prüfen",
-    "textdb_msg_case1_3": "Es wird nun überprüft, ob die rote Kante einen besseren Weg zu ihrem Zielknoten ermöglicht als bisher bekannt.",
-    "textdb_msg_case1_4": "Dafür wird getestet, ob die bisher bekannten Kosten des Zielknotens höher sind als die Kosten des Anfangsknotens plus der Kosten der Kante.",
-    "textdb_msg_case1_5_a": "In der folgenden Phase werden die kürzesten Wege berechnet, die maximal ",
-    "textdb_msg_case1_6": "Innerhalb jeder Phase werden <strong>alle Kanten</strong> überprüft, um festzustellen, ob sie eine Reduzierung der Kosten ihres Zielknotens ermöglichen.",
-    "textdb_msg_case2_1": "Negative Kreise suchen",
-    "textdb_msg_case2_2_a": "Bis jetzt wurden alle günstigsten Wege korrekt berechnet, die maximal ",
-    "textdb_msg_case2_2_b": "benutzen.",
-    "textdb_msg_case2_3_a": "Da es ",
-    "textdb_msg_case2_3_b": "Knoten im Graph gibt, sind alle günstigsten Wege jetzt korrekt berechnet, falls der Graph keine negativen Kreise enthält.",
-    "textdb_msg_case2_4": "Wir überprüfen den Graph also jetzt auf negative Kreise.",
-    "textdb_msg_case2_5": "Überprüfe die rote Kante",
+
+    "textdb_msg_init": "Initialisierung",
+    "textdb_msg_init_1": "Am Anfang des Algorithmus besitzen alle Knoten keinen Matching-Partner. Die Menge des Kanten in Matchin M ist dementsprechend leer.",
+    "textdb_msg_init_2": "In jedem Schritt des Algorithmus suchen wir eine maximale Menge an kürzesten knotendisjunkten verbessernden Pfaden.",
+    "textdb_msg_init_3": "Maximal heißt hier, dass es zusätzlich zu den gefundenen Pfaden keinen anderen kürzesten knotendisjunkten verbessernden Pfad gibt.",
+
+    "textdb_msg_begin_it": "Nächste Iteration",
+    "textdb_msg_end_it": "Iteration Ende",
+    "textdb_msg_end_it_1": "Es gibt keinen knotendisjunkten kürzensten verbessernden Pfad bezüglich der bereits gefundenen.",
+
+    "textdb_msg_end_algo": "Algorothmus Ende",
+    "textdb_msg_end_algo_1": "Es gibt keinen verbessernden Pfad mehr. Das Matching ist optimal.",
+
+    "textdb_msg_path": "Finde einen kürzesten augmentierenden Pfad",
+    "textdb_msg_path_1a": "Zuerst wird mittels der Breitensuche ein gerichteter Graph aufgebaut, der alle kürzesten verbessernden Pfade enthält.",
+    "textdb_msg_path_1b": "Die Suche startet mit allen freien Knoten auf der linken Seite.",
+    "textdb_msg_path_1c": "Es werden nur Kanten verfolgt, die nicht zum Matching gehören, da diese Knoten frei sind.",
+
+    "textdb_msg_path_shortest": "Die Länge des kürzesten verbessernden Pfades beträgt: ",
+
+    "textdb_msg_path_highlight": "Verbessernde Pfad",
+
+    "textdb_msg_update": "Aktualisiere das Matching",
+    "textdb_msg_update_1": "Die alternierenden Kanten des gefundenen verbessernden Pfades werden vertauscht.",
+    "textdb_msg_update_2": "Die Kardinalität des Matching wird um eins erhöht.",
+
     "textdb_msg_case2_6": "Prüfe, ob die rote Kante Teil eines negativen Kreises ist.",
     "textdb_msg_case2_7": "Dafür wird getestet, ob die bisher bekannten Kosten des Zielknotens höher sind als die Kosten des Anfangsknotens plus der Kosten der Kante.",
     "textdb_msg_case2_8": "Falls dies der Fall ist, so ist die rote Kante Teil eines negativen Kreises.",
+
     "textdb_msg_case3_1": "Ergebnis: Negativer Kreis gefunden",
     "textdb_msg_case3_2": "Der Graph enthält einen erreichbaren negativen Kreis.",
     "textdb_msg_case3_3": "Von der Kante, die auf den negativen Kreis hingewiesen hat, sind wir über die Vorgängerkanten so lange zurückgegangen, bis wir  im Kreis gelaufen sind. Dieser negative Kreis wurde im Graphen hellrot markiert.",

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script type="text/javascript" src="bipartiteMatching.js"> </script>
+
+<!--<button onclick="testFunction()">Try it</button>-->
+
+<p id="demo"></p>
+<br>
+<br>
+<!--<img src="match.jpg">-->
+<h1 style="font: arial bold;
+    font-size: 44px;
+    color: #0A5096;
+    line-height: 25px;">Algorithmus von Hopcroft und Karp</h1>
+
+<script>
+    function Super() {
+        var test = 1;
+        this.plus = function(a,b){
+            test = a + b;
+        }
+    };
+    function Pol(){
+        this.plus = function(){
+            Super.plus.call(this,1,2);
+        }
+    }
+    Pol.prototype = new Super;
+    Pol.prototype.constructor = Pol;
+    var addNode = function (xC, yC) {
+        var node = new GraphNode({x: xC, y: yC}, nodeIDCounter);
+        this.nodes[nodeIDCounter] = node;
+        if(isInU === true) this.unodes[nodeIDCounter] = node;
+        else this.vnodes[nodeIDCounter] = node;
+        nodeIDCounter++;
+        return node;
+    };
+</script>
+
+</body>
+</html>

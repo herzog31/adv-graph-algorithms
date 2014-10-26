@@ -1,19 +1,14 @@
 /**
- * @author Richard Stotz
- * Animation des Bellman-Ford-Algorithmus
- */
-
-/**
- * Instanz des Bellmann-Ford Algorithmus, erweitert die Klasse CanvasDrawer
+ * Instanz des Hopcroft-Karp Algorithmus, erweitert die Klasse CanvasDrawer
  * @constructor
  * @augments CanvasDrawer
  * @param {Graph} p_graph Graph, auf dem der Algorithmus ausgeführt wird
  * @param {Object} p_canvas jQuery Objekt des Canvas, in dem gezeichnet wird.
  * @param {Object} p_tab jQuery Objekt des aktuellen Tabs.
  */
-function BFAlgorithm(p_graph,p_canvas,p_tab) {
+function HKAlgorithm(p_graph,p_canvas,p_tab) {
     CanvasDrawer.call(this,p_graph,p_canvas,p_tab); 
-    
+    console.log(p_graph.getDescriptionAsString());
     /**
      * Convenience Objekt, damit man den Graph ohne this ansprechen kann.
      * @type Graph
@@ -30,34 +25,17 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      */
     var fastForwardIntervalID = null;
     /**
-     * Knoten, von dem aus alle Entfernungen berechnet werden.
-     * @type GraphNode
-     */
-    var startNode = null;
-    /**
      * Der Algorithmus kann in verschiedenen Zuständen sein, diese Variable 
      * speichert die ID des aktuellen Zustands.<br>
      * Siehe Dokumentation bei der Funktion nextStepChoice
      * @type Number
      */
-    var statusID = null;
+    var statusID = 0;
     /**
      * Closure Variable für dieses Objekt
-     * @type BFAlgorithm
+     * @type HKAlgorithm
      */
     var algo = this;
-    /**
-     * Assoziatives Array mit den Abstandswerten aller Knoten<br>
-     * Keys: KnotenIDs Value: Abstandswert
-     * @type Object
-     */
-    var distanz = new Object();
-    /**
-     * Assoziatives Array mit den Vorgängerkanten aller Knoten<br>
-     * Keys: KnotenIDs Value: KantenID
-     * @type Object
-     */
-    var vorgaenger = new Object();
     /**
      * Zählt die Phasen / Runden.
      * @type Number
@@ -86,12 +64,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * @type Boolean
      */
     var showVorgaenger = true;
-    /**
-     * Zeigt an, ob ein negativer Kreis gefunden wurde oder nicht
-     * @type Boolean
-     */
-    var negativeCycleFound = false;
-    
+
     /**
      * Die Distanzwerte der Knoten werden nach und nach auf diesen Stack gepusht.<br>
      * Wird für den "Zurück" Button benötigt.
@@ -105,7 +78,75 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * @type Number[]
      */
     var vorgaengerIDUpdateStack = new Array();
+
+    /**
+     * Hier die Variablen vom HK-Algo
+     */
+
+    /**
+     * Keys: KantenIDs Value: Kanten
+     * @type Object
+     */
+    var matching = new Object();
     
+    /**
+     * Enthaelt alle freien Knoten (derzeit) der linken Seite
+     * Wird als Ausgangspunkt fuer die Erstellung des alternierenden Graphen benutzt.
+     * Keys: KnotenIDs Value: Knoten
+     * @type Object
+     */
+    var superNode = new Object();
+
+    var bfsEdges = new Object();
+
+    var shortestPathLength = 0;
+
+    var matched = new Object();
+
+    var disjointPaths = new Array();
+
+    var currentPath = 0;
+
+    /*
+    * Hier werden die Statuskonstanten definiert
+    * */
+    const ALGOINIT = 0;
+    const BEGIN_ITERATION = 1;
+    const END_ITERATION = 2;
+    const NEXT_AUGMENTING_PATH = 3;
+    const UPDATE_MATCHING = 4;
+    const END_ALGORITHM = 5;
+
+    const MATCHED_EDGE_COLOR = "DarkBlue";
+    const MATCHED_NODE_COLOR = const_Colors.NodeFillingHighlight;
+
+    /**
+     * Aussehen einer Matching-Kante.
+     * @type Object
+     */
+    var matchedEdge = {'arrowAngle' : Math.PI/8,	// Winkel des Pfeilkopfs relativ zum Pfeilkörper
+        'arrowHeadLength' : 15,    // Länge des Pfeilkopfs
+        'lineColor' : "blue",		// Farbe des Pfeils
+        'lineWidth' : 2,		    // Dicke des Pfeils
+        'font'	: 'Arial',		    // Schrifart
+        'fontSize' : 14,		    // Schriftgrösse in Pixeln
+        'isHighlighted': false     // Ob die Kante eine besondere Markierung haben soll
+    };
+
+    /**
+     * Aussehen eines Matching-Knotens.
+     * @type Object
+     */
+    var matchedNode = {'fillStyle' : "#D8BFD8",    // Farbe der Füllung
+        'nodeRadius' : 15,                         // Radius der Kreises
+        'borderColor' : const_Colors.NodeBorder,   // Farbe des Rands (ohne Markierung)
+        'borderWidth' : 2,                         // Breite des Rands
+        'fontColor' : 'black',                     // Farbe der Schrift
+        'font' : 'bold',                           // Schriftart
+        'fontSize' : 14                            // Schriftgrösse in Pixeln
+    };
+
+
     /**
      * Startet die Ausführung des Algorithmus.
      * @method
@@ -119,8 +160,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
                         +"<button id=\"ta_button_stoppVorspulen\">"+LNG.K('algorithm_btn_paus')+"</button>");
         $("#ta_button_stoppVorspulen").hide();
         $("#ta_button_Zurueck").button({icons:{primary: "ui-icon-seek-start"}, disabled: true});
-        $("#ta_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: true});
-        $("#ta_button_vorspulen").button({icons:{primary: "ui-icon-seek-next"}, disabled: true});
+        $("#ta_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: false});
+        $("#ta_button_vorspulen").button({icons:{primary: "ui-icon-seek-next"}, disabled: false});
         $("#ta_button_stoppVorspulen").button({icons:{primary: "ui-icon-pause"}});
         $("#ta_div_statusTabs").tabs();
         $(".marked").removeClass("marked");
@@ -146,7 +187,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      */
     this.refresh = function() {
         this.destroy();
-        var algo = new BFAlgorithm($("body").data("graph"),$("#ta_canvas_graph"),$("#tab_ta"));
+        var algo = new HKAlgorithm($("body").data("graph"),$("#ta_canvas_graph"),$("#tab_ta"));
         $("#tab_ta").data("algo",algo);
         algo.run();
     };
@@ -161,30 +202,30 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     
     /**
      * Registriere die Eventhandler an Buttons und canvas<br>
-     * Nutzt den Event Namespace ".BFAlgorithm"
+     * Nutzt den Event Namespace ".HKAlgorithm"
      * @method
      */
     this.registerEventHandlers = function() {
-        canvas.on("click.BFAlgorithm",function(e) {algo.canvasClickHandler(e);});
-        canvas.on("mousemove.BFAlgorithm",function(e) {algo.canvasMouseMoveHandler(e);});
-        $("#ta_button_1Schritt").on("click.BFAlgorithm",function() {algo.singleStepHandler();});
-        $("#ta_button_vorspulen").on("click.BFAlgorithm",function() {algo.fastForwardAlgorithm();});
-        $("#ta_button_stoppVorspulen").on("click.BFAlgorithm",function() {algo.stopFastForward();});
-        $("#ta_tr_LegendeClickable").on("click.BFAlgorithm",function() {algo.changeVorgaengerVisualization();});
-        $("#ta_button_Zurueck").on("click.BFAlgorithm",function() {algo.previousStepChoice();});
+//        canvas.on("click.HKAlgorithm",function(e) {algo.canvasClickHandler(e);});
+//        canvas.on("mousemove.HKAlgorithm",function(e) {algo.canvasMouseMoveHandler(e);});
+        $("#ta_button_1Schritt").on("click.HKAlgorithm",function() {algo.singleStepHandler();});
+        $("#ta_button_vorspulen").on("click.HKAlgorithm",function() {algo.fastForwardAlgorithm();});
+        $("#ta_button_stoppVorspulen").on("click.HKAlgorithm",function() {algo.stopFastForward();});
+        $("#ta_tr_LegendeClickable").on("click.HKAlgorithm",function() {algo.changeVorgaengerVisualization();});
+        $("#ta_button_Zurueck").on("click.HKAlgorithm",function() {algo.previousStepChoice();});
     };
     
     /**
-     * Entferne die Eventhandler von Buttons und canvas im Namespace ".BFAlgorithm"
+     * Entferne die Eventhandler von Buttons und canvas im Namespace ".HKAlgorithm"
      * @method
      */
     this.deregisterEventHandlers = function() {
-        canvas.off(".BFAlgorithm");
-        $("#ta_button_1Schritt").off(".BFAlgorithm");
-        $("#ta_button_vorspulen").off(".BFAlgorithm");
-        $("#ta_button_stoppVorspulen").off(".BFAlgorithm");
-        $("#ta_tr_LegendeClickable").off(".BFAlgorithm");
-        $("#ta_button_Zurueck").off(".BFAlgorithm");
+        canvas.off(".HKAlgorithm");
+        $("#ta_button_1Schritt").off(".HKAlgorithm");
+        $("#ta_button_vorspulen").off(".HKAlgorithm");
+        $("#ta_button_stoppVorspulen").off(".HKAlgorithm");
+        $("#ta_tr_LegendeClickable").off(".HKAlgorithm");
+        $("#ta_button_Zurueck").off(".HKAlgorithm");
     };
     
     /**
@@ -217,29 +258,23 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.singleStepHandler = function() {
-        if(startNode != null) {
-            this.nextStepChoice();
-        }
+        this.nextStepChoice();
     };
 
     /**
      * "Spult vor", führt den Algorithmus mit hoher Geschwindigkeit aus.
      * @method
      */
-    this.fastForwardAlgorithm = function() {
-        if(startNode == null) {
-            // Auf Startknotenwahl hinweisen
-            $("#ta_div_statusErklaerung").addClass("ui-state-error");
-        }
-        else {
-            $("#ta_button_vorspulen").hide();
-            $("#ta_button_stoppVorspulen").show();
-            $("#ta_button_1Schritt").button("option", "disabled", true);
-            $("#ta_button_Zurueck").button("option", "disabled", true);
-            var geschwindigkeit = 200;	// Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
+    this.fastForwardAlgorithm = function () {
+        $("#ta_button_vorspulen").hide();
+        $("#ta_button_stoppVorspulen").show();
+        $("#ta_button_1Schritt").button("option", "disabled", true);
+        $("#ta_button_Zurueck").button("option", "disabled", true);
+        var geschwindigkeit = 200;	// Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
 
-            fastForwardIntervalID = window.setInterval(function(){algo.nextStepChoice();},geschwindigkeit);
-        }
+        fastForwardIntervalID = window.setInterval(function () {
+            algo.nextStepChoice();
+        }, geschwindigkeit);
     };
     
     /**
@@ -269,27 +304,24 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     *  @method
     */
     this.nextStepChoice = function() {
-       switch(statusID) {
-       case 0:
-           this.initializeAlgorithm();
+           switch(statusID) {
+       case ALGOINIT:
+           this.initialize();
            break;
-       case 1:
-           this.updateWeightsInitialisation();
+       case BEGIN_ITERATION:
+           this.beginIteration();
            break;
-       case 2:
-           this.checkEdgeForUpdate();
+       case END_ITERATION:
+           this.endIteration();
            break;
-       case 3:
-           this.updateSingleNode();
+       case NEXT_AUGMENTING_PATH:
+           this.highlightPath()
            break;
-       case 4:
-           this.checkNextEdgeForNegativeCycle();
+       case UPDATE_MATCHING:
+           this.dfsUpdateMatching()
            break;
-       case 5:
-           this.backtrackNegativeCycle();
-           break;
-       case 6:
-           this.showNoNegativeCycle();
+       case END_ALGORITHM:
+           this.endAlgorithm();
            break;
        default:
            //console.log("Fehlerhafte StatusID.");
@@ -297,85 +329,219 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
        }
        this.needRedraw = true;
    };
-   
-   /**
-     * Initialisiere den Algorithmus, stelle die Felder auf ihre Startwerte.
-     */
-   this.initializeAlgorithm = function() {
-        distanz[startNode.getNodeID()] = 0;
-        graph.nodes[startNode.getNodeID()].setLabel("0");
-        for(var knotenID in graph.nodes) {
-            if(knotenID != startNode.getNodeID()) {
-                distanz[knotenID] = "inf";
-                graph.nodes[knotenID].setLabel(String.fromCharCode(8734));   // Unendlich
-            }
-            vorgaenger[knotenID] = null;
-        }
-        statusID = 1;
 
+    /**
+     * Initialisiere den Algorithmus.
+     */
+    this.initialize = function () {
+        for (var knotenID in graph.unodes) {
+            superNode[knotenID] = graph.unodes[knotenID];
+        }
+        statusID = BEGIN_ITERATION;
         // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3>1 "+LNG.K('textdb_msg_case0_1')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case0_2')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case0_3')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case0_4')+"</p>");
-        this.showVariableStatusField(null,null);
+        $("#ta_div_statusErklaerung").html("<h3>1 "+LNG.K('textdb_msg_init')+"</h3>"
+            + "<p>"+LNG.K('textdb_msg_init_1')+"</p>"
+            + "<p>"+LNG.K('textdb_msg_init_2')+"</p>"
+            + "<p>"+LNG.K('textdb_msg_init_3')+"</p>");
         $(".marked").removeClass("marked");
         $("#ta_p_l2").addClass("marked");
-        $("#ta_p_l3").addClass("marked");
-        $("#ta_p_l4").addClass("marked");
-   };
-    
-    /**
-     * Geht in die nächste Runde und prüft, ob wir fertig sind.
-     * @method
-     */
-    this.updateWeightsInitialisation = function() {
-        if($("#ta_button_Zurueck").button("option","disabled") && fastForwardIntervalID == null) {
-            $("#ta_button_Zurueck").button("option", "disabled", false);
+    };
+
+    this.beginIteration = function () {
+        disjointPaths = [];
+        currentPath = 0;
+        shortestPathLength = 0;
+        this.bfs();
+        this.dfs();
+        if(shortestPathLength > 0){
+            statusID = NEXT_AUGMENTING_PATH;
+            $("#ta_div_statusErklaerung").html("<h3> "+LNG.K('textdb_msg_begin_it')+"</h3>"
+                + "<p>"+LNG.K('textdb_msg_path_shortest')+ shortestPathLength + "</p>");
         }
-        weightUpdates++;
-        nextKantenID = 0;
-        var wuString = "";
-        if(weightUpdates == 1) {
-            wuString = LNG.K('textdb_text_oneedge');
-        } else {
-            wuString = weightUpdates.toString() + " " + LNG.K('textdb_text_edges');
-        }
-        var wum1String = "";
-        if(weightUpdates == 2) {
-            wum1String = LNG.K('textdb_text_oneedge');
-        } else {
-            wum1String = (weightUpdates-1).toString() + " " + LNG.K('textdb_text_edges');
-        }
-        if(weightUpdates > Utilities.objectSize(graph.nodes) - 1) {
-            // Neuer Status -> Algorithmus fertig
-            statusID = 4;
-            // Erklärung im Statusfenster
-            $("#ta_div_statusErklaerung").html("<h3>3 "+LNG.K('textdb_msg_case2_1')+"</h3>"
-                + "<p>"+LNG.K('textdb_msg_case2_2_a')+wum1String +LNG.K('textdb_msg_case2_2_b')+"</p>"
-                + "<p>"+LNG.K('textdb_msg_case2_3_a')+ weightUpdates +" "+LNG.K('textdb_msg_case2_3_b')+"</p>"
-                + "<p>"+LNG.K('textdb_msg_case2_4')+"</p>");
-            $(".marked").removeClass("marked");
-            $("#ta_p_l8").addClass("marked");
-            this.showVariableStatusField(null,null);
-            return;
-        }
-        else {
-            // Erklärung im Statusfenster
-            $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\">2 "+LNG.K('textdb_msg_case1_1')+"</h3>"
-                + "<h3> 2." + weightUpdates.toString() + " " + LNG.K('textdb_text_phase') + " " + weightUpdates.toString() + " " + LNG.K('textdb_text_of') + " " + (Utilities.objectSize(graph.nodes)-1) + "</h3>"
-                + "<p>"+LNG.K('textdb_msg_case2_2_a')+wum1String + " " +LNG.K('textdb_msg_case2_2_b')+"</p>"
-                + "<p>"+LNG.K('textdb_msg_case1_5_a')+wuString+ " "+LNG.K('textdb_msg_case2_2_b')+"</p>");
-            $("#ta_div_statusErklaerung").append("<p>"+LNG.K('textdb_msg_case1_6')+"</p>");
-            $(".marked").removeClass("marked");
-            $("#ta_p_l5").addClass("marked");
-            $("#ta_p_l6").addClass("marked");
-            this.showVariableStatusField(weightUpdates,null);
-            // Neuer Status -> checkEdgeForUpdate
-            statusID = 2;
+        else{
+            statusID = END_ALGORITHM;
+            $("#ta_div_statusErklaerung").html("<h3> "+LNG.K('textdb_msg_end_algo')+"</h3>"
+                + "<p>"+LNG.K('textdb_msg_end_algo_1')+"</p>");
         }
     };
-    
+
+    this.bfs = function () {
+//      Initialize
+        var freeNodeFound = false;
+        var emptyLayer = false;
+        var evenLayer = {};
+        var oddLayer = {};
+        var examined = {};
+        shortestPathLength = 0;
+        for (var knotenID in graph.nodes) {
+            examined[knotenID] = false;
+            bfsEdges[knotenID] = {};
+        }
+        for (var free in superNode) {
+            evenLayer[free] = superNode[free];
+        }
+//      Iterate
+        while (!freeNodeFound && !emptyLayer) {
+            shortestPathLength++;
+            for (n in evenLayer) {
+                var node = evenLayer[n];
+                examined[node.getNodeID()] = true;
+                //find all adjacent edges
+                var edges = node.getOutEdges();
+                var inEdges = node.getInEdges();
+                for (var e in inEdges) {edges[e] = inEdges[e]; }
+                //try all the found edges
+                for (var e in edges) {
+                    var edge = edges[e];
+                    var adj = edge.getTargetID();
+                    if (!examined[adj]) {
+                        bfsEdges[node.getNodeID()][adj] = edge;
+                        if(!oddLayer.hasOwnProperty(adj)) oddLayer[adj] = graph.nodes[adj]; //if not already in the oddLayer then insert
+                        if (!matched[adj]) freeNodeFound = true; // if unmatched we found the shortest path
+                    }
+                }
+            }
+            if (freeNodeFound) {
+                for (var ind in evenLayer) {
+                    var node = evenLayer[ind];
+                    var children = bfsEdges[node.getNodeID()];
+                    for (n in children) {
+                        if (matched[n]) {
+                            delete children[n];
+                        }
+                    }
+                }
+            }
+            else if (!Object.keys(oddLayer).length) { // oddLayer is empty
+                emptyLayer = true;
+                shortestPathLength = 0;
+            }
+            else {
+                evenLayer = {};
+                for(var n in oddLayer){
+                    var node = oddLayer[n];
+                    var partner = matched[node.getNodeID()];
+                    var edge = graph.edges[graph.getEdgeBetween(partner,node)];
+                    bfsEdges[node.getNodeID()][partner.getNodeID()] = edge;
+                    evenLayer[partner.getNodeID()] = partner;
+                    examined[node.getNodeID()] = true;
+                }
+                oddLayer = {};
+                shortestPathLength++;
+            }
+        }
+    };
+
+    /*
+    * In dieser Funktion wird mittels Tiefensuche nach knotendisjunkten verbessernden Pfaden gesucht
+    * @method
+    * */
+   this.dfs = function(){
+       var dfsStack = [];
+       for (var node in superNode) {
+           var foundAugmentingPath = this.recursiveDfs(superNode[node], dfsStack);
+           if (foundAugmentingPath){ //delete the edges in stack from the graph to ensure disjunct paths
+               for (var i = 0; i < dfsStack.length-1; i=i+2) {
+                   var prev = dfsStack[i];
+                   var curr = dfsStack[i+1];
+                   var parents = curr.getInEdges();
+                   for (e in parents) {
+                       var pid = parents[e].getSourceID();
+                       delete bfsEdges[pid][curr.getNodeID()];
+                   }
+               }
+               delete superNode[node];
+               disjointPaths.push(dfsStack);
+           }
+           dfsStack = [];
+       }
+   };
+    /*
+    * Rekursives Unterprogramm, das fuer die Tiefensuche benutzt wird
+    * @method
+    * */
+   this.recursiveDfs = function (node, stack) {
+        stack.push(node);
+        if (!matched[node.getNodeID()] && stack.length>1) return true;
+        else {
+            var children = bfsEdges[node.getNodeID()];
+            for (var c in children) {
+                if (this.recursiveDfs(graph.nodes[c], stack)) {
+                    return true;
+                }
+            }
+        }
+        stack.pop();
+        return false;
+    };
+
+    this.highlightPath = function(){
+        var path = disjointPaths[currentPath];
+        for(var n in path){
+            var node = path[n];
+            node.setLayout('borderColor',const_Colors.NodeBorderHighlight);
+            node.setLayout('borderWidth',global_NodeLayout.borderWidth*2);
+        }
+        // TODO Statusfenster
+        $("#ta_div_statusErklaerung").html("<h3> "+LNG.K('textdb_msg_path_highlight')+"</h3>");
+        statusID = UPDATE_MATCHING;
+    };
+
+    var setEdgeMatched = function(edge){
+        edge.setLayout("lineColor", MATCHED_EDGE_COLOR);
+        edge.setLayout("lineWidth", global_Edgelayout.lineWidth*1.5);
+    };
+
+    var setNodeMatched = function(node){
+        node.setLayout('fillStyle',MATCHED_NODE_COLOR);
+    };
+
+    this.dfsUpdateMatching = function(){
+        var path = disjointPaths[currentPath];
+        for(var n in path){
+            var node = path[n];
+            node.restoreLayout();
+        }
+        for (var i = 0; i < path.length-3; i = i + 2) {
+            var evenEdge = graph.edges[graph.getEdgeBetween(path[i],path[i+1])];
+            var oddEdge = graph.edges[graph.getEdgeBetween(path[i+2],path[i+1])];
+            if(matching.hasOwnProperty(oddEdge.getEdgeID())){
+                delete matching[oddEdge.getEdgeID()];
+                matching[evenEdge.getEdgeID()] = evenEdge;
+                matched[path[i].getNodeID()] =  path[i+1];
+                matched[path[i+1].getNodeID()] =  path[i];
+                setEdgeMatched(evenEdge);
+                oddEdge.restoreLayout();
+                setNodeMatched(path[i]);
+                setNodeMatched(path[i+1]);
+            }
+        }
+        var lastEdge = graph.edges[graph.getEdgeBetween(path[path.length-2],path[path.length-1])];
+        matching[lastEdge.getEdgeID()] = lastEdge;
+        matched[path[path.length-2].getNodeID()] =  path[path.length-1];
+        matched[path[path.length-1].getNodeID()] =  path[path.length-2];
+        setNodeMatched(path[path.length-1]);
+        setNodeMatched(path[path.length-2]);
+        setEdgeMatched(lastEdge);
+
+        currentPath++;
+        if(currentPath < disjointPaths.length){
+            statusID = NEXT_AUGMENTING_PATH;
+        }
+        else statusID = END_ITERATION;
+//        TODO Statusfenster
+        $("#ta_div_statusErklaerung").html("<h3> "+LNG.K('textdb_msg_update')+"</h3>"
+            + "<p>"+LNG.K('textdb_msg_update_1')+ "</p>"
+            + "<p>"+LNG.K('textdb_msg_update_2')+ "</p>");
+    };
+
+
+    this.endIteration = function(){
+        statusID = BEGIN_ITERATION;
+        $("#ta_div_statusErklaerung").html("<h3> "+LNG.K('textdb_msg_end_it')+"</h3>"
+            + "<p>"+LNG.K('textdb_msg_end_it_1')+"</p>");
+    };
+
     /**
      * Prüft, ob die aktuelle Kante ein Update benötigt
      * @method
@@ -991,5 +1157,5 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 }
 
 // Vererbung realisieren
-BFAlgorithm.prototype = new CanvasDrawer;
-BFAlgorithm.prototype.constructor = BFAlgorithm;
+HKAlgorithm.prototype = new CanvasDrawer;
+HKAlgorithm.prototype.constructor = HKAlgorithm;

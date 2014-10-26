@@ -603,7 +603,7 @@ function Graph(filename,canvas) {
      * Für zukünftige Nutzung, gerichtete Graphen
      *  @type Boolean 
      */
-    var directed = true;
+    var directed = false;
     /**
      *  Knoten des Graphen, assoziatives Array mit den KnotenIDs als Schlüssel
      *  und den Knoten als Wert.

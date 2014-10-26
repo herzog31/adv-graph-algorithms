@@ -18,7 +18,9 @@
     <script src="js/aufgabe1.js" type="text/javascript"></script>
     <script src="js/aufgabe2.js" type="text/javascript"></script>
 
-    <title>Der Bellman-Ford-Algorithmus</title>
+    <script src="js/BipartiteGraph.js" type="text/javascript"></script>
+
+    <title>Der Hopcroft-Karp-Algorithmus</title>
 </head>
 <body>
     <noscript>
@@ -42,7 +44,7 @@
         LNG.setLanguage('de');
     </script>
     <header>
-        <img src="img/titel.png" alt="Kürzeste Wege in Graphen: Der Bellman-Ford-Algorithmus">
+        <img src="img/hc.png" alt="Matching in bipartiten Graphen: Der Hopcroft-Karp-Algorithmus">
         <img style="position:absolute; right:0px" src="img/TUMLogo.png" alt="Technische Universität München">
     </header>
     <div id="tabs">
@@ -58,10 +60,11 @@
         <div id="tab_te">
             <div id="te_div_Einfuehrungstext">
                 <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="img/beispiel1.png" alt="Einfacher Graph mit 4 Knoten."><p>Wie komme ich am günstigsten von links nach rechts?</p></div>
-                <h1>Kürzeste Wege und günstigste Wege</h1>
-                <p>In vielen Anwendungen kann es nützlich sein, den kürzesten Weg von a nach b zu berechnen.
-                Dabei muss die Länge eines Weges nicht unbedingt die Länge in Metern sein: Genauso gut kann man die Kosten eines Weges betrachten &ndash; man sucht also den <strong>günstigsten Weg</strong>.</p>
-                <h2>Hier wird der Bellman-Ford-Algorithmus vorgestellt, der günstigste Wege auch bei negativen Kosten berechnet.</h2>
+                <h1>Bipartites Matching</h1>
+                <p>In vielen Anwendungen müssen häufig Elemente aus verschiedenen Klassen kombiniert werden.
+                    Existieren nur zwei Klassen von Objekten und existieren auch bestimmte Präferenzen zwischen den Objekten der verschiedenen Klassen, so nennt man dieses Problem
+                    &ndash; <strong>Bipartites Matching</strong>.</p>
+                <h2>Hier wird der Hopcroft-Karp-Algorithmus veranschaulicht, der das Problem des Matchings auf bipartiten Graphen löst.</h2>
                 <div id ="te_div_Entscheidung">
                     <h2>Was möchtest du zuerst tun?</h2>
                     <button id="te_button_gotoDrawGraph">Den Algorithmus testen!</button> <button id="te_button_gotoIdee">Genauere Beschreibung des Algorithmus lesen</button>
@@ -85,7 +88,7 @@
                                 </tr>
                                 <tr>
                                     <td class="LegendeTabelle"><img src="img/kante.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>Kante mit Gewicht 50</span></td>
+                                    <td><span>Kante</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -99,7 +102,6 @@
                     <div id="tg_div_statusErklaerung">
                         <p>Um einen Knoten zu erstellen, mache einen Doppelklick in das Zeichenfeld.</p>
                         <p>Um eine Kante zu erstellen, klicke zunächst auf den Ausgangsknoten und dann auf den Zielknoten.</p>
-                        <p>Das Kantengewicht kann mit einem Doppelklick auf die Kante verändert werden.</p>
                         <p>Ein Rechtsklick löscht Kanten und Knoten.</p>
                     </div>
                     <h3>Keine Lust, selbst einen Graph zu erstellen?<br></h3>
@@ -117,9 +119,9 @@
             </div>
             <div title="Graph erstellen" class="tabIntroDialog">
                 <h2>Auf welchem Graph soll der Algorithmus ausgeführt werden?</h2>
-                <p>Um einen Knoten zu erstellen, mache einen Doppelklick in das Zeichenfeld.</p>
+                <!--<p>Um einen Knoten zu erstellen, mache einen Doppelklick in das Zeichenfeld.</p>-->
                 <p>Um eine Kante zu erstellen, klicke zunächst auf den Ausgangsknoten und dann auf den Zielknoten.</p>
-                <p>Das Kantengewicht kann mit einem Doppelklick auf die Kante verändert werden.</p>
+                <p>Du kannst nur Kanten zwischen U- und V-Knoten einfügen.</p>
                 <p>Ein Rechtsklick löscht Kanten und Knoten.</p>
             </div>
         </div>
@@ -134,12 +136,20 @@
                         <div class="LegendeText">
                             <table>
                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>Startknoten, von dem aus die Entfernungen und günstigsten Wege berechnet werden.</span></td>
+                                    <td class="LegendeTabelle"><img src="img/knoten.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td><span>Knoten</span></td>
                                 </tr>
-                                <tr class="LegendeZeileClickable" id="ta_tr_LegendeClickable" title="Klicke zum Ein-/Ausblenden">
-                                    <td class="LegendeTabelle"><img src="img/markierteKante.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>"Vorgängerkante", die der günstigste Weg zum Knoten benutzt.</span></td>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/matchedNode.png" alt="MatchedNode" class="LegendeIcon"></td>
+                                    <td><span>Matching-Knoten</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/kante.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td><span>Kante</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/matchingEdge.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td><span>Matching-Kante</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -158,45 +168,28 @@
                             <li><a href="#ta_div_statusPseudocode">Pseudocode</a></li>
                         </ul>
                         <div id="ta_div_statusErklaerung">
-                            <h3>Wähle zuerst einen Startknoten aus!</h3>
-                            <p>Von diesem Knoten aus werden die Abstände zu den anderen Knoten berechnet.</p>
-                            <p>Klicke einfach auf den entsprechenden Knoten im Zeichenbereich.</p>
+                            <h3>Initialisierung des Algorithmus.</h3>
+                            <p>Am Anfang des Algorithmus besitzen alle Knoten keinen Matching-Partner. Die Menge des Kanten in Matchin M ist dementsprechend leer.</p>
+                            <p>Im nächsten Schritt wird eine maximale Menge an knotendisjunkten verbessernden Pfaden gesucht.</p>
                         </div>
                         <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
                             <p class="pseudocode" id="ta_p_l1">BEGIN</p>
-                            <p class="pseudocode" id="ta_p_l2">  d(v[1]) &larr; 0</p>
-                            <p class="pseudocode" id="ta_p_l3">  FOR j = 2,..,n DO</p>
-                            <p class="pseudocode" id="ta_p_l4">    d(v[j]) &larr; &#8734;</p>
-                            <p class="pseudocode" id="ta_p_l5">  FOR i = 1,..,(|V|-1) DO</p>
-                            <p class="pseudocode" id="ta_p_l6">    FOR ALL (u,v) aus E DO</p>
-                            <p class="pseudocode" id="ta_p_l7">      d(v) &larr; min(d(v), d(u)+l(u,v))</p>
-                            <p class="pseudocode" id="ta_p_l8">  FOR ALL (u,v) aus E DO</p>
-                            <p class="pseudocode" id="ta_p_l9">    IF d(v) > d(u) + l(u,v) DO</p>
-                            <p class="pseudocode" id="ta_p_l10">      Meldung: "Negativer Kreis"</p>
-                            <p class="pseudocode" id="ta_p_l11">END</p>
-                            <h3>Status der Variablen:</h3>
-                            <table class="algoInformationen">
-                                <tr>
-                                    <th class="algoInfoTH"><span>i</span></th>
-                                    <th class="algoInfoTH"><span>d(u)</span></th>
-                                    <th class="algoInfoTH"><span>d(v)</span></th>
-                                    <th class="algoInfoTH"><span>l(u,v)</span></th>
-                                </tr>
-                                <tr>
-                                    <td id="ta_td_vari" class="algoInfoTD"></td>
-                                    <td id="ta_td_vardu" class="algoInfoTD"></td>
-                                    <td id="ta_td_vardv" class="algoInfoTD"></td>
-                                    <td id="ta_td_varluv" class="algoInfoTD"></td>
-                                </tr>
-                            </table>
+                            <p class="pseudocode" id="ta_p_l2">  M &larr; &empty;</p>
+                            <p class="pseudocode" id="ta_p_l3">  REPEAT </p>
+                            <p class="pseudocode" id="ta_p_l4">    let &Rho; = {P1,P2,...,Pk} be a maximal</p>
+                            <p class="pseudocode" id="ta_p_l5">    set of vertex-disjoint shortest </p>
+                            <p class="pseudocode" id="ta_p_l6">    augmenting paths with respect to M</p>
+                            <p class="pseudocode" id="ta_p_l7">    M &larr; M &oplus; (P1 &cup; P2 &cup; ... &cup; Pk)</p>
+                            <p class="pseudocode" id="ta_p_l8">  UNTIL &Rho; == &empty;</p>
+                            <p class="pseudocode" id="ta_p_l9"> RETURN M</p>
+                            <p class="pseudocode" id="ta_p_l10">END</p>
                         </div>
                     </div>
                 </div>
             </div>
             <div title="Algorithmus ausführen" class="tabIntroDialog">
-                <h2>Den Bellman-Ford-Algorithmus ausführen</h2>
+                <h2>Den Hopcroft-Karp-Algorithmus ausführen</h2>
                 <p>In diesem Schritt sehen wir, wie der Algorithmus arbeitet.</p>
-                <p>Wähle zunächst den Knoten aus, von dem aus die günstigsten Wege berechnet werden.</p>
                 <p>Rechts vom Graph kannst du die Ausführung kontrollieren.</p>
             </div>
             <div id="ta_div_confirmTabChange" title="Algorithmus abbrechen?" class="tabChangeWarningDialog">
@@ -206,53 +199,9 @@
         </div>
         <div id="tab_ti">
             <div id="ti_div_Einfuehrungstext">
-                <div class="BeispielbildContainer"><img id="ti_img_beispiel1" src="img/beispiel1.png" alt="Einfacher Graph mit 4 Knoten."><p>Wie komme ich am günstigsten von links nach rechts?</p></div>
-                <h1>Kürzeste Wege</h1>
-                <p>In vielen Anwendungen kann es nützlich sein, den kürzesten Weg von a nach b zu berechnen.
-                Dabei muss die Länge eines Weges nicht unbedingt die Länge in Metern sein: Genauso gut kann man die Fahrzeit eines Weges betrachten oder, ob wir für dessen Benutzung Geld zahlen müssen &ndash; oder Geld erhalten.</p>
-                <p><strong>Im Allgemeinen sprechen wir von Kosten</strong>.
-                Dementsprechend weist man jedem Teilstück des Weges &ndash; auch "Kante" genannt &ndash; Kosten zu.</p>
-                <p>Der Algorithmus von Dijkstra berechnet kürzeste &ndash; oder eben kostengünstigste Wege, wenn alle Kosten positive Zahlen sind.
-                Wenn man allerdings auch negative Zahlen zulässt, scheitert der Algorithmus.</p>
-                <p>Der Bellman-Ford-Algorithmus dagegen kann auch mit negativen Kosten arbeiten.</p>
-                <p>Diese können beispielsweise für einen Taxifahrer entstehen, wenn er einen Fahrgast transportiert und für die Fahrt mehr Geld einnimmt, als ihn Benzin und Fahrzeug für die Fahrt kosten. Fährt er ohne Fahrgast, sind seine Kosten positiv.</p>
+                <h1>Matching auf bipartiten Graphen</h1>
                 <h1>Idee des Algorithmus</h1>
-                <div class="BeispielbildContainer">
-                    <img id="ti_img_beispiel4_1" src="img/beispiel4_1.png" alt="Kante vor Update"><p>Die Kante ist eine Abkürzung:<br> Wir wissen, dass es uns 20 kostet, um vom Startknoten zum linken Knoten zu gelangen. Der Weg vom linken zum rechten Knoten kostet 1.<br> Also kommt man vom Startknoten zum rechten Knoten mit Kosten 21.</p>
-                    <img id="ti_img_beispiel4_2" src="img/beispiel4_2.png" alt="Kante vor Update">
-                </div>
-                <p>Der Bellman-Ford-Algorithmus berechnet die <strong>Kosten</strong> der günstigsten Wege von einem Startknoten aus zu allen anderen Knoten im Graph. Er kann dadurch die günstigsten Wege selbst konstruieren.</p>
-                <p>Der Algorithmus geht dabei iterativ vor, er geht also zunächst von einer sehr schlechten Schätzung der Kosten aus, und verbessert diese so lange, bis die korrekten Werte gefunden sind.</p>
-                <p>Die erste Schätzung ist:</p>
-                <ul>
-                    <li> <strong>Der Startknoten hat Kosten 0</strong>, denn seine Entfernung zu sich selbst ist natürlich 0.
-                    <li> <strong>Alle anderen Knoten haben Kosten unendlich</strong>, also die schlechtestmögliche Schätzung.
-                </ul>
-                <p>Danach prüft er alle Kanten auf folgende Bedingung: <strong>Sind die Kosten des Anfangsknotens der Kante plus die Kosten für die Benutzung der Kante niedriger als die Kosten des Zielknotens der Kante?</strong></p>
-                <p>Falls dies der Fall ist, so haben wir eine <strong>Abkürzung</strong> gefunden: Es ist besser, die eben geprüfte Kante zu nutzen, als den bisherigen Weg. 
-                    Deshalb werden die Kosten des Zielknotens der Kante aktualisiert: Sie entsprechen jetzt genau den Kosten des Anfangsknotens der Kante plus den Kosten für die Benutzung der Kante (siehe Beispiel rechts).</p>
-                <p>Alle Kanten des Graphen zu betrachten und die Kosten der Knoten zu aktualisieren, nennen wir <strong>Phase</strong>. Leider reicht es nicht aus, alle Kanten nur einmal zu betrachten. 
-                    Nach der ersten Phase haben wir die Kosten für alle Knoten korrekt berechnet, für die der günstigste Weg nur eine Kante benutzt. Nach 2 Phasen haben wir schon die Wege,
-                    die maximal 2 Kanten benutzen, korrekt berechnet und so weiter.</p>
-                <div class="BeispielbildContainer"><img id="ti_img_beispiel3" src="img/beispiel3.png" alt="Graph mit eingezeichneten Abstandswerten">
-                    <p>Der grüne Weg vom Startknoten ist der günstigste Weg. Er benutzt 3 Kanten.</p>
-                </div>
-                <p>Wie viele Phasen brauchen wir also? Hier hilft uns die Beobachtung, dass <strong>ein kürzester Weg weniger Kanten benutzen muss, als es Knoten im Graph gibt.</strong>
-                    Wir brauchen also eine Phase weniger, als es Knoten im Graph gibt. Ein kürzester Weg, der mehr Kanten benutzte, als es Knoten gibt, würde einen Knoten zweimal besuchen und somit im Kreis laufen.</p>
                 <h1>Konstruktion des günstigsten Weges</h1>
-                <p>Bei jeder Aktualisierung der Kosten speichert der Algorithmus die Kante, mit deren Hilfe er aktualisiert wurde, als <strong>Vorgängerkante</strong> des Knotens.</p>
-                <p>Am Ende des Algorithmus kann dann der günstigste Weg für jeden Knoten konstruiert werden, indem man so lange über Vorgängerkanten läuft, bis man am Startknoten angekommen ist.</p>
-                <h1>Kreise mit negativem Gewicht</h1>
-                <div class="BeispielbildContainer"><img id="ti_img_beispiel2" src="img/beispiel2.png" alt="Graph mit negativem Kreis."><p>Hier müsste ein günstigster Weg unendlich oft im Kreis laufen. Der Weg würde bei jedem Durchlauf kürzer werden.</p></div>
-                <p>Falls im Graph ein Kreis existiert, bei dem die Summe der Kantengewichte negativ ist &ndash; ein <strong>negativer Kreis</strong>, wird der Algorithmus möglicherweise keinen günstigsten Weg finden.</p>
-                <p>Wie man an dem Beispiel rechts schon sehen kann, sind Wege in diesem Fall nämlich möglicherweise unendlich günstig &ndash; man läuft einfach immer weiter durch den Kreis.</p>
-                <p>Dieses Problem tritt auf, falls der negative Kreis vom Startknoten aus erreichbar ist.
-                    Erfreulicherweise kann der Algorithmus aber entdecken, ob ein solcher negativer Kreis existiert.
-                    Dies wird im letzten Teil des Algorithmus überprüft.</p>
-                <p>Ein erreichbarer negativer Kreis existiert genau dann, wenn nach dem Durchlaufen aller Phasen immer noch Abkürzungen möglich sind. 
-                    <strong>Der Algorithmus überprüft also am Ende nochmals bei allen Kanten</strong>, ob die Kosten des Anfangsknotens der Kante plus die Kosten für die Benutzung der Kante niedriger sind als die Kosten des Zielknotens der Kante.
-                    Falls dies bei einer Kante der Fall ist, so wird die Meldung "negativer Kreis gefunden" ausgegeben.</p>
-                <p>Mithilfe der Vorgängerkanten kann man den negativen Kreis sogar finden: Man läuft so lange zurück, bis man im Kreis gelaufen ist (und das Gewicht des Kreises negativ ist).</p>
                 <h1>Was nun?</h1>
                 <div class="Entscheidungsweg" id="ti_div_EntscheidungLeft">
                     <h3>Einen Graph erstellen und den Algorithmus durchspielen</h3>
@@ -261,8 +210,8 @@
                 </div>
                 <div class="Entscheidungsweg" id="ti_div_EntscheidungRight">
                     <h3>Sein Wissen an den Forschungsaufgaben testen</h3>
-                    <button id="ti_button_gotoFA1">Forschungsaufgabe: Wie würde der Algorithmus entscheiden?</button><br>
-                    <button id="ti_button_gotoFA2">Forschungsaufgabe: Wie ist die optimale Sortierung der Knoten?</button>
+                    <button id="ti_button_gotoFA1">Forschungsaufgabe 1: </button><br>
+                    <button id="ti_button_gotoFA2">Forschungsaufgabe 2: </button>
                 </div>
             </div>
         </div>
@@ -277,11 +226,11 @@
                         <div class="LegendeText">
                             <table>
                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td class="LegendeTabelle"><img src="img/matchedNode.png" alt="Knoten" class="LegendeIcon"></td>
                                     <td><span>Startknoten, von dem aus die Entfernungen und günstigsten Wege berechnet werden.</span></td>
                                 </tr>
                                 <tr class="LegendeZeileClickable" id="tf1_tr_LegendeClickable" title="Klicke zum Ein-/Ausblenden">
-                                    <td class="LegendeTabelle"><img src="img/markierteKante.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td class="LegendeTabelle"><img src="img/matchingEdge.png" alt="Knoten" class="LegendeIcon"></td>
                                     <td><span>"Vorgängerkante", die der günstigste Weg zum Knoten benutzt.</span></td>
                                 </tr>
                             </table>
@@ -323,21 +272,6 @@
                             <p class="pseudocode" id="tf1_p_l9">    IF d(v) > d(u) + l(u,v) DO</p>
                             <p class="pseudocode" id="tf1_p_l10">     Meldung: "Negativer Kreis"</p>
                             <p class="pseudocode" id="tf1_p_l11">END</p>
-                            <h3>Status der Variablen:</h3>
-                            <table class="algoInformationen">
-                                <tr>
-                                    <th class="algoInfoTH"><span>i</span></th>
-                                    <th class="algoInfoTH"><span>d(u)</span></th>
-                                    <th class="algoInfoTH"><span>d(v)</span></th>
-                                    <th class="algoInfoTH"><span>l(u,v)</span></th>
-                                </tr>
-                                <tr>
-                                    <td id="tf1_td_vari" class="algoInfoTD"></td>
-                                    <td id="tf1_td_vardu" class="algoInfoTD"></td>
-                                    <td id="tf1_td_vardv" class="algoInfoTD"></td>
-                                    <td id="tf1_td_varluv" class="algoInfoTD"></td>
-                                </tr>
-                            </table>
                         </div>
                     </div>
                 </div>
@@ -366,11 +300,11 @@
                         <div class="LegendeText">
                             <table>
                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td class="LegendeTabelle"><img src="img/matchedNode.png" alt="Knoten" class="LegendeIcon"></td>
                                     <td><span>Startknoten, von dem aus die Entfernungen und günstigsten Wege berechnet werden.</span></td>
                                 </tr>
                                 <tr class="LegendeZeileClickable" id="tf2_tr_LegendeClickable" title="Klicke zum Ein-/Ausblenden">
-                                    <td class="LegendeTabelle"><img src="img/markierteKante.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td class="LegendeTabelle"><img src="img/matchingEdge.png" alt="Knoten" class="LegendeIcon"></td>
                                     <td><span>"Vorgängerkante", die der günstigste Weg zum Knoten benutzt.</span></td>
                                 </tr>
                             </table>
@@ -420,22 +354,20 @@
         <div id="tab_tw">
             <div id="tw_Accordion">
                 <h3>Wie sieht der (Pseudo-)Code des Algorithmus aus?</h3>
-                <div><pre><code>Eingabe: Gewichteter, ungerichteter Graph G=(V,E) mit Gewichtsfunktion l.
-Ausgabe: Eine Liste {d(v[j]) : j = 1,..,n}, die die Distanzen dist(v[1],v[j]) = d(v[j]) enthält,
-         falls von v[1] aus keine Kreise negativer Länge erreichbar sind. 
-         Die Meldung "Kreis negativer Länge", falls von v[1] ein solcher Kreis erreichbar ist.</code></pre>
-<hr><pre><code>
-BEGIN
-   d(v[1]) &larr; 0
-   FOR j = 2,..,n DO
-      d(v[j]) &larr; &#8734;
-   FOR i = 1,..,(|V|-1) DO
-      FOR ALL (u,v) aus E DO
-         d(v) &larr; min(d(v), d(u) + l(u,v))
-   FOR ALL (u,v) aus E DO
-      IF d(v) > d(u) + l(u,v) DO
-         Meldung: "Kreis negativer Länge"
-END</code></pre></div>
+                <div><pre><code>
+                Eingabe: Bipartiter ungewichteter Graph G=(U &cup; V, E).
+                Ausgabe: Eine Menge M &sube; E, sodass M ein Matching auf G darstellt.
+
+                BEGIN
+                   M &larr; &empty;
+                      REPEAT
+                        let &Rho; = {P1,P2,...,Pk} be a maximal set of
+                        vertex-disjoint shortest augmenting paths with respect to M
+                        M &larr; M &oplus; (P1 &cup; P2 &cup; ... &cup; Pk)
+                      UNTIL &Rho; == &empty;
+                   RETURN M
+                END
+                </code></pre></div>
                 <h3>Wie schnell ist der Algorithmus?</h3>
                 <div>
                     <h2>Geschwindigkeit von Algorithmen</h2>
@@ -447,46 +379,14 @@ END</code></pre></div>
                       <li>Vergleich und Zuweisung  &ndash; Falls 20 größer als 15 ist, setze Variable <var>n</var> auf 20.</li>
                       <li>Einfache Arithmetische Operationen &ndash; Was ist 5 + 5 ?</li>
                     </ul>
-                    <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen. 
+                    <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen.
                         Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus.
                        Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
-                    <h2>Laufzeit des Bellman-Ford-Algorithmus</h2>
-                    <p>Nehmen wir an, dass der Bellman-Ford-Algorithmus auf einem Graph mit <var>n</var> Knoten und <var>m</var> Kanten ausgeführt wird.</p>
-                    <p>Am Anfang wird jedem Knoten der Wert &#8734; zugewiesen. Dafür benötigen wir <var>n</var> Einzelschritte.</p>
-                    <p>Danach kommen die <var>n-1</var> Phasen des Algorithmus &ndash; eine Phase weniger als es Knoten gibt. 
-                        In jeder Phase wird jede Kante des Graphen überprüft, und möglicherweise wird der Abstandswert ihres Zielknotens verändert.
-                        Wir können diese Überprüfung und Zuweisung als einen Schritt sehen und haben also in jeder Phase <var>m</var> Einzelschritte.
-                        Insgesamt benötigen die Phasen also <var>m &middot; (n-1)</var> Einzelschritte.</p>
-                    <p>Schließlich überprüft der Algorithmus noch, ob es negative Kreise gibt. Dafür betrachtet er jede Kante einmal.
-                        Insgesamt braucht er für die Überprüfung also <var>m</var> Einzelschritte.</p>
-                    <p><strong>Die Gesamtlaufzeit des Algorithmus</strong> ist von der Größenordnung <var>m &middot; n</var> Schritte, weil die <var>n</var> Schritte zu Beginn und die <var>m</var>
-                        Schritt am Schluss des Algorithmus vernachlässigbar gegenüber <var>m &middot; (n-1)</var> sind.</p>
+                    <h2>Laufzeit des Hopcroft-Karp-Algorithmus</h2>
                 </div>
                 <h3>Wie beweist man, dass der Algorithmus stets ein korrektes Ergebnis berechnet?</h3>
                 <div>
                     <h2>Ein mathematischer Beweis</h2>
-                    <p>In diesem Abschnitt werden wir beweisen, dass der Bellman-Ford-Algorithmus immer ein korrektes Ergebnis liefert, falls der Graph keine vom Startknoten erreichbaren negativen Kreise hat.</p>
-                    <h3>Das Prinzip der Induktion</h3>
-                    <p>Der Beweis basiert auf dem Prinzip der Induktion. Wir beweisen zunächst, dass wir zu Beginn der ersten Phase bereits die Kosten für
-                    mindestens einen Knoten korrekt berechnet haben. Wir zeigen dann, dass wir in jeder Phase die bisherigen Schätzungen verbessern.
-                    Am Ende jeder Phase kennen wir also für mehr Knoten die korrekten Kosten als zu Beginn der Phase. Außerdem zerstören wir in der jeweiligen Phase keine
-                    Informationen &ndash; die Schätzungen können nur besser werden.</p>
-                    <p>Schließlich zeigen wir, dass uns weniger Phasen reichen, als es Knoten gibt, um für alle Knoten die korrekten Kosten zu berechnen.</p>
-                    <h3>Nach Phase <var>i</var> gilt:</h3>
-                    <p>Der Algorithmus hat jedem Knoten <var>u</var> als Kostenschätzung höchstens die Länge des kürzesten Weges vom Startknoten zu <var>u</var>, der maximal <var>i</var>
-                    Kanten benutzt, zugewiesen, falls ein solcher Weg existiert.</p>
-                    <p>Betrachten wir diese Aussage in ihren Einzelteilen für einen Knoten <var>u</var> am Ende von Phase <var>i</var>:</p>
-                    <p>Falls kein Weg vom Startknoten zu <var>u</var> existiert, der maximal <var>i</var> Kanten benutzt, so erfahren wir nichts.</p>
-                    <p>Falls ein Weg vom Startknoten zu <var>u</var> existiert, der maximal <var>i</var> Kanten benutzt, dann wissen wir, dass die Kostenschätzung für <var>u</var>
-                    höchstens so hoch ist wie die Kosten des Weges. Der Grund ist folgender: Wenn wir den Weg ohne seine letzte Kante betrachten, so sehen wir einen Weg, der <var>i</var>-1 Kanten benutzt.
-                    Die Kosten des letzten Knotens dieses Weges hatten wir also schon zu Beginn der Phase korrekt berechnet. Innerhalb der Phase haben wir alle Kanten, also auch das letzte Teilstück, betrachtet.
-                    Da wir beim Betrachten des letzten Teilstücks die Kosten korrekt aktualisiert haben, sind jetzt auch die Kosten für den letzten Knoten des Gesamtwegs, der <var>i</var> Kanten benutzt, korrekt.</p>
-                    <h3>Es reichen weniger Phasen, als es Knoten gibt.</h3>
-                    <p>Ein Weg, der mindestens so viele Kanten benutzt, wie es Knoten gibt, kann kein kürzester Weg sein, falls alle Kreise positives Gesamtgewicht haben. Mit jeder Kante, die ein Weg benutzt, sieht er nämlich einen weiteren Knoten (den Zielknoten der Kante).
-                    Dazu kommt noch der Startknoten, den er auch sieht, ohne Kanten benutzt zu haben. Falls er also so viele Kanten benutzt, wie es Knoten gibt, so hat er mindestens einen Knoten zweimal gesehen, ist also im Kreis gelaufen.
-                    Da wir angenommen haben, dass alle Kreise negatives Gesamtgewicht haben, wäre es kürzer gewesen, nicht im Kreis zu laufen.</p>
-                    <p>Falls es Kreise mit Gesamtgewicht 0 gibt, so ist es schlicht genauso teuer, diese zu durchlaufen, wie sie auszulassen. 
-                        Auch in diesem Fall reichen also die Wege, die weniger Kanten benutzen, als es Knoten gibt.</p>
                 </div>
                 <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>
                 <div><p>Weitere Graphalgorithmen werden auf der <a href="http://www-m9.ma.tum.de/Allgemeines/Routenplanung">Webseite des Lehrstuhls M9</a> der TU München erklärt.</p>
@@ -498,7 +398,7 @@ END</code></pre></div>
     </div>
     <footer>
         <p class="Disclaimer">
-            IDP Projekt von Richard Stotz am Lehrstuhl M9 der Technischen Universität München. 2013 | <a href="http://www-m9.ma.tum.de/Allgemeines/Rechtliches">Disclaimer und Rechtshinweise</a> | <a href="http://www-m9.ma.tum.de/Allgemeines/Impressum">Impressum</a> | <a href="mailto&#58;m&#46;ritter&#64;ma&#46;tum&#46;de&#63;subject&#61;M9&#45;Web&#45;Feedback">Anregungen</a>
+            IDP Projekt von Ruslan Zabrodin am Lehrstuhl M9 der Technischen Universität München. 2014 | <a href="http://www-m9.ma.tum.de/Allgemeines/Rechtliches">Disclaimer und Rechtshinweise</a> | <a href="http://www-m9.ma.tum.de/Allgemeines/Impressum">Impressum</a>
         </p>
     </footer>
 </body>
