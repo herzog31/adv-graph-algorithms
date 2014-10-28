@@ -115,7 +115,9 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     const END_ITERATION = 2;
     const NEXT_AUGMENTING_PATH = 3;
     const UPDATE_MATCHING = 4;
-    const END_ALGORITHM = 5;
+    const GRAY_PATH = 5;
+    const END_ALGORITHM = 6;
+
 
     const MATCHED_EDGE_COLOR = "DarkBlue";
     const MATCHED_NODE_COLOR = const_Colors.NodeFillingHighlight;
@@ -124,7 +126,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      * Aussehen einer Matching-Kante.
      * @type Object
      */
-    var matchedEdge = {'arrowAngle' : Math.PI/8,	// Winkel des Pfeilkopfs relativ zum Pfeilkörper
+    var greyedEdge = {'arrowAngle' : Math.PI/8,	// Winkel des Pfeilkopfs relativ zum Pfeilkörper
         'arrowHeadLength' : 15,    // Länge des Pfeilkopfs
         'lineColor' : "blue",		// Farbe des Pfeils
         'lineWidth' : 2,		    // Dicke des Pfeils
@@ -137,7 +139,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      * Aussehen eines Matching-Knotens.
      * @type Object
      */
-    var matchedNode = {'fillStyle' : "#D8BFD8",    // Farbe der Füllung
+    var greyedNode = {'fillStyle' : "#D8BFD8",    // Farbe der Füllung
         'nodeRadius' : 15,                         // Radius der Kreises
         'borderColor' : const_Colors.NodeBorder,   // Farbe des Rands (ohne Markierung)
         'borderWidth' : 2,                         // Breite des Rands
@@ -303,32 +305,35 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     *  6: Normales Ende, falls kein negativer Kreis gefunden wurde.
     *  @method
     */
-    this.nextStepChoice = function() {
-           switch(statusID) {
-       case ALGOINIT:
-           this.initialize();
-           break;
-       case BEGIN_ITERATION:
-           this.beginIteration();
-           break;
-       case END_ITERATION:
-           this.endIteration();
-           break;
-       case NEXT_AUGMENTING_PATH:
-           this.highlightPath()
-           break;
-       case UPDATE_MATCHING:
-           this.dfsUpdateMatching()
-           break;
-       case END_ALGORITHM:
-           this.endAlgorithm();
-           break;
-       default:
-           //console.log("Fehlerhafte StatusID.");
-           break;
-       }
-       this.needRedraw = true;
-   };
+    this.nextStepChoice = function () {
+        switch (statusID) {
+            case ALGOINIT:
+                this.initialize();
+                break;
+            case BEGIN_ITERATION:
+                this.beginIteration();
+                break;
+            case END_ITERATION:
+                this.endIteration();
+                break;
+            case NEXT_AUGMENTING_PATH:
+                this.highlightPath()
+                break;
+            case UPDATE_MATCHING:
+                this.dfsUpdateMatching()
+                break;
+            case GRAY_PATH:
+                this.grayPath()
+                break;
+            case END_ALGORITHM:
+                this.endAlgorithm();
+                break;
+            default:
+                //console.log("Fehlerhafte StatusID.");
+                break;
+        }
+        this.needRedraw = true;
+    };
 
     /**
      * Initialisiere den Algorithmus.
@@ -366,7 +371,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     };
 
     this.bfs = function () {
-//      Initialize
+        //Initialize
         var freeNodeFound = false;
         var emptyLayer = false;
         var evenLayer = {};
@@ -380,7 +385,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         for (var free in superNode) {
             evenLayer[free] = superNode[free];
         }
-//      Iterate
+        //Iterate
         while (!freeNodeFound && !emptyLayer) {
             shortestPathLength++;
             for (n in evenLayer) {
@@ -475,12 +480,21 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         return false;
     };
 
+    /*
+    * Methodes for visualisation
+    * */
     this.highlightPath = function(){
         var path = disjointPaths[currentPath];
+        var prev = null;
         for(var n in path){
             var node = path[n];
             node.setLayout('borderColor',const_Colors.NodeBorderHighlight);
-            node.setLayout('borderWidth',global_NodeLayout.borderWidth*2);
+            node.setLayout('borderWidth',global_NodeLayout.borderWidth*1.5);
+            if(prev !== null){
+                var edge = graph.edges[graph.getEdgeBetween(prev,node)];
+                edge.setLayout("lineWidth", global_Edgelayout.lineWidth*2);
+            }
+            prev = node;
         }
         // TODO Statusfenster
         $("#ta_div_statusErklaerung").html("<h3> "+LNG.K('textdb_msg_path_highlight')+"</h3>");
@@ -489,7 +503,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
 
     var setEdgeMatched = function(edge){
         edge.setLayout("lineColor", MATCHED_EDGE_COLOR);
-        edge.setLayout("lineWidth", global_Edgelayout.lineWidth*1.5);
+        edge.setLayout("lineWidth", global_Edgelayout.lineWidth*1.3);
     };
 
     var setNodeMatched = function(node){
@@ -524,169 +538,56 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         setNodeMatched(path[path.length-2]);
         setEdgeMatched(lastEdge);
 
-        currentPath++;
-        if(currentPath < disjointPaths.length){
-            statusID = NEXT_AUGMENTING_PATH;
-        }
-        else statusID = END_ITERATION;
+        statusID = GRAY_PATH;
 //        TODO Statusfenster
         $("#ta_div_statusErklaerung").html("<h3> "+LNG.K('textdb_msg_update')+"</h3>"
             + "<p>"+LNG.K('textdb_msg_update_1')+ "</p>"
             + "<p>"+LNG.K('textdb_msg_update_2')+ "</p>");
     };
 
+    this.grayPath = function(){
+        var path = disjointPaths[currentPath];
+        var prev = null;
+        for(var n in path){
+            var node = path[n];
+            node.setLayout('fillStyle',"DarkGray");
+            //node.setLayout('borderWidth',global_NodeLayout.borderWidth);
+            var edges = node.getOutEdges();
+            var inEdges = node.getInEdges();
+            for (var e in inEdges) {edges[e] = inEdges[e];}
+            for(var e in edges){
+              edges[e].setLayout("lineWidth", global_Edgelayout.lineWidth * 0.3);
+            }
+        }
+
+        currentPath++;
+        if(currentPath < disjointPaths.length){
+            statusID = NEXT_AUGMENTING_PATH;
+        }
+        else statusID = END_ITERATION;
+
+        // TODO Statusfenster
+        $("#ta_div_statusErklaerung").html("<h3> "+LNG.K('textdb_msg_path_highlight')+"</h3>");
+    };
+
 
     this.endIteration = function(){
         statusID = BEGIN_ITERATION;
+        //restore Layouts
+        for(var n in graph.nodes){
+            var node = graph.nodes[n];
+            if(matched[n])setNodeMatched(node);
+        }
+        for(var e in graph.edges){
+            graph.edges[e].restoreLayout();
+        }
+        for(var e in matching){
+            setEdgeMatched(graph.edges[e]);
+        }
         $("#ta_div_statusErklaerung").html("<h3> "+LNG.K('textdb_msg_end_it')+"</h3>"
             + "<p>"+LNG.K('textdb_msg_end_it_1')+"</p>");
     };
 
-    /**
-     * Prüft, ob die aktuelle Kante ein Update benötigt
-     * @method
-     */
-    this.checkEdgeForUpdate = function() {
-        if(kantenIDs.length <= nextKantenID) {
-            // Alle Kanten betrachtet, beginne nächste Runde
-            this.updateWeightsInitialisation();
-            return;
-        }
-
-        var aktKante = graph.edges[kantenIDs[nextKantenID]];
-        // Animation
-        aktKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-        aktKante.setLayout("lineWidth",3);
-        // Neuer Status -> UpdateSingleNode
-        statusID = 3;
-        // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\">2 "+LNG.K('textdb_msg_case1_1')+"</h3>"
-            + "<h3 class=\"greyedOut\"> 2." + weightUpdates.toString() + " " + LNG.K('textdb_text_phase') + " " + weightUpdates.toString() + " " + LNG.K('textdb_text_of') + " " + (Utilities.objectSize(graph.nodes)-1) + "</h3>"
-            + "<h3> 2." + weightUpdates.toString() + "." + (nextKantenID+1) + " " +LNG.K('textdb_msg_case1_2')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case1_3')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case1_4')+"</p>");
-        $(".marked").removeClass("marked");
-        $("#ta_p_l7").addClass("marked");
-        this.showVariableStatusField(weightUpdates,aktKante);
-    };
-    
-    /**
-     * Aktualisiert, falls nötig, den Entfernungswert des aktuellen Knotens.
-     * @method
-     */
-    this.updateSingleNode = function() {
-        var aktKante = graph.edges[kantenIDs[nextKantenID]];
-        // Animation -> Zurück auf Normal
-        aktKante.setLayout("lineColor","black");
-        aktKante.setLayout("lineWidth",2);
-        var u = aktKante.getSourceID();
-        var v = aktKante.getTargetID();
-        nodeUpdateStack.push(distanz[v]);
-        vorgaengerIDUpdateStack.push(vorgaenger[v]);
-        if(distanz[u] != "inf" && (distanz[v] == "inf" || distanz[u] + aktKante.weight < distanz[v])) {
-            distanz[v] = distanz[u] + aktKante.weight;
-            graph.nodes[v].setLabel(distanz[v].toString());
-            if(vorgaenger[v] != null) {
-                graph.edges[vorgaenger[v]].setHighlighted(false);
-            }
-            vorgaenger[v] = kantenIDs[nextKantenID];
-            if(showVorgaenger) {
-                aktKante.setHighlighted(true);
-            }
-        }
-
-        nextKantenID++;
-
-        this.checkEdgeForUpdate();
-    };
-    
-    /**
-     * Prüft die nächste Kante, ob sie Teil eines negativen Zyklus ist.
-     * @method
-     */
-    this.checkNextEdgeForNegativeCycle = function() {
-        // Animation
-        if(nextKantenID>0) {
-            var vorherigeKante = graph.edges[kantenIDs[nextKantenID-1]];
-            vorherigeKante.setLayout("lineColor","black");
-            vorherigeKante.setLayout("lineWidth",2);
-        }
-        if(kantenIDs.length <= nextKantenID) {
-            // Alle Kanten betrachtet, kein negativer Kreis gefunden, Ende
-            statusID = 6;
-            this.showNoNegativeCycle();
-            return;
-        }
-
-        var aktKante = graph.edges[kantenIDs[nextKantenID]];
-        aktKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-        aktKante.setLayout("lineWidth",3);
-        // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\">3 "+LNG.K('textdb_msg_case2_1')+"</h3>"
-            + "<h3>3." +(nextKantenID+1) +" " +LNG.K('textdb_msg_case2_5')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case2_6')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case2_7')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case2_8')+"</p>");
-        $(".marked").removeClass("marked");
-        $("#ta_p_l9").addClass("marked");
-        this.showVariableStatusField(null,aktKante);
-        if(distanz[aktKante.getSourceID()]+ aktKante.weight < distanz[aktKante.getTargetID()]) {
-            // Kante ist Teil eines negativen Kreises
-            statusID = 5;
-        }
-        else {
-            nextKantenID++;
-        }
-    };
-
-    /**
-     * Markiere den negativen Kreis, der gefunden wurde.
-     * @method
-     */
-    this.backtrackNegativeCycle = function() {
-        negativeCycleFound = true;
-        var aktKante = graph.edges[kantenIDs[nextKantenID]];
-        aktKante.setLayout("lineColor","black");
-        aktKante.setLayout("lineWidth",2);
-        var backtrackFirstID = aktKante.getTargetID();
-        var visitedNodes = new Object();
-        visitedNodes[backtrackFirstID] = true;
-        var backtrackKante = graph.edges[vorgaenger[backtrackFirstID]];
-        while(visitedNodes[backtrackKante.getSourceID()] != true) {
-            visitedNodes[backtrackKante.getSourceID()] = true;
-            backtrackKante = graph.edges[vorgaenger[backtrackKante.getSourceID()]];
-        }
-        backtrackFirstID = backtrackKante.getSourceID();
-        backtrackKante = graph.edges[vorgaenger[backtrackFirstID]];
-        backtrackKante.setLayout("lineColor","LightCoral");
-        backtrackKante.setLayout("lineWidth",3);
-        while(backtrackKante.getSourceID() != backtrackFirstID) {
-            backtrackKante = graph.edges[vorgaenger[backtrackKante.getSourceID()]];
-            backtrackKante.setLayout("lineColor","LightCoral");
-            backtrackKante.setLayout("lineWidth",3);
-        }
-        // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3>4 "+LNG.K('textdb_msg_case3_1')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case3_2')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case3_3')+"</p>");
-        $(".marked").removeClass("marked");
-        $("#ta_p_l10").addClass("marked");
-        this.endAlgorithm();
-    };
-
-    /**
-     * Wird aufgerufen, wenn der Algorithmus erfolgreich geendet hat.
-     * @method
-     */
-    this.showNoNegativeCycle = function() {
-        // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3>4 "+LNG.K('textdb_msg_case4_1')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case4_2')+"</p>"
-            + "<h3>"+LNG.K('textdb_msg_case4_3')+"</h3>");
-        $(".marked").removeClass("marked");
-        $("#ta_p_l11").addClass("marked");
-        this.endAlgorithm();
-    };
     
     /**
      * Zeigt Texte und Buttons zum Ende des Algorithmus

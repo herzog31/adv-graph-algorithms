@@ -146,16 +146,27 @@ BipartiteGraph.prototype = Object.create(Graph.prototype);
 BipartiteGraph.prototype.constructor = BipartiteGraph;
 
 function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
-
+    GraphDrawer.call(this,p_graph,p_canvas,p_tab);
     var graph = p_graph;
     var canvas = p_canvas;
 
-    GraphDrawer.call(this,p_graph,p_canvas,p_tab);
-
     this.dblClickHandler = function(e) {
-        var isInU = e.pageX - canvas.offset().left < graph_constants.V_X_POSITION - graph_constants.U_X_POSITION;
+        var isInU = e.pageX - canvas.offset().left < 0.5 * (graph_constants.V_X_POSITION + graph_constants.U_X_POSITION);
         graph.addNode(isInU);
         this.needRedraw = true;
+    };
+
+    //this.mouseMoveHandler = function(e) {};
+
+    /**
+     * Beendet den Tab und startet ihn neu
+     * @method
+     */
+    this.refresh = function() {
+        this.destroy();
+        var algo = new BipartiteGraphDrawer($("body").data("graph"),$("#tg_canvas_graph"),$("#tab_tg"));
+        $("#tab_tg").data("algo",algo);
+        algo.run();
     };
 
     this.setGraphHandler = function() {
@@ -163,31 +174,37 @@ function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
         switch(selection) {
             case "Standardbeispiel":
                 this.canvas.css("background","");
-                $("#tg_p_bildlizenz").remove();
-                this.graph = new BipartiteGraph("graphs/graph1.txt",canvas);
+                //$("#tg_p_bildlizenz").remove();
+                //this.graph = new BipartiteGraph("graphs/graph1.txt",canvas);
+                $("body").data("graph",new BipartiteGraph("graphs/graph2.txt",canvas));
+                this.graph = new BipartiteGraph("graphs/graph2.txt");
+                this.refresh();
                 break;
             case "Zufallsgraph":
                 this.canvas.css("background","");
-                $("#tg_p_bildlizenz").remove();
+                //$("#tg_p_bildlizenz").remove();
                 this.graph = new BipartiteGraph("random",canvas);
+                $("body").data("graph",this.graph);
+                this.refresh();
                 break;
             case "Selbsterstellter Graph":
                 break;
             default:
             //console.log("Auswahl im Dropdown Menü unbekannt, tue nichts.");
-
         }
-        // Ändere auch die lokalen Variablen (und vermeide "div
-        graph = this.graph;
-        canvas = this.canvas;
-        this.needRedraw = true;
-        dragging = false;
-        hasDragged = false;
-        selectedNode = null;
-        selectedEdge = null;
-        this.unfinishedEdge = null;
     };
 }
+BipartiteGraph.prototype.getEdgeBetween= function(source,target) {
+    for(var edgeID in this.edges) {
+        if((this.edges[edgeID].getSourceID() == source.getNodeID()
+            && this.edges[edgeID].getTargetID() == target.getNodeID()) ||
+            (this.edges[edgeID].getTargetID() == source.getNodeID()
+            && this.edges[edgeID].getSourceID() == target.getNodeID())) {
+            return edgeID;
+        }
+    }
+    return null;
+};
 
 BipartiteGraphDrawer.prototype = Object.create(GraphDrawer.prototype);
 BipartiteGraphDrawer.prototype.constructor = BipartiteGraphDrawer;
