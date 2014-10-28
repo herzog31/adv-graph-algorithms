@@ -106,6 +106,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      */
     var vorgaengerIDUpdateStack = new Array();
 
+    var debugConsole = true;
+
     var tourStartVertex = null;
     var tourStartOddVertex = null;
     var tourCurrentVertex = null;
@@ -144,6 +146,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         this.needRedraw = true;
         this.minimizeLegend();
         statusID = 0;
+
     };
     
     /**
@@ -253,7 +256,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     */
     this.nextStepChoice = function() {
 
-        console.log("Current State: "+statusID);
+        if(debugConsole) console.log("Current State: " + statusID);
 
        switch(statusID) {
         case 0:
@@ -984,28 +987,45 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         }
     }; */
 
-    // Edge visited = false
-    // Benennung v1, v2, ... & e1, e2, ...
-    this.initializeGraph = function() {
-        $("#ta_div_statusErklaerung").html("<h3>Initialisiere Graph</h3>");
+    this.addVertexToTour = function(vertex, tour) {
+        tour.push({type: "vertex", id: vertex.getNodeID()});
+    };
+
+    this.addEdgeToTour = function(edge, tour) {
+        tour.push({type: "edge", id: edge.getEdgeID()});
+    };
+
+    this.addNamingLabels = function() {
 
         var edgeCounter = 1;
         var nodeCounter = 1;
 
         for(var knotenID in graph.nodes) {
             graph.nodes[knotenID].setLabel(String.fromCharCode("a".charCodeAt(0)+nodeCounter-1));
-            //graph.nodes[knotenID].setLabel("v"+nodeCounter);
             nodeCounter++;
         };
 
+        /* for(var kantenID in graph.edges) {
+            graph.edges[kantenID].setAdditionalLabel("{"+graph.nodes[graph.edges[kantenID].getSourceID()].getLabel()+", "+graph.nodes[graph.edges[kantenID].getTargetID()].getLabel()+"}")
+            edgeCounter++;
+        }; */
+
+
+    };
+
+    // Edge visited = false
+    // Benennung v1, v2, ... & e1, e2, ...
+    this.initializeGraph = function() {
+        $("#ta_div_statusErklaerung").html("<h3>Initialisiere Graph</h3>");
+
+        this.addNamingLabels();
+
+        var edgeCounter = 1;
+
         for(var kantenID in graph.edges) {
             graph.edges[kantenID].setVisited(false);
-            graph.edges[kantenID].setAdditionalLabel("{"+graph.nodes[graph.edges[kantenID].getSourceID()].getLabel()+", "+graph.nodes[graph.edges[kantenID].getTargetID()].getLabel()+"}")
-            //graph.edges[kantenID].setAdditionalLabel("e"+edgeCounter);
             edgeCounter++;
         };
-
-        
 
         statusID = 1;
 
@@ -1025,7 +1045,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         this.needRedraw = true;
 
         
-        if(Object.keys(graph.nodes).length < 2) {       // Graph to small
+        if(Object.keys(graph.nodes).length < 2) {       // Graph too small
             statusID = 2;
             validGraph = false;
             return false;
@@ -1074,6 +1094,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         if(fastForwardIntervalID != null) {
             this.stopFastForward();
         }
+
         $("#ta_button_1Schritt").button("option", "disabled", true);
         $("#ta_button_vorspulen").button("option", "disabled", true);
 
@@ -1086,22 +1107,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_div_statusErklaerung").html("<h3>Finde Start Knoten</h3>");
 
         // Restore Naming
-
-        var edgeCounter = 1;
-        var nodeCounter = 1;
-
-        for(var kantenID in graph.edges) {
-            graph.edges[kantenID].setAdditionalLabel("e"+edgeCounter);
-            edgeCounter++;
-        };
-
-        for(var knotenID in graph.nodes) {
-            graph.nodes[knotenID].setLabel("v"+nodeCounter);
-            nodeCounter++;
-        };
+        this.addNamingLabels();
 
         // Set Starting & Current Vertex
-
         if(semiEuclideanGraph) {
             tourStartVertex = tourStartOddVertex;
         }else{
@@ -1115,8 +1123,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         tourCurrentVertex = tourStartVertex;
 
         euclideanSubTour = new Array();
-        euclideanSubTour.push(graph.nodes[tourCurrentVertex].getLabel());
-        console.log("Subtour: "+euclideanSubTour);
+        this.addVertexToTour(graph.nodes[tourCurrentVertex], euclideanSubTour);
+        if(debugConsole) console.log("Subtour: ", euclideanSubTour);
 
         this.needRedraw = true;
 
@@ -1174,8 +1182,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             return false;
         }
 
-        euclideanSubTour.push(graph.edges[nextEdge].getAdditionalLabel());
-        console.log("Subtour: "+ euclideanSubTour);
+        this.addEdgeToTour(graph.edges[nextEdge], euclideanSubTour);
+        if(debugConsole) console.log("Subtour: ", euclideanSubTour);
 
         graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFilling);
 
@@ -1186,8 +1194,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             tourCurrentVertex = graph.edges[nextEdge].getSourceID();
         }
 
-        euclideanSubTour.push(graph.nodes[tourCurrentVertex].getLabel());
-        console.log("Subtour: "+ euclideanSubTour);
+        this.addVertexToTour(graph.nodes[tourCurrentVertex], euclideanSubTour);
+        if(debugConsole) console.log("Subtour: ", euclideanSubTour);
 
         graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
 
@@ -1205,7 +1213,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
 
-        console.log("Start: " + tourStartVertex + ", Current: "+ tourCurrentVertex);
+        if(debugConsole) console.log("Start: " + tourStartVertex + ", Current: "+ tourCurrentVertex);
 
         if(tourStartVertex == tourCurrentVertex) {
             statusID = 6;
@@ -1233,15 +1241,15 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         if(euclideanTour.length === 0) {
             euclideanTour = euclideanSubTour;
             euclideanSubTour = new Array();
-        }else if(euclideanSubTour[0] != euclideanSubTour[(euclideanSubTour.length - 1)]) {
-            console.log("Spezialfall mit 2 Odd Vertices");
+        }else if(JSON.stringify(euclideanSubTour[0]) !== JSON.stringify(euclideanSubTour[(euclideanSubTour.length - 1)])) {
+            if(debugConsole) console.log("Spezialfall mit 2 Odd Vertices");
 
             var startOfSubTour = euclideanSubTour[0];
             var newTour = new Array();
             var specialLast = null;
 
             for(var i = 0; i < euclideanTour.length; i++) {
-                if(euclideanTour[i] == startOfSubTour) {
+                if(JSON.stringify(euclideanTour[i]) === JSON.stringify(startOfSubTour)) {
                     specialLast = i;
                 }
             }
@@ -1249,6 +1257,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             for(var i = 0; i < euclideanTour.length; i++) {
                 if(specialLast == i) {
                     for(var j = 0; j < euclideanSubTour.length; j++) {
+                        if(euclideanSubTour[j].type == "edge") {
+                            graph.edges[euclideanSubTour[j].id].setLayout("lineColor", tourColors[0]);
+                        }
                         newTour.push(euclideanSubTour[j]);
                     }
                     replaced = true;
@@ -1264,8 +1275,11 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             var newTour = new Array();
 
             for(var i = 0; i < euclideanTour.length; i++) {
-                if(euclideanTour[i] == startOfSubTour && !replaced) {
+                if(JSON.stringify(euclideanTour[i]) == JSON.stringify(startOfSubTour) && !replaced) {
                     for(var j = 0; j < euclideanSubTour.length; j++) {
+                        if(euclideanSubTour[j].type == "edge") {
+                            graph.edges[euclideanSubTour[j].id].setLayout("lineColor", tourColors[0]);
+                        }
                         newTour.push(euclideanSubTour[j]);
                     }
                     replaced = true;
@@ -1278,7 +1292,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
         }
 
-        console.log("Current Complete Euclidean Tour: " + euclideanTour);
+        if(debugConsole) console.log("Current Complete Euclidean Tour: ", euclideanTour);
 
         statusID = 7;
 
@@ -1295,12 +1309,12 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         var numberOfEdgesInTour = 0;
 
         for(var i = 0; i < euclideanTour.length; i++) {
-            if(new String(euclideanTour[i]).substr(0, 1) == "e") {
+            if(euclideanTour[i].type == "edge") {
                 numberOfEdgesInTour++;
             }
         }
 
-        console.log("Edges in Graph:" + numberOfEdgesInGraph + ", Edges in Tour: " + numberOfEdgesInTour);
+        if(debugConsole) console.log("Edges in Graph:" + numberOfEdgesInGraph + ", Edges in Tour: " + numberOfEdgesInTour);
 
         if(numberOfEdgesInGraph == numberOfEdgesInTour) {
             statusID = 8;
@@ -1316,14 +1330,24 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     this.returnTour = function() {
         $("#ta_div_statusErklaerung").html("<h3>Zeige Ergebnis</h3>");
 
-        if(semiEuclideanGraph) {
-            console.log("Complete Euclidean Trail: " + euclideanTour);
-            $("#ta_div_statusErklaerung").append("<p>Zug:<br /> " + euclideanTour.join("<br />") + "</p>");
-        }else{
-            console.log("Complete Euclidean Circle: " + euclideanTour);
-            $("#ta_div_statusErklaerung").append("<p>Kreis:<br /> " + euclideanTour.join("<br />") + "</p>");
+        var output = "";
+
+        for(var i = 0; i < euclideanTour.length; i++) {
+            if(euclideanTour[i].type == "vertex") {
+                output += "<li>"+graph.nodes[euclideanTour[i].id].getLabel()+"</li>";
+            }
+            if(euclideanTour[i].type == "edge") {
+                output += "<li>{"+graph.nodes[graph.edges[euclideanTour[i].id].getSourceID()].getLabel()+", "+graph.nodes[graph.edges[euclideanTour[i].id].getTargetID()].getLabel()+"}</li>";
+            }
         }
-        
+
+        if(semiEuclideanGraph) {
+            if(debugConsole) console.log("Complete Euclidean Trail: ", euclideanTour);
+            $("#ta_div_statusErklaerung").append("<p>Zug:<br /> <ul>" + output + "</ul></p>");
+        }else{
+            if(debugConsole) console.log("Complete Euclidean Circle: ", euclideanTour);
+            $("#ta_div_statusErklaerung").append("<p>Kreis:<br /> <ul>" + output + "</ul></p>");
+        }      
 
         if(fastForwardIntervalID != null) {
             this.stopFastForward();
@@ -1339,24 +1363,18 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
         euclideanSubTour = new Array();
 
-        // Temporär
         for(var i = 0; i < euclideanTour.length; i++) {
-            if(new String(euclideanTour[i]).substr(0, 1) == "v") {
-                var matchingNode = null;
-                for(var knotenID in graph.nodes) {
-                    if(graph.nodes[knotenID].getLabel() == euclideanTour[i]) {
-                        matchingNode = knotenID;
-                        break;
-                    }
-                }
-                if(graph.nodes[matchingNode].getUnvisitedDegree() > 0) {
-                    tourStartVertex = matchingNode;
-                    graph.nodes[matchingNode].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
-                    tourCurrentVertex = matchingNode;
+            
+            if(euclideanTour[i].type == "vertex") {
+                if(graph.nodes[euclideanTour[i].id].getUnvisitedDegree() > 0) {
+                    tourStartVertex = euclideanTour[i].id;
+                    graph.nodes[euclideanTour[i].id].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+                    tourCurrentVertex = euclideanTour[i].id;
 
                     euclideanSubTour = new Array();
-                    euclideanSubTour.push(graph.nodes[matchingNode].getLabel());
-                    console.log("Subtour: " + euclideanSubTour);
+                    this.addVertexToTour(graph.nodes[euclideanTour[i].id], euclideanSubTour);
+
+                    if(debugConsole) console.log("Subtour: ", euclideanSubTour);
 
                     this.needRedraw = true;
                     break;
