@@ -106,6 +106,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      */
     var vorgaengerIDUpdateStack = new Array();
 
+
+    var replayHistory = new Array();
+
     var debugConsole = true;
 
     var tourStartVertex = null;
@@ -190,7 +193,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_button_vorspulen").on("click.BFAlgorithm",function() {algo.fastForwardAlgorithm();});
         $("#ta_button_stoppVorspulen").on("click.BFAlgorithm",function() {algo.stopFastForward();});
         // TODO $("#ta_tr_LegendeClickable").on("click.BFAlgorithm",function() {algo.changeVorgaengerVisualization();});
-        // TODO $("#ta_button_Zurueck").on("click.BFAlgorithm",function() {algo.previousStepChoice();});
+        $("#ta_button_Zurueck").on("click.BFAlgorithm",function() {algo.previousStepChoice();});
     };
     
     /**
@@ -258,14 +261,19 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
         if(debugConsole) console.log("Current State: " + statusID);
 
-       switch(statusID) {
+        this.addReplayStep();
+
+        switch(statusID) {
         case 0:
+            $("#ta_button_Zurueck").button("option", "disabled", false);
             this.initializeGraph();
             break;
         case 1:
+            $("#ta_button_Zurueck").button("option", "disabled", false);
             this.checkGraph();
             break;
         case 2:
+            $("#ta_button_Zurueck").button("option", "disabled", true);
             this.invalidGraph();
             break;
         case 3:
@@ -292,233 +300,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         default:
             console.log("Fehlerhafter State");
             break;
-       }
-       this.needRedraw = true;
-   };
-   
-   /**
-     * Initialisiere den Algorithmus, stelle die Felder auf ihre Startwerte.
-     */
-   /* this.initializeAlgorithm = function() {
-        distanz[startNode.getNodeID()] = 0;
-        graph.nodes[startNode.getNodeID()].setLabel("0");
-        for(var knotenID in graph.nodes) {
-            if(knotenID != startNode.getNodeID()) {
-                distanz[knotenID] = "inf";
-                graph.nodes[knotenID].setLabel(String.fromCharCode(8734));   // Unendlich
-            }
-            vorgaenger[knotenID] = null;
         }
-        statusID = 1;
-
-        // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3>1 "+LNG.K('textdb_msg_case0_1')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case0_2')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case0_3')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case0_4')+"</p>");
-        this.showVariableStatusField(null,null);
-        $(".marked").removeClass("marked");
-        $("#ta_p_l2").addClass("marked");
-        $("#ta_p_l3").addClass("marked");
-        $("#ta_p_l4").addClass("marked");
-   }; */
-    
-    /**
-     * Geht in die nächste Runde und prüft, ob wir fertig sind.
-     * @method
-     */
-    /* this.updateWeightsInitialisation = function() {
-        if($("#ta_button_Zurueck").button("option","disabled") && fastForwardIntervalID == null) {
-            $("#ta_button_Zurueck").button("option", "disabled", false);
-        }
-        weightUpdates++;
-        nextKantenID = 0;
-        var wuString = "";
-        if(weightUpdates == 1) {
-            wuString = LNG.K('textdb_text_oneedge');
-        } else {
-            wuString = weightUpdates.toString() + " " + LNG.K('textdb_text_edges');
-        }
-        var wum1String = "";
-        if(weightUpdates == 2) {
-            wum1String = LNG.K('textdb_text_oneedge');
-        } else {
-            wum1String = (weightUpdates-1).toString() + " " + LNG.K('textdb_text_edges');
-        }
-        if(weightUpdates > Utilities.objectSize(graph.nodes) - 1) {
-            // Neuer Status -> Algorithmus fertig
-            statusID = 4;
-            // Erklärung im Statusfenster
-            $("#ta_div_statusErklaerung").html("<h3>3 "+LNG.K('textdb_msg_case2_1')+"</h3>"
-                + "<p>"+LNG.K('textdb_msg_case2_2_a')+wum1String +LNG.K('textdb_msg_case2_2_b')+"</p>"
-                + "<p>"+LNG.K('textdb_msg_case2_3_a')+ weightUpdates +" "+LNG.K('textdb_msg_case2_3_b')+"</p>"
-                + "<p>"+LNG.K('textdb_msg_case2_4')+"</p>");
-            $(".marked").removeClass("marked");
-            $("#ta_p_l8").addClass("marked");
-            this.showVariableStatusField(null,null);
-            return;
-        }
-        else {
-            // Erklärung im Statusfenster
-            $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\">2 "+LNG.K('textdb_msg_case1_1')+"</h3>"
-                + "<h3> 2." + weightUpdates.toString() + " " + LNG.K('textdb_text_phase') + " " + weightUpdates.toString() + " " + LNG.K('textdb_text_of') + " " + (Utilities.objectSize(graph.nodes)-1) + "</h3>"
-                + "<p>"+LNG.K('textdb_msg_case2_2_a')+wum1String + " " +LNG.K('textdb_msg_case2_2_b')+"</p>"
-                + "<p>"+LNG.K('textdb_msg_case1_5_a')+wuString+ " "+LNG.K('textdb_msg_case2_2_b')+"</p>");
-            $("#ta_div_statusErklaerung").append("<p>"+LNG.K('textdb_msg_case1_6')+"</p>");
-            $(".marked").removeClass("marked");
-            $("#ta_p_l5").addClass("marked");
-            $("#ta_p_l6").addClass("marked");
-            this.showVariableStatusField(weightUpdates,null);
-            // Neuer Status -> checkEdgeForUpdate
-            statusID = 2;
-        }
-    }; */
-    
-    /**
-     * Prüft, ob die aktuelle Kante ein Update benötigt
-     * @method
-     */
-    /* this.checkEdgeForUpdate = function() {
-        if(kantenIDs.length <= nextKantenID) {
-            // Alle Kanten betrachtet, beginne nächste Runde
-            this.updateWeightsInitialisation();
-            return;
-        }
-
-        var aktKante = graph.edges[kantenIDs[nextKantenID]];
-        // Animation
-        aktKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-        aktKante.setLayout("lineWidth",3);
-        // Neuer Status -> UpdateSingleNode
-        statusID = 3;
-        // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\">2 "+LNG.K('textdb_msg_case1_1')+"</h3>"
-            + "<h3 class=\"greyedOut\"> 2." + weightUpdates.toString() + " " + LNG.K('textdb_text_phase') + " " + weightUpdates.toString() + " " + LNG.K('textdb_text_of') + " " + (Utilities.objectSize(graph.nodes)-1) + "</h3>"
-            + "<h3> 2." + weightUpdates.toString() + "." + (nextKantenID+1) + " " +LNG.K('textdb_msg_case1_2')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case1_3')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case1_4')+"</p>");
-        $(".marked").removeClass("marked");
-        $("#ta_p_l7").addClass("marked");
-        this.showVariableStatusField(weightUpdates,aktKante);
-    }; */
-    
-    /**
-     * Aktualisiert, falls nötig, den Entfernungswert des aktuellen Knotens.
-     * @method
-     */
-    /* this.updateSingleNode = function() {
-        var aktKante = graph.edges[kantenIDs[nextKantenID]];
-        // Animation -> Zurück auf Normal
-        aktKante.setLayout("lineColor","black");
-        aktKante.setLayout("lineWidth",2);
-        var u = aktKante.getSourceID();
-        var v = aktKante.getTargetID();
-        nodeUpdateStack.push(distanz[v]);
-        vorgaengerIDUpdateStack.push(vorgaenger[v]);
-        if(distanz[u] != "inf" && (distanz[v] == "inf" || distanz[u] + aktKante.weight < distanz[v])) {
-            distanz[v] = distanz[u] + aktKante.weight;
-            graph.nodes[v].setLabel(distanz[v].toString());
-            if(vorgaenger[v] != null) {
-                graph.edges[vorgaenger[v]].setHighlighted(false);
-            }
-            vorgaenger[v] = kantenIDs[nextKantenID];
-            if(showVorgaenger) {
-                aktKante.setHighlighted(true);
-            }
-        }
-
-        nextKantenID++;
-
-        this.checkEdgeForUpdate();
-    }; */
-    
-    /**
-     * Prüft die nächste Kante, ob sie Teil eines negativen Zyklus ist.
-     * @method
-     */
-    /* this.checkNextEdgeForNegativeCycle = function() {
-        // Animation
-        if(nextKantenID>0) {
-            var vorherigeKante = graph.edges[kantenIDs[nextKantenID-1]];
-            vorherigeKante.setLayout("lineColor","black");
-            vorherigeKante.setLayout("lineWidth",2);
-        }
-        if(kantenIDs.length <= nextKantenID) {
-            // Alle Kanten betrachtet, kein negativer Kreis gefunden, Ende
-            statusID = 6;
-            this.showNoNegativeCycle();
-            return;
-        }
-
-        var aktKante = graph.edges[kantenIDs[nextKantenID]];
-        aktKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-        aktKante.setLayout("lineWidth",3);
-        // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\">3 "+LNG.K('textdb_msg_case2_1')+"</h3>"
-            + "<h3>3." +(nextKantenID+1) +" " +LNG.K('textdb_msg_case2_5')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case2_6')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case2_7')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case2_8')+"</p>");
-        $(".marked").removeClass("marked");
-        $("#ta_p_l9").addClass("marked");
-        this.showVariableStatusField(null,aktKante);
-        if(distanz[aktKante.getSourceID()]+ aktKante.weight < distanz[aktKante.getTargetID()]) {
-            // Kante ist Teil eines negativen Kreises
-            statusID = 5;
-        }
-        else {
-            nextKantenID++;
-        }
-    }; */
-
-    /**
-     * Markiere den negativen Kreis, der gefunden wurde.
-     * @method
-     */
-    /* this.backtrackNegativeCycle = function() {
-        negativeCycleFound = true;
-        var aktKante = graph.edges[kantenIDs[nextKantenID]];
-        aktKante.setLayout("lineColor","black");
-        aktKante.setLayout("lineWidth",2);
-        var backtrackFirstID = aktKante.getTargetID();
-        var visitedNodes = new Object();
-        visitedNodes[backtrackFirstID] = true;
-        var backtrackKante = graph.edges[vorgaenger[backtrackFirstID]];
-        while(visitedNodes[backtrackKante.getSourceID()] != true) {
-            visitedNodes[backtrackKante.getSourceID()] = true;
-            backtrackKante = graph.edges[vorgaenger[backtrackKante.getSourceID()]];
-        }
-        backtrackFirstID = backtrackKante.getSourceID();
-        backtrackKante = graph.edges[vorgaenger[backtrackFirstID]];
-        backtrackKante.setLayout("lineColor","LightCoral");
-        backtrackKante.setLayout("lineWidth",3);
-        while(backtrackKante.getSourceID() != backtrackFirstID) {
-            backtrackKante = graph.edges[vorgaenger[backtrackKante.getSourceID()]];
-            backtrackKante.setLayout("lineColor","LightCoral");
-            backtrackKante.setLayout("lineWidth",3);
-        }
-        // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3>4 "+LNG.K('textdb_msg_case3_1')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case3_2')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case3_3')+"</p>");
-        $(".marked").removeClass("marked");
-        $("#ta_p_l10").addClass("marked");
-        this.endAlgorithm();
-    }; */
-
-    /**
-     * Wird aufgerufen, wenn der Algorithmus erfolgreich geendet hat.
-     * @method
-     */
-    /* this.showNoNegativeCycle = function() {
-        // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3>4 "+LNG.K('textdb_msg_case4_1')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case4_2')+"</p>"
-            + "<h3>"+LNG.K('textdb_msg_case4_3')+"</h3>");
-        $(".marked").removeClass("marked");
-        $("#ta_p_l11").addClass("marked");
-        this.endAlgorithm();
-    }; */
+        this.needRedraw = true;
+    };
     
     /**
      * Zeigt Texte und Buttons zum Ende des Algorithmus
@@ -544,91 +328,6 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_button_1Schritt").button("option", "disabled", true);
         $("#ta_button_vorspulen").button("option", "disabled", true);
     };
-
-    /**
-     * Handler für Mausbewegungen im Algorithmus Tab.<br>
-     * Wenn mit der Maus über einen Knoten gefahren wird, wird der kürzeste Weg
-     * vom Startknoten zu diesem Knoten grün markiert. <br>
-     * Die Markierung wird wieder entfernt, sobald die Maus den Knoten wieder verlässt
-     * @param {jQuery.Event} e
-     * @returns {void}
-     */
-    /* this.canvasMouseMoveHandler = function(e) {
-        if(statusID != 6) {
-            // Algorithmus noch nicht beendet
-            return;
-        }
-        var mouseInNode = false;
-        var mx = e.pageX - canvas.offset().left;
-        var my = e.pageY - canvas.offset().top;
-        for(var knotenID in graph.nodes) {
-            if (graph.nodes[knotenID].contains(mx, my)) {
-                if(showWayOfNode != null) {
-                    if(showWayOfNode.nodeID == knotenID) {
-                        return;
-                    }
-                    else {
-                        var showWayOfNodeOld = showWayOfNode;
-                        showWayOfNode = null;
-                        this.needRedraw = true;
-                        // Layout zurücksetzen
-                        for (var i = 0; i < showWayOfNodeOld.modifiedEdges.length; ++i) {
-                            graph.edges[showWayOfNodeOld.modifiedEdges[i].id].setLayout("lineWidth",showWayOfNodeOld.modifiedEdges[i].lineWidth);
-                            graph.edges[showWayOfNodeOld.modifiedEdges[i].id].setLayout("lineColor",showWayOfNodeOld.modifiedEdges[i].lineColor);
-                        }
-                    }
-                }
-                mouseInNode = true;
-                showWayOfNode = new Object();
-                showWayOfNode.nodeID = knotenID;
-                var visitedNodes = new Object();
-                var currentNode = knotenID;
-                var currentEdge = null;
-                var modifiedEdges = new Array();
-                while(vorgaenger[currentNode] != null && visitedNodes[currentNode] == null) {
-                    visitedNodes[currentNode] = true;
-                    currentEdge = graph.edges[vorgaenger[currentNode]];
-                    currentNode = currentEdge.getSourceID();
-                    // Layout
-                    modifiedEdges.push({id: currentEdge.getEdgeID(),
-                                        lineWidth: currentEdge.getLayout().lineWidth,
-                                        lineColor: currentEdge.getLayout().lineColor});
-                    currentEdge.setLayout("lineWidth",3);
-                    currentEdge.setLayout("lineColor",const_Colors.EdgeHighlight4);
-                }
-                showWayOfNode.modifiedEdges = modifiedEdges;
-                this.needRedraw = true;
-            }
-        }
-
-        if(!mouseInNode && showWayOfNode != null) {
-            this.needRedraw = true;
-            // Layout zurücksetzen
-            for (var i = 0; i < showWayOfNode.modifiedEdges.length; ++i) {
-                if(graph.edges[showWayOfNode.modifiedEdges[i].id].getLayout().lineColor == const_Colors.EdgeHighlight4 &&
-                    graph.edges[showWayOfNode.modifiedEdges[i].id].getLayout().lineWidth == 3) {
-                    graph.edges[showWayOfNode.modifiedEdges[i].id].setLayout("lineWidth",showWayOfNode.modifiedEdges[i].lineWidth);
-                    graph.edges[showWayOfNode.modifiedEdges[i].id].setLayout("lineColor",showWayOfNode.modifiedEdges[i].lineColor);
-                }
-            }
-            showWayOfNode = null;
-        }
-    }; */
-    
-    /**
-     * Blendet die Vorgängerkanten ein und aus.
-     * @method
-     */
-    /* this.changeVorgaengerVisualization = function() {
-        showVorgaenger = !showVorgaenger;
-        for(var knotenID in vorgaenger) {
-            if(vorgaenger[knotenID] != null) {
-                graph.edges[vorgaenger[knotenID]].setHighlighted(showVorgaenger);
-            }
-        }
-        $("#ta_tr_LegendeClickable").toggleClass("greyedOutBackground");
-        this.needRedraw = true;
-    }; */
     
     /**
      * Ermittelt basierend auf der StatusID und anderen den vorherigen Schritt aus
@@ -636,308 +335,20 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.previousStepChoice = function() {
-        switch(statusID) {
-            case 2:
-               this.reverseLastUpdate(true);
-               break;
-            case 3:
-               this.reverseLastUpdate(false);
-               break;
-            case 4:
-               this.reverseNegativeCycleCheck();
-               break;
-            case 5:
-               this.reverseBacktrack();
-               break;
-            case 6:
-               this.reverseSuccessEnding();
-               break;
-            default:
-               //console.log("Fehlerhafte StatusID für Rückschritt.");
-               break;
-       }
-       this.needRedraw = true;
-    };
-    
-    /**
-     * Setzt den zuletzt ausgeführten Update Schritt zurück
-     * @param {Boolean} afterUpdate Zeigt an, ob das Update schon ausgeführt wurde.
-     * @method
-     */
-    /* this.reverseLastUpdate = function(afterUpdate) {
-        var aktKante = graph.edges[kantenIDs[nextKantenID]];
-        if(afterUpdate) {
-            weightUpdates--;
-            if(weightUpdates == 0) {
-                // Zurück zur Initialisierung
-                $("#ta_button_Zurueck").button("option", "disabled", true);
-                $("#ta_div_statusErklaerung").html("<h3>1 "+LNG.K('textdb_msg_case0_1')+"</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case0_2')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case0_3')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case0_4')+"</p>");
-                this.showVariableStatusField(null,null);
-                $(".marked").removeClass("marked");
-                $("#ta_p_l2").addClass("marked");
-                $("#ta_p_l3").addClass("marked");
-                $("#ta_p_l4").addClass("marked");
-                statusID = 1;
-            }
-            else {
-                nextKantenID = kantenIDs.length-1;
-                aktKante = graph.edges[kantenIDs[nextKantenID]];
-                var v = aktKante.getTargetID();
-                distanz[v] = nodeUpdateStack.pop();
-                vorgaenger[v] = vorgaengerIDUpdateStack.pop();
-                aktKante.setHighlighted(false);
-                if(showVorgaenger) {
-                    if(vorgaenger[v]) {
-                        graph.edges[vorgaenger[v]].setHighlighted(true);
-                    }
-                }
-                if(distanz[v] == "inf") {
-                    graph.nodes[v].setLabel(String.fromCharCode(8734));
-                }
-                else {
-                    graph.nodes[v].setLabel(distanz[v].toString());
-                }
-                aktKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-                aktKante.setLayout("lineWidth",3);
-                statusID = 3;
-                // Erklärung im Statusfenster
-                $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\">2 "+LNG.K('textdb_msg_case1_1')+"</h3>"
-                    + "<h3 class=\"greyedOut\"> 2." + weightUpdates.toString() + " "+LNG.K('textdb_text_phase')+ " " + weightUpdates.toString() + " "+LNG.K('textdb_text_of')+ " " + (Utilities.objectSize(graph.nodes)-1) + "</h3>"
-                    + "<h3> 2." + weightUpdates.toString() + "." + (nextKantenID+1) +" "+LNG.K('textdb_msg_case1_2')+"</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case1_3')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case1_4')+"</p>");
-                $(".marked").removeClass("marked");
-                $("#ta_p_l7").addClass("marked");
-                this.showVariableStatusField(weightUpdates,aktKante);
-            }
+
+        this.replayStep();
+
+        if(statusID == 0) {
+            $("#ta_button_Zurueck").button("option", "disabled", true);
         }
-        else {
-            if(nextKantenID == 0) {
-                var wuString = "";
-                if(weightUpdates == 1) {
-                    wuString = LNG.K('textdb_text_oneedge');
-                } else {
-                    wuString = weightUpdates.toString() + " " + LNG.K('textdb_text_edges');
-                }
-                var wum1String = "";
-                if(weightUpdates == 2) {
-                    wum1String = LNG.K('textdb_text_oneedge');
-                } else {
-                    wum1String = (weightUpdates-1).toString() + " " + LNG.K('textdb_text_edges');
-                }
-                $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\">2  "+LNG.K('textdb_msg_case1_1')+"</h3>"
-                    + "<h3> 2." + weightUpdates.toString() + " "+LNG.K('textdb_text_phase')+ weightUpdates.toString() + " "+LNG.K('textdb_text_of')+ (Utilities.objectSize(graph.nodes)-1) + "</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case2_2_a')+wum1String + " " +LNG.K('textdb_msg_case2_2_b')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case1_5_a')+wuString+ " "+LNG.K('textdb_msg_case2_2_b')+"</p>");
-                $("#ta_div_statusErklaerung").append("<p>"+LNG.K('textdb_msg_case1_6')+"</p>");
-                $(".marked").removeClass("marked");
-                $("#ta_p_l5").addClass("marked");
-                $("#ta_p_l6").addClass("marked");
-                this.showVariableStatusField(weightUpdates,null);
-                statusID = 2;
-                aktKante.setLayout("lineColor","black");
-                aktKante.setLayout("lineWidth",2);
-            }
-            else {
-                aktKante.setLayout("lineColor","black");
-                aktKante.setLayout("lineWidth",2);
-                nextKantenID--;
-                aktKante = graph.edges[kantenIDs[nextKantenID]];
-                var v = aktKante.getTargetID();
-                distanz[v] = nodeUpdateStack.pop();
-                vorgaenger[v] = vorgaengerIDUpdateStack.pop();
-                aktKante.setHighlighted(false);
-                if(showVorgaenger) {
-                    if(vorgaenger[v]) {
-                        graph.edges[vorgaenger[v]].setHighlighted(true);
-                    }
-                }
-                if(distanz[v] == "inf") {
-                    graph.nodes[v].setLabel(String.fromCharCode(8734));
-                }
-                else {
-                    graph.nodes[v].setLabel(distanz[v].toString());
-                }
-                aktKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-                aktKante.setLayout("lineWidth",3);
-                statusID = 3;
-                // Erklärung im Statusfenster
-                $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\">2 "+LNG.K('textdb_msg_case1_1')+"</h3>"
-                    + "<h3 class=\"greyedOut\"> 2." + weightUpdates.toString() + " "+LNG.K('textdb_text_phase')+ " " + weightUpdates.toString() + " "+LNG.K('textdb_text_of')+ " " + (Utilities.objectSize(graph.nodes)-1) + "</h3>"
-                    + "<h3> 2." + weightUpdates.toString() + "." + (nextKantenID+1) + " " +LNG.K('textdb_msg_case1_2')+"</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case1_3')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case1_4')+"</p>");
-                $(".marked").removeClass("marked");
-                $("#ta_p_l7").addClass("marked");
-                this.showVariableStatusField(weightUpdates,aktKante);
-            }
-        }
-    }; */
-    
-    /**
-     * Setzt den zuletzt ausgeführten Negative Cyclce Check Schritt zurück
-     * @method
-     */
-    /* this.reverseNegativeCycleCheck = function() {
-        if(nextKantenID == 0) {
-            // War bei der Eingangsmeldung vom negative Kreise suchen
-            this.reverseLastUpdate(true);
-            return;
-        }
-        else {
-            nextKantenID--; 
-            var aktKante = graph.edges[kantenIDs[nextKantenID]];
-            aktKante.setLayout("lineColor","black");
-            aktKante.setLayout("lineWidth",2);
-            if(nextKantenID>0) {
-                var vorherigeKante = graph.edges[kantenIDs[nextKantenID-1]];
-                vorherigeKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-                vorherigeKante.setLayout("lineWidth",3);
-                // Erklärung im Statusfenster
-                $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\"> 3  "+LNG.K('textdb_msg_case2_1')+"</h3>"
-                    + "<h3>3." +(nextKantenID) +" " + LNG.K('textdb_msg_case2_5')+"</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case2_6')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_7')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_8')+"</p>");
-                $(".marked").removeClass("marked");
-                $("#ta_p_l9").addClass("marked");
-                this.showVariableStatusField(null,vorherigeKante);
-            }
-            else {
-                var wuString = "";
-                if(weightUpdates == 1) {
-                    wuString = LNG.K('textdb_text_oneedge');
-                } else {
-                    wuString = weightUpdates.toString() + " " + LNG.K('textdb_text_edges');
-                }
-                var wum1String = "";
-                if(weightUpdates == 2) {
-                    wum1String = LNG.K('textdb_text_oneedge');
-                } else {
-                    wum1String = (weightUpdates-1).toString() + " " + LNG.K('textdb_text_edges');
-                }
-                $("#ta_div_statusErklaerung").html("<h3> 3  "+LNG.K('textdb_msg_case2_1')+"</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case2_2_a') +wum1String+ " "+LNG.K('textdb_msg_case2_2_b')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_3_a')+ weightUpdates + " " + LNG.K('textdb_msg_case2_3_b')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_4')+"</p>");
-                $(".marked").removeClass("marked");
-                $("#ta_p_l8").addClass("marked");
-                this.showVariableStatusField(null,null);
-            }
-        }
-    }; */
-    
-    /* this.reverseBacktrack = function() {
-        if(!negativeCycleFound) {
-            // Algorithmus hätte im nächsten Schritt negativen Zyklus gezeigt
-            statusID = 4;
-            var aktKante = graph.edges[kantenIDs[nextKantenID]];
-            aktKante.setLayout("lineColor","black");
-            aktKante.setLayout("lineWidth",2);
-            if(nextKantenID>0) {
-                var vorherigeKante = graph.edges[kantenIDs[nextKantenID-1]];
-                vorherigeKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-                vorherigeKante.setLayout("lineWidth",3);
-                $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\"> 3  "+LNG.K('textdb_msg_case2_1')+"</h3>"
-                    + "<h3>3." +(nextKantenID) +" " +LNG.K('textdb_msg_case2_5')+"</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case2_6')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_7')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_8')+"</p>");
-                $(".marked").removeClass("marked");
-                $("#ta_p_l9").addClass("marked");
-                this.showVariableStatusField(null,vorherigeKante);
-            }
-            else {
-                var wuString = "";
-                if(weightUpdates == 1) {
-                    wuString = LNG.K('textdb_text_oneedge');
-                } else {
-                    wuString = weightUpdates.toString() + " " + LNG.K('textdb_text_edges');
-                }
-                var wum1String = "";
-                if(weightUpdates == 2) {
-                    wum1String = LNG.K('textdb_text_oneedge');
-                } else {
-                    wum1String = (weightUpdates-1).toString() + " " + LNG.K('textdb_text_edges');
-                }
-                $("#ta_div_statusErklaerung").html("<h3> 3  "+LNG.K('textdb_msg_case2_1')+"</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case2_2_a') +wum1String+ " "+LNG.K('textdb_msg_case2_2_b')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_3_a')+ weightUpdates + " " + LNG.K('textdb_msg_case2_3_b')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_4')+"</p>");
-                $(".marked").removeClass("marked");
-                $("#ta_p_l8").addClass("marked");
-                this.showVariableStatusField(null,null);
-            }
-        }
-        else {
-            // Algorithmus war komplett beendet
+
+        if(statusID == 8) {
             $("#ta_button_1Schritt").button("option", "disabled", false);
             $("#ta_button_vorspulen").button("option", "disabled", false);
-            negativeCycleFound = false;
-            for(var kantenID in graph.edges) {
-                graph.edges[kantenID].setLayout("lineColor","black");
-                graph.edges[kantenID].setLayout("lineWidth",2);
-            }
-            var aktKante = graph.edges[kantenIDs[nextKantenID]];
-            aktKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-            aktKante.setLayout("lineWidth",3);
-            $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\"> 3  "+LNG.K('textdb_msg_case2_1')+"</h3>"
-                    + "<h3>3." +(nextKantenID) +" " +LNG.K('textdb_msg_case2_5')+"</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case2_6')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_7')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_8')+"</p>");
-            $(".marked").removeClass("marked");
-            $("#ta_p_l9").addClass("marked");
-            this.showVariableStatusField(null,aktKante);
         }
-    }; */
-    
-    /* this.reverseSuccessEnding = function() {
-        $("#ta_button_1Schritt").button("option", "disabled", false);
-        $("#ta_button_vorspulen").button("option", "disabled", false);
-        statusID = 4;
-        // Animation
-        if(nextKantenID>0) {
-            var vorherigeKante = graph.edges[kantenIDs[nextKantenID-1]];
-            vorherigeKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-            vorherigeKante.setLayout("lineWidth",3);
-        }
-        if(kantenIDs.length > 0){
-            $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\"> 3  "+LNG.K('textdb_msg_case2_1')+"</h3>"
-                    + "<h3>3." +(nextKantenID) +" " +LNG.K('textdb_msg_case2_5')+"</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case2_6')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_7')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_8')+"</p>");
-            $(".marked").removeClass("marked");
-            $("#ta_p_l9").addClass("marked");
-            this.showVariableStatusField(null,vorherigeKante);
-        }
-        else {
-            var wuString = "";
-            if(weightUpdates == 1) {
-                wuString = LNG.K('textdb_text_oneedge');
-            } else {
-                wuString = weightUpdates.toString() + " " + LNG.K('textdb_text_edges');
-            }
-            var wum1String = "";
-            if(weightUpdates == 2) {
-                wum1String = LNG.K('textdb_text_oneedge');
-            } else {
-                wum1String = (weightUpdates-1).toString() + " " + LNG.K('textdb_text_edges');
-            }
-            $("#ta_div_statusErklaerung").html("<h3> 3  "+LNG.K('textdb_msg_case2_1')+"</h3>"
-                + "<p>"+LNG.K('textdb_msg_case2_2_a') +wum1String+ " " +LNG.K('textdb_msg_case2_2_b')+"</p>"
-                + "<p>"+LNG.K('textdb_msg_case2_3_a')+ weightUpdates + " " + LNG.K('textdb_msg_case2_3_b')+"</p>"
-                + "<p>"+LNG.K('textdb_msg_case2_4')+"</p>");
-            $(".marked").removeClass("marked");
-            $("#ta_p_l8").addClass("marked");
-            this.showVariableStatusField(null,null);
-        }
-        
-    }; */
+
+       this.needRedraw = true;
+    };
     
     /**
      * Trägt den Status der Variablen in die entsprechenden Felder im Pseudocode
@@ -987,6 +398,69 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         }
     }; */
 
+    this.addReplayStep = function() {
+
+        var nodeProperties = {};
+        for(var key in graph.nodes) {
+            nodeProperties[graph.nodes[key].getNodeID()] = {layout: JSON.stringify(graph.nodes[key].getLayout()), label: graph.nodes[key].getLabel()};
+        }
+
+        var edgeProperties = {}
+        for(var key in graph.edges) {
+            edgeProperties[graph.edges[key].getEdgeID()] = {layout: JSON.stringify(graph.edges[key].getLayout()), label: graph.edges[key].getAdditionalLabel(), visited: graph.edges[key].getVisited()};
+        }
+
+        replayHistory.push({
+            "previousStatusId": statusID,
+            "nodeProperties": nodeProperties,
+            "edgeProperties": edgeProperties,
+            "tourStartVertex": tourStartVertex,
+            "tourStartOddVertex": tourStartOddVertex,
+            "tourCurrentVertex": tourCurrentVertex,
+            "semiEuclideanGraph": semiEuclideanGraph,
+            "validGraph": validGraph,
+            "tourColorIndex": tourColorIndex,
+            "htmlSidebar": $("#ta_div_statusErklaerung").html(),
+            "euclideanTour": JSON.stringify(euclideanTour),
+            "euclideanSubTour": JSON.stringify(euclideanSubTour)
+        });
+
+        console.log("Current History Step: ", replayHistory[replayHistory.length-1]);
+
+    };
+
+    this.replayStep = function() {
+
+        var oldState = replayHistory.pop();
+
+        console.log("Replay Step", oldState);
+
+        statusID = oldState.previousStatusId;
+        tourStartVertex = oldState.tourStartVertex;
+        tourStartOddVertex = oldState.tourStartOddVertex;
+        tourCurrentVertex = oldState.tourCurrentVertex;
+        semiEuclideanGraph = oldState.semiEuclideanGraph;
+        validGraph = oldState.validGraph;
+        tourColorIndex = oldState.tourColorIndex;
+        $("#ta_div_statusErklaerung").html(oldState.htmlSidebar);
+        euclideanTour = JSON.parse(oldState.euclideanTour);
+        euclideanSubTour = JSON.parse(oldState.euclideanSubTour);
+
+        for(var key in oldState.nodeProperties) {
+            graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].layout));
+            graph.nodes[key].setLabel(oldState.nodeProperties[key].label);
+        }
+
+        for(var key in oldState.edgeProperties) {
+            graph.edges[key].setLayoutObject(JSON.parse(oldState.edgeProperties[key].layout));
+            graph.edges[key].setAdditionalLabel(oldState.edgeProperties[key].label);
+            graph.edges[key].setVisited(oldState.edgeProperties[key].visited);
+        }
+
+        this.needRedraw = true;
+
+    };
+
     this.addVertexToTour = function(vertex, tour) {
         tour.push({type: "vertex", id: vertex.getNodeID()});
     };
@@ -1010,12 +484,12 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             edgeCounter++;
         }; */
 
-
     };
 
     // Edge visited = false
     // Benennung v1, v2, ... & e1, e2, ...
     this.initializeGraph = function() {
+
         $("#ta_div_statusErklaerung").html("<h3>Initialisiere Graph</h3>");
 
         this.addNamingLabels();
@@ -1044,7 +518,6 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
         this.needRedraw = true;
 
-        
         if(Object.keys(graph.nodes).length < 2) {       // Graph too small
             statusID = 2;
             validGraph = false;
@@ -1097,6 +570,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
         $("#ta_button_1Schritt").button("option", "disabled", true);
         $("#ta_button_vorspulen").button("option", "disabled", true);
+        $("#ta_button_Zurueck").button("option", "disabled", true);
 
         return true;
 
