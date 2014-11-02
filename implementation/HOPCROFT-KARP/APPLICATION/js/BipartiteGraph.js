@@ -4,7 +4,7 @@
 
 var graph_constants = {
     U_X_POSITION : 100,
-    V_X_POSITION : 400,
+    V_X_POSITION : 420,
     TOP_Y_POSITION : 80,
     Y_DIFF: 60
 };
@@ -156,8 +156,6 @@ function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
         this.needRedraw = true;
     };
 
-    //this.mouseMoveHandler = function(e) {};
-
     /**
      * Beendet den Tab und startet ihn neu
      * @method
@@ -176,8 +174,8 @@ function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
                 this.canvas.css("background","");
                 //$("#tg_p_bildlizenz").remove();
                 //this.graph = new BipartiteGraph("graphs/graph1.txt",canvas);
-                $("body").data("graph",new BipartiteGraph("graphs/graph2.txt",canvas));
-                this.graph = new BipartiteGraph("graphs/graph2.txt");
+                $("body").data("graph",new BipartiteGraph("graphs/graph1.txt",canvas));
+                this.graph = new BipartiteGraph("graphs/graph1.txt");
                 this.refresh();
                 break;
             case "Zufallsgraph":
@@ -193,6 +191,34 @@ function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
             //console.log("Auswahl im Dropdown Menü unbekannt, tue nichts.");
         }
     };
+    this.rightClickHandler = function(e) {
+        e.preventDefault();                                 // Kein Kontextmenü
+        this.deselectNode();                                // In jedem Fall erstmal den aktuellen Knoten abwählen...
+        var mx = e.pageX - canvas.offset().left;
+        var my = e.pageY - canvas.offset().top;
+        for(var knotenID in graph.nodes) {
+            if (graph.nodes[knotenID].contains(mx, my)) {
+                for(var kantenID in graph.nodes[knotenID].getInEdges()) {
+                    $("#WeightChangePopup_" +kantenID.toString()).remove();
+                }
+                for(var kantenID in graph.nodes[knotenID].getOutEdges()) {
+                    $("#WeightChangePopup_" +kantenID.toString()).remove();
+                }
+                graph.removeNode(knotenID);
+                this.needRedraw = true;
+                return;                                     // Immer nur einen Knoten löschen
+            }
+        }
+        for(var kantenID in graph.edges) {
+            if (graph.edges[kantenID].contains(mx, my,this.canvas[0].getContext("2d"))) {
+                graph.removeEdge(kantenID);
+                $("#WeightChangePopup_" +kantenID.toString()).remove();
+                this.needRedraw = true;
+                return;                                     // Immer nur eine Kante löschen
+            }
+        }
+    };
+
 }
 BipartiteGraph.prototype.getEdgeBetween= function(source,target) {
     for(var edgeID in this.edges) {

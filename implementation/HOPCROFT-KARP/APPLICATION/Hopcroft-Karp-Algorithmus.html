@@ -44,6 +44,7 @@
         LNG.setLanguage('de');
     </script>
     <header>
+        <img src="img/matchingLogo.png" alt="Matching in bipartiten Graphen: Der Hopcroft-Karp-Algorithmus">
         <img src="img/hc.png" alt="Matching in bipartiten Graphen: Der Hopcroft-Karp-Algorithmus">
         <img style="position:absolute; right:0px" src="img/TUMLogo.png" alt="Technische Universität München">
     </header>
@@ -59,7 +60,7 @@
         </ul>
         <div id="tab_te">
             <div id="te_div_Einfuehrungstext">
-                <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="img/beispiel1.png" alt="Einfacher Graph mit 4 Knoten."><p>Wie komme ich am günstigsten von links nach rechts?</p></div>
+                <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="img/bipartite_graph.png" alt="Bipartiter Graph"><p>Wie groß ist das maximale Matching?</p></div>
                 <h1>Bipartites Matching</h1>
                 <p>In vielen Anwendungen müssen häufig Elemente aus verschiedenen Klassen kombiniert werden.
                     Existieren nur zwei Klassen von Objekten und existieren auch bestimmte Präferenzen zwischen den Objekten der verschiedenen Klassen, so nennt man dieses Problem
@@ -100,8 +101,9 @@
                 <div id="tg_div_statusWindow" class="statusWindow">
                     <h2>Auf welchem Graph soll der Algorithmus ausgeführt werden?</h2>
                     <div id="tg_div_statusErklaerung">
-                        <p>Um einen Knoten zu erstellen, mache einen Doppelklick in das Zeichenfeld.</p>
+                        <p>Um einen Knoten in einer Partition zu erstellen, mache einen Doppelklick in der Nähe dieser Partition.</p>
                         <p>Um eine Kante zu erstellen, klicke zunächst auf den Ausgangsknoten und dann auf den Zielknoten.</p>
+                        <p>Du kannst nur Kanten zwischen verschiedenen Partitionen einfügen.</p>
                         <p>Ein Rechtsklick löscht Kanten und Knoten.</p>
                     </div>
                     <h3>Keine Lust, selbst einen Graph zu erstellen?<br></h3>
@@ -116,9 +118,9 @@
             </div>
             <div title="Graph erstellen" class="tabIntroDialog">
                 <h2>Auf welchem Graph soll der Algorithmus ausgeführt werden?</h2>
-                <!--<p>Um einen Knoten zu erstellen, mache einen Doppelklick in das Zeichenfeld.</p>-->
+                <p>Um einen Knoten in einer Partition zu erstellen, mache einen Doppelklick in der Nähe dieser Partition.</p>
                 <p>Um eine Kante zu erstellen, klicke zunächst auf den Ausgangsknoten und dann auf den Zielknoten.</p>
-                <p>Du kannst nur Kanten zwischen U- und V-Knoten einfügen.</p>
+                <p>Du kannst nur Kanten zwischen verschiedenen Partitionen einfügen.</p>
                 <p>Ein Rechtsklick löscht Kanten und Knoten.</p>
             </div>
         </div>
@@ -137,7 +139,7 @@
                                     <td><span>Knoten</span></td>
                                 </tr>
                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/matchedNode.png" alt="MatchedNode" class="LegendeIcon"></td>
+                                    <td class="LegendeTabelle"><img src="img/matchingKnoten.png" alt="MatchedNode" class="LegendeIcon"></td>
                                     <td><span>Matching-Knoten</span></td>
                                 </tr>
                                 <tr>
@@ -166,8 +168,9 @@
                         </ul>
                         <div id="ta_div_statusErklaerung">
                             <h3>Initialisierung des Algorithmus.</h3>
-                            <p>Am Anfang des Algorithmus besitzen alle Knoten keinen Matching-Partner. Die Menge des Kanten in Matchin M ist dementsprechend leer.</p>
-                            <p>Im nächsten Schritt wird eine maximale Menge an knotendisjunkten verbessernden Pfaden gesucht.</p>
+                            <p>Am Anfang des Algorithmus besitzen alle Knoten keinen Matching-Partner. Die Menge des Kanten im Matching M ist dementsprechend leer.</p>
+                            <p>In jeder Iteration suchen wir eine maximale Menge an kürzesten knotendisjunkten Augmentationswegen.</p>
+                            <p>Maximal heißt hier, dass es zusätzlich zu den gefundenen Pfaden keinen anderen kürzesten knotendisjunkten Augmentationsweg gibt.</p>
                         </div>
                         <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
                             <p class="pseudocode" id="ta_p_l1">BEGIN</p>
@@ -178,7 +181,7 @@
                             <p class="pseudocode" id="ta_p_l6">    augmenting paths with respect to M</p>
                             <p class="pseudocode" id="ta_p_l7">    M &larr; M &oplus; (P1 &cup; P2 &cup; ... &cup; Pk)</p>
                             <p class="pseudocode" id="ta_p_l8">  UNTIL &Rho; == &empty;</p>
-                            <p class="pseudocode" id="ta_p_l9"> RETURN M</p>
+                            <p class="pseudocode" id="ta_p_l9">RETURN M</p>
                             <p class="pseudocode" id="ta_p_l10">END</p>
                         </div>
                     </div>
