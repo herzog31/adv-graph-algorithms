@@ -197,6 +197,21 @@ function CanvasDrawer(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.initCanvasDrawer = function() {
+
+        if (window.devicePixelRatio && $(this.canvas[0]).data("retina") != true) {
+            var ctx = this.canvas[0].getContext("2d");
+            var devicePixelRatio = window.devicePixelRatio;
+            var canvasWidth = this.canvas[0].getAttribute("width");
+            var canvasHeight = this.canvas[0].getAttribute("height");
+
+            this.canvas[0].style.width = canvasWidth+"px";
+            this.canvas[0].style.height = canvasHeight+"px";
+            this.canvas[0].setAttribute("width", canvasWidth*devicePixelRatio);
+            this.canvas[0].setAttribute("height", canvasHeight*devicePixelRatio);
+            ctx.transform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+            $(this.canvas[0]).data("retina", true);
+        }
+
         legendeMax = this.tab.find(".Legende");
         legendeMin = this.tab.find(".LegendeMinimized");
         legendeMaxButton = legendeMax.find(".LegendeMin");
@@ -211,6 +226,8 @@ function CanvasDrawer(p_graph,p_canvas,p_tab) {
         this.needRedraw = true;
         this.openDialogs();
         this.addRefreshToTabbar();
+
+
     };
     
     /**

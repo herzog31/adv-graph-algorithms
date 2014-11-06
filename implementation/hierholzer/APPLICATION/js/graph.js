@@ -218,6 +218,10 @@ function GraphNode(coordinates,nodeID) {
         layout[parameter] = newValue;
     };
 
+    this.setLayoutObject = function(layoutObject) {
+        layout = layoutObject;
+    };
+
     /**
      * Gibt den Namen des Knotens zurück.
      * Falls dieser nicht gesetzt wurde, wird die ID der Knotens zurückgegeben.
@@ -497,6 +501,10 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
      */
     this.getLayout = function() {
         return jQuery.extend(true, {},layout);
+    };
+
+    this.setLayoutObject = function(layoutObject) {
+        layout = layoutObject;
     };
 
     /**

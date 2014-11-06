@@ -30,11 +30,6 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      */
     var fastForwardIntervalID = null;
     /**
-     * Knoten, von dem aus alle Entfernungen berechnet werden.
-     * @type GraphNode
-     */
-    var startNode = null;
-    /**
      * Der Algorithmus kann in verschiedenen Zuständen sein, diese Variable 
      * speichert die ID des aktuellen Zustands.<br>
      * Siehe Dokumentation bei der Funktion nextStepChoice
@@ -46,66 +41,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * @type BFAlgorithm
      */
     var algo = this;
-    /**
-     * Assoziatives Array mit den Abstandswerten aller Knoten<br>
-     * Keys: KnotenIDs Value: Abstandswert
-     * @type Object
-     */
-    var distanz = new Object();
-    /**
-     * Assoziatives Array mit den Vorgängerkanten aller Knoten<br>
-     * Keys: KnotenIDs Value: KantenID
-     * @type Object
-     */
-    var vorgaenger = new Object();
-    /**
-     * Zählt die Phasen / Runden.
-     * @type Number
-     */
-    var weightUpdates = 0;
-    /**
-     * Ein Array der KantenIDs, damit man die Kanten linear ablaufen kann
-     * @type Number[]
-     */
-    var kantenIDs = Utilities.arrayOfKeys(graph.edges);
-    /**
-     * Die Kante, die wir als nächstes betrachten werden, als Key für das 
-     * Array kantenIDs.
-     * @type Number
-     */
-    var nextKantenID = null;
-    /**
-     * Sammelt Information über den aktuellen Weg zum Startknoten, der angezeigt wird<br>
-     * Felder: modifiedEdges: Information über die Kanten, deren Layout verändert wurde, altes Layout und ID<br>
-     *         nodeID: Id des Knotens, der grade verändert wird.
-     * @type Object
-     */
-    var showWayOfNode = null;
-    /**
-     * Zeigt an, ob die Vorgängerkanten markiert werden sollen oder nicht.
-     * @type Boolean
-     */
-    var showVorgaenger = true;
-    /**
-     * Zeigt an, ob ein negativer Kreis gefunden wurde oder nicht
-     * @type Boolean
-     */
-    var negativeCycleFound = false;
     
-    /**
-     * Die Distanzwerte der Knoten werden nach und nach auf diesen Stack gepusht.<br>
-     * Wird für den "Zurück" Button benötigt.
-     * @type Number[]
-     */
-    var nodeUpdateStack = new Array();
-    
-    /**
-     * Die VorgänerIDs der Knoten werden nach und nach auf diesen Stack gepusht.<br>
-     * Wird für den "Zurück" Button benötigt.
-     * @type Number[]
-     */
-    var vorgaengerIDUpdateStack = new Array();
-
+    var replayHistory = new Array();
+    var debugConsole = true;
     var tourStartVertex = null;
     var tourStartOddVertex = null;
     var tourCurrentVertex = null;
@@ -113,10 +51,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     var validGraph = false;
     var euclideanTour = new Array();
     var euclideanSubTour = new Array();
-
+    var currentPseudoCodeLine = 1;
     var tourColors = new Array("blue", "green", "red", "yellow", "orange", "purple", "brown");
     var tourColorIndex = 0;
-
     
     /**
      * Startet die Ausführung des Algorithmus.
@@ -144,6 +81,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         this.needRedraw = true;
         this.minimizeLegend();
         statusID = 0;
+
     };
     
     /**
@@ -181,13 +119,10 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.registerEventHandlers = function() {
-        //canvas.on("click.BFAlgorithm",function(e) {algo.canvasClickHandler(e);});
-        //canvas.on("mousemove.BFAlgorithm",function(e) {algo.canvasMouseMoveHandler(e);});
         $("#ta_button_1Schritt").on("click.BFAlgorithm",function() {algo.singleStepHandler();});
         $("#ta_button_vorspulen").on("click.BFAlgorithm",function() {algo.fastForwardAlgorithm();});
         $("#ta_button_stoppVorspulen").on("click.BFAlgorithm",function() {algo.stopFastForward();});
-        // TODO $("#ta_tr_LegendeClickable").on("click.BFAlgorithm",function() {algo.changeVorgaengerVisualization();});
-        // TODO $("#ta_button_Zurueck").on("click.BFAlgorithm",function() {algo.previousStepChoice();});
+        $("#ta_button_Zurueck").on("click.BFAlgorithm",function() {algo.previousStepChoice();});
     };
     
     /**
@@ -199,35 +134,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_button_1Schritt").off(".BFAlgorithm");
         $("#ta_button_vorspulen").off(".BFAlgorithm");
         $("#ta_button_stoppVorspulen").off(".BFAlgorithm");
-        // $("#ta_tr_LegendeClickable").off(".BFAlgorithm");
-        // $("#ta_button_Zurueck").off(".BFAlgorithm");
+        $("#ta_tr_LegendeClickable").off(".BFAlgorithm");
+        $("#ta_button_Zurueck").off(".BFAlgorithm");
     };
-    
-    /**
-     * Wird aufgerufen, sobald auf das Canvas geklickt wird. 
-     * @param {jQuery.Event} e jQuery Event Objekt, gibt Koordinaten
-     */
-     /* 
-    this.canvasClickHandler = function(e) {
-        if(startNode == null) {
-            var mx = e.pageX - canvas.offset().left;
-            var my = e.pageY - canvas.offset().top;
-            for(var knotenID in graph.nodes) {
-                if (graph.nodes[knotenID].contains(mx, my)) {
-                    graph.nodes[knotenID].setLayout("fillStyle",const_Colors.NodeFillingHighlight); 
-                    graph.nodes[knotenID].setLabel("S");
-                    startNode = graph.nodes[knotenID];
-                    this.needRedraw = true;
-                    $("#ta_div_statusErklaerung").removeClass("ui-state-error");
-                    $("#ta_div_statusErklaerung").html("<h3>"+LNG.K('textdb_msg_case5_1')+"</h3>");
-                    $("#ta_button_1Schritt").button("option", "disabled", false);
-                    $("#ta_button_vorspulen").button("option", "disabled", false);
-                    statusID = 0;
-                    break;                   // Maximal einen Knoten auswählen
-                }
-            }
-        }
-    }; */
     
     /**
      * Wird aufgerufen, wenn der "1 Schritt" Button gedrückt wird.
@@ -242,19 +151,13 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.fastForwardAlgorithm = function() {
-        /* if(startNode == null) {
-            // Auf Startknotenwahl hinweisen
-            $("#ta_div_statusErklaerung").addClass("ui-state-error");
-        }
-        else { */
-            $("#ta_button_vorspulen").hide();
-            $("#ta_button_stoppVorspulen").show();
-            $("#ta_button_1Schritt").button("option", "disabled", true);
-            $("#ta_button_Zurueck").button("option", "disabled", true);
-            var geschwindigkeit = 200;	// Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
+        $("#ta_button_vorspulen").hide();
+        $("#ta_button_stoppVorspulen").show();
+        $("#ta_button_1Schritt").button("option", "disabled", true);
+        $("#ta_button_Zurueck").button("option", "disabled", true);
+        var geschwindigkeit = 200;	// Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
 
-            fastForwardIntervalID = window.setInterval(function(){algo.nextStepChoice();},geschwindigkeit);
-        //}
+        fastForwardIntervalID = window.setInterval(function(){algo.nextStepChoice();},geschwindigkeit);
     };
     
     /**
@@ -285,16 +188,21 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     */
     this.nextStepChoice = function() {
 
-        console.log("Current State: "+statusID);
+        if(debugConsole) console.log("Current State: " + statusID);
 
-       switch(statusID) {
+        this.addReplayStep();
+
+        switch(statusID) {
         case 0:
+            $("#ta_button_Zurueck").button("option", "disabled", false);
             this.initializeGraph();
             break;
         case 1:
+            $("#ta_button_Zurueck").button("option", "disabled", false);
             this.checkGraph();
             break;
         case 2:
+            $("#ta_button_Zurueck").button("option", "disabled", true);
             this.invalidGraph();
             break;
         case 3:
@@ -321,258 +229,12 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         default:
             console.log("Fehlerhafter State");
             break;
-
-       /* case 0:
-           this.initializeAlgorithm();
-           break;
-       case 1:
-           this.updateWeightsInitialisation();
-           break;
-       case 2:
-           this.checkEdgeForUpdate();
-           break;
-       case 3:
-           this.updateSingleNode();
-           break;
-       case 4:
-           this.checkNextEdgeForNegativeCycle();
-           break;
-       case 5:
-           this.backtrackNegativeCycle();
-           break;
-       case 6:
-           this.showNoNegativeCycle();
-           break;
-       default:
-           //console.log("Fehlerhafte StatusID.");
-           break; */
-       }
-       this.needRedraw = true;
-   };
-   
-   /**
-     * Initialisiere den Algorithmus, stelle die Felder auf ihre Startwerte.
-     */
-   /* this.initializeAlgorithm = function() {
-        distanz[startNode.getNodeID()] = 0;
-        graph.nodes[startNode.getNodeID()].setLabel("0");
-        for(var knotenID in graph.nodes) {
-            if(knotenID != startNode.getNodeID()) {
-                distanz[knotenID] = "inf";
-                graph.nodes[knotenID].setLabel(String.fromCharCode(8734));   // Unendlich
-            }
-            vorgaenger[knotenID] = null;
-        }
-        statusID = 1;
-
-        // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3>1 "+LNG.K('textdb_msg_case0_1')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case0_2')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case0_3')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case0_4')+"</p>");
-        this.showVariableStatusField(null,null);
-        $(".marked").removeClass("marked");
-        $("#ta_p_l2").addClass("marked");
-        $("#ta_p_l3").addClass("marked");
-        $("#ta_p_l4").addClass("marked");
-   }; */
-    
-    /**
-     * Geht in die nächste Runde und prüft, ob wir fertig sind.
-     * @method
-     */
-    /* this.updateWeightsInitialisation = function() {
-        if($("#ta_button_Zurueck").button("option","disabled") && fastForwardIntervalID == null) {
-            $("#ta_button_Zurueck").button("option", "disabled", false);
-        }
-        weightUpdates++;
-        nextKantenID = 0;
-        var wuString = "";
-        if(weightUpdates == 1) {
-            wuString = LNG.K('textdb_text_oneedge');
-        } else {
-            wuString = weightUpdates.toString() + " " + LNG.K('textdb_text_edges');
-        }
-        var wum1String = "";
-        if(weightUpdates == 2) {
-            wum1String = LNG.K('textdb_text_oneedge');
-        } else {
-            wum1String = (weightUpdates-1).toString() + " " + LNG.K('textdb_text_edges');
-        }
-        if(weightUpdates > Utilities.objectSize(graph.nodes) - 1) {
-            // Neuer Status -> Algorithmus fertig
-            statusID = 4;
-            // Erklärung im Statusfenster
-            $("#ta_div_statusErklaerung").html("<h3>3 "+LNG.K('textdb_msg_case2_1')+"</h3>"
-                + "<p>"+LNG.K('textdb_msg_case2_2_a')+wum1String +LNG.K('textdb_msg_case2_2_b')+"</p>"
-                + "<p>"+LNG.K('textdb_msg_case2_3_a')+ weightUpdates +" "+LNG.K('textdb_msg_case2_3_b')+"</p>"
-                + "<p>"+LNG.K('textdb_msg_case2_4')+"</p>");
-            $(".marked").removeClass("marked");
-            $("#ta_p_l8").addClass("marked");
-            this.showVariableStatusField(null,null);
-            return;
-        }
-        else {
-            // Erklärung im Statusfenster
-            $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\">2 "+LNG.K('textdb_msg_case1_1')+"</h3>"
-                + "<h3> 2." + weightUpdates.toString() + " " + LNG.K('textdb_text_phase') + " " + weightUpdates.toString() + " " + LNG.K('textdb_text_of') + " " + (Utilities.objectSize(graph.nodes)-1) + "</h3>"
-                + "<p>"+LNG.K('textdb_msg_case2_2_a')+wum1String + " " +LNG.K('textdb_msg_case2_2_b')+"</p>"
-                + "<p>"+LNG.K('textdb_msg_case1_5_a')+wuString+ " "+LNG.K('textdb_msg_case2_2_b')+"</p>");
-            $("#ta_div_statusErklaerung").append("<p>"+LNG.K('textdb_msg_case1_6')+"</p>");
-            $(".marked").removeClass("marked");
-            $("#ta_p_l5").addClass("marked");
-            $("#ta_p_l6").addClass("marked");
-            this.showVariableStatusField(weightUpdates,null);
-            // Neuer Status -> checkEdgeForUpdate
-            statusID = 2;
-        }
-    }; */
-    
-    /**
-     * Prüft, ob die aktuelle Kante ein Update benötigt
-     * @method
-     */
-    /* this.checkEdgeForUpdate = function() {
-        if(kantenIDs.length <= nextKantenID) {
-            // Alle Kanten betrachtet, beginne nächste Runde
-            this.updateWeightsInitialisation();
-            return;
         }
 
-        var aktKante = graph.edges[kantenIDs[nextKantenID]];
-        // Animation
-        aktKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-        aktKante.setLayout("lineWidth",3);
-        // Neuer Status -> UpdateSingleNode
-        statusID = 3;
-        // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\">2 "+LNG.K('textdb_msg_case1_1')+"</h3>"
-            + "<h3 class=\"greyedOut\"> 2." + weightUpdates.toString() + " " + LNG.K('textdb_text_phase') + " " + weightUpdates.toString() + " " + LNG.K('textdb_text_of') + " " + (Utilities.objectSize(graph.nodes)-1) + "</h3>"
-            + "<h3> 2." + weightUpdates.toString() + "." + (nextKantenID+1) + " " +LNG.K('textdb_msg_case1_2')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case1_3')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case1_4')+"</p>");
-        $(".marked").removeClass("marked");
-        $("#ta_p_l7").addClass("marked");
-        this.showVariableStatusField(weightUpdates,aktKante);
-    }; */
-    
-    /**
-     * Aktualisiert, falls nötig, den Entfernungswert des aktuellen Knotens.
-     * @method
-     */
-    /* this.updateSingleNode = function() {
-        var aktKante = graph.edges[kantenIDs[nextKantenID]];
-        // Animation -> Zurück auf Normal
-        aktKante.setLayout("lineColor","black");
-        aktKante.setLayout("lineWidth",2);
-        var u = aktKante.getSourceID();
-        var v = aktKante.getTargetID();
-        nodeUpdateStack.push(distanz[v]);
-        vorgaengerIDUpdateStack.push(vorgaenger[v]);
-        if(distanz[u] != "inf" && (distanz[v] == "inf" || distanz[u] + aktKante.weight < distanz[v])) {
-            distanz[v] = distanz[u] + aktKante.weight;
-            graph.nodes[v].setLabel(distanz[v].toString());
-            if(vorgaenger[v] != null) {
-                graph.edges[vorgaenger[v]].setHighlighted(false);
-            }
-            vorgaenger[v] = kantenIDs[nextKantenID];
-            if(showVorgaenger) {
-                aktKante.setHighlighted(true);
-            }
-        }
+        this.updatePseudoCodeValues();
 
-        nextKantenID++;
-
-        this.checkEdgeForUpdate();
-    }; */
-    
-    /**
-     * Prüft die nächste Kante, ob sie Teil eines negativen Zyklus ist.
-     * @method
-     */
-    /* this.checkNextEdgeForNegativeCycle = function() {
-        // Animation
-        if(nextKantenID>0) {
-            var vorherigeKante = graph.edges[kantenIDs[nextKantenID-1]];
-            vorherigeKante.setLayout("lineColor","black");
-            vorherigeKante.setLayout("lineWidth",2);
-        }
-        if(kantenIDs.length <= nextKantenID) {
-            // Alle Kanten betrachtet, kein negativer Kreis gefunden, Ende
-            statusID = 6;
-            this.showNoNegativeCycle();
-            return;
-        }
-
-        var aktKante = graph.edges[kantenIDs[nextKantenID]];
-        aktKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-        aktKante.setLayout("lineWidth",3);
-        // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\">3 "+LNG.K('textdb_msg_case2_1')+"</h3>"
-            + "<h3>3." +(nextKantenID+1) +" " +LNG.K('textdb_msg_case2_5')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case2_6')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case2_7')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case2_8')+"</p>");
-        $(".marked").removeClass("marked");
-        $("#ta_p_l9").addClass("marked");
-        this.showVariableStatusField(null,aktKante);
-        if(distanz[aktKante.getSourceID()]+ aktKante.weight < distanz[aktKante.getTargetID()]) {
-            // Kante ist Teil eines negativen Kreises
-            statusID = 5;
-        }
-        else {
-            nextKantenID++;
-        }
-    }; */
-
-    /**
-     * Markiere den negativen Kreis, der gefunden wurde.
-     * @method
-     */
-    /* this.backtrackNegativeCycle = function() {
-        negativeCycleFound = true;
-        var aktKante = graph.edges[kantenIDs[nextKantenID]];
-        aktKante.setLayout("lineColor","black");
-        aktKante.setLayout("lineWidth",2);
-        var backtrackFirstID = aktKante.getTargetID();
-        var visitedNodes = new Object();
-        visitedNodes[backtrackFirstID] = true;
-        var backtrackKante = graph.edges[vorgaenger[backtrackFirstID]];
-        while(visitedNodes[backtrackKante.getSourceID()] != true) {
-            visitedNodes[backtrackKante.getSourceID()] = true;
-            backtrackKante = graph.edges[vorgaenger[backtrackKante.getSourceID()]];
-        }
-        backtrackFirstID = backtrackKante.getSourceID();
-        backtrackKante = graph.edges[vorgaenger[backtrackFirstID]];
-        backtrackKante.setLayout("lineColor","LightCoral");
-        backtrackKante.setLayout("lineWidth",3);
-        while(backtrackKante.getSourceID() != backtrackFirstID) {
-            backtrackKante = graph.edges[vorgaenger[backtrackKante.getSourceID()]];
-            backtrackKante.setLayout("lineColor","LightCoral");
-            backtrackKante.setLayout("lineWidth",3);
-        }
-        // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3>4 "+LNG.K('textdb_msg_case3_1')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case3_2')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case3_3')+"</p>");
-        $(".marked").removeClass("marked");
-        $("#ta_p_l10").addClass("marked");
-        this.endAlgorithm();
-    }; */
-
-    /**
-     * Wird aufgerufen, wenn der Algorithmus erfolgreich geendet hat.
-     * @method
-     */
-    /* this.showNoNegativeCycle = function() {
-        // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3>4 "+LNG.K('textdb_msg_case4_1')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case4_2')+"</p>"
-            + "<h3>"+LNG.K('textdb_msg_case4_3')+"</h3>");
-        $(".marked").removeClass("marked");
-        $("#ta_p_l11").addClass("marked");
-        this.endAlgorithm();
-    }; */
+        this.needRedraw = true;
+    };
     
     /**
      * Zeigt Texte und Buttons zum Ende des Algorithmus
@@ -598,91 +260,6 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_button_1Schritt").button("option", "disabled", true);
         $("#ta_button_vorspulen").button("option", "disabled", true);
     };
-
-    /**
-     * Handler für Mausbewegungen im Algorithmus Tab.<br>
-     * Wenn mit der Maus über einen Knoten gefahren wird, wird der kürzeste Weg
-     * vom Startknoten zu diesem Knoten grün markiert. <br>
-     * Die Markierung wird wieder entfernt, sobald die Maus den Knoten wieder verlässt
-     * @param {jQuery.Event} e
-     * @returns {void}
-     */
-    /* this.canvasMouseMoveHandler = function(e) {
-        if(statusID != 6) {
-            // Algorithmus noch nicht beendet
-            return;
-        }
-        var mouseInNode = false;
-        var mx = e.pageX - canvas.offset().left;
-        var my = e.pageY - canvas.offset().top;
-        for(var knotenID in graph.nodes) {
-            if (graph.nodes[knotenID].contains(mx, my)) {
-                if(showWayOfNode != null) {
-                    if(showWayOfNode.nodeID == knotenID) {
-                        return;
-                    }
-                    else {
-                        var showWayOfNodeOld = showWayOfNode;
-                        showWayOfNode = null;
-                        this.needRedraw = true;
-                        // Layout zurücksetzen
-                        for (var i = 0; i < showWayOfNodeOld.modifiedEdges.length; ++i) {
-                            graph.edges[showWayOfNodeOld.modifiedEdges[i].id].setLayout("lineWidth",showWayOfNodeOld.modifiedEdges[i].lineWidth);
-                            graph.edges[showWayOfNodeOld.modifiedEdges[i].id].setLayout("lineColor",showWayOfNodeOld.modifiedEdges[i].lineColor);
-                        }
-                    }
-                }
-                mouseInNode = true;
-                showWayOfNode = new Object();
-                showWayOfNode.nodeID = knotenID;
-                var visitedNodes = new Object();
-                var currentNode = knotenID;
-                var currentEdge = null;
-                var modifiedEdges = new Array();
-                while(vorgaenger[currentNode] != null && visitedNodes[currentNode] == null) {
-                    visitedNodes[currentNode] = true;
-                    currentEdge = graph.edges[vorgaenger[currentNode]];
-                    currentNode = currentEdge.getSourceID();
-                    // Layout
-                    modifiedEdges.push({id: currentEdge.getEdgeID(),
-                                        lineWidth: currentEdge.getLayout().lineWidth,
-                                        lineColor: currentEdge.getLayout().lineColor});
-                    currentEdge.setLayout("lineWidth",3);
-                    currentEdge.setLayout("lineColor",const_Colors.EdgeHighlight4);
-                }
-                showWayOfNode.modifiedEdges = modifiedEdges;
-                this.needRedraw = true;
-            }
-        }
-
-        if(!mouseInNode && showWayOfNode != null) {
-            this.needRedraw = true;
-            // Layout zurücksetzen
-            for (var i = 0; i < showWayOfNode.modifiedEdges.length; ++i) {
-                if(graph.edges[showWayOfNode.modifiedEdges[i].id].getLayout().lineColor == const_Colors.EdgeHighlight4 &&
-                    graph.edges[showWayOfNode.modifiedEdges[i].id].getLayout().lineWidth == 3) {
-                    graph.edges[showWayOfNode.modifiedEdges[i].id].setLayout("lineWidth",showWayOfNode.modifiedEdges[i].lineWidth);
-                    graph.edges[showWayOfNode.modifiedEdges[i].id].setLayout("lineColor",showWayOfNode.modifiedEdges[i].lineColor);
-                }
-            }
-            showWayOfNode = null;
-        }
-    }; */
-    
-    /**
-     * Blendet die Vorgängerkanten ein und aus.
-     * @method
-     */
-    /* this.changeVorgaengerVisualization = function() {
-        showVorgaenger = !showVorgaenger;
-        for(var knotenID in vorgaenger) {
-            if(vorgaenger[knotenID] != null) {
-                graph.edges[vorgaenger[knotenID]].setHighlighted(showVorgaenger);
-            }
-        }
-        $("#ta_tr_LegendeClickable").toggleClass("greyedOutBackground");
-        this.needRedraw = true;
-    }; */
     
     /**
      * Ermittelt basierend auf der StatusID und anderen den vorherigen Schritt aus
@@ -690,374 +267,179 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.previousStepChoice = function() {
-        switch(statusID) {
-            case 2:
-               this.reverseLastUpdate(true);
-               break;
-            case 3:
-               this.reverseLastUpdate(false);
-               break;
-            case 4:
-               this.reverseNegativeCycleCheck();
-               break;
-            case 5:
-               this.reverseBacktrack();
-               break;
-            case 6:
-               this.reverseSuccessEnding();
-               break;
-            default:
-               //console.log("Fehlerhafte StatusID für Rückschritt.");
-               break;
-       }
-       this.needRedraw = true;
-    };
-    
-    /**
-     * Setzt den zuletzt ausgeführten Update Schritt zurück
-     * @param {Boolean} afterUpdate Zeigt an, ob das Update schon ausgeführt wurde.
-     * @method
-     */
-    /* this.reverseLastUpdate = function(afterUpdate) {
-        var aktKante = graph.edges[kantenIDs[nextKantenID]];
-        if(afterUpdate) {
-            weightUpdates--;
-            if(weightUpdates == 0) {
-                // Zurück zur Initialisierung
-                $("#ta_button_Zurueck").button("option", "disabled", true);
-                $("#ta_div_statusErklaerung").html("<h3>1 "+LNG.K('textdb_msg_case0_1')+"</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case0_2')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case0_3')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case0_4')+"</p>");
-                this.showVariableStatusField(null,null);
-                $(".marked").removeClass("marked");
-                $("#ta_p_l2").addClass("marked");
-                $("#ta_p_l3").addClass("marked");
-                $("#ta_p_l4").addClass("marked");
-                statusID = 1;
-            }
-            else {
-                nextKantenID = kantenIDs.length-1;
-                aktKante = graph.edges[kantenIDs[nextKantenID]];
-                var v = aktKante.getTargetID();
-                distanz[v] = nodeUpdateStack.pop();
-                vorgaenger[v] = vorgaengerIDUpdateStack.pop();
-                aktKante.setHighlighted(false);
-                if(showVorgaenger) {
-                    if(vorgaenger[v]) {
-                        graph.edges[vorgaenger[v]].setHighlighted(true);
-                    }
-                }
-                if(distanz[v] == "inf") {
-                    graph.nodes[v].setLabel(String.fromCharCode(8734));
-                }
-                else {
-                    graph.nodes[v].setLabel(distanz[v].toString());
-                }
-                aktKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-                aktKante.setLayout("lineWidth",3);
-                statusID = 3;
-                // Erklärung im Statusfenster
-                $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\">2 "+LNG.K('textdb_msg_case1_1')+"</h3>"
-                    + "<h3 class=\"greyedOut\"> 2." + weightUpdates.toString() + " "+LNG.K('textdb_text_phase')+ " " + weightUpdates.toString() + " "+LNG.K('textdb_text_of')+ " " + (Utilities.objectSize(graph.nodes)-1) + "</h3>"
-                    + "<h3> 2." + weightUpdates.toString() + "." + (nextKantenID+1) +" "+LNG.K('textdb_msg_case1_2')+"</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case1_3')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case1_4')+"</p>");
-                $(".marked").removeClass("marked");
-                $("#ta_p_l7").addClass("marked");
-                this.showVariableStatusField(weightUpdates,aktKante);
-            }
+
+        this.replayStep();
+
+        if(statusID == 0) {
+            $("#ta_button_Zurueck").button("option", "disabled", true);
         }
-        else {
-            if(nextKantenID == 0) {
-                var wuString = "";
-                if(weightUpdates == 1) {
-                    wuString = LNG.K('textdb_text_oneedge');
-                } else {
-                    wuString = weightUpdates.toString() + " " + LNG.K('textdb_text_edges');
-                }
-                var wum1String = "";
-                if(weightUpdates == 2) {
-                    wum1String = LNG.K('textdb_text_oneedge');
-                } else {
-                    wum1String = (weightUpdates-1).toString() + " " + LNG.K('textdb_text_edges');
-                }
-                $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\">2  "+LNG.K('textdb_msg_case1_1')+"</h3>"
-                    + "<h3> 2." + weightUpdates.toString() + " "+LNG.K('textdb_text_phase')+ weightUpdates.toString() + " "+LNG.K('textdb_text_of')+ (Utilities.objectSize(graph.nodes)-1) + "</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case2_2_a')+wum1String + " " +LNG.K('textdb_msg_case2_2_b')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case1_5_a')+wuString+ " "+LNG.K('textdb_msg_case2_2_b')+"</p>");
-                $("#ta_div_statusErklaerung").append("<p>"+LNG.K('textdb_msg_case1_6')+"</p>");
-                $(".marked").removeClass("marked");
-                $("#ta_p_l5").addClass("marked");
-                $("#ta_p_l6").addClass("marked");
-                this.showVariableStatusField(weightUpdates,null);
-                statusID = 2;
-                aktKante.setLayout("lineColor","black");
-                aktKante.setLayout("lineWidth",2);
-            }
-            else {
-                aktKante.setLayout("lineColor","black");
-                aktKante.setLayout("lineWidth",2);
-                nextKantenID--;
-                aktKante = graph.edges[kantenIDs[nextKantenID]];
-                var v = aktKante.getTargetID();
-                distanz[v] = nodeUpdateStack.pop();
-                vorgaenger[v] = vorgaengerIDUpdateStack.pop();
-                aktKante.setHighlighted(false);
-                if(showVorgaenger) {
-                    if(vorgaenger[v]) {
-                        graph.edges[vorgaenger[v]].setHighlighted(true);
-                    }
-                }
-                if(distanz[v] == "inf") {
-                    graph.nodes[v].setLabel(String.fromCharCode(8734));
-                }
-                else {
-                    graph.nodes[v].setLabel(distanz[v].toString());
-                }
-                aktKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-                aktKante.setLayout("lineWidth",3);
-                statusID = 3;
-                // Erklärung im Statusfenster
-                $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\">2 "+LNG.K('textdb_msg_case1_1')+"</h3>"
-                    + "<h3 class=\"greyedOut\"> 2." + weightUpdates.toString() + " "+LNG.K('textdb_text_phase')+ " " + weightUpdates.toString() + " "+LNG.K('textdb_text_of')+ " " + (Utilities.objectSize(graph.nodes)-1) + "</h3>"
-                    + "<h3> 2." + weightUpdates.toString() + "." + (nextKantenID+1) + " " +LNG.K('textdb_msg_case1_2')+"</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case1_3')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case1_4')+"</p>");
-                $(".marked").removeClass("marked");
-                $("#ta_p_l7").addClass("marked");
-                this.showVariableStatusField(weightUpdates,aktKante);
-            }
-        }
-    }; */
-    
-    /**
-     * Setzt den zuletzt ausgeführten Negative Cyclce Check Schritt zurück
-     * @method
-     */
-    /* this.reverseNegativeCycleCheck = function() {
-        if(nextKantenID == 0) {
-            // War bei der Eingangsmeldung vom negative Kreise suchen
-            this.reverseLastUpdate(true);
-            return;
-        }
-        else {
-            nextKantenID--; 
-            var aktKante = graph.edges[kantenIDs[nextKantenID]];
-            aktKante.setLayout("lineColor","black");
-            aktKante.setLayout("lineWidth",2);
-            if(nextKantenID>0) {
-                var vorherigeKante = graph.edges[kantenIDs[nextKantenID-1]];
-                vorherigeKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-                vorherigeKante.setLayout("lineWidth",3);
-                // Erklärung im Statusfenster
-                $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\"> 3  "+LNG.K('textdb_msg_case2_1')+"</h3>"
-                    + "<h3>3." +(nextKantenID) +" " + LNG.K('textdb_msg_case2_5')+"</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case2_6')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_7')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_8')+"</p>");
-                $(".marked").removeClass("marked");
-                $("#ta_p_l9").addClass("marked");
-                this.showVariableStatusField(null,vorherigeKante);
-            }
-            else {
-                var wuString = "";
-                if(weightUpdates == 1) {
-                    wuString = LNG.K('textdb_text_oneedge');
-                } else {
-                    wuString = weightUpdates.toString() + " " + LNG.K('textdb_text_edges');
-                }
-                var wum1String = "";
-                if(weightUpdates == 2) {
-                    wum1String = LNG.K('textdb_text_oneedge');
-                } else {
-                    wum1String = (weightUpdates-1).toString() + " " + LNG.K('textdb_text_edges');
-                }
-                $("#ta_div_statusErklaerung").html("<h3> 3  "+LNG.K('textdb_msg_case2_1')+"</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case2_2_a') +wum1String+ " "+LNG.K('textdb_msg_case2_2_b')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_3_a')+ weightUpdates + " " + LNG.K('textdb_msg_case2_3_b')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_4')+"</p>");
-                $(".marked").removeClass("marked");
-                $("#ta_p_l8").addClass("marked");
-                this.showVariableStatusField(null,null);
-            }
-        }
-    }; */
-    
-    /* this.reverseBacktrack = function() {
-        if(!negativeCycleFound) {
-            // Algorithmus hätte im nächsten Schritt negativen Zyklus gezeigt
-            statusID = 4;
-            var aktKante = graph.edges[kantenIDs[nextKantenID]];
-            aktKante.setLayout("lineColor","black");
-            aktKante.setLayout("lineWidth",2);
-            if(nextKantenID>0) {
-                var vorherigeKante = graph.edges[kantenIDs[nextKantenID-1]];
-                vorherigeKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-                vorherigeKante.setLayout("lineWidth",3);
-                $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\"> 3  "+LNG.K('textdb_msg_case2_1')+"</h3>"
-                    + "<h3>3." +(nextKantenID) +" " +LNG.K('textdb_msg_case2_5')+"</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case2_6')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_7')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_8')+"</p>");
-                $(".marked").removeClass("marked");
-                $("#ta_p_l9").addClass("marked");
-                this.showVariableStatusField(null,vorherigeKante);
-            }
-            else {
-                var wuString = "";
-                if(weightUpdates == 1) {
-                    wuString = LNG.K('textdb_text_oneedge');
-                } else {
-                    wuString = weightUpdates.toString() + " " + LNG.K('textdb_text_edges');
-                }
-                var wum1String = "";
-                if(weightUpdates == 2) {
-                    wum1String = LNG.K('textdb_text_oneedge');
-                } else {
-                    wum1String = (weightUpdates-1).toString() + " " + LNG.K('textdb_text_edges');
-                }
-                $("#ta_div_statusErklaerung").html("<h3> 3  "+LNG.K('textdb_msg_case2_1')+"</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case2_2_a') +wum1String+ " "+LNG.K('textdb_msg_case2_2_b')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_3_a')+ weightUpdates + " " + LNG.K('textdb_msg_case2_3_b')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_4')+"</p>");
-                $(".marked").removeClass("marked");
-                $("#ta_p_l8").addClass("marked");
-                this.showVariableStatusField(null,null);
-            }
-        }
-        else {
-            // Algorithmus war komplett beendet
+
+        if(statusID == 8) {
             $("#ta_button_1Schritt").button("option", "disabled", false);
             $("#ta_button_vorspulen").button("option", "disabled", false);
-            negativeCycleFound = false;
-            for(var kantenID in graph.edges) {
-                graph.edges[kantenID].setLayout("lineColor","black");
-                graph.edges[kantenID].setLayout("lineWidth",2);
-            }
-            var aktKante = graph.edges[kantenIDs[nextKantenID]];
-            aktKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-            aktKante.setLayout("lineWidth",3);
-            $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\"> 3  "+LNG.K('textdb_msg_case2_1')+"</h3>"
-                    + "<h3>3." +(nextKantenID) +" " +LNG.K('textdb_msg_case2_5')+"</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case2_6')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_7')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_8')+"</p>");
-            $(".marked").removeClass("marked");
-            $("#ta_p_l9").addClass("marked");
-            this.showVariableStatusField(null,aktKante);
         }
-    }; */
-    
-    /* this.reverseSuccessEnding = function() {
-        $("#ta_button_1Schritt").button("option", "disabled", false);
-        $("#ta_button_vorspulen").button("option", "disabled", false);
-        statusID = 4;
-        // Animation
-        if(nextKantenID>0) {
-            var vorherigeKante = graph.edges[kantenIDs[nextKantenID-1]];
-            vorherigeKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-            vorherigeKante.setLayout("lineWidth",3);
+
+       this.needRedraw = true;
+    };
+
+    this.markPseudoCodeLine = function(line) {
+        currentPseudoCodeLine = line;
+        $(".marked").removeClass('marked');
+        $("#ta_p_l"+line).addClass('marked');
+    }
+
+    this.updatePseudoCodeValues = function() {
+        if(tourStartVertex != null) {
+            $("#ta_td_tourStartVertex").html(graph.nodes[tourStartVertex].getLabel());
+        }else{
+            $("#ta_td_tourStartVertex").html("-");
         }
-        if(kantenIDs.length > 0){
-            $("#ta_div_statusErklaerung").html("<h3 class=\"greyedOut\"> 3  "+LNG.K('textdb_msg_case2_1')+"</h3>"
-                    + "<h3>3." +(nextKantenID) +" " +LNG.K('textdb_msg_case2_5')+"</h3>"
-                    + "<p>"+LNG.K('textdb_msg_case2_6')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_7')+"</p>"
-                    + "<p>"+LNG.K('textdb_msg_case2_8')+"</p>");
-            $(".marked").removeClass("marked");
-            $("#ta_p_l9").addClass("marked");
-            this.showVariableStatusField(null,vorherigeKante);
+        if(tourCurrentVertex != null) {
+            $("#ta_td_tourCurrentVertex").html(graph.nodes[tourCurrentVertex].getLabel());
+        }else{
+            $("#ta_td_tourCurrentVertex").html("-");
         }
-        else {
-            var wuString = "";
-            if(weightUpdates == 1) {
-                wuString = LNG.K('textdb_text_oneedge');
-            } else {
-                wuString = weightUpdates.toString() + " " + LNG.K('textdb_text_edges');
+        if(euclideanSubTour.length == 0) {
+            $("#ta_td_euclideanSubtour").html("&#8709;");
+        }else{
+            var subtour = new Array();
+            for(var i = 0; i < euclideanSubTour.length; i++) {
+                if(euclideanSubTour[i].type == "vertex") {
+                    subtour.push(graph.nodes[euclideanSubTour[i].id].getLabel());
+                }
             }
-            var wum1String = "";
-            if(weightUpdates == 2) {
-                wum1String = LNG.K('textdb_text_oneedge');
-            } else {
-                wum1String = (weightUpdates-1).toString() + " " + LNG.K('textdb_text_edges');
+            $("#ta_td_euclideanSubtour").html("{" + subtour.join(',') + "}");
+        }
+        if(euclideanTour.length == 0) {
+            $("#ta_td_euclideanTour").html("&#8709;");
+        }else{
+            var tour = new Array();
+            for(var i = 0; i < euclideanTour.length; i++) {
+                if(euclideanTour[i].type == "vertex") {
+                    tour.push(graph.nodes[euclideanTour[i].id].getLabel());
+                }
             }
-            $("#ta_div_statusErklaerung").html("<h3> 3  "+LNG.K('textdb_msg_case2_1')+"</h3>"
-                + "<p>"+LNG.K('textdb_msg_case2_2_a') +wum1String+ " " +LNG.K('textdb_msg_case2_2_b')+"</p>"
-                + "<p>"+LNG.K('textdb_msg_case2_3_a')+ weightUpdates + " " + LNG.K('textdb_msg_case2_3_b')+"</p>"
-                + "<p>"+LNG.K('textdb_msg_case2_4')+"</p>");
-            $(".marked").removeClass("marked");
-            $("#ta_p_l8").addClass("marked");
-            this.showVariableStatusField(null,null);
+            $("#ta_td_euclideanTour").html("{" + tour.join(',') + "}");
         }
         
-    }; */
-    
-    /**
-     * Trägt den Status der Variablen in die entsprechenden Felder im Pseudocode
-     * Tab ein.
-     * @param {Number} i    Laufvariable
-     * @param {Edge} kante  Aktuell betrachtete Kante
-     * @method
-     */
-    /* this.showVariableStatusField = function(i,kante) {
-        if(i == null) {
-            $("#ta_td_vari").html("");
-        }
-        else {
-            $("#ta_td_vari").html(i.toString());
-        }
-        if(kante == null) {
-            $("#ta_td_vardu").html("");
-            $("#ta_td_vardv").html("");
-            $("#ta_td_varluv").html("");
-            return;
-        }
-        $("#ta_td_varluv").html(kante.weight.toString());
-        if(distanz[kante.getSourceID()] == "inf") {
-            $("#ta_td_vardu").html(String.fromCharCode(8734));
-            $("#ta_div_statusErklaerung").append("<p><strong>"+LNG.K('algorithm_status1') +String.fromCharCode(8734) + "</strong></p>");
-        }
-        else {
-            $("#ta_td_vardu").html(distanz[kante.getSourceID()].toString());
-            $("#ta_div_statusErklaerung").append("<p><strong>"+LNG.K('algorithm_status1') +distanz[kante.getSourceID()].toString() + "</strong></p>");
-        }
-        $("#ta_div_statusErklaerung").append("<p><strong>"+LNG.K('algorithm_status2') +kante.weight.toString() + "</strong></p>");
-        if(distanz[kante.getTargetID()] == "inf") {
-            $("#ta_td_vardv").html(String.fromCharCode(8734));
-            $("#ta_div_statusErklaerung").append("<p><strong"+LNG.K('algorithm_status3') +String.fromCharCode(8734) + "</strong></p>");
-        }
-        else {
-            $("#ta_td_vardv").html(distanz[kante.getTargetID()].toString());
-            $("#ta_div_statusErklaerung").append("<p><strong>"+LNG.K('algorithm_status3') +distanz[kante.getTargetID()].toString() + "</strong></p>");
-        }
-        var u = kante.getSourceID();
-        var v = kante.getTargetID();
-        if(distanz[u] != "inf" && (distanz[v] == "inf" || distanz[u] + kante.weight < distanz[v])) {
-            $("#ta_div_statusErklaerung").append("<p><strong>"+LNG.K('algorithm_status4')+"</strong></p>");
-        }
-        else {
-            $("#ta_div_statusErklaerung").append("<p><strong>"+LNG.K('algorithm_status5')+"</strong></p>");
-        }
-    }; */
 
-    // Edge visited = false
-    // Benennung v1, v2, ... & e1, e2, ...
-    this.initializeGraph = function() {
-        $("#ta_div_statusErklaerung").html("<h3>Initialisiere Graph</h3>");
+    };
+
+    this.addReplayStep = function() {
+
+        var nodeProperties = {};
+        for(var key in graph.nodes) {
+            nodeProperties[graph.nodes[key].getNodeID()] = {layout: JSON.stringify(graph.nodes[key].getLayout()), label: graph.nodes[key].getLabel()};
+        }
+
+        var edgeProperties = {}
+        for(var key in graph.edges) {
+            edgeProperties[graph.edges[key].getEdgeID()] = {layout: JSON.stringify(graph.edges[key].getLayout()), label: graph.edges[key].getAdditionalLabel(), visited: graph.edges[key].getVisited()};
+        }
+
+        replayHistory.push({
+            "previousStatusId": statusID,
+            "nodeProperties": nodeProperties,
+            "edgeProperties": edgeProperties,
+            "tourStartVertex": tourStartVertex,
+            "tourStartOddVertex": tourStartOddVertex,
+            "tourCurrentVertex": tourCurrentVertex,
+            "semiEuclideanGraph": semiEuclideanGraph,
+            "validGraph": validGraph,
+            "tourColorIndex": tourColorIndex,
+            "htmlSidebar": $("#ta_div_statusErklaerung").html(),
+            "euclideanTour": JSON.stringify(euclideanTour),
+            "euclideanSubTour": JSON.stringify(euclideanSubTour),
+            "legende": $("#tab_ta").find(".LegendeText").html(),
+            "pseudoCodeLine" : currentPseudoCodeLine,
+            "pseudo_start" : $("#ta_td_tourStartVertex").html(),
+            "pseudo_cur" : $("#ta_td_tourCurrentVertex").html(),
+            "pseudo_subtour" : $("#ta_td_euclideanSubtour").html(),
+            "pseudo_tour" : $("#ta_td_euclideanTour").html()
+        });
+
+        console.log("Current History Step: ", replayHistory[replayHistory.length-1]);
+
+    };
+
+    this.replayStep = function() {
+
+        var oldState = replayHistory.pop();
+
+        console.log("Replay Step", oldState);
+
+        statusID = oldState.previousStatusId;
+        tourStartVertex = oldState.tourStartVertex;
+        tourStartOddVertex = oldState.tourStartOddVertex;
+        tourCurrentVertex = oldState.tourCurrentVertex;
+        semiEuclideanGraph = oldState.semiEuclideanGraph;
+        validGraph = oldState.validGraph;
+        tourColorIndex = oldState.tourColorIndex;
+        $("#ta_div_statusErklaerung").html(oldState.htmlSidebar);
+        euclideanTour = JSON.parse(oldState.euclideanTour);
+        euclideanSubTour = JSON.parse(oldState.euclideanSubTour);
+        $("#tab_ta").find(".LegendeText").html(oldState.legende);
+        currentPseudoCodeLine = oldState.pseudoCodeLine;
+        this.markPseudoCodeLine(currentPseudoCodeLine);
+        $("#ta_td_tourStartVertex").html(oldState.pseudo_start);
+        $("#ta_td_tourCurrentVertex").html(oldState.pseudo_cur);
+        $("#ta_td_euclideanSubtour").html(oldState.pseudo_subtour);
+        $("#ta_td_euclideanTour").html(oldState.pseudo_tour);
+
+        for(var key in oldState.nodeProperties) {
+            graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].layout));
+            graph.nodes[key].setLabel(oldState.nodeProperties[key].label);
+        }
+
+        for(var key in oldState.edgeProperties) {
+            graph.edges[key].setLayoutObject(JSON.parse(oldState.edgeProperties[key].layout));
+            graph.edges[key].setAdditionalLabel(oldState.edgeProperties[key].label);
+            graph.edges[key].setVisited(oldState.edgeProperties[key].visited);
+        }
+
+        this.needRedraw = true;
+
+    };
+
+    this.addVertexToTour = function(vertex, tour) {
+        tour.push({type: "vertex", id: vertex.getNodeID()});
+    };
+
+    this.addEdgeToTour = function(edge, tour) {
+        tour.push({type: "edge", id: edge.getEdgeID()});
+    };
+
+    this.addNamingLabels = function() {
 
         var edgeCounter = 1;
         var nodeCounter = 1;
 
-        for(var kantenID in graph.edges) {
-            graph.edges[kantenID].setVisited(false);
-            graph.edges[kantenID].setAdditionalLabel("e"+edgeCounter);
-            edgeCounter++;
+        for(var knotenID in graph.nodes) {
+            graph.nodes[knotenID].setLabel(String.fromCharCode("a".charCodeAt(0)+nodeCounter-1));
+            nodeCounter++;
         };
 
-        for(var knotenID in graph.nodes) {
-            graph.nodes[knotenID].setLabel("v"+nodeCounter);
-            nodeCounter++;
+        /* for(var kantenID in graph.edges) {
+            graph.edges[kantenID].setAdditionalLabel("{"+graph.nodes[graph.edges[kantenID].getSourceID()].getLabel()+", "+graph.nodes[graph.edges[kantenID].getTargetID()].getLabel()+"}")
+            edgeCounter++;
+        }; */
+
+    };
+
+    // Edge visited = false
+    // Benennung v1, v2, ... & e1, e2, ...
+    this.initializeGraph = function() {
+        this.markPseudoCodeLine(2);
+
+        $("#ta_div_statusErklaerung").html("<h3>Initialisiere Graph</h3>");
+
+        this.addNamingLabels();
+
+        var edgeCounter = 1;
+
+        for(var kantenID in graph.edges) {
+            graph.edges[kantenID].setVisited(false);
+            edgeCounter++;
         };
 
         statusID = 1;
@@ -1070,15 +452,16 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
     // Check ob Graph Euclidisch oder Semi Euclidisch ist
     this.checkGraph = function() {
+        this.markPseudoCodeLine(3);
         $("#ta_div_statusErklaerung").html("<h3>Prüfe ob Graph euclidisch oder semi-euclidisch ist</h3>");
+        $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/knoten_even.png" alt="Knoten" class="LegendeIcon"></td><td><span>Knoten mit geradem Grad 2</span></td></tr><tr><td class="LegendeTabelle"><img src="img/knoten_odd.png" alt="Knoten" class="LegendeIcon"></td><td><span>Knoten mit ungeradem Grad 3</span></td></tr></table>');
 
         var numberOfOddVertices = 0;
         var firstOddVertex = null;
 
         this.needRedraw = true;
 
-        
-        if(Object.keys(graph.nodes).length < 2) {       // Graph to small
+        if(Object.keys(graph.nodes).length < 2) {       // Graph too small
             statusID = 2;
             validGraph = false;
             return false;
@@ -1127,8 +510,10 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         if(fastForwardIntervalID != null) {
             this.stopFastForward();
         }
+
         $("#ta_button_1Schritt").button("option", "disabled", true);
         $("#ta_button_vorspulen").button("option", "disabled", true);
+        $("#ta_button_Zurueck").button("option", "disabled", true);
 
         return true;
 
@@ -1136,25 +521,14 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
     // Selectiere Start Vertice, entweder #1 (Euclidisch) oder #1 mit ungeradem Grad (Semi Euclidisch)
     this.findStartingVertex = function() {
+        this.markPseudoCodeLine(5);
         $("#ta_div_statusErklaerung").html("<h3>Finde Start Knoten</h3>");
+        $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>Startknoten bzw. Knoten der mit dem Startknoten verglichen wird</span></td></tr><tr><td class="LegendeTabelle"><img src="img/pfad.png" alt="Kante" class="LegendeIcon"></td><td><span>Kante der Eulertour im aktuellen Durchgang</span></td></tr></table>');
 
         // Restore Naming
-
-        var edgeCounter = 1;
-        var nodeCounter = 1;
-
-        for(var kantenID in graph.edges) {
-            graph.edges[kantenID].setAdditionalLabel("e"+edgeCounter);
-            edgeCounter++;
-        };
-
-        for(var knotenID in graph.nodes) {
-            graph.nodes[knotenID].setLabel("v"+nodeCounter);
-            nodeCounter++;
-        };
+        this.addNamingLabels();
 
         // Set Starting & Current Vertex
-
         if(semiEuclideanGraph) {
             tourStartVertex = tourStartOddVertex;
         }else{
@@ -1168,8 +542,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         tourCurrentVertex = tourStartVertex;
 
         euclideanSubTour = new Array();
-        euclideanSubTour.push(graph.nodes[tourCurrentVertex].getLabel());
-        console.log("Subtour: "+euclideanSubTour);
+        this.addVertexToTour(graph.nodes[tourCurrentVertex], euclideanSubTour);
+        if(debugConsole) console.log("Subtour: ", euclideanSubTour);
 
         this.needRedraw = true;
 
@@ -1183,6 +557,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn keiner gefunden -> mergeTour()
     // Wenn gefunden -> findNextVertexForTour()
     this.findNextVertexForTour = function() {
+        this.markPseudoCodeLine(9);
         $("#ta_div_statusErklaerung").html("<h3>Finde nächsten Knoten</h3>");
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
@@ -1227,8 +602,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             return false;
         }
 
-        euclideanSubTour.push(graph.edges[nextEdge].getAdditionalLabel());
-        console.log("Subtour: "+ euclideanSubTour);
+        this.addEdgeToTour(graph.edges[nextEdge], euclideanSubTour);
+        if(debugConsole) console.log("Subtour: ", euclideanSubTour);
 
         graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFilling);
 
@@ -1239,8 +614,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             tourCurrentVertex = graph.edges[nextEdge].getSourceID();
         }
 
-        euclideanSubTour.push(graph.nodes[tourCurrentVertex].getLabel());
-        console.log("Subtour: "+ euclideanSubTour);
+        this.addVertexToTour(graph.nodes[tourCurrentVertex], euclideanSubTour);
+        if(debugConsole) console.log("Subtour: ", euclideanSubTour);
 
         graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
 
@@ -1254,11 +629,12 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn gleich -> mergeTour()
     // Wenn ungleich -> findNextVertexForTour()
     this.compareVertexWithStart = function() {
+        this.markPseudoCodeLine(7);
         $("#ta_div_statusErklaerung").html("<h3>Vergleiche Knoten mit Startknoten</h3>");
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
 
-        console.log("Start: " + tourStartVertex + ", Current: "+ tourCurrentVertex);
+        if(debugConsole) console.log("Start: " + tourStartVertex + ", Current: "+ tourCurrentVertex);
 
         if(tourStartVertex == tourCurrentVertex) {
             statusID = 6;
@@ -1274,6 +650,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Bei leerer Tour, Tour = Subtour
     // Bei vorhandener Tour, Replace Start mit Subtour
     this.mergeTour = function() {
+        this.markPseudoCodeLine(10);
         $("#ta_div_statusErklaerung").html("<h3>Integriere Tour in Gesamttour</h3>");
 
         tourColorIndex++;
@@ -1284,17 +661,16 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         var replaced = false;
 
         if(euclideanTour.length === 0) {
-            euclideanTour = euclideanSubTour;
-            euclideanSubTour = new Array();
-        }else if(euclideanSubTour[0] != euclideanSubTour[(euclideanSubTour.length - 1)]) {
-            console.log("Spezialfall mit 2 Odd Vertices");
+            euclideanTour = euclideanSubTour;          
+        }else if(JSON.stringify(euclideanSubTour[0]) !== JSON.stringify(euclideanSubTour[(euclideanSubTour.length - 1)])) {
+            if(debugConsole) console.log("Spezialfall mit 2 Odd Vertices");
 
             var startOfSubTour = euclideanSubTour[0];
             var newTour = new Array();
             var specialLast = null;
 
             for(var i = 0; i < euclideanTour.length; i++) {
-                if(euclideanTour[i] == startOfSubTour) {
+                if(JSON.stringify(euclideanTour[i]) === JSON.stringify(startOfSubTour)) {
                     specialLast = i;
                 }
             }
@@ -1302,6 +678,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             for(var i = 0; i < euclideanTour.length; i++) {
                 if(specialLast == i) {
                     for(var j = 0; j < euclideanSubTour.length; j++) {
+                        if(euclideanSubTour[j].type == "edge") {
+                            graph.edges[euclideanSubTour[j].id].setLayout("lineColor", tourColors[0]);
+                        }
                         newTour.push(euclideanSubTour[j]);
                     }
                     replaced = true;
@@ -1317,8 +696,11 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             var newTour = new Array();
 
             for(var i = 0; i < euclideanTour.length; i++) {
-                if(euclideanTour[i] == startOfSubTour && !replaced) {
+                if(JSON.stringify(euclideanTour[i]) == JSON.stringify(startOfSubTour) && !replaced) {
                     for(var j = 0; j < euclideanSubTour.length; j++) {
+                        if(euclideanSubTour[j].type == "edge") {
+                            graph.edges[euclideanSubTour[j].id].setLayout("lineColor", tourColors[0]);
+                        }
                         newTour.push(euclideanSubTour[j]);
                     }
                     replaced = true;
@@ -1331,7 +713,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
         }
 
-        console.log("Current Complete Euclidean Tour: " + euclideanTour);
+        euclideanSubTour = new Array();
+
+        if(debugConsole) console.log("Current Complete Euclidean Tour: ", euclideanTour);
 
         statusID = 7;
 
@@ -1342,18 +726,19 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn ja -> returnTour()
     // Wenn nein -> findNewStartingVertex()
     this.checkForEuclideanTour = function() {
+        this.markPseudoCodeLine(4);
         $("#ta_div_statusErklaerung").html("<h3>Prüfe ob Tour ein Euclidischer Kreis/Tour ist</h3>");
 
         var numberOfEdgesInGraph = Object.keys(graph.edges).length;
         var numberOfEdgesInTour = 0;
 
         for(var i = 0; i < euclideanTour.length; i++) {
-            if(new String(euclideanTour[i]).substr(0, 1) == "e") {
+            if(euclideanTour[i].type == "edge") {
                 numberOfEdgesInTour++;
             }
         }
 
-        console.log("Edges in Graph:" + numberOfEdgesInGraph + ", Edges in Tour: " + numberOfEdgesInTour);
+        if(debugConsole) console.log("Edges in Graph:" + numberOfEdgesInGraph + ", Edges in Tour: " + numberOfEdgesInTour);
 
         if(numberOfEdgesInGraph == numberOfEdgesInTour) {
             statusID = 8;
@@ -1367,16 +752,27 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
     // Zeige Tour
     this.returnTour = function() {
+        this.markPseudoCodeLine(11);
         $("#ta_div_statusErklaerung").html("<h3>Zeige Ergebnis</h3>");
 
-        if(semiEuclideanGraph) {
-            console.log("Complete Euclidean Trail: " + euclideanTour);
-            $("#ta_div_statusErklaerung").append("<p>Zug:<br /> " + euclideanTour + "</p>");
-        }else{
-            console.log("Complete Euclidean Circle: " + euclideanTour);
-            $("#ta_div_statusErklaerung").append("<p>Kreis:<br /> " + euclideanTour + "</p>");
+        var output = "";
+
+        for(var i = 0; i < euclideanTour.length; i++) {
+            if(euclideanTour[i].type == "vertex") {
+                output += "<li>"+graph.nodes[euclideanTour[i].id].getLabel()+"</li>";
+            }
+            if(euclideanTour[i].type == "edge") {
+                output += "<li>{"+graph.nodes[graph.edges[euclideanTour[i].id].getSourceID()].getLabel()+", "+graph.nodes[graph.edges[euclideanTour[i].id].getTargetID()].getLabel()+"}</li>";
+            }
         }
-        
+
+        if(semiEuclideanGraph) {
+            if(debugConsole) console.log("Complete Euclidean Trail: ", euclideanTour);
+            $("#ta_div_statusErklaerung").append("<p>Zug:<br /> <ul>" + output + "</ul></p>");
+        }else{
+            if(debugConsole) console.log("Complete Euclidean Circle: ", euclideanTour);
+            $("#ta_div_statusErklaerung").append("<p>Kreis:<br /> <ul>" + output + "</ul></p>");
+        }      
 
         if(fastForwardIntervalID != null) {
             this.stopFastForward();
@@ -1388,28 +784,23 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Finde neuen Startpunkt in Tour
     // Erster Knoten, dessen Grad unbesuchter Kanten größer 0 ist -> findNextVertexForTour()
     this.findNewStartingVertex = function() {
+        this.markPseudoCodeLine(5);
         $("#ta_div_statusErklaerung").html("<h3>Finde neuen Startpunkt für eine neue Subtour</h3>");
 
         euclideanSubTour = new Array();
 
-        // Temporär
         for(var i = 0; i < euclideanTour.length; i++) {
-            if(new String(euclideanTour[i]).substr(0, 1) == "v") {
-                var matchingNode = null;
-                for(var knotenID in graph.nodes) {
-                    if(graph.nodes[knotenID].getLabel() == euclideanTour[i]) {
-                        matchingNode = knotenID;
-                        break;
-                    }
-                }
-                if(graph.nodes[matchingNode].getUnvisitedDegree() > 0) {
-                    tourStartVertex = matchingNode;
-                    graph.nodes[matchingNode].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
-                    tourCurrentVertex = matchingNode;
+            
+            if(euclideanTour[i].type == "vertex") {
+                if(graph.nodes[euclideanTour[i].id].getUnvisitedDegree() > 0) {
+                    tourStartVertex = euclideanTour[i].id;
+                    graph.nodes[euclideanTour[i].id].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+                    tourCurrentVertex = euclideanTour[i].id;
 
                     euclideanSubTour = new Array();
-                    euclideanSubTour.push(graph.nodes[matchingNode].getLabel());
-                    console.log("Subtour: " + euclideanSubTour);
+                    this.addVertexToTour(graph.nodes[euclideanTour[i].id], euclideanSubTour);
+
+                    if(debugConsole) console.log("Subtour: ", euclideanSubTour);
 
                     this.needRedraw = true;
                     break;

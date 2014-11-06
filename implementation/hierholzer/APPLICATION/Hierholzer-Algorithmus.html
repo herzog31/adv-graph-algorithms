@@ -82,7 +82,7 @@
                     <canvas class="graphCanvas" id="tg_canvas_graph" width="700" height="500">
                         Ihr Browser unterstützt kein HTML5 Canvas. Bitte verwenden Sie einen modernen Browser, z.B.<a href="http://www.mozilla.org/de/firefox">Mozilla Firefox</a>
                     </canvas>
-                    <div class="Legende" id="tg_div_Legende">
+                    <div class="Legende" id="tg_div_Legende" style="height: auto;">
                         <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
                         <div class="LegendeText">
                             <table>
@@ -91,9 +91,8 @@
                                     <td><span>Knoten</span></td>
                                 </tr>
                                 <tr>
-                                    <!-- TODO -->
                                     <td class="LegendeTabelle"><img src="img/kante.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>Kante mit Gewicht 50</span></td>
+                                    <td><span>Ungerichtete Kante</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -144,12 +143,12 @@
                         <div class="LegendeText">
                             <table>
                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>Startknoten, von dem aus die Entfernungen und günstigsten Wege berechnet werden.</span></td>
+                                    <td class="LegendeTabelle"><img src="img/knoten.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td><span>Knoten</span></td>
                                 </tr>
-                                <tr class="LegendeZeileClickable" id="ta_tr_LegendeClickable" title="Klicke zum Ein-/Ausblenden">
-                                    <td class="LegendeTabelle"><img src="img/markierteKante.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>"Vorgängerkante", die der günstigste Weg zum Knoten benutzt.</span></td>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/kante.png" alt="Kante" class="LegendeIcon"></td>
+                                    <td><span>Ungerichtete Kante</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -174,29 +173,29 @@
                         </div>
                         <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
                             <p class="pseudocode" id="ta_p_l1">BEGIN</p>
-                            <p class="pseudocode" id="ta_p_l2">  d(v[1]) &larr; 0</p>
-                            <p class="pseudocode" id="ta_p_l3">  FOR j = 2,..,n DO</p>
-                            <p class="pseudocode" id="ta_p_l4">    d(v[j]) &larr; &#8734;</p>
-                            <p class="pseudocode" id="ta_p_l5">  FOR i = 1,..,(|V|-1) DO</p>
-                            <p class="pseudocode" id="ta_p_l6">    FOR ALL (u,v) aus E DO</p>
-                            <p class="pseudocode" id="ta_p_l7">      d(v) &larr; min(d(v), d(u)+l(u,v))</p>
-                            <p class="pseudocode" id="ta_p_l8">  FOR ALL (u,v) aus E DO</p>
-                            <p class="pseudocode" id="ta_p_l9">    IF d(v) > d(u) + l(u,v) DO</p>
-                            <p class="pseudocode" id="ta_p_l10">      Meldung: "Negativer Kreis"</p>
+                            <p class="pseudocode" id="ta_p_l2">  &#8704;e &#8712; E &rarr; v(e) = 0</p>
+                            <p class="pseudocode" id="ta_p_l3">  IF invalid(G) &rarr; END</p>
+                            <p class="pseudocode" id="ta_p_l4">  WHILE |E| > |{tour &#8745; E}|</p>
+                            <p class="pseudocode" id="ta_p_l5">    start &#8712; V : &#8707;{u,v} &#8712; E &#8743; v({u,v}) = 0</p>
+                            <p class="pseudocode" id="ta_p_l6">    cur = &empty;</p>
+                            <p class="pseudocode" id="ta_p_l7">    WHILE start &#8800; cur</p>
+                            <p class="pseudocode" id="ta_p_l8">      IF cur = &empty; &rarr; cur = start</p>
+                            <p class="pseudocode" id="ta_p_l9">      cur &#8712; V : &#8707;{cur,u} &#8712; E<br />                &#8743; v({cur,u}) = 0</p>
+                            <p class="pseudocode" id="ta_p_l10">    tour = tour &#8746; subtour</p>
                             <p class="pseudocode" id="ta_p_l11">END</p>
                             <h3>Status der Variablen:</h3>
                             <table class="algoInformationen">
                                 <tr>
-                                    <th class="algoInfoTH"><span>i</span></th>
-                                    <th class="algoInfoTH"><span>d(u)</span></th>
-                                    <th class="algoInfoTH"><span>d(v)</span></th>
-                                    <th class="algoInfoTH"><span>l(u,v)</span></th>
+                                    <th class="algoInfoTH"><span>start</span></th>
+                                    <th class="algoInfoTH"><span>cur</span></th>
+                                    <th class="algoInfoTH"><span>subtour</span></th>
+                                    <th class="algoInfoTH"><span>tour</span></th>
                                 </tr>
                                 <tr>
-                                    <td id="ta_td_vari" class="algoInfoTD"></td>
-                                    <td id="ta_td_vardu" class="algoInfoTD"></td>
-                                    <td id="ta_td_vardv" class="algoInfoTD"></td>
-                                    <td id="ta_td_varluv" class="algoInfoTD"></td>
+                                    <td id="ta_td_tourStartVertex" class="algoInfoTD">-</td>
+                                    <td id="ta_td_tourCurrentVertex" class="algoInfoTD">-</td>
+                                    <td id="ta_td_euclideanSubtour" class="algoInfoTD">&#8709;</td>
+                                    <td id="ta_td_euclideanTour" class="algoInfoTD">&#8709;</td>
                                 </tr>
                             </table>
                         </div>
