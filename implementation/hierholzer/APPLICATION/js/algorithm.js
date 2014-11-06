@@ -422,7 +422,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             "tourColorIndex": tourColorIndex,
             "htmlSidebar": $("#ta_div_statusErklaerung").html(),
             "euclideanTour": JSON.stringify(euclideanTour),
-            "euclideanSubTour": JSON.stringify(euclideanSubTour)
+            "euclideanSubTour": JSON.stringify(euclideanSubTour),
+            "legende": $("#tab_ta").find(".LegendeText").html()
         });
 
         console.log("Current History Step: ", replayHistory[replayHistory.length-1]);
@@ -445,6 +446,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_div_statusErklaerung").html(oldState.htmlSidebar);
         euclideanTour = JSON.parse(oldState.euclideanTour);
         euclideanSubTour = JSON.parse(oldState.euclideanSubTour);
+        $("#tab_ta").find(".LegendeText").html(oldState.legende);
 
         for(var key in oldState.nodeProperties) {
             graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].layout));
@@ -512,6 +514,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Check ob Graph Euclidisch oder Semi Euclidisch ist
     this.checkGraph = function() {
         $("#ta_div_statusErklaerung").html("<h3>Prüfe ob Graph euclidisch oder semi-euclidisch ist</h3>");
+        $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/knoten_even.png" alt="Knoten" class="LegendeIcon"></td><td><span>Knoten mit geradem Grad 2</span></td></tr><tr><td class="LegendeTabelle"><img src="img/knoten_odd.png" alt="Knoten" class="LegendeIcon"></td><td><span>Knoten mit ungeradem Grad 3</span></td></tr></table>');
 
         var numberOfOddVertices = 0;
         var firstOddVertex = null;
@@ -579,6 +582,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Selectiere Start Vertice, entweder #1 (Euclidisch) oder #1 mit ungeradem Grad (Semi Euclidisch)
     this.findStartingVertex = function() {
         $("#ta_div_statusErklaerung").html("<h3>Finde Start Knoten</h3>");
+        $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>Startknoten bzw. Knoten der mit dem Startknoten verglichen wird</span></td></tr><tr><td class="LegendeTabelle"><img src="img/pfad.png" alt="Kante" class="LegendeIcon"></td><td><span>Kante der Eulertour im aktuellen Durchgang</span></td></tr></table>');
 
         // Restore Naming
         this.addNamingLabels();
