@@ -30,11 +30,6 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      */
     var fastForwardIntervalID = null;
     /**
-     * Knoten, von dem aus alle Entfernungen berechnet werden.
-     * @type GraphNode
-     */
-    var startNode = null;
-    /**
      * Der Algorithmus kann in verschiedenen Zuständen sein, diese Variable 
      * speichert die ID des aktuellen Zustands.<br>
      * Siehe Dokumentation bei der Funktion nextStepChoice
@@ -46,71 +41,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * @type BFAlgorithm
      */
     var algo = this;
-    /**
-     * Assoziatives Array mit den Abstandswerten aller Knoten<br>
-     * Keys: KnotenIDs Value: Abstandswert
-     * @type Object
-     */
-    var distanz = new Object();
-    /**
-     * Assoziatives Array mit den Vorgängerkanten aller Knoten<br>
-     * Keys: KnotenIDs Value: KantenID
-     * @type Object
-     */
-    var vorgaenger = new Object();
-    /**
-     * Zählt die Phasen / Runden.
-     * @type Number
-     */
-    var weightUpdates = 0;
-    /**
-     * Ein Array der KantenIDs, damit man die Kanten linear ablaufen kann
-     * @type Number[]
-     */
-    var kantenIDs = Utilities.arrayOfKeys(graph.edges);
-    /**
-     * Die Kante, die wir als nächstes betrachten werden, als Key für das 
-     * Array kantenIDs.
-     * @type Number
-     */
-    var nextKantenID = null;
-    /**
-     * Sammelt Information über den aktuellen Weg zum Startknoten, der angezeigt wird<br>
-     * Felder: modifiedEdges: Information über die Kanten, deren Layout verändert wurde, altes Layout und ID<br>
-     *         nodeID: Id des Knotens, der grade verändert wird.
-     * @type Object
-     */
-    var showWayOfNode = null;
-    /**
-     * Zeigt an, ob die Vorgängerkanten markiert werden sollen oder nicht.
-     * @type Boolean
-     */
-    var showVorgaenger = true;
-    /**
-     * Zeigt an, ob ein negativer Kreis gefunden wurde oder nicht
-     * @type Boolean
-     */
-    var negativeCycleFound = false;
     
-    /**
-     * Die Distanzwerte der Knoten werden nach und nach auf diesen Stack gepusht.<br>
-     * Wird für den "Zurück" Button benötigt.
-     * @type Number[]
-     */
-    var nodeUpdateStack = new Array();
-    
-    /**
-     * Die VorgänerIDs der Knoten werden nach und nach auf diesen Stack gepusht.<br>
-     * Wird für den "Zurück" Button benötigt.
-     * @type Number[]
-     */
-    var vorgaengerIDUpdateStack = new Array();
-
-
     var replayHistory = new Array();
-
     var debugConsole = true;
-
     var tourStartVertex = null;
     var tourStartOddVertex = null;
     var tourCurrentVertex = null;
@@ -118,10 +51,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     var validGraph = false;
     var euclideanTour = new Array();
     var euclideanSubTour = new Array();
-
+    var currentPseudoCodeLine = 1;
     var tourColors = new Array("blue", "green", "red", "yellow", "orange", "purple", "brown");
     var tourColorIndex = 0;
-
     
     /**
      * Startet die Ausführung des Algorithmus.
@@ -187,12 +119,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.registerEventHandlers = function() {
-        //canvas.on("click.BFAlgorithm",function(e) {algo.canvasClickHandler(e);});
-        //canvas.on("mousemove.BFAlgorithm",function(e) {algo.canvasMouseMoveHandler(e);});
         $("#ta_button_1Schritt").on("click.BFAlgorithm",function() {algo.singleStepHandler();});
         $("#ta_button_vorspulen").on("click.BFAlgorithm",function() {algo.fastForwardAlgorithm();});
         $("#ta_button_stoppVorspulen").on("click.BFAlgorithm",function() {algo.stopFastForward();});
-        // TODO $("#ta_tr_LegendeClickable").on("click.BFAlgorithm",function() {algo.changeVorgaengerVisualization();});
         $("#ta_button_Zurueck").on("click.BFAlgorithm",function() {algo.previousStepChoice();});
     };
     
@@ -205,8 +134,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_button_1Schritt").off(".BFAlgorithm");
         $("#ta_button_vorspulen").off(".BFAlgorithm");
         $("#ta_button_stoppVorspulen").off(".BFAlgorithm");
-        // $("#ta_tr_LegendeClickable").off(".BFAlgorithm");
-        // $("#ta_button_Zurueck").off(".BFAlgorithm");
+        $("#ta_tr_LegendeClickable").off(".BFAlgorithm");
+        $("#ta_button_Zurueck").off(".BFAlgorithm");
     };
     
     /**
@@ -301,6 +230,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             console.log("Fehlerhafter State");
             break;
         }
+
+        this.updatePseudoCodeValues();
+
         this.needRedraw = true;
     };
     
@@ -349,54 +281,49 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
        this.needRedraw = true;
     };
-    
-    /**
-     * Trägt den Status der Variablen in die entsprechenden Felder im Pseudocode
-     * Tab ein.
-     * @param {Number} i    Laufvariable
-     * @param {Edge} kante  Aktuell betrachtete Kante
-     * @method
-     */
-    /* this.showVariableStatusField = function(i,kante) {
-        if(i == null) {
-            $("#ta_td_vari").html("");
+
+    this.markPseudoCodeLine = function(line) {
+        currentPseudoCodeLine = line;
+        $(".marked").removeClass('marked');
+        $("#ta_p_l"+line).addClass('marked');
+    }
+
+    this.updatePseudoCodeValues = function() {
+        if(tourStartVertex != null) {
+            $("#ta_td_tourStartVertex").html(graph.nodes[tourStartVertex].getLabel());
+        }else{
+            $("#ta_td_tourStartVertex").html("-");
         }
-        else {
-            $("#ta_td_vari").html(i.toString());
+        if(tourCurrentVertex != null) {
+            $("#ta_td_tourCurrentVertex").html(graph.nodes[tourCurrentVertex].getLabel());
+        }else{
+            $("#ta_td_tourCurrentVertex").html("-");
         }
-        if(kante == null) {
-            $("#ta_td_vardu").html("");
-            $("#ta_td_vardv").html("");
-            $("#ta_td_varluv").html("");
-            return;
+        if(euclideanSubTour.length == 0) {
+            $("#ta_td_euclideanSubtour").html("&#8709;");
+        }else{
+            var subtour = new Array();
+            for(var i = 0; i < euclideanSubTour.length; i++) {
+                if(euclideanSubTour[i].type == "vertex") {
+                    subtour.push(graph.nodes[euclideanSubTour[i].id].getLabel());
+                }
+            }
+            $("#ta_td_euclideanSubtour").html("{" + subtour.join(',') + "}");
         }
-        $("#ta_td_varluv").html(kante.weight.toString());
-        if(distanz[kante.getSourceID()] == "inf") {
-            $("#ta_td_vardu").html(String.fromCharCode(8734));
-            $("#ta_div_statusErklaerung").append("<p><strong>"+LNG.K('algorithm_status1') +String.fromCharCode(8734) + "</strong></p>");
+        if(euclideanTour.length == 0) {
+            $("#ta_td_euclideanTour").html("&#8709;");
+        }else{
+            var tour = new Array();
+            for(var i = 0; i < euclideanTour.length; i++) {
+                if(euclideanTour[i].type == "vertex") {
+                    tour.push(graph.nodes[euclideanTour[i].id].getLabel());
+                }
+            }
+            $("#ta_td_euclideanTour").html("{" + tour.join(',') + "}");
         }
-        else {
-            $("#ta_td_vardu").html(distanz[kante.getSourceID()].toString());
-            $("#ta_div_statusErklaerung").append("<p><strong>"+LNG.K('algorithm_status1') +distanz[kante.getSourceID()].toString() + "</strong></p>");
-        }
-        $("#ta_div_statusErklaerung").append("<p><strong>"+LNG.K('algorithm_status2') +kante.weight.toString() + "</strong></p>");
-        if(distanz[kante.getTargetID()] == "inf") {
-            $("#ta_td_vardv").html(String.fromCharCode(8734));
-            $("#ta_div_statusErklaerung").append("<p><strong"+LNG.K('algorithm_status3') +String.fromCharCode(8734) + "</strong></p>");
-        }
-        else {
-            $("#ta_td_vardv").html(distanz[kante.getTargetID()].toString());
-            $("#ta_div_statusErklaerung").append("<p><strong>"+LNG.K('algorithm_status3') +distanz[kante.getTargetID()].toString() + "</strong></p>");
-        }
-        var u = kante.getSourceID();
-        var v = kante.getTargetID();
-        if(distanz[u] != "inf" && (distanz[v] == "inf" || distanz[u] + kante.weight < distanz[v])) {
-            $("#ta_div_statusErklaerung").append("<p><strong>"+LNG.K('algorithm_status4')+"</strong></p>");
-        }
-        else {
-            $("#ta_div_statusErklaerung").append("<p><strong>"+LNG.K('algorithm_status5')+"</strong></p>");
-        }
-    }; */
+        
+
+    };
 
     this.addReplayStep = function() {
 
@@ -423,7 +350,12 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             "htmlSidebar": $("#ta_div_statusErklaerung").html(),
             "euclideanTour": JSON.stringify(euclideanTour),
             "euclideanSubTour": JSON.stringify(euclideanSubTour),
-            "legende": $("#tab_ta").find(".LegendeText").html()
+            "legende": $("#tab_ta").find(".LegendeText").html(),
+            "pseudoCodeLine" : currentPseudoCodeLine,
+            "pseudo_start" : $("#ta_td_tourStartVertex").html(),
+            "pseudo_cur" : $("#ta_td_tourCurrentVertex").html(),
+            "pseudo_subtour" : $("#ta_td_euclideanSubtour").html(),
+            "pseudo_tour" : $("#ta_td_euclideanTour").html()
         });
 
         console.log("Current History Step: ", replayHistory[replayHistory.length-1]);
@@ -447,6 +379,12 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         euclideanTour = JSON.parse(oldState.euclideanTour);
         euclideanSubTour = JSON.parse(oldState.euclideanSubTour);
         $("#tab_ta").find(".LegendeText").html(oldState.legende);
+        currentPseudoCodeLine = oldState.pseudoCodeLine;
+        this.markPseudoCodeLine(currentPseudoCodeLine);
+        $("#ta_td_tourStartVertex").html(oldState.pseudo_start);
+        $("#ta_td_tourCurrentVertex").html(oldState.pseudo_cur);
+        $("#ta_td_euclideanSubtour").html(oldState.pseudo_subtour);
+        $("#ta_td_euclideanTour").html(oldState.pseudo_tour);
 
         for(var key in oldState.nodeProperties) {
             graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].layout));
@@ -491,6 +429,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Edge visited = false
     // Benennung v1, v2, ... & e1, e2, ...
     this.initializeGraph = function() {
+        this.markPseudoCodeLine(2);
 
         $("#ta_div_statusErklaerung").html("<h3>Initialisiere Graph</h3>");
 
@@ -513,6 +452,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
     // Check ob Graph Euclidisch oder Semi Euclidisch ist
     this.checkGraph = function() {
+        this.markPseudoCodeLine(3);
         $("#ta_div_statusErklaerung").html("<h3>Prüfe ob Graph euclidisch oder semi-euclidisch ist</h3>");
         $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/knoten_even.png" alt="Knoten" class="LegendeIcon"></td><td><span>Knoten mit geradem Grad 2</span></td></tr><tr><td class="LegendeTabelle"><img src="img/knoten_odd.png" alt="Knoten" class="LegendeIcon"></td><td><span>Knoten mit ungeradem Grad 3</span></td></tr></table>');
 
@@ -581,6 +521,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
     // Selectiere Start Vertice, entweder #1 (Euclidisch) oder #1 mit ungeradem Grad (Semi Euclidisch)
     this.findStartingVertex = function() {
+        this.markPseudoCodeLine(5);
         $("#ta_div_statusErklaerung").html("<h3>Finde Start Knoten</h3>");
         $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>Startknoten bzw. Knoten der mit dem Startknoten verglichen wird</span></td></tr><tr><td class="LegendeTabelle"><img src="img/pfad.png" alt="Kante" class="LegendeIcon"></td><td><span>Kante der Eulertour im aktuellen Durchgang</span></td></tr></table>');
 
@@ -616,6 +557,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn keiner gefunden -> mergeTour()
     // Wenn gefunden -> findNextVertexForTour()
     this.findNextVertexForTour = function() {
+        this.markPseudoCodeLine(9);
         $("#ta_div_statusErklaerung").html("<h3>Finde nächsten Knoten</h3>");
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
@@ -687,6 +629,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn gleich -> mergeTour()
     // Wenn ungleich -> findNextVertexForTour()
     this.compareVertexWithStart = function() {
+        this.markPseudoCodeLine(7);
         $("#ta_div_statusErklaerung").html("<h3>Vergleiche Knoten mit Startknoten</h3>");
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
@@ -707,6 +650,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Bei leerer Tour, Tour = Subtour
     // Bei vorhandener Tour, Replace Start mit Subtour
     this.mergeTour = function() {
+        this.markPseudoCodeLine(10);
         $("#ta_div_statusErklaerung").html("<h3>Integriere Tour in Gesamttour</h3>");
 
         tourColorIndex++;
@@ -717,8 +661,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         var replaced = false;
 
         if(euclideanTour.length === 0) {
-            euclideanTour = euclideanSubTour;
-            euclideanSubTour = new Array();
+            euclideanTour = euclideanSubTour;          
         }else if(JSON.stringify(euclideanSubTour[0]) !== JSON.stringify(euclideanSubTour[(euclideanSubTour.length - 1)])) {
             if(debugConsole) console.log("Spezialfall mit 2 Odd Vertices");
 
@@ -770,6 +713,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
         }
 
+        euclideanSubTour = new Array();
+
         if(debugConsole) console.log("Current Complete Euclidean Tour: ", euclideanTour);
 
         statusID = 7;
@@ -781,6 +726,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn ja -> returnTour()
     // Wenn nein -> findNewStartingVertex()
     this.checkForEuclideanTour = function() {
+        this.markPseudoCodeLine(4);
         $("#ta_div_statusErklaerung").html("<h3>Prüfe ob Tour ein Euclidischer Kreis/Tour ist</h3>");
 
         var numberOfEdgesInGraph = Object.keys(graph.edges).length;
@@ -806,6 +752,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
     // Zeige Tour
     this.returnTour = function() {
+        this.markPseudoCodeLine(11);
         $("#ta_div_statusErklaerung").html("<h3>Zeige Ergebnis</h3>");
 
         var output = "";
@@ -837,6 +784,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Finde neuen Startpunkt in Tour
     // Erster Knoten, dessen Grad unbesuchter Kanten größer 0 ist -> findNextVertexForTour()
     this.findNewStartingVertex = function() {
+        this.markPseudoCodeLine(5);
         $("#ta_div_statusErklaerung").html("<h3>Finde neuen Startpunkt für eine neue Subtour</h3>");
 
         euclideanSubTour = new Array();
