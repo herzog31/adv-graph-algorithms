@@ -203,6 +203,7 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 					+ "d(" + graph.nodes[context.i].getLabel() + ", " + graph.nodes[context.k].getLabel() + ") + "
 					+ "d(" + graph.nodes[context.k].getLabel() + ", " + graph.nodes[context.j].getLabel() + ")}";
 				isStepMade = true;
+                break;
 			}
 
 			if(context.j < distance.length - 1){
@@ -262,6 +263,9 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
     	}
 
 		changeText(distance, "ta", contextNew, graph.nodes, status);
+        if(distance.length > 16 && status == 2){
+            adjustTable();
+        }
 		console.log("now context is ");
 		console.log(contextStack);
         return algo.isFinished;
@@ -287,6 +291,9 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 			status = 1;
 		}
 		changeText(distance, "ta", lastStep, graph.nodes, status);
+        if(distance.length > 16 && status == 2){
+            adjustTable();
+        }
 		return;
 	};
 
@@ -316,7 +323,11 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 			distance[i] = new Array();
 			paths[i] = new Array();
 			for(var j = 0; j < Object.keys(graph.nodes).length; j++){
-				distance[i][j] = "inf";
+                if(i != j){
+				    distance[i][j] = "inf";
+                }else{
+                    distance[i][j] = 0;
+                }
 			}
 			keyToIndex[Object.keys(graph.nodes)[i]] = i;
 		}

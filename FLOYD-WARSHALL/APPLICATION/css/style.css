@@ -399,14 +399,45 @@ html {
     font-weight: bold;
 }
 
-th.path-cell{
+td.updated-cell{
     background-color: rgb(255, 252, 0);
 }
 
-.path-cell{
-    width: 16px;
+td.summand-cell{
+    background-color: rgb(255, 134, 249);
+}
+
+#matrix-display{
+    table-layout: fixed;
+}
+
+.path-cell.node_label{
+    min-width: 16px;
+    overflow: hidden;
 }
 
 .tableHeader{
     width: 16px;   
+}
+
+#matrix-overlay{
+    background-color: rgb(148, 214, 249);
+    z-index: 900;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    padding: 5px 5px 5px 5px;
+    width: 600px;
+    height: 600px;
+    overflow: auto;
 }
