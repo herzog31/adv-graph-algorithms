@@ -282,11 +282,55 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
        this.needRedraw = true;
     };
 
+    this.performBFS = function() {
+
+        var reachableVertices = new Array();
+        var visitedEdges = new Array();
+        var queue = new Array();
+
+        for (var startNode in graph.nodes) break;
+        queue.push(startNode);
+
+        while(queue.length > 0) {
+            var currentNode = queue.shift();
+
+            if(reachableVertices.indexOf(currentNode) === -1) reachableVertices.push(currentNode);
+
+            var outEdges = graph.nodes[currentNode].getOutEdges();
+            var inEdges = graph.nodes[currentNode].getInEdges();
+            var edges = new Array();
+
+            for(var kantenID in outEdges) {
+                if (visitedEdges.indexOf(kantenID) != -1) continue;
+                edges.push(kantenID);
+                visitedEdges.push(kantenID);
+            }
+
+            for(var kantenID in inEdges) {
+                if (visitedEdges.indexOf(kantenID) != -1) continue;
+                edges.push(kantenID);
+                visitedEdges.push(kantenID);
+            }
+
+            for (var i = 0; i < edges.length; i++) {
+                if(graph.edges[edges[i]].getSourceID() == currentNode) {
+                    queue.push(graph.edges[edges[i]].getTargetID());
+                }else{
+                    queue.push(graph.edges[edges[i]].getSourceID());
+                }
+            }
+
+        }
+
+        return reachableVertices;
+
+    };
+
     this.markPseudoCodeLine = function(line) {
         currentPseudoCodeLine = line;
         $(".marked").removeClass('marked');
         $("#ta_p_l"+line).addClass('marked');
-    }
+    };
 
     this.updatePseudoCodeValues = function() {
         if(tourStartVertex != null) {
@@ -358,7 +402,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             "pseudo_tour" : $("#ta_td_euclideanTour").html()
         });
 
-        console.log("Current History Step: ", replayHistory[replayHistory.length-1]);
+        if(debugConsole) console.log("Current History Step: ", replayHistory[replayHistory.length-1]);
 
     };
 
@@ -366,7 +410,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
         var oldState = replayHistory.pop();
 
-        console.log("Replay Step", oldState);
+        if(debugConsole) console.log("Replay Step", oldState);
 
         statusID = oldState.previousStatusId;
         tourStartVertex = oldState.tourStartVertex;
@@ -451,6 +495,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     };
 
     // Check ob Graph Euclidisch oder Semi Euclidisch ist
+    // TODO checke ob Graph zusammenhängend via Breitensuche
     this.checkGraph = function() {
         this.markPseudoCodeLine(3);
         $("#ta_div_statusErklaerung").html("<h3>Prüfe ob Graph euclidisch oder semi-euclidisch ist</h3>");
@@ -464,7 +509,17 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         if(Object.keys(graph.nodes).length < 2) {       // Graph too small
             statusID = 2;
             validGraph = false;
+            if(debugConsole) console.log("Invalid graph: Graph too small");
             return false;
+        }
+
+        var reachableVertices = this.performBFS();
+        if(Utilities.objectSize(graph.nodes) != reachableVertices.length) {
+            statusID = 2;
+            validGraph = false;
+            if(debugConsole) console.log("Invalid graph: Unconnected graph detected");
+            return false;
+            
         }
 
         for(var knotenID in graph.nodes) {
@@ -498,6 +553,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         }else{                                       // Invalid Graph
             statusID = 2;
             validGraph = false;
+            if(debugConsole) console.log("Invalid graph: Graph is not euclidean or semi euclidean");
             return false;
         }
 
@@ -649,6 +705,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Merge Subtour in Tour
     // Bei leerer Tour, Tour = Subtour
     // Bei vorhandener Tour, Replace Start mit Subtour
+    // TODO Subtouren speichern
     this.mergeTour = function() {
         this.markPseudoCodeLine(10);
         $("#ta_div_statusErklaerung").html("<h3>Integriere Tour in Gesamttour</h3>");
@@ -678,9 +735,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             for(var i = 0; i < euclideanTour.length; i++) {
                 if(specialLast == i) {
                     for(var j = 0; j < euclideanSubTour.length; j++) {
-                        if(euclideanSubTour[j].type == "edge") {
+                        /* if(euclideanSubTour[j].type == "edge") {
                             graph.edges[euclideanSubTour[j].id].setLayout("lineColor", tourColors[0]);
-                        }
+                        } */
                         newTour.push(euclideanSubTour[j]);
                     }
                     replaced = true;
@@ -698,9 +755,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             for(var i = 0; i < euclideanTour.length; i++) {
                 if(JSON.stringify(euclideanTour[i]) == JSON.stringify(startOfSubTour) && !replaced) {
                     for(var j = 0; j < euclideanSubTour.length; j++) {
-                        if(euclideanSubTour[j].type == "edge") {
+                        /* if(euclideanSubTour[j].type == "edge") {
                             graph.edges[euclideanSubTour[j].id].setLayout("lineColor", tourColors[0]);
-                        }
+                        } */
                         newTour.push(euclideanSubTour[j]);
                     }
                     replaced = true;
