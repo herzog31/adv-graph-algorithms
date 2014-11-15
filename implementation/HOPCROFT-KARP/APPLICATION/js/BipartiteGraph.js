@@ -1,21 +1,22 @@
 /**
  * Created by Ruslan on 06.10.2014.
  */
-
 var graph_constants = {
-    U_X_POSITION : 100,
-    V_X_POSITION : 420,
-    TOP_Y_POSITION : 80,
-    Y_DIFF: 60
+    U_POSITION : 75,
+    V_POSITION : 225,//V_POSITION : 325,
+    LEFT_POSITION : 60,
+    DIFF: 80,
+    NODE_THRESHOLD: 12,
+    MAX_NODES: 20
 };
 
-function BipartiteGraph(filename,canvas){
+function BipartiteGraph(filename,p_canvas){
     Graph.call(this);
-    this.directed = false;
 
     this.unodes = new Object();
     this.vnodes = new Object();
 
+    var canvas = p_canvas;
     /**
      * Closure Objekt für den Graph
      * @type Graph
@@ -26,31 +27,50 @@ function BipartiteGraph(filename,canvas){
     this.base_addEdge = this.addEdge;
     this.base_removeNode = this.removeNode;
 
+    /*
+     * Verteilt die Knoten auf dem Canvas
+     * @method
+     */
     this.reorderNodes = function(){
-        var numberOfNodes = Object.keys(this.nodes).length/2;
-        var diff = graph_constants.Y_DIFF;
-        //diff = (canvas.height()-50)/numberOfNodes;
+        var diffu;
+        var diffv;
+        if(canvas == null){
+            diffu = diffv = graph_constants.DIFF;
+        }
+        else{
+            var numberOfNodes;
+            numberOfNodes = Object.keys(this.unodes).length;
+            diffu = Math.min((canvas.width()-50)/numberOfNodes,graph_constants.DIFF);
+            numberOfNodes = Object.keys(this.vnodes).length;
+            diffv = Math.min((canvas.width()-50)/numberOfNodes,graph_constants.DIFF);
+        }
         var i = 0;
-        for(n in this.unodes){
+        for(var n in this.unodes){
             var node = this.unodes[n];
-            node.setCoordinates({x: graph_constants.U_X_POSITION, y: graph_constants.TOP_Y_POSITION + (i++*diff)});
+            node.setCoordinates({x: graph_constants.LEFT_POSITION + (i++*diffu), y: graph_constants.U_POSITION});
         }
         i = 0;
-        for(n in this.vnodes){
+        for(var n in this.vnodes){
             var node = this.vnodes[n];
-            node.setCoordinates({x: graph_constants.V_X_POSITION, y: graph_constants.TOP_Y_POSITION + (i++*diff)});
+            node.setCoordinates({x: graph_constants.LEFT_POSITION + (i++*diffv), y: graph_constants.V_POSITION});
         }
     };
 
     this.addNode = function (isInU) {
-        var node = this.base_addNode(0,0);
-        if(isInU) {
-            this.unodes[node.getNodeID()] = node;
+        var numberOfNodes;
+        if(isInU) numberOfNodes = Object.keys(this.unodes).length;
+        else numberOfNodes = Object.keys(this.vnodes).length;
+
+        if(numberOfNodes < graph_constants.MAX_NODES){
+            var node = this.base_addNode(0,0);
+            if(isInU) {
+                this.unodes[node.getNodeID()] = node;
+            }
+            else{
+                this.vnodes[node.getNodeID()] = node;
+            }
+            this.reorderNodes();
         }
-        else{
-            this.vnodes[node.getNodeID()] = node;
-        }
-        this.reorderNodes();
         return node;
     };
 
@@ -67,6 +87,7 @@ function BipartiteGraph(filename,canvas){
             (this.vnodes[source.getNodeID()] === source && this.vnodes[target.getNodeID()] === target)) {
             return null;
         }
+        //Die Richtung der Kanten ist immer von U nach V
         if(this.unodes[source.getNodeID()]) this.base_addEdge(source,target,weight);
         else this.base_addEdge(target,source,weight);
     };
@@ -111,7 +132,7 @@ function BipartiteGraph(filename,canvas){
 
     function generateRandomGraph(canvas) {
         var NumberOfNodes = 7;
-        var diff = (canvas.height()-50)/NumberOfNodes;
+        var diff = (canvas.width()-100)/NumberOfNodes;
         // Knoten erstellen
         for(var i = 0;i<NumberOfNodes;i++) {
             closure_graph.addNode(true);
@@ -128,15 +149,16 @@ function BipartiteGraph(filename,canvas){
         }
     }
 
+    this.setCanvas = function(can){
+        canvas = can;
+    };
 
-    this.nodes = new Object();
-    this.edges = new Object();
     // Falls ein Dateiname angegeben wurde, parse den entsprechenden Graph
     // Falls das Canvas angegeben wurde, erstelle Zufallsgraph
     if(filename === "random") {
         generateRandomGraph(canvas);
     }
-    else {
+    else if(filename != null) {
         parseGraphfromFile(filename);
     }
 }
@@ -145,16 +167,25 @@ function BipartiteGraph(filename,canvas){
 BipartiteGraph.prototype = Object.create(Graph.prototype);
 BipartiteGraph.prototype.constructor = BipartiteGraph;
 
+
 function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
     GraphDrawer.call(this,p_graph,p_canvas,p_tab);
     var graph = p_graph;
     var canvas = p_canvas;
 
+    graph.setCanvas(canvas);
+
     this.dblClickHandler = function(e) {
-        var isInU = e.pageX - canvas.offset().left < 0.5 * (graph_constants.V_X_POSITION + graph_constants.U_X_POSITION);
+        var isInU = e.pageY - canvas.offset().top < 0.5 * (graph_constants.V_POSITION + graph_constants.U_POSITION);
         graph.addNode(isInU);
         this.needRedraw = true;
     };
+
+/*    this.mouseMoveHandler = function (e) {
+        this.unfinishedEdge.to = {x: e.pageX - canvas.offset().left, y: e.pageY - canvas.offset().top};
+        this.unfinishedEdge.active = true;
+        this.needRedraw = true;
+    };*/
 
     /**
      * Beendet den Tab und startet ihn neu
@@ -174,8 +205,8 @@ function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
                 this.canvas.css("background","");
                 //$("#tg_p_bildlizenz").remove();
                 //this.graph = new BipartiteGraph("graphs/graph1.txt",canvas);
-                $("body").data("graph",new BipartiteGraph("graphs/graph1.txt",canvas));
-                this.graph = new BipartiteGraph("graphs/graph1.txt");
+                $("body").data("graph",new BipartiteGraph("graphs/graph2.txt",canvas));
+                this.graph = new BipartiteGraph("graphs/graph2.txt");
                 this.refresh();
                 break;
             case "Zufallsgraph":

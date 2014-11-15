@@ -92,3 +92,25 @@ this.reverseLastUpdate = function(afterUpdate) {
 this.reverseGray = function() {
 
 };
+
+for(var n in this.unodes){
+    var coord = this.unodes[n].getCoordinates();
+    if(coord.y + graph_constants.DIFF > canvas.width() - canvas.offset().right) overstepingBorder = true;
+}
+var numberOfNodes;
+var overstepingBorder = false;
+for(var n in this.unodes){
+    var coord = this.unodes[n].getCoordinates();
+    if(coord.x + graph_constants.DIFF > canvas.width() - 100) overstepingBorder = true;
+}
+numberOfNodes = Object.keys(this.unodes).length;
+if(!overstepingBorder) diffu = graph_constants.DIFF;
+else diffu = (canvas.width()-50)/numberOfNodes;
+overstepingBorder = false;
+for(var n in this.vnodes){
+    var coord = this.vnodes[n].getCoordinates();
+    if(coord.x + graph_constants.DIFF > canvas.width() - 100) overstepingBorder = true;
+}
+numberOfNodes = Object.keys(this.vnodes).length;
+if(!overstepingBorder) diffv = graph_constants.DIFF;
+else diffv = (canvas.width()-50)/numberOfNodes;

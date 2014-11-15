@@ -8,7 +8,7 @@
  */
 function HKAlgorithm(p_graph,p_canvas,p_tab) {
     CanvasDrawer.call(this,p_graph,p_canvas,p_tab); 
-    console.log(p_graph.getDescriptionAsString());
+    //console.log(p_graph.getDescriptionAsString());
     /**
      * Convenience Objekt, damit man den Graph ohne this ansprechen kann.
      * @type Graph
@@ -372,8 +372,8 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
                 examined[node.getNodeID()] = true;
                 //find all adjacent edges
                 var edges = node.getOutEdges();
-                var inEdges = node.getInEdges();
-                for (var e in inEdges) {edges[e] = inEdges[e]; }
+/*                var inEdges = node.getInEdges();
+                for (var e in inEdges) {edges[e] = inEdges[e];}*/
                 //try all the found edges
                 for (var e in edges) {
                     var edge = edges[e];
@@ -535,11 +535,15 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         for (var i = 0; i < path.length; i = i + 2) {
             var node = path[i];
             setNodeGray(node);
+            // gray out OutEdges
             var edges = node.getOutEdges();
-            var inEdges = node.getInEdges();
-            for (var e in inEdges) {edges[e] = inEdges[e];}
             for(var e in edges){
               edges[e].setLayout("lineWidth", global_Edgelayout.lineWidth * 0.3);
+            }
+            // gray out InEdges
+            edges = node.getInEdges();
+            for(var e in edges){
+                edges[e].setLayout("lineWidth", global_Edgelayout.lineWidth * 0.3);
             }
         }
         currentPath++;
@@ -587,7 +591,6 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_div_statusErklaerung").append("<h3>"+LNG.K('algorithm_msg_test')+"</h3>");
         $("#ta_div_statusErklaerung").append("<button id=ta_button_gotoFA1>"+LNG.K('algorithm_btn_exe1')+"</button>");
         $("#ta_div_statusErklaerung").append("<button id=ta_button_gotoFA2>"+LNG.K('algorithm_btn_exe2')+"</button>");
-        //this.showVariableStatusField(null,null);
         $("#ta_button_gotoIdee").button();
         $("#ta_button_gotoFA1").button();
         $("#ta_button_gotoFA2").button();
@@ -603,77 +606,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_button_vorspulen").button("option", "disabled", true);
     };
 
-    /**
-     * Handler für Mausbewegungen im Algorithmus Tab.<br>
-     * Wenn mit der Maus über einen Knoten gefahren wird, wird der kürzeste Weg
-     * vom Startknoten zu diesem Knoten grün markiert. <br>
-     * Die Markierung wird wieder entfernt, sobald die Maus den Knoten wieder verlässt
-     * @param {jQuery.Event} e
-     * @returns {void}
-     */
-    this.canvasMouseMoveHandler = function(e) {
-        if(statusID != 6) {
-            // Algorithmus noch nicht beendet
-            return;
-        }
-        var mouseInNode = false;
-        var mx = e.pageX - canvas.offset().left;
-        var my = e.pageY - canvas.offset().top;
-        for(var knotenID in graph.nodes) {
-            if (graph.nodes[knotenID].contains(mx, my)) {
-                if(showWayOfNode != null) {
-                    if(showWayOfNode.nodeID == knotenID) {
-                        return;
-                    }
-                    else {
-                        var showWayOfNodeOld = showWayOfNode;
-                        showWayOfNode = null;
-                        this.needRedraw = true;
-                        // Layout zurücksetzen
-                        for (var i = 0; i < showWayOfNodeOld.modifiedEdges.length; ++i) {
-                            graph.edges[showWayOfNodeOld.modifiedEdges[i].id].setLayout("lineWidth",showWayOfNodeOld.modifiedEdges[i].lineWidth);
-                            graph.edges[showWayOfNodeOld.modifiedEdges[i].id].setLayout("lineColor",showWayOfNodeOld.modifiedEdges[i].lineColor);
-                        }
-                    }
-                }
-                mouseInNode = true;
-                showWayOfNode = new Object();
-                showWayOfNode.nodeID = knotenID;
-                var visitedNodes = new Object();
-                var currentNode = knotenID;
-                var currentEdge = null;
-                var modifiedEdges = new Array();
-                while(vorgaenger[currentNode] != null && visitedNodes[currentNode] == null) {
-                    visitedNodes[currentNode] = true;
-                    currentEdge = graph.edges[vorgaenger[currentNode]];
-                    currentNode = currentEdge.getSourceID();
-                    // Layout
-                    modifiedEdges.push({id: currentEdge.getEdgeID(),
-                                        lineWidth: currentEdge.getLayout().lineWidth,
-                                        lineColor: currentEdge.getLayout().lineColor});
-                    currentEdge.setLayout("lineWidth",3);
-                    currentEdge.setLayout("lineColor",const_Colors.EdgeHighlight4);
-                }
-                showWayOfNode.modifiedEdges = modifiedEdges;
-                this.needRedraw = true;
-            }
-        }
-
-        if(!mouseInNode && showWayOfNode != null) {
-            this.needRedraw = true;
-            // Layout zurücksetzen
-            for (var i = 0; i < showWayOfNode.modifiedEdges.length; ++i) {
-                if(graph.edges[showWayOfNode.modifiedEdges[i].id].getLayout().lineColor == const_Colors.EdgeHighlight4 &&
-                    graph.edges[showWayOfNode.modifiedEdges[i].id].getLayout().lineWidth == 3) {
-                    graph.edges[showWayOfNode.modifiedEdges[i].id].setLayout("lineWidth",showWayOfNode.modifiedEdges[i].lineWidth);
-                    graph.edges[showWayOfNode.modifiedEdges[i].id].setLayout("lineColor",showWayOfNode.modifiedEdges[i].lineColor);
-                }
-            }
-            showWayOfNode = null;
-        }
-    };
-
-    /**
+     /**
      * Ermittelt basierend auf der StatusID und anderen den vorherigen Schritt aus
      * und ruft die entsprechende Funktion auf.
      * @method
