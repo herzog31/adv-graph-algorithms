@@ -173,16 +173,15 @@
                         </div>
                         <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
                             <p class="pseudocode" id="ta_p_l1">BEGIN</p>
-                            <p class="pseudocode" id="ta_p_l2">  &#8704;e &#8712; E &rarr; v(e) = 0</p>
+                            <p class="pseudocode" id="ta_p_l2">  E<sub>visited</sub> = &empty;</p>
                             <p class="pseudocode" id="ta_p_l3">  IF invalid(G) &rarr; END</p>
                             <p class="pseudocode" id="ta_p_l4">  WHILE |E| > |{tour &#8745; E}|</p>
-                            <p class="pseudocode" id="ta_p_l5">    start &#8712; V : &#8707;{u,v} &#8712; E &#8743; v({u,v}) = 0</p>
-                            <p class="pseudocode" id="ta_p_l6">    cur = &empty;</p>
-                            <p class="pseudocode" id="ta_p_l7">    WHILE start &#8800; cur</p>
-                            <p class="pseudocode" id="ta_p_l8">      IF cur = &empty; &rarr; cur = start</p>
-                            <p class="pseudocode" id="ta_p_l9">      cur &#8712; V : &#8707;{cur,u} &#8712; E<br />                &#8743; v({cur,u}) = 0</p>
-                            <p class="pseudocode" id="ta_p_l10">    tour = tour &#8746; subtour</p>
-                            <p class="pseudocode" id="ta_p_l11">END</p>
+                            <p class="pseudocode" id="ta_p_l5">    s = c<sub>prev</sub> &#8712; V : &#8707;{u,s} &#8712; E \ E<sub>visited</sub><br />    subtour &larr; s<br />    E<sub>visited</sub> &larr; {u,s}</p>
+                            <p class="pseudocode" id="ta_p_l6">    DO</p>
+                            <p class="pseudocode" id="ta_p_l7">      c &#8712; V : &#8707;{c,c<sub>prev</sub>} &#8712; E \ E<sub>visited</sub><br />      subtour &larr; c<br />      E<sub>visited</sub> &larr; {c,c<sub>prev</sub>}<br />      c<sub>prev</sub> = c</p>
+                            <p class="pseudocode" id="ta_p_l8">    WHILE start &#8800; cur</p>
+                            <p class="pseudocode" id="ta_p_l9">    tour = tour &#8746;<sub>merge</sub> subtour<br />    subtour = &empty;</p>
+                            <p class="pseudocode" id="ta_p_l10">END</p>
                             <h3>Status der Variablen:</h3>
                             <table class="algoInformationen">
                                 <tr>

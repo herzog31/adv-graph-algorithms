@@ -613,7 +613,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn keiner gefunden -> mergeTour()
     // Wenn gefunden -> findNextVertexForTour()
     this.findNextVertexForTour = function() {
-        this.markPseudoCodeLine(9);
+        this.markPseudoCodeLine(7);
         $("#ta_div_statusErklaerung").html("<h3>Finde nächsten Knoten</h3>");
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
@@ -685,7 +685,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn gleich -> mergeTour()
     // Wenn ungleich -> findNextVertexForTour()
     this.compareVertexWithStart = function() {
-        this.markPseudoCodeLine(7);
+        this.markPseudoCodeLine(8);
         $("#ta_div_statusErklaerung").html("<h3>Vergleiche Knoten mit Startknoten</h3>");
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
@@ -707,7 +707,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Bei vorhandener Tour, Replace Start mit Subtour
     // TODO Subtouren speichern
     this.mergeTour = function() {
-        this.markPseudoCodeLine(10);
+        this.markPseudoCodeLine(9);
         $("#ta_div_statusErklaerung").html("<h3>Integriere Tour in Gesamttour</h3>");
 
         tourColorIndex++;
@@ -809,7 +809,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
     // Zeige Tour
     this.returnTour = function() {
-        this.markPseudoCodeLine(11);
+        this.markPseudoCodeLine(10);
         $("#ta_div_statusErklaerung").html("<h3>Zeige Ergebnis</h3>");
 
         var output = "";
