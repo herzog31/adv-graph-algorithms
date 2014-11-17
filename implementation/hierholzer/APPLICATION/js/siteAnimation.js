@@ -235,6 +235,7 @@ function CanvasDrawer(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.drawCanvas = function() {
+
         if(this.needRedraw) {
             var ctx = this.canvas[0].getContext("2d");
             ctx.clearRect(0, 0, this.canvas.width(), this.canvas.height());

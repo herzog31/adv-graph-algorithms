@@ -51,6 +51,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     var validGraph = false;
     var euclideanTour = new Array();
     var euclideanSubTour = new Array();
+    var subtours = new Array();
     var currentPseudoCodeLine = 1;
     var tourColors = new Array("blue", "green", "red", "yellow", "orange", "purple", "brown");
     var tourColorIndex = 0;
@@ -69,8 +70,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
                         +"<button id=\"ta_button_stoppVorspulen\">"+LNG.K('algorithm_btn_paus')+"</button>");
         $("#ta_button_stoppVorspulen").hide();
         $("#ta_button_Zurueck").button({icons:{primary: "ui-icon-seek-start"}, disabled: true});
-        $("#ta_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: false}); <!-- TODO -->
-        $("#ta_button_vorspulen").button({icons:{primary: "ui-icon-seek-next"}, disabled: false}); <!-- TODO -->
+        $("#ta_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: false});
+        $("#ta_button_vorspulen").button({icons:{primary: "ui-icon-seek-next"}, disabled: false});
         $("#ta_button_stoppVorspulen").button({icons:{primary: "ui-icon-pause"}});
         $("#ta_div_statusTabs").tabs();
         $(".marked").removeClass("marked");
@@ -240,7 +241,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
      * Zeigt Texte und Buttons zum Ende des Algorithmus
      * @method
      */
-    this.endAlgorithm = function() {
+    /* this.endAlgorithm = function() {
         $("#ta_div_statusErklaerung").append("<p></p><h3>"+LNG.K('algorithm_msg_finish')+"</h3>");
         $("#ta_div_statusErklaerung").append("<button id=ta_button_gotoIdee>"+LNG.K('algorithm_btn_more')+"</button>");
         $("#ta_div_statusErklaerung").append("<h3>"+LNG.K('algorithm_msg_test')+"</h3>");
@@ -259,7 +260,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         }
         $("#ta_button_1Schritt").button("option", "disabled", true);
         $("#ta_button_vorspulen").button("option", "disabled", true);
-    };
+    }; */
     
     /**
      * Ermittelt basierend auf der StatusID und anderen den vorherigen Schritt aus
@@ -280,6 +281,36 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         }
 
        this.needRedraw = true;
+    };
+
+    this.hoverSubtour = function(event) {
+
+        var tourId = $(event.target).data("tourId");
+        $(event.target).css("font-weight", "bold");
+        var curSubtour = subtours[tourId]['tour'];
+
+        for(var i = 0; i < curSubtour.length; i++) {
+            if(curSubtour[i].type == "edge") {
+                graph.edges[curSubtour[i].id].setLayout("lineWidth", 6);
+            }
+        }
+        event.data.org.needRedraw = true;
+
+    };
+
+    this.dehoverSubtour = function(event) {
+
+        var tourId = $(event.target).data("tourId");
+        $(event.target).css("font-weight", "normal");
+        var curSubtour = subtours[tourId]['tour'];
+
+        for(var i = 0; i < curSubtour.length; i++) {
+            if(curSubtour[i].type == "edge") {
+                graph.edges[curSubtour[i].id].setLayout("lineWidth", 3);
+            }
+        }
+        event.data.org.needRedraw = true;
+
     };
 
     this.performBFS = function() {
@@ -399,7 +430,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             "pseudo_start" : $("#ta_td_tourStartVertex").html(),
             "pseudo_cur" : $("#ta_td_tourCurrentVertex").html(),
             "pseudo_subtour" : $("#ta_td_euclideanSubtour").html(),
-            "pseudo_tour" : $("#ta_td_euclideanTour").html()
+            "pseudo_tour" : $("#ta_td_euclideanTour").html(),
+            "subtours" : subtours
         });
 
         if(debugConsole) console.log("Current History Step: ", replayHistory[replayHistory.length-1]);
@@ -419,6 +451,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         semiEuclideanGraph = oldState.semiEuclideanGraph;
         validGraph = oldState.validGraph;
         tourColorIndex = oldState.tourColorIndex;
+        subtours = oldState.subtours;
         $("#ta_div_statusErklaerung").html(oldState.htmlSidebar);
         euclideanTour = JSON.parse(oldState.euclideanTour);
         euclideanSubTour = JSON.parse(oldState.euclideanSubTour);
@@ -495,7 +528,6 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     };
 
     // Check ob Graph Euclidisch oder Semi Euclidisch ist
-    // TODO checke ob Graph zusammenhängend via Breitensuche
     this.checkGraph = function() {
         this.markPseudoCodeLine(3);
         $("#ta_div_statusErklaerung").html("<h3>Prüfe ob Graph euclidisch oder semi-euclidisch ist</h3>");
@@ -513,7 +545,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             return false;
         }
 
-        var reachableVertices = this.performBFS();
+        var reachableVertices = this.performBFS();      // Graph connected
         if(Utilities.objectSize(graph.nodes) != reachableVertices.length) {
             statusID = 2;
             validGraph = false;
@@ -705,15 +737,18 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Merge Subtour in Tour
     // Bei leerer Tour, Tour = Subtour
     // Bei vorhandener Tour, Replace Start mit Subtour
-    // TODO Subtouren speichern
     this.mergeTour = function() {
         this.markPseudoCodeLine(9);
         $("#ta_div_statusErklaerung").html("<h3>Integriere Tour in Gesamttour</h3>");
+
+        subtours.push({color: tourColorIndex, tour: euclideanSubTour});
+        if(debugConsole) console.log("Subtours", subtours);
 
         tourColorIndex++;
         tourColorIndex = tourColorIndex % tourColors.length;
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
+        graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFilling);
 
         var replaced = false;
 
@@ -735,9 +770,6 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             for(var i = 0; i < euclideanTour.length; i++) {
                 if(specialLast == i) {
                     for(var j = 0; j < euclideanSubTour.length; j++) {
-                        /* if(euclideanSubTour[j].type == "edge") {
-                            graph.edges[euclideanSubTour[j].id].setLayout("lineColor", tourColors[0]);
-                        } */
                         newTour.push(euclideanSubTour[j]);
                     }
                     replaced = true;
@@ -810,32 +842,52 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Zeige Tour
     this.returnTour = function() {
         this.markPseudoCodeLine(10);
-        $("#ta_div_statusErklaerung").html("<h3>Zeige Ergebnis</h3>");
+        $("#ta_div_statusErklaerung").html("<h2>Zeige Ergebnis</h2>");
 
         var output = "";
 
         for(var i = 0; i < euclideanTour.length; i++) {
             if(euclideanTour[i].type == "vertex") {
-                output += "<li>"+graph.nodes[euclideanTour[i].id].getLabel()+"</li>";
+                output += graph.nodes[euclideanTour[i].id].getLabel()+",";
             }
-            if(euclideanTour[i].type == "edge") {
+            /* if(euclideanTour[i].type == "edge") {
                 output += "<li>{"+graph.nodes[graph.edges[euclideanTour[i].id].getSourceID()].getLabel()+", "+graph.nodes[graph.edges[euclideanTour[i].id].getTargetID()].getLabel()+"}</li>";
-            }
+            } */
         }
+
+        output = "{"+output.slice(0,-1)+"}";
+
+        var output_subtours = "";
+
+        for(var i = 0; i < subtours.length; i++) {
+            var cur = subtours[i];
+            output_subtours += '<li class="subtour_hover" data-tour-id="'+i+'" style="color: '+tourColors[cur['color']]+';">{';
+            for(var j = 0; j < cur['tour'].length; j++) {
+                if(cur['tour'][j].type == "vertex" && j == 0) {
+                    output_subtours += graph.nodes[cur['tour'][j].id].getLabel();
+                }else if(cur['tour'][j].type == "vertex") {
+                    output_subtours += ","+graph.nodes[cur['tour'][j].id].getLabel();
+                }
+            }
+            output_subtours += '}</li>';
+        }
+        output_subtours = '<ul class="subtourList">'+output_subtours+"</ul>";
 
         if(semiEuclideanGraph) {
             if(debugConsole) console.log("Complete Euclidean Trail: ", euclideanTour);
-            $("#ta_div_statusErklaerung").append("<p>Zug:<br /> <ul>" + output + "</ul></p>");
+            $("#ta_div_statusErklaerung").append("<h3>Gesamte Tour:</h3><p>" + output + "</p><h3>Subtouren:</h3><p>"+output_subtours+"</p>");
         }else{
             if(debugConsole) console.log("Complete Euclidean Circle: ", euclideanTour);
-            $("#ta_div_statusErklaerung").append("<p>Kreis:<br /> <ul>" + output + "</ul></p>");
-        }      
+            $("#ta_div_statusErklaerung").append("<h3>Gesamter Kreis:</h3><p>" + output + "</p><h3>Subtouren:</h3><p>"+output_subtours+"</p>");
+        }   
 
         if(fastForwardIntervalID != null) {
             this.stopFastForward();
         }
         $("#ta_button_1Schritt").button("option", "disabled", true);
         $("#ta_button_vorspulen").button("option", "disabled", true);
+        $(".subtour_hover").mouseenter({org: this}, this.hoverSubtour).mouseleave({org: this}, this.dehoverSubtour);
+        //$(".subtour_hover").hover(this.hoverSubtour, this.dehoverSubtour);
     };
 
     // Finde neuen Startpunkt in Tour
