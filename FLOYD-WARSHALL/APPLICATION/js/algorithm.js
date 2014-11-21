@@ -189,8 +189,8 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 		while(!isStepMade && (context.i < distance.length - 1 || context.j < distance.length - 1 
 			|| context.k < distance.length - 1)){
 			
-			if(distance[context.i][context.k] != "inf" && distance[context.k][context.j] != "inf" 
-					&& (distance[context.i][context.j] == "inf" 
+			if(distance[context.i][context.k] != "∞" && distance[context.k][context.j] != "∞" 
+					&& (distance[context.i][context.j] == "∞" 
 					|| distance[context.i][context.j] > distance[context.i][context.k] + distance[context.k][context.j])){
 				context.changedFrom = distance[context.i][context.j];
 				context.changedTo = distance[context.i][context.k] + distance[context.k][context.j];
@@ -262,10 +262,11 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
     		status = 3;
     	}
 
+        console.log(distance);
 		changeText(distance, "ta", contextNew, graph.nodes, status);
-        if(distance.length > 16 && status == 2){
-            adjustTable();
-        }
+        // if(distance.length > 16 && status == 2){
+        //     adjustTable(distance.length);
+        // }
 		console.log("now context is ");
 		console.log(contextStack);
         return algo.isFinished;
@@ -291,9 +292,9 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 			status = 1;
 		}
 		changeText(distance, "ta", lastStep, graph.nodes, status);
-        if(distance.length > 16 && status == 2){
-            adjustTable();
-        }
+        // if(distance.length > 16 && status == 2){
+        //     adjustTable(distance.length);
+        // }
 		return;
 	};
 
@@ -324,7 +325,7 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 			paths[i] = new Array();
 			for(var j = 0; j < Object.keys(graph.nodes).length; j++){
                 if(i != j){
-				    distance[i][j] = "inf";
+				    distance[i][j] = "∞";
                 }else{
                     distance[i][j] = 0;
                 }

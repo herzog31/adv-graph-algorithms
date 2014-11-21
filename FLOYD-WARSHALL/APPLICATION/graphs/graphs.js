@@ -47,6 +47,10 @@ graphs[1] = ["% Graph 1: Graph mit 4 Knoten und Kanten ohne negative Gewichte",
     ,"e 29 31 6"
     ,"e 30 28 10"
     ,"e 30 26 15"
+
+    ,"e 5 1 20"
+    ,"e 5 25 5"
+    ,"e 25 1 3"
 ];
 
 graphs[2] = ["% Graph 2: Graph mit 6 Knoten und positivem Kreis",

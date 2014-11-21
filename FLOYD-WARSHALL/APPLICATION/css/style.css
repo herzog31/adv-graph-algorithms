@@ -400,11 +400,11 @@ html {
 }
 
 td.updated-cell{
-    background-color: rgb(255, 252, 0);
+    background-color: #0072bd;
 }
 
 td.summand-cell{
-    background-color: rgb(255, 134, 249);
+    background-color: #98C6EA;
 }
 
 #matrix-display{
@@ -440,4 +440,12 @@ td.summand-cell{
     width: 600px;
     height: 600px;
     overflow: auto;
+}
+
+#matrix{
+    font-size: 14px;
+}
+
+.not-number-cell{
+    color: darkgrey;
 }
