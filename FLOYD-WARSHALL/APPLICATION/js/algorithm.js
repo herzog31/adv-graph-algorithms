@@ -47,10 +47,12 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 
 	var paths = new Array();
 
-	// this.distance = distance;
+	this.distance = distance;
 	this.paths = paths;
 
 	this.isFinished = false;
+
+    var actualContext;
 
 	/**
      * Startet die Ausführung des Algorithmus.
@@ -193,11 +195,17 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 					&& (distance[context.i][context.j] == "∞" 
 					|| distance[context.i][context.j] > distance[context.i][context.k] + distance[context.k][context.j])){
 				context.changedFrom = distance[context.i][context.j];
-				context.changedTo = distance[context.i][context.k] + distance[context.k][context.j];
-				context.changedRow = context.i;
+                if(!context.preliminary){
+				    context.changedTo = distance[context.i][context.k] + distance[context.k][context.j];
+				}else{
+                    context.changedTo = distance[context.i][context.j];
+                }
+                context.changedRow = context.i;
 				context.changedColumn = context.j;
-				distance[context.i][context.j] = distance[context.i][context.k] + distance[context.k][context.j];
-				paths[context.i][context.j] = paths[context.i][context.k] + "," + paths[context.k][context.j];
+                if(!context.preliminary){
+				    distance[context.i][context.j] = distance[context.i][context.k] + distance[context.k][context.j];
+                    paths[context.i][context.j] = paths[context.i][context.k] + "," + paths[context.k][context.j];
+                }
 				context.formula = "d(" + graph.nodes[context.i].getLabel() + ", " + graph.nodes[context.j].getLabel() + ") = "
 					+ "min{d(" + graph.nodes[context.i].getLabel() + ", " + graph.nodes[context.j].getLabel() + "), "
 					+ "d(" + graph.nodes[context.i].getLabel() + ", " + graph.nodes[context.k].getLabel() + ") + "
@@ -231,23 +239,24 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 	};
 
 	this.nextStepChoice = function(){
-		var contextOld = contextStack.pop();
 		var c;
 		var contextNew;
-		if(contextOld){
-	        c = jQuery.extend(true, {}, contextOld);
-	        contextStack.push(contextOld);
+		if(actualContext){
+	        c = jQuery.extend(true, {}, actualContext);
+	        contextStack.push(actualContext);
     	}else{
     		c = new Object();
 			c.k = 0;
 			c.i = 0;
 			c.j = 0;
+            c.preliminary = true;
     	}
 
         var isStepMade = algo.findShortestPaths(c);
         if(isStepMade){
 	        contextNew = jQuery.extend(true, {}, c);
-	        contextStack.push(contextNew);
+            contextNew.preliminary = !c.preliminary;
+	        actualContext = contextNew;
     	}
 
     	//TODO comment
@@ -264,7 +273,7 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 
         console.log(distance);
 		changeText(distance, "ta", contextNew, graph.nodes, status);
-        // if(distance.length > 16 && status == 2){
+        // if(distance.length > 13 && status == 2){
         //     adjustTable(distance.length);
         // }
 		console.log("now context is ");
@@ -280,19 +289,21 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 		if(lastStep){
 			console.log("lastStep:");
 			console.log(lastStep);
-			distance[lastStep.changedRow][lastStep.changedColumn] = lastStep.changedFrom;
+			distance[lastStep.changedRow][lastStep.changedColumn] = lastStep.changedTo;
 			$("#ta_button_Zurueck").button("option", "disabled", false);
 			$("#ta_button_1Schritt").button("option", "disabled", false);
 			$("#ta_button_vorspulen").button("option", "disabled", false);
+            actualContext = lastStep;
 			status = 2;
 		}else{
 			$("#ta_button_Zurueck").button("option", "disabled", true);
 			$("#ta_button_1Schritt").button("option", "disabled", false);
 			$("#ta_button_vorspulen").button("option", "disabled", false);
+            actualContext = null;
 			status = 1;
 		}
 		changeText(distance, "ta", lastStep, graph.nodes, status);
-        // if(distance.length > 16 && status == 2){
+        // if(distance.length > 13 && status == 2){
         //     adjustTable(distance.length);
         // }
 		return;

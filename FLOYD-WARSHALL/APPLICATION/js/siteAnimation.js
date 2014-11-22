@@ -213,6 +213,13 @@ function CanvasDrawer(p_graph, p_canvas, p_tab) {
      * @type Object
      */
     var tabChangeWarningDialog;
+    
+    /**
+     * jQuery Objekt des Dialogs, der Komplette Matrix zeigt.
+     * @type Object
+     */
+    var completeMatrixDialog;
+    
     /**
      * jQuery Objekt des statusFensters des Tabs
      * @type Object
@@ -230,6 +237,7 @@ function CanvasDrawer(p_graph, p_canvas, p_tab) {
         legendeMinButton = legendeMin.find(".LegendeMin");
         tabIntroDialog = this.tab.find(".tabIntroDialog");
         tabChangeWarningDialog = this.tab.find(".tabChangeWarningDialog");
+        completeMatrixDialog = this.tab.find("#ta_div_completeMatrix");
         statusWindow = this.tab.find(".statusWindow");
         this.statusBackup = statusWindow.html();
         this.animateLegende();
@@ -373,6 +381,22 @@ function CanvasDrawer(p_graph, p_canvas, p_tab) {
                             $("#tabs").removeData("requestedTab");
                             $("#tabs").tabs("option", "active", newTabID);
                             $("#tabs").removeData("tabChangeDialogOpen");
+                        }
+                    }
+                });
+            });
+        }
+        if (completeMatrixDialog) {
+            $(function() {
+                completeMatrixDialog.dialog({
+                    autoOpen : false,
+                    resizable : false,
+                    modal : true,
+                    buttons : {
+                        "Ok" : function() {
+                            $("#tabs").removeData("requestedTab");
+                            $("#tabs").removeData("tabChangeDialogOpen");
+                            $(this).dialog("close");
                         }
                     }
                 });

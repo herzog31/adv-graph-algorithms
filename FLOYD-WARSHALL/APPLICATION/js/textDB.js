@@ -22,13 +22,11 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
             if (tabprefix === "ta") {
                 $("#" + tabprefix + "_div_statusText").html("<h3>Jetzt kann der Algorithmus beginnen!</h3>");
                 table = displayMatrix(distance, contextNew, nodes, false);
-                if(distance.length > 16){
-                    tableSmall = displayMatrix(distance, contextNew, nodes, false);
+                if(distance.length > 13){
+                    tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, 11);
                     $("#ta_div_statusText").append("<table id='matrix'>" + tableSmall + "</table>");
-                    $("#ta_div_statusText").append("<button id='tg_button_trol' onclick='showMatrixPopup();' class='ui-button ui-widget ui-state-default"
-                    + "ui-corner-all ui-button-text-only' role='button' aria-disabled='false'><span class='ui-button-text'>"
-                    + "Komplette Matrix zeigen</span></button>");
                 }else{
+                    $("#tg_button_showMatrix").hide();
                     $("#ta_div_statusText").append("<h3>Die Originalmatrix sieht so aus:</h3><table id='matrix'>" + table + "</table>");
                 }
                 $(".not-number-cell").css("color", "black");
@@ -36,16 +34,16 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
             break;
 
         case 2:
-            if(distance.length > 16){
-                table = displayMatrixSmall(distance, contextNew, nodes,  true);
-            }else{
-                table = displayMatrix(distance, contextNew, nodes,  true);
-            }
+            table = displayMatrix(distance, contextNew, nodes,  true);
             var formula = "<p>" + contextNew.formula + "</p>";
-            $("#" + tabprefix + "_div_statusText").html("<table id='matrix'>" + table + "</table>");
-            $("#" + tabprefix + "_div_statusText").append(formula);
-            $("#table_div").scrollLeft((scrollPositionJ - 2) * 16);
-            $("#table_div").scrollTop((scrollPositionI - 2) * 16);
+            if(distance.length > 13){
+                tableSmall = displayMatrixSmall(distance, contextNew, nodes,  true);
+                $("#" + tabprefix + "_div_statusText").html("<table id='matrix'>" + tableSmall + "</table>");
+                $("#" + tabprefix + "_div_statusText").append(formula);
+            }else{
+                $("#" + tabprefix + "_div_statusText").html("<table id='matrix'>" + table + "</table>");
+                $("#" + tabprefix + "_div_statusText").append(formula);
+            }
             break;
 
         case 3:
@@ -54,11 +52,8 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
                 $("#ta_div_statusText").append("<p>Nun wurden alle kürzesten beziehungsweise günstigsten Wege berechnet.</p>");
                 table = displayMatrix(distance, contextNew, nodes, false);
                 if(distance.length > 13){
-                    tableSmall = displayMatrixSmall(distance, contextNew, nodes, false);
+                    tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, 10);
                     $("#ta_div_statusText").append("<table id='matrix'>" + tableSmall + "</table>");
-                    $("#ta_div_statusText").append("<button id='tg_button_trol' onclick='showMatrixPopup();' class='ui-button ui-widget ui-state-default"
-                        + "ui-corner-all ui-button-text-only' role='button' aria-disabled='false'><span class='ui-button-text'>"
-                        + "Komplette Matrix zeigen</span></button>");
                 }else{
                     $("#ta_div_statusText").append("<h3>Die Endmatrix sieht so aus:</h3><table id='matrix'>" + table + "</table>");
                 }
@@ -103,10 +98,22 @@ function displayMatrix(distance, contextNew, nodes, markChanged){
             // }
             if(contextNew && markChanged && i == contextNew.changedRow && j == contextNew.changedColumn){
                 finalJ = j; finalI = i;
-                trContent += "<td class='updated-cell important-cell' i=" + i + " j=" + j + 
+                trContent += "<td class='";
+                if(contextNew.preliminary){
+                    trContent += "updated-cell";
+                }else{
+                    trContent += "candidate-cell";
+                }
+                trContent += " important-cell' i=" + i + " j=" + j + 
                     " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "</th>";
             }else if(contextNew && ((i == contextNew.i && j == contextNew.k) || (i == contextNew.k && j == contextNew.j))){
-                trContent += "<td class='summand-cell important-cell' i=" + i + " j=" + j + 
+                trContent += "<td class='";
+                if(contextNew.preliminary){
+                    trContent += "summand-cell";
+                }else{
+                    trContent += "candidate-cell";
+                }
+                trContent += " important-cell' i=" + i + " j=" + j + 
                     " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "</th>";
             }else{
                 trContent += "<td class='";
@@ -115,7 +122,7 @@ function displayMatrix(distance, contextNew, nodes, markChanged){
                 } else{
                     trContent += " not-number-cell ";
                 }
-                trContent += " path-cell unimportant-cell' i=" + i + " j=" + j + 
+                trContent += " matrix-cell unimportant-cell' i=" + i + " j=" + j + 
                     " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "</td>";
             }
         }
@@ -145,18 +152,70 @@ function displayMatrix(distance, contextNew, nodes, markChanged){
         table += '<tr>';
         for(var j = 0; j < distance.length; j++){
             if (contextNew && markChanged && i == contextNew.changedRow && j == contextNew.changedColumn){
-                table += "<th class='path-cell' i=" + i + " j=" + j + 
+                table += "<th class='matrix-cell' i=" + i + " j=" + j + 
                     " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'><font color='red'>" + distance[i][j] + "</font></th>";
                 scrollPositionI = i;
                 scrollPositionJ = j;
             } else{
-                table += "<td class='path-cell' i=" + i + " j=" + j + 
+                table += "<td class='matrix-cell' i=" + i + " j=" + j + 
                     " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "</td>";
             }
         }
         table += '</tr>';
     }
     table += '</table></div></td></tr></table>';*/
+
+    return table;
+};
+
+function displayMatrixCorner(distance, contextNew, nodes, markChanged, limit){
+    var table = "<tr><td></td>";
+    for(var key = 0; key < limit; key++){
+        table += "<td class='node_label unimportant-cell'>" + nodes[key].getLabel() + "</td>";
+    }
+    table += "<td>...</td></tr>";
+    var finalI, finalJ;
+    for(var i = 0; i < limit; i++){
+        var trContent = "<td class='node_label unimportant-cell'>" + nodes[i].getLabel() + "</td>";
+        var displayNeeded = false;
+        for(var j = 0; j < limit; j++){
+            if(contextNew && markChanged && i == contextNew.changedRow && j == contextNew.changedColumn){
+                finalJ = j; finalI = i;
+                trContent += "<td class='";
+                if(contextNew.preliminary){
+                    trContent += "updated-cell";
+                }else{
+                    trContent += "candidate-cell";
+                }
+                trContent += " important-cell' i=" + i + " j=" + j + 
+                    " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "</th>";
+            }else if(contextNew && ((i == contextNew.i && j == contextNew.k) || (i == contextNew.k && j == contextNew.j))){
+                trContent += "<td class='";
+                if(contextNew.preliminary){
+                    trContent += "summand-cell";
+                }else{
+                    trContent += "candidate-cell";
+                }
+                trContent += " important-cell' i=" + i + " j=" + j + 
+                    " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "</th>";
+            }else{
+                trContent += "<td class='";
+                if(i != j && distance[i][j] != "∞"){
+                    trContent += " number-cell ";
+                } else{
+                    trContent += " not-number-cell ";
+                }
+                trContent += " matrix-cell unimportant-cell' i=" + i + " j=" + j + 
+                    " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "</td>";
+            }
+        }
+        table += "<tr class='table-row'>" + trContent + "<td>...</td></tr>";
+    }
+    table += "<tr class='table-row'>";
+    for(var i = 0; i < limit + 1; i++){
+        table += "<td>...</td>";
+    }
+    table += "</tr>";
 
     return table;
 };
@@ -222,7 +281,7 @@ function displayMatrixSmall(distance, contextNew, nodes, markChanged){
         if(cols[j] - prevoiusCol > 1){
             table += "<td>...</td>";
         }
-        table += "<td>" + algo.graph.nodes[cols[j]].getLabel() + "</td>";
+        table += "<td class='node_label'>" + algo.graph.nodes[cols[j]].getLabel() + "</td>";
         prevoiusCol = cols[j];
     }
     if(cols[cols.length - 1] < distance.length - 1){
@@ -245,16 +304,28 @@ function displayMatrixSmall(distance, contextNew, nodes, markChanged){
         }
 
         prevoiusCol = -1;
-        table += "<tr><td>" + algo.graph.nodes[rows[i]].getLabel() + "</td>";
+        table += "<tr><td class='node_label'>" + algo.graph.nodes[rows[i]].getLabel() + "</td>";
         for(var j = 0; j < cols.length; j++){
             if(cols[j] - prevoiusCol > 1){
                 table += "<td>...</td>";
             }
             if(contextNew && markChanged && rows[i] == contextNew.changedRow && cols[j] == contextNew.changedColumn){
-                table += "<td class='updated-cell'>" + distance[rows[i]][cols[j]] + "</td>";
+                table += "<td class='";
+                if(contextNew.preliminary){
+                    table += "updated-cell";
+                }else{
+                    table += "candidate-cell";
+                }
+                table += "'>" + distance[rows[i]][cols[j]] + "</td>";
             }else if(contextNew && ((rows[i] == contextNew.i && cols[j] == contextNew.k) 
                 || (rows[i] == contextNew.k && cols[j] == contextNew.j))){
-                table += "<td class='summand-cell'>" + distance[rows[i]][cols[j]] + "</td>";
+                table += "<td class='";
+                if(contextNew.preliminary){
+                    table += "summand-cell";
+                }else{
+                    table += "candidate-cell";
+                }
+                table += "'>" + distance[rows[i]][cols[j]] + "</td>";
             }else{
                 table += "<td"
                 if(rows[i] != cols[j] && distance[rows[i]][cols[j]] != "∞"){
@@ -422,10 +493,27 @@ fnScroll = function(){
 // onmouseover='markPath(" + i + ", + " + j + ")'
 
 function showMatrixPopup(){
-    $("#matrix-overlay").css("display", "block");
-    $("#matrix-container").html("<table id='matrix-display'>" + table + "</table>");
-    $("#matrix-display td").removeAttr("onmouseover");
-    $("#matrix-display td").removeAttr("onmouseout");
+    // $("#matrix-overlay").css("display", "block");
+    // $("#matrix-container").html("<table id='matrix-display'>" + table + "</table>");
+    // $("#matrix-display td").removeAttr("onmouseover");
+    // $("#matrix-display td").removeAttr("onmouseout");
+    $("#ta_div_completeMatrix").dialog("open");
+    $("#ta_div_completeMatrix").html("<table id='matrix-display'>" + table + "</table>");
+    $("#ta_div_completeMatrix").css("width", (algo.distance.length + 1)*18 + "px");
+    $("#ta_div_completeMatrix").css("max-width", "476px");
+    $("#matrix-display").css("width", (algo.distance.length + 1)*18 + "px");
+    $("#matrix-display").css("max-width", "476px");
+    $("[aria-describedby='ta_div_completeMatrix']").css("width", (24+(algo.distance.length + 1)*18) + "px");
+    $("[aria-describedby='ta_div_completeMatrix']").css("height", (106+(algo.distance.length + 1)*18) + "px");
+    $("[aria-describedby='ta_div_completeMatrix']").css("max-width", "500px");
+    if((algo.distance.length + 1)*18 < 500){
+        $("[aria-describedby='ta_div_completeMatrix']").css("left", $( document ).width()-(24+(algo.distance.length + 1)*18) + "px");
+    }else{
+        $("[aria-describedby='ta_div_completeMatrix']").css("left", $( document ).width()-500 + "px");
+    }
+    $("[aria-describedby='ta_div_completeMatrix']").css("top", "0px");
+    $("#matrix-display td").removeAttr("onmouseover onmouseout").removeClass("not-number-cell candidate-cell summand-cell updated-cell");
+    $(window).scrollTop(0);
     return;
 };
 
