@@ -29,8 +29,13 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
                     $("#tg_button_showMatrix").hide();
                     $("#ta_div_statusText").append("<h3>Die Originalmatrix sieht so aus:</h3><table id='matrix'>" + table + "</table>");
                 }
-                $(".not-number-cell").css("color", "black");
             };
+            $(".not-number-cell").css("color", "black");
+            $(".marked").removeClass("marked");
+            $("#" + tabprefix + "_p_l2").addClass("marked");
+            $("#" + tabprefix + "_p_l3").addClass("marked");
+            $("#" + tabprefix + "_p_l4").addClass("marked");
+            $("#" + tabprefix + "_p_l5").addClass("marked");
             break;
 
         case 2:
@@ -44,6 +49,14 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
                 $("#" + tabprefix + "_div_statusText").html("<table id='matrix'>" + table + "</table>");
                 $("#" + tabprefix + "_div_statusText").append(formula);
             }
+            $(".marked").removeClass("marked");
+            $("#" + tabprefix + "_p_l6").addClass("marked");
+            $("#" + tabprefix + "_p_l7").addClass("marked");
+            $("#" + tabprefix + "_p_l8").addClass("marked");
+            $("#" + tabprefix + "_p_l9").addClass("marked");
+            $("#" + tabprefix + "_p_l10").addClass("marked");
+            $("#" + tabprefix + "_p_l11").addClass("marked");
+            $("#" + tabprefix + "_p_l12").addClass("marked");
             break;
 
         case 3:
@@ -61,6 +74,8 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
                 $("#table_div").scrollTop(0);
                 $(".not-number-cell").css("color", "black");
             };
+            $(".marked").removeClass("marked");
+            $("#" + tabprefix + "_p_l13").addClass("marked");
             break;
 
         default:
@@ -517,8 +532,8 @@ function showMatrixPopup(){
     return;
 };
 
-function hideMatrixPopup(){
-    $("#matrix-container").html();
-    $("#matrix-overlay").css("display", "none");
-    return;
-};
+// function hideMatrixPopup(){
+//     $("#matrix-container").html();
+//     $("#matrix-overlay").css("display", "none");
+//     return;
+// };

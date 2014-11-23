@@ -96,6 +96,7 @@ function initializeSiteLayout() {
             }
         },
         activate : function(event, ui) {
+            var algo;
             if (ui.newPanel[0].id == "tab_tg") {
                 algo = new GraphDrawer($("body").data("graph"), $("#tg_canvas_graph"), $("#tab_tg"));
                 $("#tab_tg").data("algo", algo);
@@ -437,7 +438,7 @@ function CanvasDrawer(p_graph, p_canvas, p_tab) {
      * @method
      */
     this.addRefreshToTabbar = function() {
-        $("#tabs").find(".ui-tabs-active").append('<span class="ui-icon ui-icon-refresh" style="display:inline-block">Klicke auf den Titel des Tabs, um ihn zurückzusetzen.</span>');
+        $("#tabs").find(".ui-tabs-active").not("#ta_div_statusTabs .ui-tabs-active").append('<span class="ui-icon ui-icon-refresh" style="display:inline-block">Klicke auf den Titel des Tabs, um ihn zurückzusetzen.</span>');
         $("#tabs").find(".ui-tabs-active").attr("title", "Klicke auf den Titel des Tabs, um ihn zurückzusetzen.").tooltip();
         $("#tabs").tabs("refresh");
         $("#tabs").find(".ui-tabs-active").find("span").on("click.Refresh", function(e) {

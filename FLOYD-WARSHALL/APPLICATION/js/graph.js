@@ -745,7 +745,7 @@ function Graph(filename, canvas) {
      * @return {GraphNode}
      */
     this.addNode = function(xC, yC) {
-        $("#tg_button_gotoAlgorithmTab").button("option", "disabled", false);
+        // $("#tg_button_gotoAlgorithmTab").button("option", "disabled", false);
         var node = new GraphNode({
             x : xC,
             y : yC
@@ -1064,7 +1064,7 @@ function GraphDrawer(p_graph, p_canvas, p_tab) {
         $("#tg_button_gotoAlgorithmTab").click(function() {
             $("#tabs").tabs("option", "active", 2);
         });
-        $("#tg_button_gotoAlgorithmTab").button("option", "disabled", true);
+        // $("#tg_button_gotoAlgorithmTab").button("option", "disabled", true);
     };
 
     /**

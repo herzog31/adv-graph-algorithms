@@ -50,16 +50,27 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 	this.distance = distance;
 	this.paths = paths;
 
-	this.isFinished = false;
+	this.finished = false;
 
     var actualContext;
+
+    /**
+     * Zeigt an, ob der Algorithmus beendet hat.
+     * @returns {Boolean}
+     */
+    this.isFinished = function() {
+        if (contextStack.length === 0) {
+            return false;
+        };
+        return this.finished;
+    };
 
 	/**
      * Startet die Ausführung des Algorithmus.
      * @method
      */
     this.run = function() {
-        algo.initCanvasDrawer();
+        this.initCanvasDrawer();
         // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
         $("#ta_div_abspielbuttons").append("<button id=\"ta_button_Zurueck\">Zur&uumlck</button>" + "<button id=\"ta_button_1Schritt\">N&aumlchster Schritt</button>" + "<button id=\"ta_button_vorspulen\">Vorspulen</button>" + "<button id=\"ta_button_stoppVorspulen\">Pause</button>");
         $("#ta_button_stoppVorspulen").hide();
@@ -88,7 +99,10 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
         });
         $("#ta_div_statusTabs").tabs();
         $(".marked").removeClass("marked");
-        $("#ta_p_l1").addClass("marked");
+        $("#ta_p_l2").addClass("marked");
+        $("#ta_p_l3").addClass("marked");
+        $("#ta_p_l4").addClass("marked");
+        $("#ta_p_l5").addClass("marked");
         $("#ta_tr_LegendeClickable").removeClass("greyedOutBackground");
 
         $("#ta_button_vorspulen").button("option", "disabled", false);
@@ -164,6 +178,17 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
     };
 
     /**
+     * Beendet den Tab und startet ihn neu
+     * @method
+     */
+    this.refresh = function() {
+        this.destroy();
+        var algo = new FloydWarshallAlgorithm($("body").data("graph"), $("#ta_canvas_graph"), $("#tab_ta"));
+        $("#tab_ta").data("algo", algo);
+        algo.run();
+    };
+
+    /**
      * Stoppt das automatische Abspielen des Algorithmus
      * @method
      */
@@ -174,16 +199,6 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
         $("#ta_button_Zurueck").button("option", "disabled", false);
         window.clearInterval(fastForwardIntervalID);
         fastForwardIntervalID = null;
-    };
-
-	this.isFinished = function() {
-        if (contextStack.length === 0) {
-            return false;
-        };
-        if (!algo.isFinished) {
-            return false;
-        }
-        return true;
     };
 
 	this.findShortestPaths = function(context){
@@ -278,7 +293,7 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
         // }
 		console.log("now context is ");
 		console.log(contextStack);
-        return algo.isFinished;
+        return algo.finished;
 	};
 
 	this.backStep = function(){
@@ -364,7 +379,7 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 	};
 
 	this.end = function(context) {
-        algo.isFinished = true;
+        algo.finished = true;
 
         // Falls wir im "Vorspulen" Modus waren, daktiviere diesen
         if (fastForwardIntervalID != null) {
