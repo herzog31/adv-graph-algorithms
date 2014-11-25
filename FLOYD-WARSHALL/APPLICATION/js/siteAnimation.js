@@ -96,7 +96,7 @@ function initializeSiteLayout() {
             }
         },
         activate : function(event, ui) {
-            var algo;
+            algo = new Object();
             if (ui.newPanel[0].id == "tab_tg") {
                 algo = new GraphDrawer($("body").data("graph"), $("#tg_canvas_graph"), $("#tab_tg"));
                 $("#tab_tg").data("algo", algo);
@@ -118,7 +118,7 @@ function initializeSiteLayout() {
                 algo = new Forschungsaufgabe3($("body").data("graph"), $("#tf3_canvas_graph"), $("#tab_tf3"));
                 $("#tab_tf3").data("algo", algo);
             }
-            if (algo) {
+            if (algo.run) {
                 algo.run();
             }
         }

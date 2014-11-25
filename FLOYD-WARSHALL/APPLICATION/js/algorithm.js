@@ -221,11 +221,18 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 				    distance[context.i][context.j] = distance[context.i][context.k] + distance[context.k][context.j];
                     paths[context.i][context.j] = paths[context.i][context.k] + "," + paths[context.k][context.j];
                 }
-				context.formula = "d(" + graph.nodes[context.i].getLabel() + ", " + graph.nodes[context.j].getLabel() + ") = "
-					+ "min{d(" + graph.nodes[context.i].getLabel() + ", " + graph.nodes[context.j].getLabel() + "), "
-					+ "d(" + graph.nodes[context.i].getLabel() + ", " + graph.nodes[context.k].getLabel() + ") + "
-					+ "d(" + graph.nodes[context.k].getLabel() + ", " + graph.nodes[context.j].getLabel() + ")}";
-				isStepMade = true;
+                if(context.preliminary) {
+                    context.formula = "d(" + graph.nodes[context.i].getLabel() + ", " + graph.nodes[context.j].getLabel() + ") = "
+                        + "min{d(" + graph.nodes[context.i].getLabel() + ", " + graph.nodes[context.j].getLabel() + "), "
+                        + "d(" + graph.nodes[context.i].getLabel() + ", " + graph.nodes[context.k].getLabel() + ") + "
+                        + "d(" + graph.nodes[context.k].getLabel() + ", " + graph.nodes[context.j].getLabel() + ")}";
+                }else{
+                    context.formula = "d(" + graph.nodes[context.i].getLabel() + ", " + graph.nodes[context.j].getLabel() + ") = "
+                        + "min{<span style='background-color:#0072bd'>d(" + graph.nodes[context.i].getLabel() + ", " + graph.nodes[context.j].getLabel() + ")</span>, "
+                        + "<span style='background-color:#98C6EA'>d(" + graph.nodes[context.i].getLabel() + ", " + graph.nodes[context.k].getLabel() + ")</span> + "
+                        + "<span style='background-color:#98C6EA'>d(" + graph.nodes[context.k].getLabel() + ", " + graph.nodes[context.j].getLabel() + ")</span>}";
+                }
+                isStepMade = true;
                 break;
 			}
 

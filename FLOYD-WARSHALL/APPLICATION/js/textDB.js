@@ -23,7 +23,7 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
                 $("#" + tabprefix + "_div_statusText").html("<h3>Jetzt kann der Algorithmus beginnen!</h3>");
                 table = displayMatrix(distance, contextNew, nodes, false);
                 if(distance.length > 13){
-                    tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, 11);
+                    tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, 10);
                     $("#ta_div_statusText").append("<table id='matrix'>" + tableSmall + "</table>");
                 }else{
                     $("#tg_button_showMatrix").hide();
@@ -296,7 +296,7 @@ function displayMatrixSmall(distance, contextNew, nodes, markChanged){
         if(cols[j] - prevoiusCol > 1){
             table += "<td>...</td>";
         }
-        table += "<td class='node_label'>" + algo.graph.nodes[cols[j]].getLabel() + "</td>";
+        table += "<td class='node_label'>" + nodes[cols[j]].getLabel() + "</td>";
         prevoiusCol = cols[j];
     }
     if(cols[cols.length - 1] < distance.length - 1){
@@ -319,7 +319,7 @@ function displayMatrixSmall(distance, contextNew, nodes, markChanged){
         }
 
         prevoiusCol = -1;
-        table += "<tr><td class='node_label'>" + algo.graph.nodes[rows[i]].getLabel() + "</td>";
+        table += "<tr><td class='node_label'>" + nodes[rows[i]].getLabel() + "</td>";
         for(var j = 0; j < cols.length; j++){
             if(cols[j] - prevoiusCol > 1){
                 table += "<td>...</td>";
@@ -514,15 +514,15 @@ function showMatrixPopup(){
     // $("#matrix-display td").removeAttr("onmouseout");
     $("#ta_div_completeMatrix").dialog("open");
     $("#ta_div_completeMatrix").html("<table id='matrix-display'>" + table + "</table>");
-    $("#ta_div_completeMatrix").css("width", (algo.distance.length + 1)*18 + "px");
+    $("#ta_div_completeMatrix").css("width", (distanceMatrix.length + 1)*18 + "px");
     $("#ta_div_completeMatrix").css("max-width", "476px");
-    $("#matrix-display").css("width", (algo.distance.length + 1)*18 + "px");
+    $("#matrix-display").css("width", (distanceMatrix.length + 1)*18 + "px");
     $("#matrix-display").css("max-width", "476px");
-    $("[aria-describedby='ta_div_completeMatrix']").css("width", (24+(algo.distance.length + 1)*18) + "px");
-    $("[aria-describedby='ta_div_completeMatrix']").css("height", (106+(algo.distance.length + 1)*18) + "px");
+    $("[aria-describedby='ta_div_completeMatrix']").css("width", (24+(distanceMatrix.length + 1)*18) + "px");
+    $("[aria-describedby='ta_div_completeMatrix']").css("height", (106+(distanceMatrix.length + 1)*18) + "px");
     $("[aria-describedby='ta_div_completeMatrix']").css("max-width", "500px");
-    if((algo.distance.length + 1)*18 < 500){
-        $("[aria-describedby='ta_div_completeMatrix']").css("left", $( document ).width()-(24+(algo.distance.length + 1)*18) + "px");
+    if((distanceMatrix.length + 1)*18 < 500){
+        $("[aria-describedby='ta_div_completeMatrix']").css("left", $( document ).width()-(24+(distanceMatrix.length + 1)*18) + "px");
     }else{
         $("[aria-describedby='ta_div_completeMatrix']").css("left", $( document ).width()-500 + "px");
     }

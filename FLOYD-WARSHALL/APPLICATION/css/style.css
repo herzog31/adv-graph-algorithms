@@ -418,7 +418,7 @@ td.summand-cell{
 }
 
 #matrix td{
-    min-width: 16px;
+    min-width: 21px;
     overflow: hidden;
     text-align: center;
 }
@@ -450,7 +450,7 @@ td.summand-cell{
 }
 
 #matrix{
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .not-number-cell{
@@ -467,4 +467,5 @@ td.summand-cell{
 
 .matrix-cell.node_label{
     width: 16px;
+    overflow: hidden;
 }
