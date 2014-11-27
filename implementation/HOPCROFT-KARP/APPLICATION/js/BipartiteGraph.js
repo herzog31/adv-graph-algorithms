@@ -2,11 +2,10 @@
  * Created by Ruslan on 06.10.2014.
  */
 var graph_constants = {
-    U_POSITION : 75,
-    V_POSITION : 225,//V_POSITION : 325,
+    U_POSITION : 75, //standard 75
+    V_POSITION : 325,//standard 325
     LEFT_POSITION : 60,
     DIFF: 80,
-    NODE_THRESHOLD: 12,
     MAX_NODES: 20
 };
 

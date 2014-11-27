@@ -142,10 +142,10 @@
                                     <td class="LegendeTabelle"><img src="img/matchingKnoten.png" alt="MatchedNode" class="LegendeIcon"></td>
                                     <td><span>Matching-Knoten</span></td>
                                 </tr>
-                                <tr>
+<!--                                <tr>
                                     <td class="LegendeTabelle"><img src="img/kante.png" alt="Knoten" class="LegendeIcon"></td>
                                     <td><span>Kante</span></td>
-                                </tr>
+                                </tr>-->
                                 <tr>
                                     <td class="LegendeTabelle"><img src="img/matchingEdge.png" alt="Knoten" class="LegendeIcon"></td>
                                     <td><span>Matching-Kante</span></td>
@@ -171,6 +171,7 @@
                             <p>Am Anfang des Algorithmus besitzen alle Knoten keinen Matching-Partner. Die Menge des Kanten im Matching M ist dementsprechend leer.</p>
                             <p>In jeder Iteration suchen wir eine maximale Menge an kürzesten knotendisjunkten Augmentationswegen.</p>
                             <p>Maximal heißt hier, dass es zusätzlich zu den gefundenen Pfaden keinen anderen kürzesten knotendisjunkten Augmentationsweg gibt.</p>
+                            <p>Ein Augmentationsweg ist ein Weg, der mit einem freien Knoten anfängt, mit einem freien Knoten endet und alternierend Matching-Kanten und Nicht-Matching-Kanten benutzt.</p>
                         </div>
                         <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
                             <p class="pseudocode" id="ta_p_l1">BEGIN</p>
@@ -201,7 +202,7 @@
             <div id="ti_div_Einfuehrungstext">
                 <h1>Matching auf bipartiten Graphen</h1>
                 <h1>Idee des Algorithmus</h1>
-                <h1>Konstruktion des günstigsten Weges</h1>
+                <h1>Finden der Länge des kürzesten Augmentationsweges</h1>
                 <h1>Was nun?</h1>
                 <div class="Entscheidungsweg" id="ti_div_EntscheidungLeft">
                     <h3>Einen Graph erstellen und den Algorithmus durchspielen</h3>
@@ -226,12 +227,16 @@
                         <div class="LegendeText">
                             <table>
                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/matchedNode.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>Startknoten, von dem aus die Entfernungen und günstigsten Wege berechnet werden.</span></td>
+                                    <td class="LegendeTabelle"><img src="img/knoten.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td><span>Knoten</span></td>
                                 </tr>
-                                <tr class="LegendeZeileClickable" id="tf1_tr_LegendeClickable" title="Klicke zum Ein-/Ausblenden">
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/matchingKnoten.png" alt="MatchedNode" class="LegendeIcon"></td>
+                                    <td><span>Matching-Knoten</span></td>
+                                </tr>
+                                <tr>
                                     <td class="LegendeTabelle"><img src="img/matchingEdge.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>"Vorgängerkante", die der günstigste Weg zum Knoten benutzt.</span></td>
+                                    <td><span>Matching-Kante</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -242,12 +247,10 @@
                 </div>
                 <div id="tf1_div_statusWindow" class="statusWindow">
                     <h2 class="">Prüfe dein Wissen: Wie würde der Algorithmus entscheiden?</h2>
-                    <select id="tf1_select_aufgabeGraph" name="Wähle einen Graphen">
+                    <!--<select id="tf1_select_aufgabeGraph" name="Wähle einen Graphen">
                         <option selected>Selbsterstellter Graph</option>
                         <option>Standardbeispiel</option>
-                        <option>Negativer Kreis</option>
-                        <option>Positiver Kreis</option>
-                    </select>
+                    </select>-->
                     <div id="tf1_div_abspielbuttons">
                     </div>
                     <div id="tf1_div_statusTabs">
@@ -256,22 +259,22 @@
                             <li><a href="#tf1_div_statusPseudocode">Pseudocode</a></li>
                         </ul>
                         <div id="tf1_div_statusErklaerung">
-                            <h3>Wähle zuerst einen Startknoten aus!</h3>
-                            <p>Von diesem Knoten aus werden die Abstände zu den anderen Knoten berechnet.</p>
-                            <p>Klicke einfach auf den entsprechenden Knoten im Zeichenbereich.</p>
+                            <h3>Was ist die Länge des kürzesten Augmentationsweges?</h3>
+                            <p>In dieser Forschungsaufgabe sollst du die Länge des kürzesten Augmentationsweges bestimmen.
+                                Der Algorithmus wird an bestimmten Stellen stoppen, wo du einige Fragen beantworten musst.</p>
+                            <p>Wie du das machen könntest, kannst du in de Beschreibung des Algorithmus nachlesen.</p>
                         </div>
                         <div class="PseudocodeWrapper" id="tf1_div_statusPseudocode">
-                            <p class="pseudocode" id="tf1_p_l1">BEGIN</p>
-                            <p class="pseudocode" id="tf1_p_l2">  d(v[1]) &larr; 0</p>
-                            <p class="pseudocode" id="tf1_p_l3">  FOR j = 2,..,n DO</p>
-                            <p class="pseudocode" id="tf1_p_l4">    d(v[j]) &larr; &#8734;</p>
-                            <p class="pseudocode" id="tf1_p_l5">  FOR i = 1,..,(|V|-1) DO</p>
-                            <p class="pseudocode" id="tf1_p_l6">    FOR ALL (u,v) aus E DO</p>
-                            <p class="pseudocode" id="tf1_p_l7">      d(v) &larr; min(d(v), d(u)+l(u,v))</p>
-                            <p class="pseudocode" id="tf1_p_l8">  FOR ALL (u,v) aus E DO</p>
-                            <p class="pseudocode" id="tf1_p_l9">    IF d(v) > d(u) + l(u,v) DO</p>
-                            <p class="pseudocode" id="tf1_p_l10">     Meldung: "Negativer Kreis"</p>
-                            <p class="pseudocode" id="tf1_p_l11">END</p>
+                            <p class="pseudocode" id="tf_p_l1">BEGIN</p>
+                            <p class="pseudocode" id="tf_p_l2">  M &larr; &empty;</p>
+                            <p class="pseudocode" id="tf_p_l3">  REPEAT </p>
+                            <p class="pseudocode" id="tf_p_l4">    let &Rho; = {P1,P2,...,Pk} be a maximal</p>
+                            <p class="pseudocode" id="tf_p_l5">    set of vertex-disjoint shortest </p>
+                            <p class="pseudocode" id="tf_p_l6">    augmenting paths with respect to M</p>
+                            <p class="pseudocode" id="tf_p_l7">    M &larr; M &oplus; (P1 &cup; P2 &cup; ... &cup; Pk)</p>
+                            <p class="pseudocode" id="tf_p_l8">  UNTIL &Rho; == &empty;</p>
+                            <p class="pseudocode" id="tf_p_l9">RETURN M</p>
+                            <p class="pseudocode" id="tf_p_l10">END</p>
                         </div>
                     </div>
                 </div>
@@ -300,12 +303,12 @@
                         <div class="LegendeText">
                             <table>
                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/matchedNode.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>Startknoten, von dem aus die Entfernungen und günstigsten Wege berechnet werden.</span></td>
+                                    <td class="LegendeTabelle"><img src="img/matchingKnoten.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td><span>Matching-Knoten.</span></td>
                                 </tr>
                                 <tr class="LegendeZeileClickable" id="tf2_tr_LegendeClickable" title="Klicke zum Ein-/Ausblenden">
                                     <td class="LegendeTabelle"><img src="img/matchingEdge.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>"Vorgängerkante", die der günstigste Weg zum Knoten benutzt.</span></td>
+                                    <td><span>Matching-Kante.</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -315,18 +318,18 @@
                     </div>
                 </div>
                 <div id="tf2_div_statusWindow" class="statusWindow">
-                    <h2>Wie ist die optimale Sortierung der Kanten?</h2>
+                    <h2>Versuche die Augmentationswege selbst zu finden</h2>
                     <div id="tf2_div_Abspielbuttons"></div>
-                    <select id="tf2_select_aufgabeGraph" name="Wähle einen Graphen">
+<!--                    <select id="tf2_select_aufgabeGraph" name="Wähle einen Graphen">
                         <option selected>Selbsterstellter Graph</option>
                         <option>Standardbeispiel</option>
-                        <option>Negativer Kreis</option>
-                        <option>Positiver Kreis</option>
-                    </select>
+                    </select>-->
                     <div id="tf2_div_statusErklaerung">
-                        <h3>Wähle zuerst den Graphen, mit dem du arbeiten möchtest.</h3>
-                        <h3>Klicke danach auf den Startknoten, um die Aufgabe zu beginnen.</h3>
-                        <p>Klicke danach in der Reihenfolge auf die Kanten, in der Sie der Algorithmus betrachten soll.</p>
+<!--                        <h3>Wähle zuerst den Graphen, mit dem du arbeiten möchtest.</h3>-->
+                        <h3>Klicke auf die Knoten um einen Augmentationsweg einzuzeichnen.</h3>
+                        <p>Klicke in der Reihenfolge auf die Knoten, wie sie in dem Augmentationsweg vorkommen.</p>
+                        <p>Mit einem Linksklick wählst du die Knoten aus und mit einem Rechtsklich kann du deine Wahl rückgängigmachen.</p>
+                        <p>Klicke in der Reihenfolge auf die Knoten, wie sie in dem Augmentationsweg vorkommen.</p>
                     </div>
                     <div id="tf2_div_Frage">
                     </div>
@@ -334,7 +337,7 @@
                     </div>
                 </div>
             </div>
-            <div title="Forschungsaufgabe 2" class="tabIntroDialog">
+<!--            <div title="Forschungsaufgabe 2" class="tabIntroDialog">
                 <h2>
                     Wie ist die optimale Sortierung der Kanten?
                 </h2>
@@ -345,7 +348,7 @@
                 <img src="img/FA2BeispielSchlecht.png" id="tf2_img_beispielSchlecht" alt="Diese Reihenfolge ist weniger sinnvoll">
                 <p>Im Beispiel sieht man: Links ist die Reihenfolge sinnvoll, der Algorithmus kann schon nach einer Runde alle Kosten korrekt berechnet haben. Rechts ist das nicht der Fall.</p>
                 <p>In dieser Aufgabe kannst du experimentieren, wie viele Phasen der Bellman-Ford-Algorithmus bei verschiedenen Sortierungen benötigt.</p>
-            </div>
+            </div>-->
             <div id="tf2_div_confirmTabChange" title="Aufgabe abbrechen?" class="tabChangeWarningDialog">
                 <h2>Beim Wechsel des Tabs wird die Aufgabe abgebrochen.</h2>
                 <p>Du kannst die Anwendung <a href="#" target="_blank" tabindex=-1> in einem anderen Browserfenster</a> öffnen, um parallel einen anderen Tab zu lesen.</p>

@@ -16,6 +16,65 @@
     </script>
 </head>
 <body>
-<!-- Left intentionally blank. -->
+<div><pre><code>
+    public static int getMaxFlow(int[][] graph, int start, int sink) {
+    // initialize
+    int c[][] = graph;
+    int n = c.length;
+    int h[] = new int[n];
+    h[start] = n;
+    int maxh[] = new int[n];
+    int f[][] = new int[n][n];
+    int e[] = new int[n];
+
+    // push the flow from the start to adjacent nodes
+    for (int i = 0; i < n; ++i) {
+    f[start][i] = c[start][i];
+    f[i][start] = -f[start][i];
+    e[i] = c[start][i];
+    }
+    // iterate, apply push, relabel
+    boolean stop = false;
+    int sz = 0;
+    while (!stop) {
+    boolean br=false;
+    if (sz == 0) {
+    for (int i = 0; i < n; ++i)
+    if (i != start && i != sink && e[i] > 0) {
+    if (sz != 0 && h[i] > h[maxh[0]])
+    sz = 0;
+    maxh[sz++] = i;
+    }
+    }
+    if (sz == 0) stop=true;
+    else {
+    while (sz != 0 && !br) {
+    int i = maxh[sz - 1];
+    boolean pushed = false;
+    for (int j = 0; j < n && e[i] != 0; ++j) {
+    if (h[i] == h[j] + 1 && c[i][j] - f[i][j] > 0) {//push
+    int df = Math.min(c[i][j] - f[i][j], e[i]);
+    f[i][j] += df;
+    f[j][i] -= df;
+    e[i] -= df;
+    e[j] += df;
+    if (e[i] == 0) sz--;
+    pushed = true;
+    }
+    }
+    if (!pushed) {//relabel, if not pushed before
+    h[i] = 2 * n;
+    for (int j = 0; j < n; ++j)
+    if (h[i] > h[j] + 1 && c[i][j] - f[i][j] > 0) h[i] = h[j] + 1;
+    if (h[i] > h[maxh[0]]) {
+    sz = 0;
+    br=true;
+    }
+    }
+    }
+    }
+    }
+    return e[sink];
+    }</code></pre></div>
 </body>
 </html>

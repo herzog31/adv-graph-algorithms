@@ -17,63 +17,41 @@
  * @param {Object} p_tab jQuery Objekt des aktuellen Tabs.
  */
 function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
-    CanvasDrawer.call(this,p_graph,p_canvas,p_tab); 
+    CanvasDrawer.call(this,p_graph,p_canvas,p_tab);
+    /**
+     * Convenience Objekt, damit man den Graph ohne this ansprechen kann.
+     * @type Graph
+     */
+    var graph = p_graph;
+    /**
+     * Convenience Objekt, damit man das Canvas ohne this. ansprechen kann.
+     * @type Object
+     */
+    var canvas = p_canvas;
     /**
      * Closure Variable für dieses Objekt
      * @type Forschungsaufgabe2
      */
     var algo = this;
-    /**
-     * Knoten, von dem aus alle Entfernungen berechnet werden
-     * @type GraphNode
-     */
-    var startNode = null;
-    /**
-     * Assoziatives Array mit den Abstandswerten aller Knoten<br>
-     * Keys: KnotenIDs Value: Abstandswert
-     * @type Object
-     */
-    var distanz = new Object();
-    /**
-     * Assoziatives Array mit den Vorgängerkanten aller Knoten<br>
-     * Keys: KnotenIDs Value: KantenID
-     * @type Object
-     */
-    var vorgaenger = new Object();
-    /**
-     * Reihenfolge der Kanten, wie sie vom Nutzer festgelegt wurde.
-     * @type Number[]
-     */
-    var edgeOrder = [];
-    /**
-     * Kante, für die zuletzt die Reihenfolge festgelegt wurde
-     * @type Number
-     */
-    var previousEdge = null;
+
+    var stack = new Array();
+
+    var matching = new Object();
+
+    var matched = new Object();
+
     /**
      * Zeigt an, ob vor dem Verlassen des Tabs gewarnt werden soll.
      * @type Boolean
      */
     var warnBeforeLeave = false;
-    /**
-     * Zeigt an, ob die Vorgängerkanten markiert werden sollen oder nicht.
-     * @type Boolean
-     */
-    var showVorgaenger = true;
-    /**
-     * Die Distanzwerte der Knoten werden nach und nach auf diesen Stack gepusht.<br>
-     * Wird für den "Zurück" Button benötigt.
-     * @type Number[]
-     */
-    var nodeUpdateStack = new Array();
-    
-    /**
-     * Die VorgänerIDs der Knoten werden nach und nach auf diesen Stack gepusht.<br>
-     * Wird für den "Zurück" Button benötigt.
-     * @type Number[]
-     */
-    var vorgaengerIDUpdateStack = new Array();
-    
+    var update = false;
+    /*
+     * Hier wird das Aussehen der Kanten und Knoten bestimmt
+     * */
+    const MATCHED_EDGE_COLOR = "DarkBlue";
+    const MATCHED_NODE_COLOR = const_Colors.NodeFillingHighlight;
+
     /**
      * Startet die Ausführung des Algorithmus.
      * @method
@@ -120,9 +98,11 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.registerEventHandlers = function() {
+        canvas.on("click.Forschungsaufgabe1",function(e) {algo.canvasClickHandler(e);});
+        canvas.on("contextmenu.Forschungsaufgabe1",function(e) {algo.rightClickHandler(e);});
         $("#tf2_select_aufgabeGraph").on("change",function() {algo.setGraphHandler();});
-        this.canvas.on("click.Forschungsaufgabe2SN",function(e) {algo.startNodeFinder(e);});
-        $("#tf2_tr_LegendeClickable").on("click.Forschungsaufgabe2",function() {algo.changeVorgaengerVisualization();});
+        //this.canvas.on("click.Forschungsaufgabe2SN",function(e) {algo.startNodeFinder(e);});
+        //$("#tf2_tr_LegendeClickable").on("click.Forschungsaufgabe2",function() {algo.changeVorgaengerVisualization();});
     };
     
     /**
@@ -137,7 +117,135 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_tr_LegendeClickable").off(".Forschungsaufgabe2");
         $("#tf2_button_Zurueck").off(".Forschungsaufgabe2");
     };
-    
+
+    this.canvasClickHandler = function(e){
+        var node = getClickedNode(e);
+        if(update){
+            augmentMatching();
+            stack = new Array();
+            update = false;
+        }
+        else if(node!=null){
+            var free = matched[node.getNodeID()] == null;
+            if(stack.length == 0){
+                if(!free) {
+                    $("#tf2_div_statusErklaerung").html("<h3>1 "+LNG.K('aufgabe2_header')+"</h3>"
+                    + "<p>"+LNG.K('aufgabe2_msg_1')+"</p>");
+                }
+                else{
+                    $("#tf2_div_statusErklaerung").html("<h3>1 "+LNG.K('aufgabe2_header')+"</h3>"
+                    + "<p>"+LNG.K('aufgabe2_result_1')+"</p>");
+                    stack.push(node);
+                    markNode();
+                }
+            }
+            else{
+                var inStack = false;
+                for(var i in stack){
+                    if(stack[i]==node) inStack = true;
+                }
+                var notConnected = false;
+                var e = graph.getEdgeBetween(node,stack[stack.length-1]);
+                if(e === null) notConnected = true;
+                var notPartner = false;
+                if(stack.length%2==0 && matched[node.getNodeID()]!=stack[stack.length-1])notPartner=true;
+
+                if(inStack){
+                    $("#tf2_div_statusErklaerung").html("<h3> "+LNG.K('aufgabe2_header')+"</h3>"
+                    + "<p>"+LNG.K('aufgabe2_msg_2')+"</p>");
+                }
+                else if(notConnected){
+                    $("#tf2_div_statusErklaerung").html("<h3> "+LNG.K('aufgabe2_header')+"</h3>"
+                    + "<p>"+LNG.K('aufgabe2_msg_3')+"</p>");
+                }
+                else if(notPartner){
+                    $("#tf2_div_statusErklaerung").html("<h3> "+LNG.K('aufgabe2_header')+"</h3>"
+                    + "<p>"+LNG.K('aufgabe2_msg_4')+"</p>");
+                }
+                else {
+                    if(free){
+                        $("#tf2_div_statusErklaerung").html("<h3> "+LNG.K('aufgabe2_header')+"</h3>"
+                        + "<p>"+LNG.K('aufgabe2_result_2')+"</p>");
+                        update = true;
+                    }
+                    else{//grow Path
+                        $("#tf2_div_statusErklaerung").html("<h3> "+LNG.K('aufgabe2_header')+"</h3>"
+                        + "<p>"+LNG.K('aufgabe2_result_3')+"</p>");
+                    }
+                    stack.push(node);
+                    markNode();
+                }
+            }
+        }
+        this.needRedraw = true;
+    };
+    var getClickedNode = function(e){
+        var mx = e.pageX - canvas.offset().left;
+        var my = e.pageY - canvas.offset().top;
+        for(var knotenID in graph.nodes) {
+            if (graph.nodes[knotenID].contains(mx, my)) {
+                return graph.nodes[knotenID];
+            }
+        }
+        return null;
+    };
+    var augmentMatching = function () {
+        var path = stack;
+        setNodeMatched(path[0]);
+        //iterate over all edges in the path
+        for (var i = 1; i < path.length; i++) {
+            var edge = graph.edges[graph.getEdgeBetween(path[i-1],path[i])];
+            //if its matching edge then delete it from the matching
+            if (matching[edge.getEdgeID()]) {
+                delete matching[edge.getEdgeID()];
+                edge.setLayout("lineColor", "black"); //set the color to black
+            }
+            //else insert it
+            else {
+                matching[edge.getEdgeID()] = edge;
+                edge.setLayout("lineColor", MATCHED_EDGE_COLOR); // set the matching color
+                if(i%2==1){
+                    matched[path[i - 1].getNodeID()] = path[i];
+                    matched[path[i].getNodeID()] = path[i - 1];
+                }
+            }
+            setNodeMatched(path[i]);
+        }
+    };
+    var setEdgeMatched = function (edge) {
+        edge.setLayout("lineColor", MATCHED_EDGE_COLOR);
+        edge.setLayout("lineWidth", global_Edgelayout.lineWidth * 1.3);
+    };
+
+    var setNodeMatched = function (node) {
+        node.setLayout('fillStyle', MATCHED_NODE_COLOR);
+        node.setLayout('borderWidth',global_NodeLayout.borderWidth);
+        node.setLayout('borderColor', global_NodeLayout.borderColor);
+    };
+    var markNode = function(){
+        var n1 = stack[stack.length-1];
+        n1.setLayout('borderWidth',global_NodeLayout.borderWidth*1.3);
+        if(stack.length>1){
+            var n2 = stack[stack.length-2];
+            n2.setLayout('borderWidth',global_NodeLayout.borderWidth*1.3);
+            graph.edges[graph.getEdgeBetween(n1,n2)].setLayout("lineWidth", global_Edgelayout.lineWidth*1.7);
+
+        }
+    };
+    this.rightClickHandler = function(e) {
+        e.preventDefault();
+        if(stack.length>0){
+            var node = stack.pop();
+            if(matched[node.getNodeID()]!=null)setNodeMatched(node);
+            else node.restoreLayout();
+            if(stack.length>0){
+                var e = graph.getEdgeBetween(node,stack[stack.length-1]);
+                if(matching[e]!=null)setEdgeMatched(graph.edges[e]);
+                else graph.edges[e].restoreLayout();
+            }
+        }
+        this.needRedraw = true;
+    };
     /**
      * Wählt einen Graph um darauf die Forschungsaufgabe auszuführen
      * @method
@@ -149,13 +257,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                 this.graph = $("body").data("graph");
                 break;
             case "Standardbeispiel":
-                this.graph = new Graph("graphs/graph1.txt");
-                break;
-            case "Negativer Kreis":
-                this.graph = new Graph("graphs/graph2.txt");
-                break;
-            case "Positiver Kreis":
-                this.graph = new Graph("graphs/graph7.txt");
+                this.graph = new BipartiteGraph("graphs/graph1.txt");
                 break;
             default:
                 //console.log("Auswahl im Dropdown Menü unbekannt, tue nichts.");
@@ -197,23 +299,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      * Initialisiere den Algorithmus, stelle die Felder auf ihre Startwerte.
      */
     this.initializeAlgorithm = function() {
-        if(Utilities.arrayOfKeys(this.graph.edges).length == 0) {
-            $("#tf2_div_statusErklaerung").html("<h3>"+LNG.K('aufgabe1_result1')+"</h3>");
-            $("#tf2_div_statusErklaerung").append("<p>"+LNG.K('aufgabe2_result_1')+"</p>");
-            warnBeforeLeave = false;
-            return;
-        }
-        distanz[startNode.getNodeID()] = 0;
-        this.graph.nodes[startNode.getNodeID()].setLabel("0");
-        for(var knotenID in this.graph.nodes) {
-            if(knotenID != startNode.getNodeID()) {
-                distanz[knotenID] = "inf";
-                this.graph.nodes[knotenID].setLabel(String.fromCharCode(8734));   // Unendlich
-            }
-            vorgaenger[knotenID] = null;
-        }
-
-        // Erklärung im Statusfenster
         $("#tf2_div_statusErklaerung").html("<h3>1 "+LNG.K('textdb_msg_case0_1')+"</h3>"
             + "<p>"+LNG.K('aufgabe2_msg_1')+"</p>");
         $("#tf2_div_statusErklaerung").append("<h3>"+LNG.K('aufgabe2_msg_2')+"</h3>");

@@ -37,23 +37,14 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      */
     var algo = this;
     /**
-     * Sammelt Information über den aktuellen Weg zum Startknoten, der angezeigt wird<br>
-     * Felder: modifiedEdges: Information über die Kanten, deren Layout verändert wurde, altes Layout und ID<br>
-     *         nodeID: Id des Knotens, der grade verändert wird.
-     * @type Object
-     */
-
-    /**
      * Hier die Variablen vom HK-Algo
      */
-
     /**
      * Enthaelt alle Kanten, die zu aktuellem Zeitpunkt zum Matching gehoeren.
      * Keys: KantenIDs Value: Kanten
      * @type Object
      */
     var matching = new Object();
-    
     /**
      * Enthaelt alle freien Knoten (derzeit) der linken Seite
      * Wird als Ausgangspunkt fuer die Erstellung des alternierenden Graphen benutzt.
@@ -89,7 +80,6 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     * @type Number
     * */
     var currentPath = 0;
-
     /*
     * Alle benoetigten Information zur Wiederherstellung der vorangegangenen Schritte werden hier gespeichert.
     * @type Array
@@ -106,6 +96,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      */
     var end = false;
 
+    var statusErklaerung = "#ta_div_statusErklaerung";
     /*
     * Hier werden die Statuskonstanten definiert
     * */
@@ -117,14 +108,16 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     const GRAY_PATH = 5;
     const END_ALGORITHM = 6;
 
-
+    /*
+    * Hier wird das Aussehen der Kanten und Knoten bestimmt
+    * */
     const MATCHED_EDGE_COLOR = "DarkBlue";
     const MATCHED_NODE_COLOR = const_Colors.NodeFillingHighlight;
 
-    /**
+/*    *//**
      * Aussehen einer Matching-Kante.
      * @type Object
-     */
+     *//*
     var greyedEdge = {'arrowAngle' : Math.PI/8,	// Winkel des Pfeilkopfs relativ zum Pfeilkörper
         'arrowHeadLength' : 15,    // Länge des Pfeilkopfs
         'lineColor' : "blue",		// Farbe des Pfeils
@@ -134,10 +127,10 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         'isHighlighted': false     // Ob die Kante eine besondere Markierung haben soll
     };
 
-    /**
+    *//**
      * Aussehen eines Matching-Knotens.
      * @type Object
-     */
+     *//*
     var greyedNode = {'fillStyle' : "#D8BFD8",    // Farbe der Füllung
         'nodeRadius' : 15,                         // Radius der Kreises
         'borderColor' : const_Colors.NodeBorder,   // Farbe des Rands (ohne Markierung)
@@ -145,7 +138,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         'fontColor' : 'black',                     // Farbe der Schrift
         'font' : 'bold',                           // Schriftart
         'fontSize' : 14                            // Schriftgrösse in Pixeln
-    };
+    };*/
 
 
     /**
@@ -166,7 +159,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_button_stoppVorspulen").button({icons:{primary: "ui-icon-pause"}});
         $("#ta_div_statusTabs").tabs();
         $(".marked").removeClass("marked");
-        $("#ta_p_l1").addClass("marked");
+        //$("#ta_p_l1").addClass("marked");
         $("#ta_tr_LegendeClickable").removeClass("greyedOutBackground");
         this.registerEventHandlers();
         this.needRedraw = true;
@@ -335,14 +328,14 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         this.dfs();
         if(shortestPathLength > 0){
             statusID = NEXT_AUGMENTING_PATH;
-            $("#ta_div_statusErklaerung").html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
+            $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
                 + "<h3> "+LNG.K('textdb_msg_begin_it')+"</h3>"
                 + "<p>"+LNG.K('textdb_msg_path_shortest')+ shortestPathLength + "</p>"
                 + "<p>"+LNG.K('textdb_msg_begin_it_1')+"<p>");
         }
         else{
             statusID = END_ALGORITHM;
-            $("#ta_div_statusErklaerung").html("<h3> "+LNG.K('textdb_msg_end_algo')+"</h3>"
+            $(statusErklaerung).html("<h3> "+LNG.K('textdb_msg_end_algo')+"</h3>"
                 + "<p>"+LNG.K('textdb_msg_end_algo_1')+"</p>");
         }
     };
@@ -476,11 +469,11 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
             node.setLayout('borderWidth',global_NodeLayout.borderWidth);
             if(n < path.length - 1){
                 var edge = path[n+1];
-                edge.setLayout("lineWidth", global_Edgelayout.lineWidth*1.7);
+                edge.setLayout("lineWidth", global_Edgelayout.lineWidth*1.9);
             }
         }
         // TODO Statusfenster
-        $("#ta_div_statusErklaerung").html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
+        $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
             + "<h3> "+LNG.K('textdb_msg_path_highlight')+"</h3>"
             + "<p> "+LNG.K('textdb_msg_path_highlight_1')+"<p>");
         statusID = UPDATE_MATCHING;
@@ -524,7 +517,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         setNodeMatched(path[path.length-1]);
 
         statusID = GRAY_PATH;
-        $("#ta_div_statusErklaerung").html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
+        $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
             + "<h3> "+LNG.K('textdb_msg_update')+"</h3>"
             + "<p>"+LNG.K('textdb_msg_update_1')+ "</p>"
             + "<p>"+LNG.K('textdb_msg_update_2')+ "</p>");
@@ -553,7 +546,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         }
         else statusID = END_ITERATION;
         // TODO Statusfenster
-        $("#ta_div_statusErklaerung").html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
+        $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
             + "<h3> "+LNG.K('textdb_msg_gray')+"</h3>"
             + "<p>"+LNG.K('textdb_msg_gray_1')+ "</p>");
     };
@@ -575,7 +568,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         for(var e in matching){
             setEdgeMatched(graph.edges[e]);
         }
-        $("#ta_div_statusErklaerung").html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
+        $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
             + "<h3> "+LNG.K('textdb_msg_end_it')+"</h3>"
             + "<p>"+LNG.K('textdb_msg_end_it_1')+"</p>");
     };
@@ -586,11 +579,11 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.endAlgorithm = function() {
-        $("#ta_div_statusErklaerung").append("<p></p><h3>"+LNG.K('algorithm_msg_finish')+"</h3>");
-        $("#ta_div_statusErklaerung").append("<button id=ta_button_gotoIdee>"+LNG.K('algorithm_btn_more')+"</button>");
-        $("#ta_div_statusErklaerung").append("<h3>"+LNG.K('algorithm_msg_test')+"</h3>");
-        $("#ta_div_statusErklaerung").append("<button id=ta_button_gotoFA1>"+LNG.K('algorithm_btn_exe1')+"</button>");
-        $("#ta_div_statusErklaerung").append("<button id=ta_button_gotoFA2>"+LNG.K('algorithm_btn_exe2')+"</button>");
+        $(statusErklaerung).append("<p></p><h3>"+LNG.K('algorithm_msg_finish')+"</h3>");
+        $(statusErklaerung).append("<button id=ta_button_gotoIdee>"+LNG.K('algorithm_btn_more')+"</button>");
+        $(statusErklaerung).append("<h3>"+LNG.K('algorithm_msg_test')+"</h3>");
+        $(statusErklaerung).append("<button id=ta_button_gotoFA1>"+LNG.K('algorithm_btn_exe1')+"</button>");
+        $(statusErklaerung).append("<button id=ta_button_gotoFA2>"+LNG.K('algorithm_btn_exe2')+"</button>");
         $("#ta_button_gotoIdee").button();
         $("#ta_button_gotoFA1").button();
         $("#ta_button_gotoFA2").button();
@@ -638,7 +631,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
             "matched": jQuery.extend({},matched),
             "disjointPaths": jQuery.extend({},disjointPaths),
             "currentPath": currentPath,
-            "htmlSidebar": $("#ta_div_statusErklaerung").html()
+            "htmlSidebar": $(statusErklaerung).html()
         });
         //console.log("Current History Step: ", history[history.length-1]);
     };
@@ -646,7 +639,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     this.replayStep = function() {
         if(history.length > 0){
             var oldState = history.pop();
-            console.log("Replay Step", oldState);
+            //console.log("Replay Step", oldState);
             statusID = oldState.previousStatusId;
             matching = oldState.matching;
             bfsEdges = oldState.bfsEdges;
@@ -675,6 +668,13 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
             $("#ta_button_vorspulen").button("option", "disabled", false);
         }
     };
+
+    this.setOutputFenster = function(fenster){
+        statusErklaerung = fenster;
+    }
+    this.getShortestPathLength = function(){
+        return shortestPathLength;
+    }
 }
 
 // Vererbung realisieren
