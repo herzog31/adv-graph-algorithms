@@ -143,15 +143,15 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_div_abspielbuttons").append("<button id=\"tf1_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button><br>"
                         +"<button id=\"tf1_button_vorspulen\">"+LNG.K('aufgabe1_btn_next_question')+"</button>"
                         +"<button id=\"tf1_button_stoppVorspulen\">"+LNG.K('algorithm_btn_paus')+"</button>");
-        $("#tf1_button_stoppVorspulen").hide();
+        //$("#tf1_button_stoppVorspulen").hide();
         $("#tf1_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: true});
         $("#tf1_button_vorspulen").button({icons:{primary: "ui-icon-seek-next"}, disabled: true});
         $("#tf1_button_stoppVorspulen").button({icons:{primary: "ui-icon-pause"}});
         this.registerEventHandlers();
         this.needRedraw = true;
-        $("#tf1_button_1Schritt").hide();
-        $("#tf1_button_stoppVorspulen").hide();
-        $("#tf1_button_vorspulen").hide();
+        //$("#tf1_button_1Schritt").hide();
+        //$("#tf1_button_stoppVorspulen").hide();
+        //$("#tf1_button_vorspulen").hide();
         $("#tf1_div_statusTabs").tabs();
         $(".marked").removeClass("marked");
         $("#tf1_p_l1").addClass("marked");
@@ -193,13 +193,13 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.registerEventHandlers = function() {
-        $("#tf1_select_aufgabeGraph").on("change",function() {algo.setGraphHandler();});
-        canvas.on("click.Forschungsaufgabe1",function(e) {algo.canvasClickHandler(e);});
+        //$("#tf1_select_aufgabeGraph").on("change",function() {algo.setGraphHandler();});
+        //canvas.on("click.Forschungsaufgabe1",function(e) {algo.canvasClickHandler(e);});
         $("#tf1_button_1Schritt").on("click.Forschungsaufgabe1",function() {algo.nextStepChoice();});
-        canvas.on("mousemove.Forschungsaufgabe1",function(e) {algo.canvasMouseMoveHandler(e);});
+        //canvas.on("mousemove.Forschungsaufgabe1",function(e) {algo.canvasMouseMoveHandler(e);});
         $("#tf1_button_vorspulen").on("click.Forschungsaufgabe1",function() {algo.fastForwardAlgorithm();});
         $("#tf1_button_stoppVorspulen").on("click.Forschungsaufgabe1",function() {algo.stopFastForward();});
-        $("#tf1_tr_LegendeClickable").on("click.Forschungsaufgabe1",function() {algo.changeVorgaengerVisualization();});
+        //$("#tf1_tr_LegendeClickable").on("click.Forschungsaufgabe1",function() {algo.changeVorgaengerVisualization();});
     };
     
     /**
@@ -208,18 +208,18 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      */
     this.deregisterEventHandlers = function() {
         canvas.off(".Forschungsaufgabe1");
-        $("#tf1_select_aufgabeGraph").off("change");
+        //$("#tf1_select_aufgabeGraph").off("change");
         $("#tf1_button_1Schritt").off(".Forschungsaufgabe1");
         $("#tf1_button_vorspulen").off(".Forschungsaufgabe1");
         $("#tf1_button_stoppVorspulen").off(".Forschungsaufgabe1");
-        $("#tf1_tr_LegendeClickable").off(".Forschungsaufgabe1");
+        //$("#tf1_tr_LegendeClickable").off(".Forschungsaufgabe1");
     };
     
     /**
      * Wählt einen Graph um darauf die Forschungsaufgabe auszuführen
      * @method
      */
-    this.setGraphHandler = function() {
+    /* this.setGraphHandler = function() {
         var selection = $("#tf1_select_aufgabeGraph>option:selected").val();
         switch(selection) {
             case "Selbsterstellter Graph":
@@ -243,13 +243,13 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         canvas = this.canvas;
         kantenIDs = Utilities.arrayOfKeys(graph.edges);
         this.needRedraw = true;
-    };
+    }; */
     
     /**
      * Wird aufgerufen, sobald auf das Canvas geklickt wird. 
      * @param {jQuery.Event} e jQuery Event Objekt, gibt Koordinaten
      * @method
-     */
+     *//*
     this.canvasClickHandler = function(e) {
         if(startNode == null) {
             var mx = e.pageX - canvas.offset().left;
@@ -272,14 +272,14 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
                 }
             }
         }
-    };
+    }; */
     
     /**
      * Ermittelt zufällig zwei Kanten in 2 verschiedenen Runden, an denen der Algorithmus für
      * Fragen gestoppt wird.<br>
      * Nutzt die Cantorsche Paarungsfunktion um einfacher in den Array zu schreiben.
      * @method
-     */
+     */ /* 
     this.setFragePunkte = function() {
         var anzahlRunden = (Utilities.objectSize(graph.nodes)-1);
         var anzahlKanten = Utilities.objectSize(graph.edges);
@@ -301,7 +301,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         stoppKanten["neg"] = stoppKanteNeg;
         //console.log("Stopp bei Suche nach Inkonsitenzen, Kante " +stoppKanteNeg);
         frageStatus = {"aktiv" :false, "warAktiv": false};
-    };
+    }; */
 
     /**
      * "Spult vor", führt den Algorithmus mit hoher Geschwindigkeit aus.
@@ -1043,6 +1043,33 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_button_gotoFA2").button().click(function() {$("#tabs").tabs("option","active", 5);});
     };
 
+    this.generateDegreeQuestion = function() {
+        // Wähle Knoten zufällig aus
+        // Verstecke Degree Angaben
+        // Array 0 - 10
+        // Berechne richtige Lösung
+        // Wähle 3 weitere Lösungen aus Array
+    };
+
+    this.generateNextStepQuestion = function() {
+        // Array mit allen Schritten 1-9
+        // Antwort berechnen
+        // Array ohne Antwort shuffeln
+        // Array slice, erste 3
+    };
+
+    this.generateSubtourQuestion = function() {
+        // Subtour string berechnen
+        // Textfeld geben (a,b,c,a)
+        // Textfeld ohne Whitespaces & Komma mit Berechnung vergleichen
+    };
+
+    this.generateTourQuestion = function() {
+        // Berechne richtige Lösung
+        // Erstelle eine Lösung, wo an der falschen Stelle ersetzt wurde
+        // Erstelle zwei Lösungen wo nur angehängt wurde (vorne, hinten, ohne ersetzen)
+    };
+
     this.askQuestion = function() {
 
         var randomVariable = function(min, max) {
@@ -1053,6 +1080,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             // Frage zum Grad (100%)
             return 4;
         }else if(statusID == 6) {
+            // TODO nur bei nichtleerer Gesamttour
             // Frage zum Mergeergebnis (40%)
             if(randomVariable(0, 1) > 0.6) {
                 return 3;
