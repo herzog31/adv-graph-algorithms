@@ -136,7 +136,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_button_1Schritt").off(".BFAlgorithm");
         $("#ta_button_vorspulen").off(".BFAlgorithm");
         $("#ta_button_stoppVorspulen").off(".BFAlgorithm");
-        //$("#ta_tr_LegendeClickable").off(".BFAlgorithm");
+        $("#ta_tr_LegendeClickable").off(".BFAlgorithm");
         $("#ta_button_Zurueck").off(".BFAlgorithm");
     };
     

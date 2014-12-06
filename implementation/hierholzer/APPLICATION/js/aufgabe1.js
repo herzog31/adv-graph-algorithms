@@ -31,11 +31,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      */
     var fastForwardIntervalID = null;
     /**
-     * Anfangsknoten, von dem aus die Entfernungen berechnet werden.
-     * @type GraphNode
-     */
-    var startNode = null;
-    /**
      * Der Algorithmus kann in verschiedenen Zuständen sein, diese Variable 
      * speichert die ID des aktuellen Zustands.<br>
      * Siehe Dokumentation bei der Funktion nextStepChoice
@@ -48,90 +43,23 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      */
     var algo = this;
     
-    /**
-     * Assoziatives Array mit den Kanten, an denen der Algorithmus eine Frage stellt
-     * Für die Fragen innerhalb der Updates:
-     * Key: Cantorpaar aus Runde und Nummer der KantenID im Array KantenIDs
-     * Value: true;
-     * Für die Frage beim Check auf Updates:
-     * Key: "neg"
-     * Value: Nummer der KantenID im Array KantenIDs
-     * @type Object
-     */
-    var stoppKanten = new Object();
-    /**
-     * Status der Frage.<br>
-     * Keys: aktiv, warAktiv
-     * Values: Boolean
-     * @type Object
-     */
-    var frageStatus = new Object();
-    /**
-     * Parameter der aktuellen Frage (wird dann für die Antwort verwendet)<br>
-     * frageKnoten: Knoten, zu dem die Frage gestellt wurde<br>
-     * Antwort : String der richtigen Antwort<br>
-     * AntwortGrund: Begründung der richtigen Antwort<br>
-     * newNodeLabel: Label den der Knoten nach der richtigen Beantwortung bekommt (neuer Abstandswert)<br>
-     * gewusst: Ob die Antwort bereits beim ersten Versuch korrekt gegeben wurd<br>
-     * @type Object
-     */
-    this.frageParam = new Object();
-    /**
-     * Assoziatives Array mit den Abstandswerten aller Knoten<br>
-     * Keys: KnotenIDs Value: Abstandswert
-     * @type Object
-     */
-    var distanz = new Object();
-    /**
-     * Assoziatives Array mit den Vorgängerkanten aller Knoten<br>
-     * Keys: KnotenIDs Value: KantenID
-     * @type Object
-     */
-    var vorgaenger = new Object();
-    /**
-     * Zählt die Phasen / Runden.
-     * @type Number
-     */
-    var weightUpdates = 0;
-    /**
-     * Ein Array der KantenIDs, damit man die Kanten linear ablaufen kann
-     * @type Number[]
-     */
-    var kantenIDs = Utilities.arrayOfKeys(graph.edges);
-    /**
-     * Die Kante, die wir als nächstes betrachten werden, als Key für das 
-     * Array kantenIDs.
-     * @type Number
-     */
-    var nextKantenID = null;
-    /**
-     * Sammelt Information über den aktuellen Weg zum Startknoten, der angezeigt wird<br>
-     * Felder: modifiedEdges: Information über die Kanten, deren Layout verändert wurde, altes Layout und ID<br>
-     *         nodeID: Id des Knotens, der grade verändert wird.
-     * @type Object
-     */
-    var showWayOfNode = null;
-    /**
-     * Zeigt an, ob die Vorgängerkanten markiert werden sollen oder nicht.
-     * @type Boolean
-     */
-    var showVorgaenger = true;
-    /**
-     * Welcher Tab (Erklärung oder Pseudocode) angezeigt wurde, bevor die Frage kam.
-     * Dieser Tag wird nach der Frage wieder eingeblendet.
-     * @type Boolean
-     */
-    var tabVorFrage = null;
-    /**
-     * Statistiken zu den Fragen
-     * @type Object
-     */
-    var frageStats = {
-        anzahlFragen: 5,
-        richtig: 0,
-        falsch: 0,
-        gestellt:0
-    };
+    var debugConsole = true;
+    var tourStartVertex = null;
+    var tourStartOddVertex = null;
+    var tourCurrentVertex = null;
+    var semiEuclideanGraph = false;
+    var validGraph = false;
+    var euclideanTour = new Array();
+    var euclideanSubTour = new Array();
+    var subtours = new Array();
+    var currentPseudoCodeLine = 1;
+    var tourColors = new Array("#0000cc", "#006600", "#990000", "#999900", "#cc6600", "#660099", "#330000");
+    var tourColorIndex = 0;
+    var tourAnimationIndex = 0; 
+    var tourAnimation = null;
+
+    // TODO
+    // Questions Array, Question & Correct Answer
     
     /**
      * Startet die Ausführung des Algorithmus.
@@ -143,19 +71,19 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_div_abspielbuttons").append("<button id=\"tf1_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button><br>"
                         +"<button id=\"tf1_button_vorspulen\">"+LNG.K('aufgabe1_btn_next_question')+"</button>"
                         +"<button id=\"tf1_button_stoppVorspulen\">"+LNG.K('algorithm_btn_paus')+"</button>");
-        //$("#tf1_button_stoppVorspulen").hide();
-        $("#tf1_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: true});
-        $("#tf1_button_vorspulen").button({icons:{primary: "ui-icon-seek-next"}, disabled: true});
+        $("#tf1_button_stoppVorspulen").hide();
+        $("#tf1_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: false});
+        $("#tf1_button_vorspulen").button({icons:{primary: "ui-icon-seek-next"}, disabled: false});
         $("#tf1_button_stoppVorspulen").button({icons:{primary: "ui-icon-pause"}});
-        this.registerEventHandlers();
-        this.needRedraw = true;
-        //$("#tf1_button_1Schritt").hide();
-        //$("#tf1_button_stoppVorspulen").hide();
-        //$("#tf1_button_vorspulen").hide();
         $("#tf1_div_statusTabs").tabs();
         $(".marked").removeClass("marked");
         $("#tf1_p_l1").addClass("marked");
         $("#tf1_tr_LegendeClickable").removeClass("greyedOutBackground");
+
+        this.registerEventHandlers();
+        this.needRedraw = true;
+        this.minimizeLegend();
+
     };
     
     /**
@@ -193,13 +121,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.registerEventHandlers = function() {
-        //$("#tf1_select_aufgabeGraph").on("change",function() {algo.setGraphHandler();});
-        //canvas.on("click.Forschungsaufgabe1",function(e) {algo.canvasClickHandler(e);});
-        $("#tf1_button_1Schritt").on("click.Forschungsaufgabe1",function() {algo.nextStepChoice();});
-        //canvas.on("mousemove.Forschungsaufgabe1",function(e) {algo.canvasMouseMoveHandler(e);});
+        $("#tf1_button_1Schritt").on("click.Forschungsaufgabe1",function() {algo.singleStepHandler();});
         $("#tf1_button_vorspulen").on("click.Forschungsaufgabe1",function() {algo.fastForwardAlgorithm();});
         $("#tf1_button_stoppVorspulen").on("click.Forschungsaufgabe1",function() {algo.stopFastForward();});
-        //$("#tf1_tr_LegendeClickable").on("click.Forschungsaufgabe1",function() {algo.changeVorgaengerVisualization();});
     };
     
     /**
@@ -208,100 +132,15 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      */
     this.deregisterEventHandlers = function() {
         canvas.off(".Forschungsaufgabe1");
-        //$("#tf1_select_aufgabeGraph").off("change");
         $("#tf1_button_1Schritt").off(".Forschungsaufgabe1");
         $("#tf1_button_vorspulen").off(".Forschungsaufgabe1");
         $("#tf1_button_stoppVorspulen").off(".Forschungsaufgabe1");
-        //$("#tf1_tr_LegendeClickable").off(".Forschungsaufgabe1");
+        $("#tf1_tr_LegendeClickable").off(".Forschungsaufgabe1");
     };
-    
-    /**
-     * Wählt einen Graph um darauf die Forschungsaufgabe auszuführen
-     * @method
-     */
-    /* this.setGraphHandler = function() {
-        var selection = $("#tf1_select_aufgabeGraph>option:selected").val();
-        switch(selection) {
-            case "Selbsterstellter Graph":
-                this.graph = $("body").data("graph");
-                break;
-            case "Standardbeispiel":
-                this.graph = new Graph("graphs/graph1.txt");
-                break;
-            case "Negativer Kreis":
-                this.graph = new Graph("graphs/graph2.txt");
-                break;
-            case "Positiver Kreis":
-                this.graph = new Graph("graphs/graph7.txt");
-                break;
-            default:
-                //console.log("Auswahl im Dropdown Menü unbekannt, tue nichts.");
-                
-        }
-        // Ändere auch die lokalen Variablen (und vermeide "div
-        graph = this.graph;
-        canvas = this.canvas;
-        kantenIDs = Utilities.arrayOfKeys(graph.edges);
-        this.needRedraw = true;
-    }; */
-    
-    /**
-     * Wird aufgerufen, sobald auf das Canvas geklickt wird. 
-     * @param {jQuery.Event} e jQuery Event Objekt, gibt Koordinaten
-     * @method
-     *//*
-    this.canvasClickHandler = function(e) {
-        if(startNode == null) {
-            var mx = e.pageX - canvas.offset().left;
-            var my = e.pageY - canvas.offset().top;
-            for(var knotenID in graph.nodes) {
-                if (graph.nodes[knotenID].contains(mx, my)) {
-                    graph.nodes[knotenID].setLayout("fillStyle",const_Colors.NodeFillingHighlight);
-                    graph.nodes[knotenID].setLabel("S");
-                    startNode = graph.nodes[knotenID];
-                    this.needRedraw = true;
-                    $("#tf1_select_aufgabeGraph").hide();
-                    $("#tf1_button_1Schritt").show();
-                    $("#tf1_button_vorspulen").show();
-                    $("#tf1_div_statusErklaerung").html("<h3>"+LNG.K('textdb_msg_case5_1')+"</h3>");
-                    $("#tf1_button_1Schritt").button("option", "disabled", false);
-                    $("#tf1_button_vorspulen").button("option", "disabled", false);
-                    statusID = 0;
-                    this.setFragePunkte();
-                    break;                   // Maximal einen Knoten auswählen
-                }
-            }
-        }
-    }; */
-    
-    /**
-     * Ermittelt zufällig zwei Kanten in 2 verschiedenen Runden, an denen der Algorithmus für
-     * Fragen gestoppt wird.<br>
-     * Nutzt die Cantorsche Paarungsfunktion um einfacher in den Array zu schreiben.
-     * @method
-     */ /* 
-    this.setFragePunkte = function() {
-        var anzahlRunden = (Utilities.objectSize(graph.nodes)-1);
-        var anzahlKanten = Utilities.objectSize(graph.edges);
-        var anzahlFragen = Math.min(frageStats.anzahlFragen-2,anzahlRunden*anzahlKanten);
-        var fragePunkte = [];
-        while(fragePunkte.length < anzahlFragen) {
-            var knotenRandom = Math.ceil(Math.random()*anzahlRunden);
-            var kantenRandom = Math.floor(Math.random()*anzahlKanten);
-            var paar = Utilities.cantorPaar(knotenRandom,kantenRandom);
-            if($.inArray(paar,fragePunkte) ==-1) {
-                fragePunkte[fragePunkte.length]=paar;
-            }
-        }
-        var stoppKanteNeg = kantenIDs[Math.floor(Math.random()*anzahlKanten)];
 
-        for(var i = 0;i< anzahlFragen;i++) {
-            stoppKanten[fragePunkte[i]] = true;
-        }
-        stoppKanten["neg"] = stoppKanteNeg;
-        //console.log("Stopp bei Suche nach Inkonsitenzen, Kante " +stoppKanteNeg);
-        frageStatus = {"aktiv" :false, "warAktiv": false};
-    }; */
+    this.singleStepHandler = function() {
+        this.nextStepChoice();
+    };
 
     /**
      * "Spult vor", führt den Algorithmus mit hoher Geschwindigkeit aus.
@@ -323,9 +162,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     this.stopFastForward = function() {
         $("#tf1_button_vorspulen").show();
         $("#tf1_button_stoppVorspulen").hide();
-        if(!frageStatus || !frageStatus.aktiv) {
+        //if(!frageStatus || !frageStatus.aktiv) {
             $("#tf1_button_1Schritt").button("option", "disabled", false);
-        }
+        //}
         window.clearInterval(fastForwardIntervalID);
         fastForwardIntervalID = null;
     };
@@ -344,703 +183,721 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     *  @method
     */
     this.nextStepChoice = function() {
-        if(frageStatus.aktiv) {
-            this.stopFastForward();
+
+        if(statusID == null) {
+            statusID = 0;
         }
-        if(!frageStatus.aktiv) {
-            if(frageStatus.warAktiv) {
-                this.removeFrageTab();
-                frageStatus.warAktiv = false;
-            }
-            switch(statusID) {
-                case 0:
-                    this.initializeAlgorithm();
-                    break;
-                case 1:
-                    this.updateWeightsInitialisation();
-                    break;
-                case 2:
-                    this.checkEdgeForUpdate();
-                    break;
-                case 3:
-                    this.updateSingleNode();
-                    break;
-                case 4:
-                    this.checkNextEdgeForNegativeCycle();
-                    break;
-                case 5:
-                    this.backtrackNegativeCycle();
-                    break;
-                case 6:
-                    this.showNoNegativeCycle();
-                    break;
-                default:
-                    //console.log("Fehlerhafte StatusID.");
-                    break;
-            }
-            this.needRedraw = true;
+        if(debugConsole) console.log("Current State: " + statusID);
+
+        switch(statusID) {
+        case 0:
+            this.initializeGraph();
+            break;
+        case 1:
+            this.checkGraph();
+            break;
+        case 2:
+            this.invalidGraph();
+            break;
+        case 3:
+            this.findStartingVertex();
+            break;
+        case 4:
+            this.findNextVertexForTour();
+            break;
+        case 5:
+            this.compareVertexWithStart();
+            break;
+        case 6:
+            this.mergeTour();
+            break;
+        case 7:
+            this.checkForEuclideanTour();
+            break;
+        case 8:
+            this.returnTour();
+            break;
+        case 9:
+            this.findNewStartingVertex();
+            break;
+        default:
+            console.log("Fehlerhafter State");
+            break;
         }
-   };
-   
-   /**
-     * Initialisiere den Algorithmus, stelle die Felder auf ihre Startwerte.
-     * @method
-     */
-   this.initializeAlgorithm = function() {
-        distanz[startNode.getNodeID()] = 0;
-        graph.nodes[startNode.getNodeID()].setLabel("0");
+
+        this.updatePseudoCodeValues();
+
+        this.needRedraw = true;
+    };
+
+    this.hoverSubtour = function(event) {
+
+        var tourId = $(event.target).data("tourId");
+        $(event.target).css("font-weight", "bold");
+        var curSubtour = subtours[tourId]['tour'];
+
+        for(var i = 0; i < curSubtour.length; i++) {
+            if(curSubtour[i].type == "edge") {
+                graph.edges[curSubtour[i].id].setLayout("lineWidth", 6);
+            }
+        }
+        event.data.org.needRedraw = true;
+
+    };
+
+    this.dehoverSubtour = function(event) {
+
+        var tourId = $(event.target).data("tourId");
+        $(event.target).css("font-weight", "normal");
+        var curSubtour = subtours[tourId]['tour'];
+
+        for(var i = 0; i < curSubtour.length; i++) {
+            if(curSubtour[i].type == "edge") {
+                graph.edges[curSubtour[i].id].setLayout("lineWidth", 3);
+            }
+        }
+        event.data.org.needRedraw = true;
+
+    };
+
+    this.animateTourStep = function(event) {
+
+        if(tourAnimationIndex > 0 && euclideanTour[(tourAnimationIndex - 1)].type == "vertex") {
+            graph.nodes[euclideanTour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
+        }
+        if(tourAnimationIndex > 0 && euclideanTour[(tourAnimationIndex - 1)].type == "edge") {
+            graph.edges[euclideanTour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
+        }
+        this.needRedraw = true;
+
+        if(tourAnimationIndex >= euclideanTour.length) {
+            this.animateTourStop(event);
+            return;
+        }
+
+        if(euclideanTour[tourAnimationIndex].type == "vertex") {
+            graph.nodes[euclideanTour[tourAnimationIndex].id].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+        }
+        if(euclideanTour[tourAnimationIndex].type == "edge") {
+            graph.edges[euclideanTour[tourAnimationIndex].id].setLayout("lineWidth", 6);
+        }
+
+        this.needRedraw = true;
+        tourAnimationIndex++;
+    };
+
+    this.animateTour = function(event) {
+        $("#animateTour").button("option", "disabled", true);
+        $("#animateTourStop").button("option", "disabled", false);
+        tourAnimationIndex = 0;
+        var self = event.data.org;
+        tourAnimation = window.setInterval(function() {self.animateTourStep(event); }, 250);
+    };
+
+    this.animateTourStop = function(event) {
+        if(tourAnimationIndex > 0 && euclideanTour[(tourAnimationIndex - 1)].type == "vertex") {
+            graph.nodes[euclideanTour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
+        }
+        if(tourAnimationIndex > 0 && euclideanTour[(tourAnimationIndex - 1)].type == "edge") {
+            graph.edges[euclideanTour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
+        }
+        event.data.org.needRedraw = true;
+        tourAnimationIndex = 0;
+        window.clearInterval(tourAnimation);
+        tourAnimation = null;
+        $("#animateTour").button("option", "disabled", false);
+        $("#animateTourStop").button("option", "disabled", true);
+        return;
+    };
+
+    this.performBFS = function() {
+
+        var reachableVertices = new Array();
+        var visitedEdges = new Array();
+        var queue = new Array();
+
+        for (var startNode in graph.nodes) break;
+        queue.push(startNode);
+
+        while(queue.length > 0) {
+            var currentNode = queue.shift();
+
+            if(reachableVertices.indexOf(currentNode) === -1) reachableVertices.push(currentNode);
+
+            var outEdges = graph.nodes[currentNode].getOutEdges();
+            var inEdges = graph.nodes[currentNode].getInEdges();
+            var edges = new Array();
+
+            for(var kantenID in outEdges) {
+                if (visitedEdges.indexOf(kantenID) != -1) continue;
+                edges.push(kantenID);
+                visitedEdges.push(kantenID);
+            }
+
+            for(var kantenID in inEdges) {
+                if (visitedEdges.indexOf(kantenID) != -1) continue;
+                edges.push(kantenID);
+                visitedEdges.push(kantenID);
+            }
+
+            for (var i = 0; i < edges.length; i++) {
+                if(graph.edges[edges[i]].getSourceID() == currentNode) {
+                    queue.push(graph.edges[edges[i]].getTargetID());
+                }else{
+                    queue.push(graph.edges[edges[i]].getSourceID());
+                }
+            }
+
+        }
+
+        return reachableVertices;
+
+    };
+
+    this.markPseudoCodeLine = function(line) {
+        currentPseudoCodeLine = line;
+        $(".marked").removeClass('marked');
+        $("#tf1_p_l"+line).addClass('marked');
+    };
+
+    this.updatePseudoCodeValues = function() {
+        if(tourStartVertex != null) {
+            $("#tf1_td_tourStartVertex").html(graph.nodes[tourStartVertex].getLabel());
+        }else{
+            $("#tf1_td_tourStartVertex").html("-");
+        }
+        if(tourCurrentVertex != null) {
+            $("#tf1_td_tourCurrentVertex").html(graph.nodes[tourCurrentVertex].getLabel());
+        }else{
+            $("#tf1_td_tourCurrentVertex").html("-");
+        }
+        if(euclideanSubTour.length == 0) {
+            $("#tf1_td_euclideanSubtour").html("&#8709;");
+        }else{
+            var subtour = new Array();
+            for(var i = 0; i < euclideanSubTour.length; i++) {
+                if(euclideanSubTour[i].type == "vertex") {
+                    subtour.push(graph.nodes[euclideanSubTour[i].id].getLabel());
+                }
+            }
+            $("#tf1_td_euclideanSubtour").html("{" + subtour.join(',') + "}");
+        }
+        if(euclideanTour.length == 0) {
+            $("#tf1_td_euclideanTour").html("&#8709;");
+        }else{
+            var tour = new Array();
+            for(var i = 0; i < euclideanTour.length; i++) {
+                if(euclideanTour[i].type == "vertex") {
+                    tour.push(graph.nodes[euclideanTour[i].id].getLabel());
+                }
+            }
+            $("#tf1_td_euclideanTour").html("{" + tour.join(',') + "}");
+        }
+        
+
+    };
+
+    this.addVertexToTour = function(vertex, tour) {
+        tour.push({type: "vertex", id: vertex.getNodeID()});
+    };
+
+    this.addEdgeToTour = function(edge, tour) {
+        tour.push({type: "edge", id: edge.getEdgeID()});
+    };
+
+    this.addNamingLabels = function() {
+
+        var edgeCounter = 1;
+        var nodeCounter = 1;
+
         for(var knotenID in graph.nodes) {
-            if(knotenID != startNode.getNodeID()) {
-                distanz[knotenID] = "inf";
-                graph.nodes[knotenID].setLabel(String.fromCharCode(8734));   // Unendlich
-            }
-            vorgaenger[knotenID] = null;
-        }
+            graph.nodes[knotenID].setLabel(String.fromCharCode("a".charCodeAt(0)+nodeCounter-1));
+            nodeCounter++;
+        };
+
+        /* for(var kantenID in graph.edges) {
+            graph.edges[kantenID].setAdditionalLabel("{"+graph.nodes[graph.edges[kantenID].getSourceID()].getLabel()+", "+graph.nodes[graph.edges[kantenID].getTargetID()].getLabel()+"}")
+            edgeCounter++;
+        }; */
+
+    };
+
+    // Edge visited = false
+    // Benennung v1, v2, ... & e1, e2, ...
+    this.initializeGraph = function() {
+        this.markPseudoCodeLine(2);
+
+        $("#tf1_div_statusErklaerung").html('<h3>1 Initialisierung</h3>\
+            <p>Um besser mit dem Graphen arbeiten können, haben wir seine Knoten mittels Buchstaben beschriftet.</p>\
+            <p>Der Algorithmus muss bei der Ausführung prüfen können, welche Kanten er schon besucht hat. Wir benutzen dafür die derzeitig noch leere Menge besuchter Kanten (vgl. Pseudocode).</p>');
+
+        this.addNamingLabels();
+
+        var edgeCounter = 1;
+
+        for(var kantenID in graph.edges) {
+            graph.edges[kantenID].setVisited(false);
+            edgeCounter++;
+        };
+
         statusID = 1;
 
-        // Erklärung im Statusfenster
-        $("#tf1_div_statusErklaerung").html("<h3>1 "+LNG.K('textdb_msg_case0_1')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case0_2')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case0_3')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case0_4')+"</p>");
-        this.showVariableStatusField(null,null);
-        $(".marked").removeClass("marked");
-        $("#tf1_p_l2").addClass("marked");
-        $("#tf1_p_l3").addClass("marked");
-        $("#tf1_p_l4").addClass("marked");
-        
-        // Frage stellen
-        this.addFrageTab();
-        var knotenIDs = Utilities.arrayOfKeys(graph.nodes);
-        if(knotenIDs.length <= 1) {
-            statusID = 6;
-            this.needRedraw = true;
-            return;
-        }
-        var frageID = Math.floor(Math.random()*knotenIDs.length);
-        while(knotenIDs[frageID] == startNode.getNodeID()) {
-            frageID = Math.floor(Math.random()*knotenIDs.length);
-        }
-        frageStatus = {"aktiv" :true, "warAktiv": false};
-        this.frageParam = {frageKnoten: graph.nodes[knotenIDs[frageID]],
-                    Antwort : LNG.K('aufgabe1_answer1'),
-                    AntwortGrund: "<p>"+LNG.K('aufgabe1_answer1_reason')+"</p>",
-                    newNodeLabel: String.fromCharCode(8734),
-                    gewusst: true
-        };
-        var antwortReihenfolge = this.generateRandomOrder();
-        var Antworten = [LNG.K('aufgabe1_text_infinity'), this.getWeightOfInEdge(this.frageParam.frageKnoten.getNodeID(),[0]), "0"];
-        this.frageParam.frageKnoten.setLayout("fillStyle",const_Colors.NodeFillingQuestion);
-        this.frageParam.frageKnoten.setLabel("");
-        $("#tf1_div_Frage").html(LNG.K('aufgabe1_text_question')+" " + ++frageStats.gestellt +" "+LNG.K('textdb_text_of')+" " +frageStats.anzahlFragen);
-        $("#tf1_div_Frage").append("<p class=\"frage\">"+LNG.K('aufgabe1_question1')+"</p>");
-        for(var i=0;i<antwortReihenfolge.length;i++) {
-            $("#tf1_div_Antworten").append("<input type=\"radio\" id=\"tf1_input_frage1_"+antwortReihenfolge[i].toString() + "\" name=\"frage1\"/>"
-                + "<label id=\"tf1_label_frage1_"+antwortReihenfolge[i].toString() +"\" for=\"tf1_input_frage1_"+antwortReihenfolge[i].toString()
-                + "\">"+ Antworten[antwortReihenfolge[i]]+"</label><br>");
-        }
-
-        $("#tf1_input_frage1_1").click(function() {$("#tf1_label_frage1_1").addClass("ui-state-error");algo.frageParam.gewusst = false;});
-        $("#tf1_input_frage1_2").click(function() {$("#tf1_label_frage1_2").addClass("ui-state-error");algo.frageParam.gewusst = false;});
-        $("#tf1_input_frage1_0").click(function() {algo.handleCorrectAnswer();});
         this.needRedraw = true;
-   };
-    
-    /**
-     * Geht in die nächste Runde und prüft, ob wir fertig sind.
-     * @method
-     */
-    this.updateWeightsInitialisation = function() {
-        weightUpdates++;
-        nextKantenID = 0;
-        var wuString = "";
-        if(weightUpdates == 1) {
-            wuString = LNG.K('textdb_text_oneedge');
-        } else {
-            wuString = weightUpdates.toString() + " " + LNG.K('textdb_text_edges');
-        }
-        var wum1String = "";
-        if(weightUpdates == 2) {
-            wum1String = LNG.K('textdb_text_oneedge');
-        } else {
-            wum1String = (weightUpdates-1).toString() + " " + LNG.K('textdb_text_edges');
-        }
-        if(weightUpdates > (Utilities.objectSize(graph.nodes)-1)) {
-            // Neuer Status -> Algorithmus fertig
-            statusID = 4;
-            $("#tf1_div_statusErklaerung").html("<h3>3 "+LNG.K('textdb_msg_case2_1')+"</h3>"
-                + "<p>"+LNG.K('textdb_msg_case2_2_a')+wum1String +LNG.K('textdb_msg_case2_2_b')+"</p>"
-                + "<p>"+LNG.K('textdb_msg_case2_3_a')+ weightUpdates +" "+LNG.K('textdb_msg_case2_3_b')+"</p>"
-                + "<p>"+LNG.K('textdb_msg_case2_4')+"</p>");
-            $(".marked").removeClass("marked");
-            $("#tf1_p_l8").addClass("marked");
-            this.showVariableStatusField(null,null);
-            return;
-        }
-        else {
-            // Erklärung im Statusfenster
-            $("#tf1_div_statusErklaerung").html("<h3 class=\"greyedOut\">2 "+LNG.K('textdb_msg_case1_1')+"</h3>"
-                + "<h3> 2." + weightUpdates.toString() + " " + LNG.K('textdb_text_phase') + " " + weightUpdates.toString() + " " + LNG.K('textdb_text_of') + " " + (Utilities.objectSize(graph.nodes)-1) + "</h3>"
-                + "<p>"+LNG.K('textdb_msg_case2_2_a')+wum1String + " " +LNG.K('textdb_msg_case2_2_b')+"</p>"
-                + "<p>"+LNG.K('textdb_msg_case1_5_a')+wuString+ " "+LNG.K('textdb_msg_case2_2_b')+"</p>");
-            $("#tf1_div_statusErklaerung").append("<p>"+LNG.K('textdb_msg_case1_6')+"</p>");
-            $(".marked").removeClass("marked");
-            $("#tf1_p_l5").addClass("marked");
-            $("#tf1_p_l6").addClass("marked");
-            this.showVariableStatusField(weightUpdates,null);
-            // Neuer Status -> checkEdgeForUpdate
-            statusID = 2;
-        }
+
+        return true;
+
     };
-    
-    /**
-     * Prüft, ob die aktuelle Kante ein Update benötigt
-     * @method
-     */
-    this.checkEdgeForUpdate = function() {
-        if(kantenIDs.length <= nextKantenID) {
-            // Alle Kanten betrachtet, beginne nächste Runde
-            this.updateWeightsInitialisation();
-            return;
+
+    // Check ob Graph Euclidisch oder Semi Euclidisch ist
+    this.checkGraph = function() {
+        this.markPseudoCodeLine(3);
+        $("#tf1_div_statusErklaerung").html('<h3>2 Graph prüfen</h3>\
+            <p>Nur wenn unser Graph die folgenden Eigenschaften aufweist, kann der Hierholzer Algorithmus funktionieren:</p>\
+            <h3>2.1 Anzahl der Knoten</h3>\
+            <p>Damit ein Kantenweg im Graph existieren kann, muss dieser mindestens <em>zwei</em> zusammenhängende Knoten besitzen.</p>\
+            <h3>2.2 Zusammenhängend</h3>\
+            <p>Um einen Kantenweg über alle Kanten im Graph zu ermitteln, muss man natürlich auch alle Kanten im Graph erreichen können. Dazu muss dieser zusammenhängend sein. Diese Eigenschaft prüft man bspw. mit einer Breitensuche.</p>\
+            <h3>2.3 Grad</h3>\
+            <p>Der Hierholzer Algorithmus stellt strenge Voraussetzungen an den Grad der Knoten. Der Grad eines Knoten beschreibt die Anzahl seiner Kanten. Zur Veranschaulichung haben wir jeden Knoten mit seinem Grad beschriftet. Ein <span style="font-weight: bold; color: green;">grüner</span> Rahmen bedeutet, dass der Grad gerade ist, während ein <span style="font-weight: bold; color: red;">roter</span> Rahmen auf einen ungeraden Grad hinweist.</p>\
+            <p>Ein Graph dessen Knoten alle einen geraden Grad aufweisen, nennt man <em>eulersch</em>. Trifft dies auf alle außer exakt zwei Knoten zu, so spricht man von einem <em>semi-eulerschen</em> Graph.</p>\
+            <p>Damit der Hierholzer Algorithmus funktioniert muss der Graph entweder eulersch oder semi-eulersch sein.</p>');
+        $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/knoten_even.png" alt="Knoten" class="LegendeIcon"></td><td><span>Knoten mit geradem Grad 2</span></td></tr><tr><td class="LegendeTabelle"><img src="img/knoten_odd.png" alt="Knoten" class="LegendeIcon"></td><td><span>Knoten mit ungeradem Grad 3</span></td></tr></table>');
+
+        var numberOfOddVertices = 0;
+        var firstOddVertex = null;
+
+        this.needRedraw = true;
+
+        if(Object.keys(graph.nodes).length < 2) {       // Graph too small
+            statusID = 2;
+            validGraph = false;
+            if(debugConsole) console.log("Invalid graph: Graph too small");
+            return false;
         }
 
-        var aktKante = graph.edges[kantenIDs[nextKantenID]];
-        // Animation
-        aktKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-        aktKante.setLayout("lineWidth",3);
-        // Neuer Status -> UpdateSingleNode
-        statusID = 3;
-        // Erklärung im Statusfenster
-        $("#tf1_div_statusErklaerung").html("<h3 class=\"greyedOut\">2 "+LNG.K('textdb_msg_case1_1')+"</h3>"
-            + "<h3 class=\"greyedOut\"> 2." + weightUpdates.toString() + " " + LNG.K('textdb_text_phase') + " " + weightUpdates.toString() + " " + LNG.K('textdb_text_of') + " " + (Utilities.objectSize(graph.nodes)-1) + "</h3>"
-            + "<h3> 2." + weightUpdates.toString() + "." + (nextKantenID+1) + " " +LNG.K('textdb_msg_case1_2')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case1_3')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case1_4')+"</p>");
-        $(".marked").removeClass("marked");
-        $("#tf1_p_l7").addClass("marked");
-        this.showVariableStatusField(weightUpdates,aktKante);
-    };
-    
-    /**
-     * Aktualisiert, falls nötig, den Entfernungswert des aktuellen Knotens.
-     * @method
-     */
-    this.updateSingleNode = function() {
-        var aktKante = graph.edges[kantenIDs[nextKantenID]];
-        var u = aktKante.getSourceID();
-        var v = aktKante.getTargetID();
-        var oldWeight = null;
-        var oldVorgaengerId = null;
-        if(distanz[u] != "inf" && (distanz[v] == "inf" || distanz[u] + aktKante.weight < distanz[v])) {
-            oldWeight = distanz[v];
-            distanz[v] = distanz[u] + aktKante.weight;
-            oldVorgaengerId = vorgaenger[v];
-//            if(vorgaenger[v] != null) {
-//                graph.edges[vorgaenger[v]].setHighlighted(false);
-//            }
-            vorgaenger[v] = kantenIDs[nextKantenID];
-//            aktKante.setHighlighted(true);
-        }
-        
-        // Prüfe, ob eine Frage gestellt wird.
-        var updateID = Utilities.cantorPaar(weightUpdates,nextKantenID);
-        nextKantenID++;
-        if(stoppKanten[updateID]) {
-            // Neuer Status -> checkEdgeForUpdate
+        var reachableVertices = this.performBFS();      // Graph connected
+        if(Utilities.objectSize(graph.nodes) != reachableVertices.length) {
             statusID = 2;
-            var Antworten = this.generateAnswers(aktKante,oldWeight);
-            var AntwortGrund = "";
-            if(oldWeight != null) {
-                AntwortGrund = "<p>"+LNG.K('aufgabe1_answer2_reason1')+"</p>"
-                                + "<p>"+LNG.K('aufgabe1_answer2_reason2')+" " + distanz[u].toString() + " + " + aktKante.weight.toString() + " < " + oldWeight.toString() + "</p>";
-            }
-            else {
-                AntwortGrund = "<p>"+LNG.K('aufgabe1_answer2_reason3')+"</p>";
-            }
-            var newNodeLabel = distanz[v];
-            if(newNodeLabel == "inf") {
-                newNodeLabel = String.fromCharCode(8734);
-            }
-            this.addFrageTab();
-            frageStatus = {"aktiv" :true, "warAktiv": false};
-            this.frageParam = {"frageKnoten": graph.nodes[v],
-                        "Antwort" : Antworten[0],
-                        "AntwortGrund": AntwortGrund,
-                        "newNodeLabel": newNodeLabel,
-                        "frageKante": aktKante,
-                        "oldVorgaenger": oldVorgaengerId,
-                        gewusst: true
-            };
-            var antwortReihenfolge = this.generateRandomOrder();
-            this.frageParam.frageKnoten.setLayout("fillStyle",const_Colors.NodeFillingQuestion);
-            $("#tf1_div_Frage").html(LNG.K('aufgabe1_text_question')+" " + ++frageStats.gestellt +" "+LNG.K('textdb_text_of')+" " +frageStats.anzahlFragen);
-            $("#tf1_div_Frage").append("<p class=\"frage\">"+LNG.K('aufgabe1_question1')+"</p>");
-            for(var i=0;i<antwortReihenfolge.length;i++) {
-                $("#tf1_div_Antworten").append("<input type=\"radio\" id=\"tf1_input_frage1_"+antwortReihenfolge[i].toString() + "\" name=\"frage1\"/>"
-                    + "<label id=\"tf1_label_frage1_"+antwortReihenfolge[i].toString() +"\" for=\"tf1_input_frage1_"+antwortReihenfolge[i].toString()
-                    + "\">"+ Antworten[antwortReihenfolge[i]]+"</label><br>");
-            }
-            $("#tf1_input_frage1_1").click(function() {$("#tf1_label_frage1_1").addClass("ui-state-error");algo.frageParam.gewusst = false;});
-            $("#tf1_input_frage1_2").click(function() {$("#tf1_label_frage1_2").addClass("ui-state-error");algo.frageParam.gewusst = false;});
-            $("#tf1_input_frage1_0").click(function() {algo.handleCorrectAnswer();});
-            this.needRedraw = true;
+            validGraph = false;
+            if(debugConsole) console.log("Invalid graph: Unconnected graph detected");
+            return false;
+            
         }
-        else {
-            // Animation -> Zurück auf Normal
-            aktKante.setLayout("lineColor","black");
-            aktKante.setLayout("lineWidth",2);
-            if(oldWeight != null) {
-                graph.nodes[v].setLabel(distanz[v].toString());
-                if(oldVorgaengerId != null) {
-                    graph.edges[oldVorgaengerId].setHighlighted(false);
+
+        for(var knotenID in graph.nodes) {
+            var degree = graph.nodes[knotenID].getDegree();
+            graph.nodes[knotenID].setLabel(degree);
+            if(degree % 2 === 1) {
+                graph.nodes[knotenID].setLayout("borderColor", "red");
+                graph.nodes[knotenID].setLayout("borderWidth", 3);
+                numberOfOddVertices++;
+                if(firstOddVertex === null) {
+                    firstOddVertex = knotenID;
                 }
-                aktKante.setHighlighted(true);
+            }else{
+                graph.nodes[knotenID].setLayout("borderColor", "green");
             }
-            this.checkEdgeForUpdate();
-        }
-    };
-    
-    /**
-     * Prüft die nächste Kante, ob sie Teil eines negativen Zyklus ist.
-     * @method
-     */
-    this.checkNextEdgeForNegativeCycle = function() {
-        // Animation
-        if(nextKantenID>0) {
-            var vorherigeKante = graph.edges[kantenIDs[nextKantenID-1]];
-            vorherigeKante.setLayout("lineColor","black");
-            vorherigeKante.setLayout("lineWidth",2);
-        }
-        if(kantenIDs.length <= nextKantenID) {
-            // Alle Kanten betrachtet, kein negativer Kreis gefunden, Ende
-            statusID = 6;
-            this.showNoNegativeCycle();
-            return;
         }
 
-        var aktKante = graph.edges[kantenIDs[nextKantenID]];
-        aktKante.setLayout("lineColor",const_Colors.EdgeHighlight1);
-        aktKante.setLayout("lineWidth",3);
-        // Erklärung im Statusfenster
-        $("#tf1_div_statusErklaerung").html("<h3 class=\"greyedOut\">3 "+LNG.K('textdb_msg_case2_1')+"</h3>"
-            + "<h3>3." +(nextKantenID+1) +" " +LNG.K('textdb_msg_case2_5')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case2_6')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case2_7')+"</p>"
-            + "<p>"+LNG.K('textdb_msg_case2_8')+"</p>");
-        $(".marked").removeClass("marked");
-        $("#tf1_p_l9").addClass("marked");
-        this.showVariableStatusField(null,aktKante);
-        var isNeg = false;
-        if(distanz[aktKante.getSourceID()]+ aktKante.weight < distanz[aktKante.getTargetID()]) {
-            // Kante ist Teil eines negativen Kreises
-            statusID = 5;
-            isNeg = true;
+        if(numberOfOddVertices === 0) {              // Euclidean Graph
+            validGraph = true;
+            statusID = 3;
+            semiEuclideanGraph = false;
+            return true;
+
+        }else if(numberOfOddVertices === 2) {        // Semi Euclidean Graph
+            validGraph = true;
+            statusID = 3;
+            semiEuclideanGraph = true;
+            tourStartOddVertex = firstOddVertex;
+            return true;
+
+        }else{                                       // Invalid Graph
+            statusID = 2;
+            validGraph = false;
+            if(debugConsole) console.log("Invalid graph: Graph is not euclidean or semi euclidean");
+            return false;
         }
-        
-        // Frage:
-        if(kantenIDs[nextKantenID] == stoppKanten.neg || (isNeg && frageStats.gestellt <frageStats.anzahlFragen)) {
-            this.addFrageTab();
-            $("#tf1_div_Frage").html(LNG.K('aufgabe1_text_question')+" " + ++frageStats.gestellt +" "+LNG.K('textdb_text_of')+" " +frageStats.anzahlFragen);
-            $("#tf1_div_Frage").append("<p class=\"frage\">"+LNG.K('aufgabe1_question3')+"</p>");
-            $("#tf1_div_Antworten").append("<input type=\"radio\" id=\"tf1_input_frage1_0\" name=\"frage1\"/>"
-                    + "<label id=\"tf1_label_frage1_0\" for=\"tf1_input_frage1_0\">Ja</label><br>");
-            $("#tf1_div_Antworten").append("<input type=\"radio\" id=\"tf1_input_frage1_1\" name=\"frage1\"/>"
-                    + "<label id=\"tf1_label_frage1_1\" for=\"tf1_input_frage1_1\">Nein</label><br>");
-            var AntwortGrund = "";
-            var Antwort = "";
-            this.frageParam = {frageKante: aktKante,
-                          Antwort:Antwort,
-                          AntwortGrund:AntwortGrund,
-                          gewusst: true};
-            if(isNeg) {
-                $("#tf1_input_frage1_1").click(function() {$("#tf1_label_frage1_1").addClass("ui-state-error");algo.frageParam.gewusst = false;});
-                $("#tf1_input_frage1_0").click(function() {algo.handleCorrectAnswer();});
-                this.frageParam.Antwort = LNG.K('aufgabe1_text_yes');
-                this.frageParam.AntwortGrund  = "<p>"+LNG.K('aufgabe1_answer3_reason1')+"</p>"
-                                + LNG.K('aufgabe1_answer3_reason2')+" " + distanz[aktKante.getSourceID()] +" + " +aktKante.weight + " < " + distanz[aktKante.getTargetID()];
-            }
-            else {
-                $("#tf1_input_frage1_0").click(function() {$("#tf1_label_frage1_0").addClass("ui-state-error");algo.frageParam.gewusst = false;});
-                $("#tf1_input_frage1_1").click(function() {algo.handleCorrectAnswer();});
-                this.frageParam.Antwort = LNG.K('aufgabe1_text_no');
-                this.frageParam.AntwortGrund  = "<p>"+LNG.K('aufgabe1_answer3_reason3')+"</p>"
-                                + LNG.K('aufgabe1_answer3_reason2')+" " + distanz[aktKante.getSourceID()] +" + " +aktKante.weight + " &ge; " + distanz[aktKante.getTargetID()];
-            }
-            frageStatus = {"aktiv" :true, "warAktiv": false};
+
+    };
+
+    // State wenn Graph invalid ist
+    this.invalidGraph = function() {
+        $("#tf1_div_statusErklaerung").html('<h3 style="color: white;">2 Graph prüfen</h3>\
+            <p style="color: white;">Dein Graph erfüllt mindestens eine der folgenden Eigenschaften nicht:</p>\
+            <ul style="color: white;">\
+            <li>mind. 2 Knoten</li>\
+            <li>zusammenhängend</li>\
+            <li>eulersch oder semi-eulersch</li>\
+            </ul>').addClass("ui-state-error");
+
+        if(fastForwardIntervalID != null) {
+            this.stopFastForward();
         }
+
+        $("#tf1_button_1Schritt").button("option", "disabled", true);
+        $("#tf1_button_vorspulen").button("option", "disabled", true);
+
+        return true;
+
+    };
+
+    // Selectiere Start Vertice, entweder #1 (Euclidisch) oder #1 mit ungeradem Grad (Semi Euclidisch)
+    this.findStartingVertex = function() {
+        this.markPseudoCodeLine(5);
+        $("#tf1_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
+            <h3>3.1a Ersten Startknoten finden</h3>\
+            <p>Damit der Algorithmus mit der ersten Subtour starten kann, benötigt er einen Startknoten. Hierfür unterscheidet man zwei Fälle:</p>\
+            <p><strong>Eulerscher Graph:</strong> Wähle beliebigen Knoten.</p>\
+            <p><strong>Semi-eulerscher Graph:</strong> Wähle einen der beiden Knoten mit ungeradem Grad.</p>\
+            <p>Der ausgewählte und damit aktive Knoten wurde <span style="font-weight: bold; color: green;">grün</span> markiert.</p>');
+        $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>Startknoten bzw. Knoten der mit dem Startknoten verglichen wird</span></td></tr><tr><td class="LegendeTabelle"><img src="img/pfad.png" alt="Kante" class="LegendeIcon"></td><td><span>Kante der Eulertour im aktuellen Durchgang</span></td></tr></table>');
+
+        // Restore Naming
+        this.addNamingLabels();
+
+        // Set Starting & Current Vertex
+        if(semiEuclideanGraph) {
+            tourStartVertex = tourStartOddVertex;
+        }else{
+            for (var knotenID in graph.nodes) {
+                tourStartVertex = knotenID;
+                break;
+            };
+        }
+
+        graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+        tourCurrentVertex = tourStartVertex;
+
+        euclideanSubTour = new Array();
+        this.addVertexToTour(graph.nodes[tourCurrentVertex], euclideanSubTour);
+        if(debugConsole) console.log("Subtour: ", euclideanSubTour);
+
         this.needRedraw = true;
-        nextKantenID++;
+
+        statusID = 4;
+
+        return true;
+
     };
 
-    /**
-     * Markiere den negativen Kreis, der gefunden wurde.
-     * @method
-     */
-    this.backtrackNegativeCycle = function() {
-        var aktKante = graph.edges[kantenIDs[nextKantenID]];
-        aktKante.setLayout("lineColor","black");
-        aktKante.setLayout("lineWidth",2);
-        var backtrackFirstID = aktKante.getTargetID();
-        var visitedNodes = new Object();
-        visitedNodes[backtrackFirstID] = true;
-        var backtrackKante = graph.edges[vorgaenger[backtrackFirstID]];
-        while(visitedNodes[backtrackKante.getSourceID()] != true) {
-            visitedNodes[backtrackKante.getSourceID()] = true;
-            backtrackKante = graph.edges[vorgaenger[backtrackKante.getSourceID()]];
+    // Finde nächsten Vertice über unbesuchte Kante
+    // Wenn keiner gefunden -> mergeTour()
+    // Wenn gefunden -> findNextVertexForTour()
+    this.findNextVertexForTour = function() {
+        this.markPseudoCodeLine(7);
+        $("#tf1_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
+            <h3>3.2 Unbesuchten Nachbarn finden</h3>\
+            <p>Um die nächste Kante in unserer Subtour zu bestimmen, betrachten wir zunächst alle Kanten des zuletzt aktiven Knotens.</p>\
+            <p>Aus dieser Kantenmenge wählen wir nun die Kanten aus, die wir noch nicht besucht haben. Aus dieser Restmenge bestimmen wir eine zufällige Kante (<span style="font-weight: bold; color: '+tourColors[tourColorIndex]+';">farblich markiert</span>).</p>\
+            <p>Wir fügen diese Kante zu unserer Subtour hinzu sowie zur Menge der besuchten Kanten hinzu. Wir folgen der Kante und erhalten unseren nächsten aktiven Knoten (<span style="font-weight: bold; color: green;">grün</span>).</p>\
+            <h3>3.2.1 Sonderfall</h3>\
+            <p>Bei semi-eulerschen Graphen kann es zu dem Sonderfall kommen, dass der aktive Knoten keine weiteren unbesuchten Kanten besitzt. In diesem Fall springen wir direkt zu <em>Schritt 4.1</em>.</p>');
+
+        graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
+
+        var outEdges = graph.nodes[tourCurrentVertex].getOutEdges();
+        var inEdges = graph.nodes[tourCurrentVertex].getInEdges();
+
+        var nextEdge = null;
+
+        // Find first unvisited Edge
+        for(var kantenID in outEdges) {
+            if(!outEdges[kantenID].getVisited()) {
+                if(nextEdge === null) {
+                    nextEdge = kantenID;
+                    outEdges[kantenID].setVisited(true);
+                    outEdges[kantenID].setLayout("lineColor", tourColors[tourColorIndex]);
+                    outEdges[kantenID].setLayout("lineWidth", 3);
+                }else{
+                    break;
+                }   
+            }
         }
-        backtrackFirstID = backtrackKante.getSourceID();
-        backtrackKante = graph.edges[vorgaenger[backtrackFirstID]];
-        backtrackKante.setLayout("lineColor","LightCoral");
-        backtrackKante.setLayout("lineWidth",3);
-        while(backtrackKante.getSourceID() != backtrackFirstID) {
-            backtrackKante = graph.edges[vorgaenger[backtrackKante.getSourceID()]];
-            backtrackKante.setLayout("lineColor","LightCoral");
-            backtrackKante.setLayout("lineWidth",3);
+
+        for(var kantenID in inEdges) {
+            if(!inEdges[kantenID].getVisited()) {
+                if(nextEdge === null) {
+                    nextEdge = kantenID;
+                    inEdges[kantenID].setVisited(true);
+                    inEdges[kantenID].setLayout("lineColor", tourColors[tourColorIndex]);
+                    inEdges[kantenID].setLayout("lineWidth", 3);
+                }else{
+                    break;
+                }  
+            }
         }
-        // Erklärung im Statusfenster
-        $("#tf1_div_statusErklaerung").html("<h3>4 "+LNG.K('textdb_msg_case3_1')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case3_2')+"</p>"
-            + "<p>"+LNG.K('aufgabe1_msg_case3_4')+"</p>");
-        $(".marked").removeClass("marked");
-        $("#tf1_p_l10").addClass("marked");
-        this.endAlgorithm();
+
+        this.needRedraw = true;
+
+        // Merge Tour if stuck
+        if(nextEdge === null) {
+            statusID = 6;
+            return false;
+        }
+
+        this.addEdgeToTour(graph.edges[nextEdge], euclideanSubTour);
+        if(debugConsole) console.log("Subtour: ", euclideanSubTour);
+
+        graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFilling);
+
+        // Get other Vertex
+        if(graph.edges[nextEdge].getSourceID() == tourCurrentVertex) {
+            tourCurrentVertex = graph.edges[nextEdge].getTargetID();
+        }else{
+            tourCurrentVertex = graph.edges[nextEdge].getSourceID();
+        }
+
+        this.addVertexToTour(graph.nodes[tourCurrentVertex], euclideanSubTour);
+        if(debugConsole) console.log("Subtour: ", euclideanSubTour);
+
+        graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+
+        statusID = 5;
+
+        return true;
+
     };
 
-    /**
-     * Wird aufgerufen, wenn der Algorithmus erfolgreich geendet hat.
-     * @method
-     */
-    this.showNoNegativeCycle = function() {
-        // Erklärung im Statusfenster
-        $("#tf1_div_statusErklaerung").html("<h3>4 "+LNG.K('textdb_msg_case4_1')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_case4_2')+"</p>"
-            + "<h3>"+LNG.K('textdb_msg_case4_3')+"</h3>");
-        $(".marked").removeClass("marked");
-        $("#tf1_p_l11").addClass("marked");
-        this.endAlgorithm();
+    // Vergleiche nächsten Vertex mit ursprünglichem Start Vertex
+    // Wenn gleich -> mergeTour()
+    // Wenn ungleich -> findNextVertexForTour()
+    this.compareVertexWithStart = function() {
+        this.markPseudoCodeLine(8);
+        $("#tf1_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
+            <h3>3.3 Kreis entdecken</h3>\
+            <p>Um zu prüfen, ob unsere Subtour abgeschlossen ist (d.h. sie bildet einen Kreis), vergleichen wir den aktiven Knoten mit dem ersten Knoten der Subtour. Beide sind <span style="font-weight: bold; color: green;">grün</span> markiert.</p>\
+            <h3>3.3.1 Abgeschlossen</h3>\
+            <p>Handelt es sich bei beiden um den selben Knoten, ist unsere Subtour abgeschlossen und wir fahren mit <em>Schritt 4</em> fort.</p>\
+            <h3>3.3.2 Nicht abgeschlossen</h3>\
+            <p>Handelt es sich um zwei verschiedene Knoten, ist unsere Subtour unvollständig und wir springen zurück zu <em>Schritt 3.2</em>.</p>');
+
+        graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+
+        if(debugConsole) console.log("Start: " + tourStartVertex + ", Current: "+ tourCurrentVertex);
+
+        if(tourStartVertex == tourCurrentVertex) {
+            statusID = 6;
+            return true;
+        }else{
+            statusID = 4;
+            return false;
+        }
+
     };
-    
-    /**
-     * Zeigt Texte und Buttons zum Ende des Algorithmus
-     * @method
-     */
-    this.endAlgorithm = function() {
-        this.showVariableStatusField(null,null);
-        // Falls wir im "Vorspulen" Modus waren, daktiviere diesen
+
+    // Merge Subtour in Tour
+    // Bei leerer Tour, Tour = Subtour
+    // Bei vorhandener Tour, Replace Start mit Subtour
+    this.mergeTour = function() {
+        this.markPseudoCodeLine(9);
+        $("#tf1_div_statusErklaerung").html('<h3>4 Gesamttour bestimmen</h3>\
+            <h3>4.1 Integriere Subtour in Gesamttour</h3>\
+            <p>Damit der Hierholzer Algorithmus am Ende eine Eulertour bzw. einen Eulerkreis liefert, müssen wir sämtliche Subtouren passend aneinanderhängen. Wir unterscheiden hier drei Fälle:</p>\
+            <h3>4.1.1 Erste Subtour</h3>\
+            <p>Im einfachsten Fall integrieren wir die letzte Subtour einfach in die noch leere Gesamttour.</p>\
+            <h3>4.1.2 Zyklische Subtour</h3>\
+            <p>In diesem Fall bildet unsere Subtour einen Kreis. Zum Integireren, suchen wir den Start- & Endknoten der Subtour in der Gesamttour und ersetzen diesen mit unserer Subtour.</p>\
+            <h3>4.1.3 Azyklische Subtour</h3>\
+            <p>Dieser Fall tritt nur einmal in einem semi-eulerschen Graph auf. Es handelt sich hierbei um die Subtour, die mit einem Knoten ungeraden Grads beginnt und bei dem zweiten Knoten mit ungeradem Grad endet. Diese Subtour muss so integriert werden, dass der ungerade Knoten, welcher nicht den Anfang der Gesamttour bildet, den Schluss der Gesamttour bildet.</p>');
+
+        subtours.push({color: tourColorIndex, tour: euclideanSubTour});
+        if(debugConsole) console.log("Subtours", subtours);
+
+        tourColorIndex++;
+        tourColorIndex = tourColorIndex % tourColors.length;
+
+        graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
+        graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFilling);
+
+        var replaced = false;
+
+        if(euclideanTour.length === 0) {
+            euclideanTour = euclideanSubTour;          
+        }else if(JSON.stringify(euclideanSubTour[0]) !== JSON.stringify(euclideanSubTour[(euclideanSubTour.length - 1)])) {
+            if(debugConsole) console.log("Spezialfall mit 2 Odd Vertices");
+
+            var startOfSubTour = euclideanSubTour[0];
+            var newTour = new Array();
+            var specialLast = null;
+
+            for(var i = 0; i < euclideanTour.length; i++) {
+                if(JSON.stringify(euclideanTour[i]) === JSON.stringify(startOfSubTour)) {
+                    specialLast = i;
+                }
+            }
+
+            for(var i = 0; i < euclideanTour.length; i++) {
+                if(specialLast == i) {
+                    for(var j = 0; j < euclideanSubTour.length; j++) {
+                        newTour.push(euclideanSubTour[j]);
+                    }
+                    replaced = true;
+                }else{
+                    newTour.push(euclideanTour[i]);
+                }
+            }
+
+            euclideanTour = newTour;
+
+        }else{
+            var startOfSubTour = euclideanSubTour[0];
+            var newTour = new Array();
+
+            for(var i = 0; i < euclideanTour.length; i++) {
+                if(JSON.stringify(euclideanTour[i]) == JSON.stringify(startOfSubTour) && !replaced) {
+                    for(var j = 0; j < euclideanSubTour.length; j++) {
+                        /* if(euclideanSubTour[j].type == "edge") {
+                            graph.edges[euclideanSubTour[j].id].setLayout("lineColor", tourColors[0]);
+                        } */
+                        newTour.push(euclideanSubTour[j]);
+                    }
+                    replaced = true;
+                }else{
+                    newTour.push(euclideanTour[i]);
+                }
+            }
+
+            euclideanTour = newTour;
+
+        }
+
+        euclideanSubTour = new Array();
+
+        if(debugConsole) console.log("Current Complete Euclidean Tour: ", euclideanTour);
+
+        statusID = 7;
+
+    };
+
+    // Check ob Tour ein Euclidischer Zug ist
+    // Anzahl Kanten in Tour gleich Anzahl Kanten im Graph
+    // Wenn ja -> returnTour()
+    // Wenn nein -> findNewStartingVertex()
+    this.checkForEuclideanTour = function() {
+        this.markPseudoCodeLine(4);
+        $("#tf1_div_statusErklaerung").html('<h3>4 Gesamttour bestimmen</h3>\
+            <h3>4.2 Auf Vollständigkeit prüfen</h3>\
+            <p>Nach jeder Integration einer Subtour in die Gesamttour müssen wir prüfen, ob unsere Gesamttour vollständig ist und der Algorithmus terminieren kann.</p>\
+            <p>Dazu vergleicht man bspw. die Anzahl der Kanten im Graph mit der Anzahl der Kanten in der Gesamttour.</p>\
+            <p>Bei Gleichheit terminiert der Algorithmus und gibt die Gesamttour in <em>Schritt 5</em> zurück.</p>\
+            <p>Bei Ungleichheit existiert eine weitere Subtour, die gefunden werden muss. Wir springen zurück zu <em>Schritt 3</em>.</p>');
+
+        var numberOfEdgesInGraph = Object.keys(graph.edges).length;
+        var numberOfEdgesInTour = 0;
+
+        for(var i = 0; i < euclideanTour.length; i++) {
+            if(euclideanTour[i].type == "edge") {
+                numberOfEdgesInTour++;
+            }
+        }
+
+        if(debugConsole) console.log("Edges in Graph:" + numberOfEdgesInGraph + ", Edges in Tour: " + numberOfEdgesInTour);
+
+        if(numberOfEdgesInGraph == numberOfEdgesInTour) {
+            statusID = 8;
+            return true;
+        }else{
+            statusID = 9;
+            return false;
+        }
+
+    };
+
+    // Zeige Tour
+    this.returnTour = function() {
+        this.markPseudoCodeLine(10);
+        $("#tf1_div_statusErklaerung").html('<h3>5 Ergebnis</h3>\
+            <p>Der Algorithmus konnte erfolgreich eine Eulertour bzw. einen Eulerkreis bestimmen.</p>');
+
+        var output = "";
+
+        for(var i = 0; i < euclideanTour.length; i++) {
+            if(euclideanTour[i].type == "vertex") {
+                output += graph.nodes[euclideanTour[i].id].getLabel();
+            }
+            if(euclideanTour[i].type == "edge") {
+                var layout = graph.edges[euclideanTour[i].id].getLayout();
+                //output += "<li>{"+graph.nodes[graph.edges[euclideanTour[i].id].getSourceID()].getLabel()+", "+graph.nodes[graph.edges[euclideanTour[i].id].getTargetID()].getLabel()+"}</li>";
+                output += ' <span style="color: '+layout.lineColor+';">&#8211;</span> ';
+            }
+        }
+
+        //output = output.slice(0,-3);
+
+        var output_subtours = "";
+
+        for(var i = 0; i < subtours.length; i++) {
+            var cur = subtours[i];
+            output_subtours += '<li class="subtour_hover" data-tour-id="'+i+'" style="color: '+tourColors[cur['color']]+';">';
+            for(var j = 0; j < cur['tour'].length; j++) {
+                if(cur['tour'][j].type == "vertex" && j == 0) {
+                    output_subtours += graph.nodes[cur['tour'][j].id].getLabel();
+                }else if(cur['tour'][j].type == "vertex") {
+                    output_subtours += "&#8211;"+graph.nodes[cur['tour'][j].id].getLabel();
+                }
+            }
+            output_subtours += '</li>';
+        }
+
+        if(semiEuclideanGraph) {
+            if(debugConsole) console.log("Complete Euclidean Trail: ", euclideanTour);
+        }else{
+            if(debugConsole) console.log("Complete Euclidean Circle: ", euclideanTour);
+        }  
+
+        $("#tf1_div_statusErklaerung").append('<h3>5.1 Eulertour:</h3>\
+            <p class="result_euleriantour">' + output + '</p>\
+            <p>Die Eulertour wird hier dargestellt als Folge der Knoten.</p>\
+            <p><button id="animateTour">Animiere Eulertour</button><button id="animateTourStop">Stop</button></p>\
+            <p>Klicke auf <strong>Animiere Eulertour</strong> um die komplette Eulertour abzulaufen und alle Knoten und Kanten auf dem Weg hervorzuheben.</p>\
+            <h3>5.2 Subtouren:</h3>\
+            <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
+            <p>Bewege deinen Mauszeiger über eine der Subtouren, um sie im Graph hervorzuheben.</p>');
+
         if(fastForwardIntervalID != null) {
             this.stopFastForward();
         }
         $("#tf1_button_1Schritt").button("option", "disabled", true);
         $("#tf1_button_vorspulen").button("option", "disabled", true);
-        this.showResults();
+        $(".subtourList").on("mouseenter", "li.subtour_hover", {org: this}, this.hoverSubtour).on("mouseleave", "li.subtour_hover", {org: this}, this.dehoverSubtour);
+        $("#animateTour").button({icons:{primary: "ui-icon-play"}}).click({org: this}, this.animateTour);
+        $("#animateTourStop").button({icons:{primary: "ui-icon-stop"}, disabled: true}).click({org: this}, this.animateTourStop);
     };
 
-    /**
-     * Handler für Mausbewegungen im Algorithmus Tab.<br>
-     * Wenn mit der Maus über einen Knoten gefahren wird, wird der kürzeste Weg
-     * vom Startknoten zu diesem Knoten grün markiert. <br>
-     * Die Markierung wird wieder entfernt, sobald die Maus den Knoten wieder verlässt
-     * @param {jQuery.Event} e
-     * @method
-     */
-    this.canvasMouseMoveHandler = function(e) {
-        if(statusID != 6) {
-            return;
-        }
-        var mouseInNode = false;
-        var mx = e.pageX - canvas.offset().left;
-        var my = e.pageY - canvas.offset().top;
-        for(var knotenID in graph.nodes) {
-            if (graph.nodes[knotenID].contains(mx, my)) {
-                if(showWayOfNode != null) {
-                    if(showWayOfNode.nodeID == knotenID) {
-                        return;
-                    }
-                    else {
-                        var showWayOfNodeOld = showWayOfNode;
-                        showWayOfNode = null;
-                        this.needRedraw = true;
-                        // Layout zurücksetzen
-                        for (var i = 0; i < showWayOfNodeOld.modifiedEdges.length; ++i) {
-                            graph.edges[showWayOfNodeOld.modifiedEdges[i].id].setLayout("lineWidth",showWayOfNodeOld.modifiedEdges[i].lineWidth);
-                            graph.edges[showWayOfNodeOld.modifiedEdges[i].id].setLayout("lineColor",showWayOfNodeOld.modifiedEdges[i].lineColor);
-                        }
-                    }
+    // Finde neuen Startpunkt in Tour
+    // Erster Knoten, dessen Grad unbesuchter Kanten größer 0 ist -> findNextVertexForTour()
+    this.findNewStartingVertex = function() {
+        this.markPseudoCodeLine(5);
+        $("#tf1_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
+            <h3>3.1b Neuen Startknoten finden</h3>\
+            <p>Im Gegensatz zum Finden eines Startknotens für die erste Subtour, gibt es nun keine Fallunterscheidung mehr.</p>\
+            <p>Wir können einen beliebigen Knoten wählen, der an unbesuchte Kanten grenzt.</p>\
+            <p>Dieser Knoten bildet den Start der neuen Subtour und wurde <span style="font-weight: bold; color: green;">grün</span> markiert.</p>');
+
+        euclideanSubTour = new Array();
+
+        for(var i = 0; i < euclideanTour.length; i++) {
+            
+            if(euclideanTour[i].type == "vertex") {
+                if(graph.nodes[euclideanTour[i].id].getUnvisitedDegree() > 0) {
+                    tourStartVertex = euclideanTour[i].id;
+                    graph.nodes[euclideanTour[i].id].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+                    tourCurrentVertex = euclideanTour[i].id;
+
+                    euclideanSubTour = new Array();
+                    this.addVertexToTour(graph.nodes[euclideanTour[i].id], euclideanSubTour);
+
+                    if(debugConsole) console.log("Subtour: ", euclideanSubTour);
+
+                    this.needRedraw = true;
+                    break;
                 }
-                mouseInNode = true;
-                showWayOfNode = new Object();
-                showWayOfNode.nodeID = knotenID;
-                var visitedNodes = new Object();
-                var currentNode = knotenID;
-                var currentEdge = null;
-                var modifiedEdges = new Array();
-                while(vorgaenger[currentNode] != null && visitedNodes[currentNode] == null) {
-                    visitedNodes[currentNode] = true;
-                    currentEdge = graph.edges[vorgaenger[currentNode]];
-                    currentNode = currentEdge.getSourceID();
-                    // Layout
-                    modifiedEdges.push({id: currentEdge.getEdgeID(),
-                                        lineWidth: currentEdge.getLayout().lineWidth,
-                                        lineColor: currentEdge.getLayout().lineColor});
-                    currentEdge.setLayout("lineWidth",3);
-                    currentEdge.setLayout("lineColor",const_Colors.EdgeHighlight4);
-                }
-                showWayOfNode.modifiedEdges = modifiedEdges;
-                this.needRedraw = true;
             }
         }
 
-        if(!mouseInNode && showWayOfNode != null) {
-            this.needRedraw = true;
-            // Layout zurücksetzen
-            for (var i = 0; i < showWayOfNode.modifiedEdges.length; ++i) {
-                if(graph.edges[showWayOfNode.modifiedEdges[i].id].getLayout().lineColor == const_Colors.EdgeHighlight4 &&
-                    graph.edges[showWayOfNode.modifiedEdges[i].id].getLayout().lineWidth == 3) {
-                    graph.edges[showWayOfNode.modifiedEdges[i].id].setLayout("lineWidth",showWayOfNode.modifiedEdges[i].lineWidth);
-                    graph.edges[showWayOfNode.modifiedEdges[i].id].setLayout("lineColor",showWayOfNode.modifiedEdges[i].lineColor);
-                }
-            }
-            showWayOfNode = null;
-        }
-    };
-    
-    /**
-     * Wird aufgerufen, wenn die richtige Antwort auf eine Frage gegeben wurde.
-     * Aktiviert die Buttons zum Weitermachen wieder und entfernt die Markierungen im Graph.
-     * @method
-     */
-    this.handleCorrectAnswer = function() {
-        $("#tf1_button_1Schritt").button("option", "disabled", false);
-        $("#tf1_button_vorspulen").button("option", "disabled", false);
-        $("p.frage").css("color",const_Colors.GreenText);
-        $("#tf1_div_Antworten").html("<h2>"+LNG.K('aufgabe1_text_right_answer')+" " +this.frageParam.Antwort +"</h2>");
-        $("#tf1_div_Antworten").append(this.frageParam.AntwortGrund);
-        if(this.frageParam.frageKnoten) {
-            if(this.frageParam.frageKnoten != startNode) {
-                this.frageParam.frageKnoten.restoreLayout();
-            }
-            else {
-                startNode.setLayout("fillStyle",const_Colors.NodeFillingHighlight);
-            }
-            this.frageParam.frageKnoten.setLabel(this.frageParam.newNodeLabel);
-        }
-        if(this.frageParam.frageKante) {
-            this.frageParam.frageKante.setLayout("lineColor","black");
-            this.frageParam.frageKante.setLayout("lineWidth",2);
-        }
-        if(showVorgaenger) {
-            if(this.frageParam.oldVorgaenger != null) {
-                graph.edges[this.frageParam.oldVorgaenger].setHighlighted(false);
-            }
-            if(this.frageParam.frageKnoten && vorgaenger) {
-                if(vorgaenger[this.frageParam.frageKnoten.getNodeID()] != null)    {
-                    graph.edges[vorgaenger[this.frageParam.frageKnoten.getNodeID()]].setHighlighted(true);
-                }
-            }
-        }
-        if(this.frageParam.gewusst) {
-            frageStats.richtig++;
-        }
-        else {
-            frageStats.falsch++;
-        }
-        this.needRedraw = true;
-        frageStatus = {"aktiv" :false, "warAktiv": true};
-    };
-    
-    /**
-     * Generiert Antwortmöglichkeiten für Fragen zu Knotenupdates.
-     * Das erste Element des Rückgabewerts ist stets die richtige Antwort
-     * @param {Object} aktKante  Kante, die Grade überprüft wird. 
-     * @param {Number} oldWeight null, falls kein Update stattfand, sonst der Wert des Knotens vor dem Update
-     * @returns {Array} 3 Antwortmöglichkeiten, wobei die erste korrekt ist.
-     * @method
-     */
-    this.generateAnswers = function(aktKante,oldWeight) {
-        if(oldWeight == "inf") {
-            oldWeight = LNG.K('aufgabe1_text_infinity');
-        }
-        var u = aktKante.getSourceID();
-        var v = aktKante.getTargetID();
-        var aktWeight = aktKante.weight;
-        while(aktWeight == 0) {
-            aktWeight = Math.ceil(Math.random()*50)-25;
-        }
-        if(distanz[u] == "inf" && distanz[v] == "inf") {
-            return [LNG.K('aufgabe1_text_infinity'),"0",aktWeight.toString()];
-        }
-        if(distanz[u] == "inf") {
-            return [distanz[v].toString(),LNG.K('aufgabe1_text_infinity'),(aktWeight + distanz[v]).toString()];
-        }
-        if(oldWeight != null) { // Update
-            return [distanz[v].toString(),oldWeight.toString(),(distanz[v]-aktWeight-aktWeight).toString()];
-        }
-        if(distanz[v] == distanz[u] + aktWeight) {
-            return [distanz[v].toString(),(distanz[u]-aktWeight).toString(),distanz[u].toString()];
-        }
-        if(distanz[v] != distanz[u]-aktWeight) {
-            return [distanz[v].toString(),(distanz[u]+aktWeight).toString(),(distanz[u]-aktWeight).toString()];
-        }
-        return [distanz[v].toString(),(distanz[u]+aktWeight).toString(),distanz[u].toString()];
-    };
-    
-    /**
-     * Gibt das Gewicht einer eingehenden Kante zum angegebenen Knoten zurück,
-     * dass nicht eine der verbotenen Zahlen ist.
-     * @param {Number} nodeID
-     * @param {Array} forbiddenNumbers
-     * @returns {Number}
-     * @method
-     */
-    this.getWeightOfInEdge = function(nodeID,forbiddenNumbers) {
-        var inEdges = graph.nodes[nodeID].getInEdges();
-        var retWeight = null;
-        for(var kantenID in inEdges) {
-            retWeight = graph.edges[kantenID].weight;
-            // Prüfe, ob der Wert verboten ist
-            for(var i=0;i<forbiddenNumbers.length;i++) {
-                if(forbiddenNumbers[i] == retWeight) {
-                    retWeight = null;
-                }
-            }
-        }
-        if(retWeight == null) {
-            while(retWeight == null) {
-                retWeight = Math.floor(Math.random()*100)-50;
-                // Prüfe, ob der Wert verboten ist
-                for(var i=0;i<forbiddenNumbers.length;i++) {
-                    if(forbiddenNumbers[i] == retWeight) {
-                        retWeight = null;
-                    }
-                }
-            }
-        }
-        return retWeight;
-    };
+        statusID = 4;
 
-    /**
-     * Generiert eine zufällige Permutation von [0,1,2]<br>
-     * Könnte man mal allgemeiner mit Fisher-Yates machen.
-     * @returns {Array} zufällige Permutation von [0,1,2]
-     * @method
-     */
-    this.generateRandomOrder = function() {
-        var randomParameter = Math.floor(Math.random()*6);
-        switch(randomParameter) {
-            case 0: return [0,1,2];
-            case 1: return [0,2,1];
-            case 2: return [1,0,2];
-            case 3: return [1,2,0];
-            case 4: return [2,0,1];
-            case 5: return [2,1,0];
-        }
-        return [0,1,2];
-    };
-    
-    /**
-     * Blendet die Vorgängerkanten ein und aus.
-     * @method
-     */
-    this.changeVorgaengerVisualization = function() {
-        showVorgaenger = !showVorgaenger;
-        for(var knotenID in vorgaenger) {
-            if(vorgaenger[knotenID] != null) {
-                graph.edges[vorgaenger[knotenID]].setHighlighted(showVorgaenger);
-            }
-        }
-        $("#tf1_tr_LegendeClickable").toggleClass("greyedOutBackground");
-        this.needRedraw = true;
-    };
-    
-    /**
-     * Fügt einen Tab für die Frage hinzu.<br>
-     * Deaktiviert außerdem die Buttons zum weitermachen
-     * @method
-     */
-    this.addFrageTab = function() {
-        var li = "<li id='tf1_li_FrageTab'><a href='#tf1_div_FrageTab'>"+LNG.K('aufgabe1_text_question')+"</a></li>", id= "tf1_div_FrageTab";
-        $("#tf1_div_statusTabs").find(".ui-tabs-nav").append(li);
-        $("#tf1_div_statusTabs").append("<div id='" + id + "'><div id='tf1_div_Frage'></div><div id='tf1_div_Antworten'></div></div>");
-        $("#tf1_div_statusTabs").tabs("refresh");
-        tabVorFrage = $("#tf1_div_statusTabs").tabs("option","active");
-        $("#tf1_div_statusTabs").tabs("option","active",2);
-        $("#tf1_button_1Schritt").button("option", "disabled", true);
-        $("#tf1_button_vorspulen").button("option", "disabled", true);
-    };
-    
-    /**
-     * Entfernt den Tab für die Frage und aktiviert den vorherigen Tab.
-     * @method
-     */
-    this.removeFrageTab = function() {
-        if($("#tf1_div_statusTabs").tabs("option","active") == 2){
-            $("#tf1_div_statusTabs").tabs("option","active",tabVorFrage);
-        }
-        $("#tf1_li_FrageTab").remove().attr("aria-controls");
-        $("#tf1_div_FrageTab").remove();
-        $("#tf1_div_statusTabs").tabs( "refresh" );
-    };
-    
-    /**
-     * Trägt den Status der Variablen in die entsprechenden Felder im Pseudocode
-     * Tab ein.
-     * @param {Number} i    Laufvariable
-     * @param {Edge} kante  Aktuell betrachtete Kante
-     * @method
-     */
-    this.showVariableStatusField = function(i,kante) {
-        if(i == null) {
-            $("#tf1_td_vari").html("");
-        }
-        else {
-            $("#tf1_td_vari").html(i.toString());
-        }
-        if(kante == null) {
-            $("#tf1_td_vardu").html("");
-            $("#tf1_td_vardv").html("");
-            $("#tf1_td_varluv").html("");
-            return;
-        }
-        $("#tf1_td_varluv").html(kante.weight.toString());
-        if(distanz[kante.getSourceID()] == "inf") {
-            $("#tf1_td_vardu").html(String.fromCharCode(8734));
-        }
-        else {
-            $("#tf1_td_vardu").html(distanz[kante.getSourceID()].toString());
-        }
-        if(distanz[kante.getTargetID()] == "inf") {
-            $("#tf1_td_vardv").html(String.fromCharCode(8734));
-        }
-        else {
-            $("#tf1_td_vardv").html(distanz[kante.getTargetID()].toString());
-        }
-    };
-    
-    /**
-     * Zeigt - in eigenem Tab - die Resultate der Aufgabe an.
-     * @method
-     */
-    this.showResults = function() {
-        var li = "<li id='tf1_li_ErgebnisseTab'><a href='#tf1_div_ErgebnisseTab'>"+LNG.K('aufgabe1_text_results')+"</a></li>", id= "tf1_div_ErgebnisseTab";
-        $("#tf1_div_statusTabs").find(".ui-tabs-nav").append(li);
-        $("#tf1_div_statusTabs").append("<div id='" + id + "'></div>");
-        $("#tf1_div_statusTabs").tabs("refresh");
-        $("#tf1_div_statusTabs").tabs("option","active",2);
-        if(frageStats.anzahlFragen == frageStats.richtig) {
-            $("#tf1_div_ErgebnisseTab").append("<h2>"+LNG.K('aufgabe1_result1')+"</h2>");
-            $("#tf1_div_ErgebnisseTab").append("<p>"+LNG.K('aufgabe1_result2')+"</p>");
-        }
-        else {
-            $("#tf1_div_ErgebnisseTab").append("<h2>"+LNG.K('aufgabe1_result3')+"</h2>");
-            $("#tf1_div_ErgebnisseTab").append("<p>"+LNG.K('aufgabe1_result4')+" " +frageStats.anzahlFragen + "</p>");
-            $("#tf1_div_ErgebnisseTab").append("<p>"+LNG.K('aufgabe1_result5')+" " +frageStats.richtig + "</p>");
-            $("#tf1_div_ErgebnisseTab").append("<p>"+LNG.K('aufgabe1_result6')+" " +frageStats.falsch + "</p>");
-            $("#tf1_div_ErgebnisseTab").append('<button id="tf1_button_Retry">'+LNG.K('aufgabe1_btn_retry')+'</button>');
-            $("#tf1_button_Retry").button().click(function() {algo.refresh();});
-        }
-        $("#tf1_div_ErgebnisseTab").append("<h3>"+LNG.K('aufgabe1_btn_exe2')+"</h3>");
-        $("#tf1_div_ErgebnisseTab").append('<button id="tf1_button_gotoFA2">'+LNG.K('algorithm_btn_exe2')+'</button>');
-        $("#tf1_button_gotoFA2").button().click(function() {$("#tabs").tabs("option","active", 5);});
     };
 
     this.generateDegreeQuestion = function() {
