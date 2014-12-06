@@ -53,7 +53,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     var euclideanSubTour = new Array();
     var subtours = new Array();
     var currentPseudoCodeLine = 1;
-    var tourColors = new Array("blue", "green", "red", "yellow", "orange", "purple", "brown");
+    var tourColors = new Array("#0000cc", "#006600", "#990000", "#999900", "#cc6600", "#660099", "#330000");
     var tourColorIndex = 0;
     var tourAnimationIndex = 0; 
     var tourAnimation = null;
@@ -483,7 +483,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             "pseudo_cur" : $("#ta_td_tourCurrentVertex").html(),
             "pseudo_subtour" : $("#ta_td_euclideanSubtour").html(),
             "pseudo_tour" : $("#ta_td_euclideanTour").html(),
-            "subtours" : subtours
+            "subtours" : JSON.stringify(subtours)
         });
 
         if(debugConsole) console.log("Current History Step: ", replayHistory[replayHistory.length-1]);
@@ -503,7 +503,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         semiEuclideanGraph = oldState.semiEuclideanGraph;
         validGraph = oldState.validGraph;
         tourColorIndex = oldState.tourColorIndex;
-        subtours = oldState.subtours;
+        subtours = JSON.parse(oldState.subtours);
         $("#ta_div_statusErklaerung").html(oldState.htmlSidebar);
         euclideanTour = JSON.parse(oldState.euclideanTour);
         euclideanSubTour = JSON.parse(oldState.euclideanSubTour);
@@ -560,7 +560,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     this.initializeGraph = function() {
         this.markPseudoCodeLine(2);
 
-        $("#ta_div_statusErklaerung").html("<h3>Initialisiere Graph</h3>");
+        $("#ta_div_statusErklaerung").html('<h3>1 Initialisierung</h3>\
+            <p>Um besser mit dem Graphen arbeiten können, haben wir seine Knoten mittels Buchstaben beschriftet.</p>\
+            <p>Der Algorithmus muss bei der Ausführung prüfen können, welche Kanten er schon besucht hat. Wir benutzen dafür die derzeitig noch leere Menge besuchter Kanten (vgl. Pseudocode).</p>');
 
         this.addNamingLabels();
 
@@ -582,7 +584,16 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Check ob Graph Euclidisch oder Semi Euclidisch ist
     this.checkGraph = function() {
         this.markPseudoCodeLine(3);
-        $("#ta_div_statusErklaerung").html("<h3>Prüfe ob Graph euclidisch oder semi-euclidisch ist</h3>");
+        $("#ta_div_statusErklaerung").html('<h3>2 Graph prüfen</h3>\
+            <p>Nur wenn unser Graph die folgenden Eigenschaften aufweist, kann der Hierholzer Algorithmus funktionieren:</p>\
+            <h3>2.1 Anzahl der Knoten</h3>\
+            <p>Damit ein Kantenweg im Graph existieren kann, muss dieser mindestens <em>zwei</em> zusammenhängende Knoten besitzen.</p>\
+            <h3>2.2 Zusammenhängend</h3>\
+            <p>Um einen Kantenweg über alle Kanten im Graph zu ermitteln, muss man natürlich auch alle Kanten im Graph erreichen können. Dazu muss dieser zusammenhängend sein. Diese Eigenschaft prüft man bspw. mit einer Breitensuche.</p>\
+            <h3>2.3 Grad</h3>\
+            <p>Der Hierholzer Algorithmus stellt strenge Voraussetzungen an den Grad der Knoten. Der Grad eines Knoten beschreibt die Anzahl seiner Kanten. Zur Veranschaulichung haben wir jeden Knoten mit seinem Grad beschriftet. Ein <span style="font-weight: bold; color: green;">grüner</span> Rahmen bedeutet, dass der Grad gerade ist, während ein <span style="font-weight: bold; color: red;">roter</span> Rahmen auf einen ungeraden Grad hinweist.</p>\
+            <p>Ein Graph dessen Knoten alle einen geraden Grad aufweisen, nennt man <em>eulersch</em>. Trifft dies auf alle außer exakt zwei Knoten zu, so spricht man von einem <em>semi-eulerschen</em> Graph.</p>\
+            <p>Damit der Hierholzer Algorithmus funktioniert muss der Graph entweder eulersch oder semi-eulersch sein.</p>');
         $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/knoten_even.png" alt="Knoten" class="LegendeIcon"></td><td><span>Knoten mit geradem Grad 2</span></td></tr><tr><td class="LegendeTabelle"><img src="img/knoten_odd.png" alt="Knoten" class="LegendeIcon"></td><td><span>Knoten mit ungeradem Grad 3</span></td></tr></table>');
 
         var numberOfOddVertices = 0;
@@ -645,7 +656,13 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
     // State wenn Graph invalid ist
     this.invalidGraph = function() {
-        $("#ta_div_statusErklaerung").html("<h3>Graph ist nicht euclidisch!</h3>").addClass("ui-state-error");
+        $("#ta_div_statusErklaerung").html('<h3 style="color: white;">2 Graph prüfen</h3>\
+            <p style="color: white;">Dein Graph erfüllt mindestens eine der folgenden Eigenschaften nicht:</p>\
+            <ul style="color: white;">\
+            <li>mind. 2 Knoten</li>\
+            <li>zusammenhängend</li>\
+            <li>eulersch oder semi-eulersch</li>\
+            </ul>').addClass("ui-state-error");
 
         if(fastForwardIntervalID != null) {
             this.stopFastForward();
@@ -662,7 +679,12 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Selectiere Start Vertice, entweder #1 (Euclidisch) oder #1 mit ungeradem Grad (Semi Euclidisch)
     this.findStartingVertex = function() {
         this.markPseudoCodeLine(5);
-        $("#ta_div_statusErklaerung").html("<h3>Finde Start Knoten</h3>");
+        $("#ta_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
+            <h3>3.1a Ersten Startknoten finden</h3>\
+            <p>Damit der Algorithmus mit der ersten Subtour starten kann, benötigt er einen Startknoten. Hierfür unterscheidet man zwei Fälle:</p>\
+            <p><strong>Eulerscher Graph:</strong> Wähle beliebigen Knoten.</p>\
+            <p><strong>Semi-eulerscher Graph:</strong> Wähle einen der beiden Knoten mit ungeradem Grad.</p>\
+            <p>Der ausgewählte und damit aktive Knoten wurde <span style="font-weight: bold; color: green;">grün</span> markiert.</p>');
         $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>Startknoten bzw. Knoten der mit dem Startknoten verglichen wird</span></td></tr><tr><td class="LegendeTabelle"><img src="img/pfad.png" alt="Kante" class="LegendeIcon"></td><td><span>Kante der Eulertour im aktuellen Durchgang</span></td></tr></table>');
 
         // Restore Naming
@@ -698,7 +720,13 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn gefunden -> findNextVertexForTour()
     this.findNextVertexForTour = function() {
         this.markPseudoCodeLine(7);
-        $("#ta_div_statusErklaerung").html("<h3>Finde nächsten Knoten</h3>");
+        $("#ta_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
+            <h3>3.2 Unbesuchten Nachbarn finden</h3>\
+            <p>Um die nächste Kante in unserer Subtour zu bestimmen, betrachten wir zunächst alle Kanten des zuletzt aktiven Knotens.</p>\
+            <p>Aus dieser Kantenmenge wählen wir nun die Kanten aus, die wir noch nicht besucht haben. Aus dieser Restmenge bestimmen wir eine zufällige Kante (<span style="font-weight: bold; color: '+tourColors[tourColorIndex]+';">farblich markiert</span>).</p>\
+            <p>Wir fügen diese Kante zu unserer Subtour hinzu sowie zur Menge der besuchten Kanten hinzu. Wir folgen der Kante und erhalten unseren nächsten aktiven Knoten (<span style="font-weight: bold; color: green;">grün</span>).</p>\
+            <h3>3.2.1 Sonderfall</h3>\
+            <p>Bei semi-eulerschen Graphen kann es zu dem Sonderfall kommen, dass der aktive Knoten keine weiteren unbesuchten Kanten besitzt. In diesem Fall springen wir direkt zu <em>Schritt 4.1</em>.</p>');
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
 
@@ -770,7 +798,13 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn ungleich -> findNextVertexForTour()
     this.compareVertexWithStart = function() {
         this.markPseudoCodeLine(8);
-        $("#ta_div_statusErklaerung").html("<h3>Vergleiche Knoten mit Startknoten</h3>");
+        $("#ta_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
+            <h3>3.3 Kreis entdecken</h3>\
+            <p>Um zu prüfen, ob unsere Subtour abgeschlossen ist (d.h. sie bildet einen Kreis), vergleichen wir den aktiven Knoten mit dem ersten Knoten der Subtour. Beide sind <span style="font-weight: bold; color: green;">grün</span> markiert.</p>\
+            <h3>3.3.1 Abgeschlossen</h3>\
+            <p>Handelt es sich bei beiden um den selben Knoten, ist unsere Subtour abgeschlossen und wir fahren mit <em>Schritt 4</em> fort.</p>\
+            <h3>3.3.2 Nicht abgeschlossen</h3>\
+            <p>Handelt es sich um zwei verschiedene Knoten, ist unsere Subtour unvollständig und wir springen zurück zu <em>Schritt 3.2</em>.</p>');
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
 
@@ -791,7 +825,15 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Bei vorhandener Tour, Replace Start mit Subtour
     this.mergeTour = function() {
         this.markPseudoCodeLine(9);
-        $("#ta_div_statusErklaerung").html("<h3>Integriere Tour in Gesamttour</h3>");
+        $("#ta_div_statusErklaerung").html('<h3>4 Gesamttour bestimmen</h3>\
+            <h3>4.1 Integriere Subtour in Gesamttour</h3>\
+            <p>Damit der Hierholzer Algorithmus am Ende eine Eulertour bzw. einen Eulerkreis liefert, müssen wir sämtliche Subtouren passend aneinanderhängen. Wir unterscheiden hier drei Fälle:</p>\
+            <h3>4.1.1 Erste Subtour</h3>\
+            <p>Im einfachsten Fall integrieren wir die letzte Subtour einfach in die noch leere Gesamttour.</p>\
+            <h3>4.1.2 Zyklische Subtour</h3>\
+            <p>In diesem Fall bildet unsere Subtour einen Kreis. Zum Integireren, suchen wir den Start- & Endknoten der Subtour in der Gesamttour und ersetzen diesen mit unserer Subtour.</p>\
+            <h3>4.1.3 Azyklische Subtour</h3>\
+            <p>Dieser Fall tritt nur einmal in einem semi-eulerschen Graph auf. Es handelt sich hierbei um die Subtour, die mit einem Knoten ungeraden Grads beginnt und bei dem zweiten Knoten mit ungeradem Grad endet. Diese Subtour muss so integriert werden, dass der ungerade Knoten, welcher nicht den Anfang der Gesamttour bildet, den Schluss der Gesamttour bildet.</p>');
 
         subtours.push({color: tourColorIndex, tour: euclideanSubTour});
         if(debugConsole) console.log("Subtours", subtours);
@@ -868,7 +910,12 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn nein -> findNewStartingVertex()
     this.checkForEuclideanTour = function() {
         this.markPseudoCodeLine(4);
-        $("#ta_div_statusErklaerung").html("<h3>Prüfe ob Tour ein Euclidischer Kreis/Tour ist</h3>");
+        $("#ta_div_statusErklaerung").html('<h3>4 Gesamttour bestimmen</h3>\
+            <h3>4.2 Auf Vollständigkeit prüfen</h3>\
+            <p>Nach jeder Integration einer Subtour in die Gesamttour müssen wir prüfen, ob unsere Gesamttour vollständig ist und der Algorithmus terminieren kann.</p>\
+            <p>Dazu vergleicht man bspw. die Anzahl der Kanten im Graph mit der Anzahl der Kanten in der Gesamttour.</p>\
+            <p>Bei Gleichheit terminiert der Algorithmus und gibt die Gesamttour in <em>Schritt 5</em> zurück.</p>\
+            <p>Bei Ungleichheit existiert eine weitere Subtour, die gefunden werden muss. Wir springen zurück zu <em>Schritt 3</em>.</p>');
 
         var numberOfEdgesInGraph = Object.keys(graph.edges).length;
         var numberOfEdgesInTour = 0;
@@ -894,20 +941,23 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Zeige Tour
     this.returnTour = function() {
         this.markPseudoCodeLine(10);
-        $("#ta_div_statusErklaerung").html("<h2>Zeige Ergebnis</h2>");
+        $("#ta_div_statusErklaerung").html('<h3>5 Ergebnis</h3>\
+            <p>Der Algorithmus konnte erfolgreich eine Eulertour bzw. einen Eulerkreis bestimmen.</p>');
 
         var output = "";
 
         for(var i = 0; i < euclideanTour.length; i++) {
             if(euclideanTour[i].type == "vertex") {
-                output += graph.nodes[euclideanTour[i].id].getLabel()+" - ";
+                output += graph.nodes[euclideanTour[i].id].getLabel();
             }
-            /* if(euclideanTour[i].type == "edge") {
-                output += "<li>{"+graph.nodes[graph.edges[euclideanTour[i].id].getSourceID()].getLabel()+", "+graph.nodes[graph.edges[euclideanTour[i].id].getTargetID()].getLabel()+"}</li>";
-            } */
+            if(euclideanTour[i].type == "edge") {
+                var layout = graph.edges[euclideanTour[i].id].getLayout();
+                //output += "<li>{"+graph.nodes[graph.edges[euclideanTour[i].id].getSourceID()].getLabel()+", "+graph.nodes[graph.edges[euclideanTour[i].id].getTargetID()].getLabel()+"}</li>";
+                output += ' <span style="color: '+layout.lineColor+';">&#8211;</span> ';
+            }
         }
 
-        output = output.slice(0,-3);
+        //output = output.slice(0,-3);
 
         var output_subtours = "";
 
@@ -918,27 +968,33 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
                 if(cur['tour'][j].type == "vertex" && j == 0) {
                     output_subtours += graph.nodes[cur['tour'][j].id].getLabel();
                 }else if(cur['tour'][j].type == "vertex") {
-                    output_subtours += " - "+graph.nodes[cur['tour'][j].id].getLabel();
+                    output_subtours += "&#8211;"+graph.nodes[cur['tour'][j].id].getLabel();
                 }
             }
             output_subtours += '</li>';
         }
-        output_subtours = '<ul class="subtourList">'+output_subtours+"</ul>";
 
         if(semiEuclideanGraph) {
             if(debugConsole) console.log("Complete Euclidean Trail: ", euclideanTour);
-            $("#ta_div_statusErklaerung").append("<h3>Gesamte Eulertour:</h3><p>" + output + "</p><h3>Subtouren:</h3><p>"+output_subtours+'</p><p><button id="animateTour">Animiere Eulertour</button><button id="animateTourStop">Stop</button></p>');
         }else{
             if(debugConsole) console.log("Complete Euclidean Circle: ", euclideanTour);
-            $("#ta_div_statusErklaerung").append("<h3>Gesamter Eulerkreis:</h3><p>" + output + "</p><h3>Subtouren:</h3><p>"+output_subtours+'</p><p><button id="animateTour">Animiere Eulerkreis</button><button id="animateTourStop">Stop</button></p>');
-        }   
+        }  
+
+        $("#ta_div_statusErklaerung").append('<h3>5.1 Eulertour:</h3>\
+            <p class="result_euleriantour">' + output + '</p>\
+            <p>Die Eulertour wird hier dargestellt als Folge der Knoten.</p>\
+            <p><button id="animateTour">Animiere Eulertour</button><button id="animateTourStop">Stop</button></p>\
+            <p>Klicke auf <strong>Animiere Eulertour</strong> um die komplette Eulertour abzulaufen und alle Knoten und Kanten auf dem Weg hervorzuheben.</p>\
+            <h3>5.2 Subtouren:</h3>\
+            <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
+            <p>Bewege deinen Mauszeiger über eine der Subtouren, um sie im Graph hervorzuheben.</p>');
 
         if(fastForwardIntervalID != null) {
             this.stopFastForward();
         }
         $("#ta_button_1Schritt").button("option", "disabled", true);
         $("#ta_button_vorspulen").button("option", "disabled", true);
-        $(".subtour_hover").mouseenter({org: this}, this.hoverSubtour).mouseleave({org: this}, this.dehoverSubtour);
+        $(".subtourList").on("mouseenter", "li.subtour_hover", {org: this}, this.hoverSubtour).on("mouseleave", "li.subtour_hover", {org: this}, this.dehoverSubtour);
         $("#animateTour").button({icons:{primary: "ui-icon-play"}}).click({org: this}, this.animateTour);
         $("#animateTourStop").button({icons:{primary: "ui-icon-stop"}, disabled: true}).click({org: this}, this.animateTourStop);
     };
@@ -947,7 +1003,11 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Erster Knoten, dessen Grad unbesuchter Kanten größer 0 ist -> findNextVertexForTour()
     this.findNewStartingVertex = function() {
         this.markPseudoCodeLine(5);
-        $("#ta_div_statusErklaerung").html("<h3>Finde neuen Startpunkt für eine neue Subtour</h3>");
+        $("#ta_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
+            <h3>3.1b Neuen Startknoten finden</h3>\
+            <p>Im Gegensatz zum Finden eines Startknotens für die erste Subtour, gibt es nun keine Fallunterscheidung mehr.</p>\
+            <p>Wir können einen beliebigen Knoten wählen, der an unbesuchte Kanten grenzt.</p>\
+            <p>Dieser Knoten bildet den Start der neuen Subtour und wurde <span style="font-weight: bold; color: green;">grün</span> markiert.</p>');
 
         euclideanSubTour = new Array();
 
