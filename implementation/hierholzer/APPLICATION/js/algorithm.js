@@ -326,7 +326,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         this.needRedraw = true;
 
         if(tourAnimationIndex >= euclideanTour.length) {
-            this.animateTourStop();
+            this.animateTourStop(event);
             return;
         }
 
@@ -342,15 +342,26 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     };
 
     this.animateTour = function(event) {
+        $("#animateTour").button("option", "disabled", true);
+        $("#animateTourStop").button("option", "disabled", false);
         tourAnimationIndex = 0;
         var self = event.data.org;
-        tourAnimation = window.setInterval(function() {self.animateTourStep(); }, 250);
+        tourAnimation = window.setInterval(function() {self.animateTourStep(event); }, 250);
     };
 
-    this.animateTourStop = function() {
+    this.animateTourStop = function(event) {
+        if(tourAnimationIndex > 0 && euclideanTour[(tourAnimationIndex - 1)].type == "vertex") {
+            graph.nodes[euclideanTour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
+        }
+        if(tourAnimationIndex > 0 && euclideanTour[(tourAnimationIndex - 1)].type == "edge") {
+            graph.edges[euclideanTour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
+        }
+        event.data.org.needRedraw = true;
         tourAnimationIndex = 0;
         window.clearInterval(tourAnimation);
         tourAnimation = null;
+        $("#animateTour").button("option", "disabled", false);
+        $("#animateTourStop").button("option", "disabled", true);
         return;
     };
 
@@ -916,10 +927,10 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
         if(semiEuclideanGraph) {
             if(debugConsole) console.log("Complete Euclidean Trail: ", euclideanTour);
-            $("#ta_div_statusErklaerung").append("<h3>Gesamte Eulertour:</h3><p>" + output + "</p><h3>Subtouren:</h3><p>"+output_subtours+'</p><p><button id="animateTour">Animiere Eulertour</button></p>');
+            $("#ta_div_statusErklaerung").append("<h3>Gesamte Eulertour:</h3><p>" + output + "</p><h3>Subtouren:</h3><p>"+output_subtours+'</p><p><button id="animateTour">Animiere Eulertour</button><button id="animateTourStop">Stop</button></p>');
         }else{
             if(debugConsole) console.log("Complete Euclidean Circle: ", euclideanTour);
-            $("#ta_div_statusErklaerung").append("<h3>Gesamter Eulerkreis:</h3><p>" + output + "</p><h3>Subtouren:</h3><p>"+output_subtours+'</p><p><button id="animateTour">Animiere Eulerkreis</button></p>');
+            $("#ta_div_statusErklaerung").append("<h3>Gesamter Eulerkreis:</h3><p>" + output + "</p><h3>Subtouren:</h3><p>"+output_subtours+'</p><p><button id="animateTour">Animiere Eulerkreis</button><button id="animateTourStop">Stop</button></p>');
         }   
 
         if(fastForwardIntervalID != null) {
@@ -928,7 +939,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_button_1Schritt").button("option", "disabled", true);
         $("#ta_button_vorspulen").button("option", "disabled", true);
         $(".subtour_hover").mouseenter({org: this}, this.hoverSubtour).mouseleave({org: this}, this.dehoverSubtour);
-        $("#animateTour").button().click({org: this}, this.animateTour);
+        $("#animateTour").button({icons:{primary: "ui-icon-play"}}).click({org: this}, this.animateTour);
+        $("#animateTourStop").button({icons:{primary: "ui-icon-stop"}, disabled: true}).click({org: this}, this.animateTourStop);
     };
 
     // Finde neuen Startpunkt in Tour
