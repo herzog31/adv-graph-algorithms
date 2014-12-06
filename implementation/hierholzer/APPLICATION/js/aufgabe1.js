@@ -1042,6 +1042,37 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_div_ErgebnisseTab").append('<button id="tf1_button_gotoFA2">'+LNG.K('algorithm_btn_exe2')+'</button>');
         $("#tf1_button_gotoFA2").button().click(function() {$("#tabs").tabs("option","active", 5);});
     };
+
+    this.askQuestion = function() {
+
+        var randomVariable = function(min, max) {
+            return Math.random() * (max - min) + min;
+        };
+
+        if(statusID == 1) {
+            // Frage zum Grad (100%)
+            return 4;
+        }else if(statusID == 6) {
+            // Frage zum Mergeergebnis (40%)
+            if(randomVariable(0, 1) > 0.6) {
+                return 3;
+            }
+        }else if(statusID == 5) {
+            // Frage zur Subtour (40%)
+            if(randomVariable(0, 1) > 0.6) {
+                return 2;
+            }
+        }else if(statusID !== 2 && statusID !== 8) {
+            // Frage zum nächsten Schritt (20%)
+            if(randomVariable(1, 10) > 8) {
+                return 1;
+            }
+        }
+        return false;
+
+    };
+
+
 }
 
 // Vererbung realisieren

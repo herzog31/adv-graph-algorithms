@@ -83,7 +83,6 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         this.registerEventHandlers();
         this.needRedraw = true;
         this.minimizeLegend();
-        statusID = 0;
 
     };
     
@@ -191,6 +190,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     */
     this.nextStepChoice = function() {
 
+        if(statusID == null) {
+            statusID = 0;
+        }
         if(debugConsole) console.log("Current State: " + statusID);
 
         this.addReplayStep();
