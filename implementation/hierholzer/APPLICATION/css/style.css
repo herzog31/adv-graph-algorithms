@@ -347,3 +347,11 @@ html {
     font-size: 24px;
     vertical-align: bottom;
 }
+.no-close .ui-dialog-titlebar-close {
+    display: none;
+}
+#tf1_div_questionModal {
+    margin-top: 20px;
+    display: block;
+    padding-bottom: 10px;
+}

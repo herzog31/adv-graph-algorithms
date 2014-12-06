@@ -58,8 +58,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     var tourAnimationIndex = 0; 
     var tourAnimation = null;
 
-    // TODO
-    // Questions Array, Question & Correct Answer
+    var algorithmStatusCache = null;
+    var currentQuestion = 0;
+    var currentQuestionType = 0;
+    var questions = new Array();
     
     /**
      * Startet die Ausführung des Algorithmus.
@@ -226,8 +228,23 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
 
         this.updatePseudoCodeValues();
-
         this.needRedraw = true;
+
+        currentQuestionType = this.askQuestion();
+        if(currentQuestionType !== false) {
+            if(currentQuestionType === 1) {
+                this.generateNextStepQuestion();
+            }else if(currentQuestionType === 2) {
+                this.generateSubtourQuestion();
+            }else if(currentQuestionType === 3) {
+                this.generateTourQuestion();
+            }else if(currentQuestionType === 4) {
+                this.generateDegreeQuestion();
+            }
+            this.showQuestionModal();
+            this.stopFastForward();
+        }
+
     };
 
     this.hoverSubtour = function(event) {
@@ -900,15 +917,76 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     };
 
+    this.showQuestionModal = function() {
+        $("#tf1_div_statusTabs").hide();
+        $("#tf1_div_questionModal").show();
+    };
+
+    this.closeQuestionModal = function() {
+        $("#tf1_div_statusTabs").show();
+        $("#tf1_div_questionModal").hide();
+        $("#tf1_button_questionClose").off();
+    };
+
+    this.saveAnswer = function() {
+        var givenAnswer = "";
+        if(currentQuestionType === 1 || currentQuestionType === 3 || currentQuestionType === 4) {
+            givenAnswer = $("#question"+currentQuestion+"_form").find("input[type='radio']:checked").val();
+        }else if(currentQuestionType === 2) {
+            givenAnswer = "bla";
+        }
+        console.log(currentQuestionType, givenAnswer);
+        questions[currentQuestion].givenAnswer = givenAnswer;
+        currentQuestion++;
+        this.closeQuestionModal();
+    };
+
+    this.activateAnswerButton = function() {
+        console.log("activate");
+        $("#tf1_button_questionClose").button("option", "disabled", false);
+    };
+
     this.generateDegreeQuestion = function() {
-        // Wähle Knoten zufällig aus
-        // Verstecke Degree Angaben
-        // Array 0 - 10
-        // Berechne richtige Lösung
-        // Wähle 3 weitere Lösungen aus Array
+
+        var answers = new Array();
+        var nodeKeys = Object.keys(graph.nodes);
+        var randomNode = graph.nodes[nodeKeys[nodeKeys.length * Math.random() << 0]];
+        var answer = randomNode.getDegree();
+        questions[currentQuestion] = {type: currentQuestionType, rightAnswer: answer};
+        answers.push(answer);
+        var randomAnswers = Array.apply(null, {length: 10}).map(Number.call, Number);
+        var answerIndex = randomAnswers.indexOf(answer);
+        if (answerIndex > -1) {
+            randomAnswers.splice(answerIndex, 1);
+        }
+        randomAnswers = Utilities.shuffleArray(randomAnswers);
+        randomAnswers = randomAnswers.slice(1, 4);
+        answers = answers.concat(randomAnswers);
+        answers = Utilities.shuffleArray(answers);
+        console.log(answers);
+
+        var form = "";
+        for(var i = 0; i < answers.length; i++) {
+            form += '<input type="radio" id="tf1_input_question'+currentQuestion+'_'+i+'" name="question'+currentQuestion+'" value="'+answers[i]+'" />\
+            <label for="tf1_input_question'+currentQuestion+'_'+i+'">'+answers[i]+'</label><br />';
+        }
+        form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
+
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
+            <p>Welchen Grad hat der Knoten <strong>'+randomNode.getLabel()+'</strong>?</p>\
+            <p>'+form+'</p>\
+            <button id="tf1_button_questionClose">Antworten</button>');
+        $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
+        $("#question"+currentQuestion+"_form").find("input[type='radio']").on("change", function() { algo.activateAnswerButton(); });
+
     };
 
     this.generateNextStepQuestion = function() {
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
+            <p>Frage?</p>\
+            <p>Form</p>\
+            <button id="tf1_button_questionClose">Antworten</button>');
+        $("#tf1_button_questionClose").button().on("click", function() { algo.closeQuestionModal(); });
         // Array mit allen Schritten 1-9
         // Antwort berechnen
         // Array ohne Antwort shuffeln
@@ -916,12 +994,22 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     };
 
     this.generateSubtourQuestion = function() {
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
+            <p>Frage?</p>\
+            <p>Form</p>\
+            <button id="tf1_button_questionClose">Antworten</button>');
+        $("#tf1_button_questionClose").button().on("click", function() { algo.closeQuestionModal(); });
         // Subtour string berechnen
         // Textfeld geben (a,b,c,a)
         // Textfeld ohne Whitespaces & Komma mit Berechnung vergleichen
     };
 
     this.generateTourQuestion = function() {
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
+            <p>Frage?</p>\
+            <p>Form</p>\
+            <button id="tf1_button_questionClose">Antworten</button>');
+        $("#tf1_button_questionClose").button().on("click", function() { algo.closeQuestionModal(); });
         // Berechne richtige Lösung
         // Erstelle eine Lösung, wo an der falschen Stelle ersetzt wurde
         // Erstelle zwei Lösungen wo nur angehängt wurde (vorne, hinten, ohne ersetzen)
