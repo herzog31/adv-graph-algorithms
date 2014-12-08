@@ -355,3 +355,21 @@ html {
     display: block;
     padding-bottom: 10px;
 }
+.quizTable {
+    width: 80%;
+    margin: 0px auto;
+    border-collapse: collapse;
+}
+.quizTable th {
+    width: 50%;
+    padding: 5px;
+    border-bottom: 2px solid #000000;
+}
+.quizTable td {
+    text-align: left;
+    padding: 3px;
+    border-bottom: 1px dotted #004682;
+}
+.quizTable td span {
+    float: left;
+}

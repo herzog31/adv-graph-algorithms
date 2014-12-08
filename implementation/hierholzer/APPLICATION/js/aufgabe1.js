@@ -224,6 +224,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             break;
         case 8:
             this.returnTour();
+            this.showQuestionResults();
             break;
         case 9:
             this.findNewStartingVertex();
@@ -943,12 +944,11 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             givenAnswer = givenAnswer.replace(/(\s|\,)+/g,'');
         }
 
-        console.log(currentQuestionType, givenAnswer, questions[currentQuestion].rightAnswer);
         questions[currentQuestion].givenAnswer = givenAnswer;
         if(questions[currentQuestion].givenAnswer == questions[currentQuestion].rightAnswer) {
-            console.log("Correct answer given");
+            if(debugConsole) console.log("Answer given ", givenAnswer, " was right!");
         }else{
-            console.log("Answer was wrong");
+            if(debugConsole) console.log("Answer given ", givenAnswer, " was wrong! Right answer was ", questions[currentQuestion].rightAnswer);
         }
         currentQuestion++;
         this.closeQuestionModal();
@@ -1125,6 +1125,36 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     };
 
+    this.showQuestionResults = function() {
+
+        var correctAnswers = 0;
+        var totalQuestions = questions.length;
+        var table = "";
+
+        for(var i = 0; i < questions.length; i++) {
+            table = table + '<td style="text-align: center;">#'+(i+1)+'</td>';
+            if(questions[i].rightAnswer == questions[i].givenAnswer) {
+                table = table + '<td><span class="ui-icon ui-icon-plusthick"></span> korrekt</td>';
+                correctAnswers++;
+            }else{
+                table = table + '<td><span class="ui-icon ui-icon-minusthick"></span> falsch</td>';
+            }
+            table = "<tr>"+table+"</tr>";
+        }
+        table = '<table class="quizTable"><thead><tr><th>Frage</th><th>Lösung</th></tr></thead><tbody>'+table+'</tbody></table>';
+
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Ergebnisse</div>\
+            <p>Von insgesamt '+totalQuestions+' Fragen hast du '+correctAnswers+' richtig beantwortet!</p>\
+            <p>'+table+'</p>\
+            <p></p>\
+            <button id="tf1_button_questionClose">Schließen</button>');
+
+        $("#tf1_button_questionClose").button().one("click", function() { algo.closeQuestionModal(); });
+
+        this.showQuestionModal();
+
+    };
+
     this.askQuestion = function() {
 
         var randomVariable = function(min, max) {
@@ -1133,27 +1163,26 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
         if(statusID == 1) {
             // Frage zum Grad (100%)
-            //return 4;
+            return 4;
         }else if(statusID == 6 && !euclideanTourEmpty) {
-            // Frage zum Mergeergebnis (40%)
-            //if(randomVariable(0, 1) > 0.6) {
+            // Frage zum Mergeergebnis (50%)
+            if(randomVariable(0, 1) > 0.5) {
                 return 3;
-            //}
+            }
         }else if(statusID == 5) {
-            // Frage zur Subtour (40%)
-            if(randomVariable(0, 1) > 0.6) {
-                //return 2;
+            // Frage zur Subtour (20%)
+            if(randomVariable(0, 1) > 0.8) {
+                return 2;
             }
         }else if(statusID !== 2 && statusID !== 8) {
-            // Frage zum nächsten Schritt (20%)
-            if(randomVariable(1, 10) > 8) {
-                //return 1;
+            // Frage zum nächsten Schritt (10%)
+            if(randomVariable(1, 10) > 9) {
+                return 1;
             }
         }
         return false;
 
     };
-
 
 }
 
