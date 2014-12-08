@@ -192,7 +192,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
         if(debugConsole) console.log("Current State: " + statusID);
 
-        previousStatusId = statusID;
+        var previousStatusId = statusID;
+        var previousTour = euclideanTour;
+        var previousSubtour = euclideanSubTour;
         currentQuestionType = this.askQuestion();
 
         switch(statusID) {
@@ -237,7 +239,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             }else if(currentQuestionType === 2) {
                 this.generateSubtourQuestion();
             }else if(currentQuestionType === 3) {
-                this.generateTourQuestion();
+                this.generateTourQuestion(previousTour, previousSubtour);
             }else if(currentQuestionType === 4) {
                 this.generateDegreeQuestion();
             }
@@ -974,7 +976,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         randomAnswers = randomAnswers.slice(1, 4);
         answers = answers.concat(randomAnswers);
         answers = Utilities.shuffleArray(answers);
-        console.log(answers);
 
         var form = "";
         for(var i = 0; i < answers.length; i++) {
@@ -993,9 +994,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     };
 
     this.generateNextStepQuestion = function(previousStatusId) {
-
-        console.log("current statusId", statusID);
-        console.log("prev statusId", previousStatusId);
 
         var answers = [];
 
@@ -1063,17 +1061,68 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     };
 
-    this.generateTourQuestion = function() {
+    this.generateTourQuestion = function(previousTour, previousSubtour) {
+
+        var prevSubtour = "";
+        for(var i = 0; i < previousSubtour.length; i++) {
+            if(previousSubtour[i].type == "vertex") {
+                prevSubtour = prevSubtour+","+graph.nodes[previousSubtour[i].id].getLabel();
+            }
+        }
+        prevSubtour = prevSubtour.substr(1);
+
+        var prevTour = "";
+        for(var i = 0; i < previousTour.length; i++) {
+            if(previousTour[i].type == "vertex") {
+                prevTour = prevTour+","+graph.nodes[previousTour[i].id].getLabel();
+            }
+        }
+        prevTour = prevTour.substr(1);
+
+        var currentTour = "";
+        for(var i = 0; i < euclideanTour.length; i++) {
+            if(euclideanTour[i].type == "vertex") {
+                currentTour = currentTour+","+graph.nodes[euclideanTour[i].id].getLabel();
+            }
+        }
+        currentTour = currentTour.substr(1);
+
+        var answers = [];
+        answers.push(currentTour);
+        answers.push(prevSubtour+","+prevTour);
+        answers.push(prevTour+","+prevSubtour);
+
+        var wrongSolution = prevTour.split(",");
+        var wrongSubSolution = prevSubtour.split(",");
+        var replaced = false;
+        for(var i = 0; i < wrongSolution.length; i++) {
+            if(!replaced && wrongSolution[i] != wrongSubSolution[0] && wrongSolution[i] != wrongSubSolution[(wrongSubSolution.length - 1)]) {
+                wrongSolution[i] = prevSubtour;
+                replaced = true;
+            }
+        }
+        wrongSolution = wrongSolution.join(",");
+        answers.push(wrongSolution);
+        answers = Utilities.shuffleArray(answers);
+
+        var form = "";
+        for(var i = 0; i < answers.length; i++) {
+            form += '<input type="radio" id="tf1_input_question'+currentQuestion+'_'+i+'" name="question'+currentQuestion+'" value="'+answers[i]+'" />\
+            <label for="tf1_input_question'+currentQuestion+'_'+i+'">'+answers[i]+'</label><br />';
+        }
+        form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
+
+        questions[currentQuestion] = {type: currentQuestionType, rightAnswer: currentTour};
+
         $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
-            <p>Frage?</p>\
-            <p>Form</p>\
+            <p>In diesem Schritt wird die Subtour ('+prevSubtour+') in die Gesamttour ('+prevTour+') integriert. Wie sieht das Ergebnis aus?</p>\
+            <p><em>Hinweis: Es gibt u.U. mehrere Lösungsmöglichkeiten, es ist allerdings nur eine der gegebenen Antwortmöglichkeit korrekt.</em></p>\
+            <p>'+form+'</p>\
             <button id="tf1_button_questionClose">Antworten</button>');
-        $("#tf1_button_questionClose").button().on("click", function() { algo.closeQuestionModal(); });
 
+        $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
+        $("#question"+currentQuestion+"_form").find("input[type='radio']").one("change", function() { algo.activateAnswerButton(); });
 
-        // Berechne richtige Lösung
-        // Erstelle eine Lösung, wo an der falschen Stelle ersetzt wurde
-        // Erstelle zwei Lösungen wo nur angehängt wurde (vorne, hinten, ohne ersetzen)
     };
 
     this.askQuestion = function() {
