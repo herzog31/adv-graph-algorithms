@@ -50,9 +50,9 @@
             <li><a href="#tab_te"><span>Einführung</span></a></li>
             <li><a href="#tab_tg"><span>Graph erstellen</span></a></li>
             <li><a href="#tab_ta"><span>Algorithmus ausführen</span></a></li>
-            <!-- <li><a href="#tab_ti"><span>Beschreibung des Algorithmus</span></a></li>
+            <li><a href="#tab_ti"><span>Beschreibung des Algorithmus</span></a></li>
             <li><a href="#tab_tf1"><span>Forschungsaufgabe 1</span></a></li>
-            <li><a href="#tab_tf2"><span>Forschungsaufgabe 2</span></a></li>
+            <!-- <li><a href="#tab_tf2"><span>Forschungsaufgabe 2</span></a></li>
             <li><a href="#tab_tw"><span>Weiteres</span></a></li> -->
         </ul>
 
@@ -106,7 +106,6 @@
                     <div id="tg_div_statusErklaerung">
                         <p>Um einen Knoten zu erstellen, mache einen Doppelklick in das Zeichenfeld.</p>
                         <p>Um eine Kante zu erstellen, klicke zunächst auf den Ausgangsknoten und dann auf den Zielknoten.</p>
-                        <p>Das Kantengewicht kann mit einem Doppelklick auf die Kante verändert werden.</p>
                         <p>Ein Rechtsklick löscht Kanten und Knoten.</p>
                     </div>
                     <h3>Keine Lust, selbst einen Graph zu erstellen?<br></h3>
@@ -121,13 +120,6 @@
                     </select>
                     <p><button id="tg_button_gotoAlgorithmTab">Fertig &ndash; weiter zum Algorithmus!</button></p>
                 </div>
-            </div>
-            <div title="Graph erstellen" class="tabIntroDialog">
-                <h2>Auf welchem Graph soll der Algorithmus ausgeführt werden?</h2>
-                <p>Um einen Knoten zu erstellen, mache einen Doppelklick in das Zeichenfeld.</p>
-                <p>Um eine Kante zu erstellen, klicke zunächst auf den Ausgangsknoten und dann auf den Zielknoten.</p>
-                <p>Das Kantengewicht kann mit einem Doppelklick auf die Kante verändert werden.</p>
-                <p>Ein Rechtsklick löscht Kanten und Knoten.</p>
             </div>
         </div>
 
@@ -167,22 +159,20 @@
                             <li><a href="#ta_div_statusPseudocode">Pseudocode</a></li>
                         </ul>
                         <div id="ta_div_statusErklaerung">
-                            <h3>Wähle zuerst einen Startknoten aus!</h3>
-                            <p>Von diesem Knoten aus werden die Abstände zu den anderen Knoten berechnet.</p>
-                            <p>Klicke einfach auf den entsprechenden Knoten im Zeichenbereich.</p>
+                            <h3>Hierholzer Algorithmus</h3>
+                            <p>Klicke auf <strong>Nächster Schritt</strong> um den Algorithmus zu starten.</p>
                         </div>
                         <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
                             <p class="pseudocode" id="ta_p_l1">BEGIN</p>
-                            <p class="pseudocode" id="ta_p_l2">  &#8704;e &#8712; E &rarr; v(e) = 0</p>
+                            <p class="pseudocode" id="ta_p_l2">  E<sub>visited</sub> = &empty;</p>
                             <p class="pseudocode" id="ta_p_l3">  IF invalid(G) &rarr; END</p>
                             <p class="pseudocode" id="ta_p_l4">  WHILE |E| > |{tour &#8745; E}|</p>
-                            <p class="pseudocode" id="ta_p_l5">    start &#8712; V : &#8707;{u,v} &#8712; E &#8743; v({u,v}) = 0</p>
-                            <p class="pseudocode" id="ta_p_l6">    cur = &empty;</p>
-                            <p class="pseudocode" id="ta_p_l7">    WHILE start &#8800; cur</p>
-                            <p class="pseudocode" id="ta_p_l8">      IF cur = &empty; &rarr; cur = start</p>
-                            <p class="pseudocode" id="ta_p_l9">      cur &#8712; V : &#8707;{cur,u} &#8712; E<br />                &#8743; v({cur,u}) = 0</p>
-                            <p class="pseudocode" id="ta_p_l10">    tour = tour &#8746; subtour</p>
-                            <p class="pseudocode" id="ta_p_l11">END</p>
+                            <p class="pseudocode" id="ta_p_l5">    s = c<sub>prev</sub> &#8712; V : &#8707;{u,s} &#8712; E \ E<sub>visited</sub><br />    subtour &larr; s<br />    E<sub>visited</sub> &larr; {u,s}</p>
+                            <p class="pseudocode" id="ta_p_l6">    DO</p>
+                            <p class="pseudocode" id="ta_p_l7">      c &#8712; V : &#8707;{c,c<sub>prev</sub>} &#8712; E \ E<sub>visited</sub><br />      subtour &larr; c<br />      E<sub>visited</sub> &larr; {c,c<sub>prev</sub>}<br />      c<sub>prev</sub> = c</p>
+                            <p class="pseudocode" id="ta_p_l8">    WHILE start &#8800; cur</p>
+                            <p class="pseudocode" id="ta_p_l9">    tour = tour &#8746;<sub>merge</sub> subtour<br />    subtour = &empty;</p>
+                            <p class="pseudocode" id="ta_p_l10">END</p>
                             <h3>Status der Variablen:</h3>
                             <table class="algoInformationen">
                                 <tr>
@@ -202,12 +192,6 @@
                     </div>
                 </div>
             </div>
-            <div title="Algorithmus ausführen" class="tabIntroDialog">
-                <h2>Den Bellman-Ford-Algorithmus ausführen</h2>
-                <p>In diesem Schritt sehen wir, wie der Algorithmus arbeitet.</p>
-                <p>Wähle zunächst den Knoten aus, von dem aus die günstigsten Wege berechnet werden.</p>
-                <p>Rechts vom Graph kannst du die Ausführung kontrollieren.</p>
-            </div>
             <div id="ta_div_confirmTabChange" title="Algorithmus abbrechen?" class="tabChangeWarningDialog">
                 <h2>Beim Wechsel des Tabs wird der Algorithmus abgebrochen.</h2>
                 <p>Du kannst die Anwendung <a href="#" target="_blank" tabindex=-1> in einem anderen Browserfenster</a> öffnen, um parallel einen anderen Tab zu lesen.</p>
@@ -217,7 +201,11 @@
         <!-- TAB Beschreibung des Algorithmus -->
         <div id="tab_ti" style="display: none;">
             <div id="ti_div_Einfuehrungstext">
-                <div class="BeispielbildContainer"><img id="ti_img_beispiel1" src="img/beispiel1.png" alt="Einfacher Graph mit 4 Knoten."><p>Wie komme ich am günstigsten von links nach rechts?</p></div>
+                <p style="color: red;">
+                    TODO
+                </p>
+
+                <!-- <div class="BeispielbildContainer"><img id="ti_img_beispiel1" src="img/beispiel1.png" alt="Einfacher Graph mit 4 Knoten."><p>Wie komme ich am günstigsten von links nach rechts?</p></div>
                 <h1>Kürzeste Wege</h1>
                 <p>In vielen Anwendungen kann es nützlich sein, den kürzesten Weg von a nach b zu berechnen.
                 Dabei muss die Länge eines Weges nicht unbedingt die Länge in Metern sein: Genauso gut kann man die Fahrzeit eines Weges betrachten oder, ob wir für dessen Benutzung Geld zahlen müssen &ndash; oder Geld erhalten.</p>
@@ -274,7 +262,7 @@
                     <h3>Sein Wissen an den Forschungsaufgaben testen</h3>
                     <button id="ti_button_gotoFA1">Forschungsaufgabe: Wie würde der Algorithmus entscheiden?</button><br>
                     <button id="ti_button_gotoFA2">Forschungsaufgabe: Wie ist die optimale Sortierung der Knoten?</button>
-                </div>
+                </div> -->
             </div>
         </div>
 
@@ -290,12 +278,12 @@
                         <div class="LegendeText">
                             <table>
                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>Startknoten, von dem aus die Entfernungen und günstigsten Wege berechnet werden.</span></td>
+                                    <td class="LegendeTabelle"><img src="img/knoten.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td><span>Knoten</span></td>
                                 </tr>
-                                <tr class="LegendeZeileClickable" id="tf1_tr_LegendeClickable" title="Klicke zum Ein-/Ausblenden">
-                                    <td class="LegendeTabelle"><img src="img/markierteKante.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>"Vorgängerkante", die der günstigste Weg zum Knoten benutzt.</span></td>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/kante.png" alt="Kante" class="LegendeIcon"></td>
+                                    <td><span>Ungerichtete Kante</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -306,62 +294,52 @@
                 </div>
                 <div id="tf1_div_statusWindow" class="statusWindow">
                     <h2 class="">Prüfe dein Wissen: Wie würde der Algorithmus entscheiden?</h2>
-                    <select id="tf1_select_aufgabeGraph" name="Wähle einen Graphen">
-                        <option selected>Selbsterstellter Graph</option>
-                        <option>Standardbeispiel</option>
-                        <option>Negativer Kreis</option>
-                        <option>Positiver Kreis</option>
-                    </select>
+
                     <div id="tf1_div_abspielbuttons">
                     </div>
+                    <div id="tf1_div_questionModal" class="ui-widget ui-widget-content ui-corner-all" style="display: none;">
+                    Test
+                    </div>
                     <div id="tf1_div_statusTabs">
-                         <ul>
+                        <ul>
                             <li><a href="#tf1_div_statusErklaerung">Erklärung</a></li>
                             <li><a href="#tf1_div_statusPseudocode">Pseudocode</a></li>
                         </ul>
                         <div id="tf1_div_statusErklaerung">
-                            <h3>Wähle zuerst einen Startknoten aus!</h3>
-                            <p>Von diesem Knoten aus werden die Abstände zu den anderen Knoten berechnet.</p>
-                            <p>Klicke einfach auf den entsprechenden Knoten im Zeichenbereich.</p>
+                            <h3>Hierholzer Algorithmus</h3>
+                            <p>Bei dieser Aufgabe kannst du zeigen, wie gut du den Algorithmus verstanden hast. Erstelle dir einen beliebigen Graphen und starte den Algorithmus. An manchen Stellen wird der Algorithmus stoppen und dann bist du gefragt.</p>
+                            <p>Du wirst verschiedene Fragen zum Ablauf des Algorithmus bekommen. Am Ende bekommst du dann eine Auswertung, die dir zeigt, wie gut du abgeschnitten hast.</p>
+                            <p>Klicke auf <strong>Nächster Schritt</strong> um den Algorithmus zu starten. Viel Erfolg!</p>
                         </div>
                         <div class="PseudocodeWrapper" id="tf1_div_statusPseudocode">
                             <p class="pseudocode" id="tf1_p_l1">BEGIN</p>
-                            <p class="pseudocode" id="tf1_p_l2">  d(v[1]) &larr; 0</p>
-                            <p class="pseudocode" id="tf1_p_l3">  FOR j = 2,..,n DO</p>
-                            <p class="pseudocode" id="tf1_p_l4">    d(v[j]) &larr; &#8734;</p>
-                            <p class="pseudocode" id="tf1_p_l5">  FOR i = 1,..,(|V|-1) DO</p>
-                            <p class="pseudocode" id="tf1_p_l6">    FOR ALL (u,v) aus E DO</p>
-                            <p class="pseudocode" id="tf1_p_l7">      d(v) &larr; min(d(v), d(u)+l(u,v))</p>
-                            <p class="pseudocode" id="tf1_p_l8">  FOR ALL (u,v) aus E DO</p>
-                            <p class="pseudocode" id="tf1_p_l9">    IF d(v) > d(u) + l(u,v) DO</p>
-                            <p class="pseudocode" id="tf1_p_l10">     Meldung: "Negativer Kreis"</p>
-                            <p class="pseudocode" id="tf1_p_l11">END</p>
+                            <p class="pseudocode" id="tf1_p_l2">  E<sub>visited</sub> = &empty;</p>
+                            <p class="pseudocode" id="tf1_p_l3">  IF invalid(G) &rarr; END</p>
+                            <p class="pseudocode" id="tf1_p_l4">  WHILE |E| > |{tour &#8745; E}|</p>
+                            <p class="pseudocode" id="tf1_p_l5">    s = c<sub>prev</sub> &#8712; V : &#8707;{u,s} &#8712; E \ E<sub>visited</sub><br />    subtour &larr; s<br />    E<sub>visited</sub> &larr; {u,s}</p>
+                            <p class="pseudocode" id="tf1_p_l6">    DO</p>
+                            <p class="pseudocode" id="tf1_p_l7">      c &#8712; V : &#8707;{c,c<sub>prev</sub>} &#8712; E \ E<sub>visited</sub><br />      subtour &larr; c<br />      E<sub>visited</sub> &larr; {c,c<sub>prev</sub>}<br />      c<sub>prev</sub> = c</p>
+                            <p class="pseudocode" id="tf1_p_l8">    WHILE start &#8800; cur</p>
+                            <p class="pseudocode" id="tf1_p_l9">    tour = tour &#8746;<sub>merge</sub> subtour<br />    subtour = &empty;</p>
+                            <p class="pseudocode" id="tf1_p_l10">END</p>
                             <h3>Status der Variablen:</h3>
                             <table class="algoInformationen">
                                 <tr>
-                                    <th class="algoInfoTH"><span>i</span></th>
-                                    <th class="algoInfoTH"><span>d(u)</span></th>
-                                    <th class="algoInfoTH"><span>d(v)</span></th>
-                                    <th class="algoInfoTH"><span>l(u,v)</span></th>
+                                    <th class="algoInfoTH"><span>start</span></th>
+                                    <th class="algoInfoTH"><span>cur</span></th>
+                                    <th class="algoInfoTH"><span>subtour</span></th>
+                                    <th class="algoInfoTH"><span>tour</span></th>
                                 </tr>
                                 <tr>
-                                    <td id="tf1_td_vari" class="algoInfoTD"></td>
-                                    <td id="tf1_td_vardu" class="algoInfoTD"></td>
-                                    <td id="tf1_td_vardv" class="algoInfoTD"></td>
-                                    <td id="tf1_td_varluv" class="algoInfoTD"></td>
+                                    <td id="tf1_td_tourStartVertex" class="algoInfoTD">-</td>
+                                    <td id="tf1_td_tourCurrentVertex" class="algoInfoTD">-</td>
+                                    <td id="tf1_td_euclideanSubtour" class="algoInfoTD">&#8709;</td>
+                                    <td id="tf1_td_euclideanTour" class="algoInfoTD">&#8709;</td>
                                 </tr>
                             </table>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div title="Forschungsaufgabe 1" class="tabIntroDialog">
-                <h2>In diesem Teil kann man sein Wissen testen: Wie würde der Algorithmus entscheiden?</h2>
-                <p>
-                    Der Algorithmus wird normal ausgeführt, stoppt aber an einigen Stellen. 
-                    Du musst dann vorhersagen, wie der Algorithmus entscheiden würde.
-                </p>
-                <p>Tipp: Vorher nochmals die Beschreibung des Algorithmus durchlesen.</p>
             </div>
             <div id="tf1_div_confirmTabChange" title="Aufgabe abbrechen?" class="tabChangeWarningDialog">
                 <h2>Beim Wechsel des Tabs wird die Aufgabe abgebrochen.</h2>

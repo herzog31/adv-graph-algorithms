@@ -307,6 +307,15 @@ table.algoInformationen {
      margin-right: .3em;
 }
 
+ul.subtourList {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+ul.subtourList li {
+    cursor: pointer;
+}
+
 body {
     max-width: 1140px;
     margin-left: auto;
@@ -326,4 +335,41 @@ header {
 
 html {
     overflow-y: scroll; 
+}
+.ui-state-error {
+    color: white !important;
+}
+.result_euleriantour, .result_subtour {
+    font-size: 15px;
+}
+.result_euleriantour span {
+    font-weight: 900;
+    font-size: 24px;
+    vertical-align: bottom;
+}
+.no-close .ui-dialog-titlebar-close {
+    display: none;
+}
+#tf1_div_questionModal {
+    margin-top: 20px;
+    display: block;
+    padding-bottom: 10px;
+}
+.quizTable {
+    width: 80%;
+    margin: 0px auto;
+    border-collapse: collapse;
+}
+.quizTable th {
+    width: 50%;
+    padding: 5px;
+    border-bottom: 2px solid #000000;
+}
+.quizTable td {
+    text-align: left;
+    padding: 3px;
+    border-bottom: 1px dotted #004682;
+}
+.quizTable td span {
+    float: left;
 }

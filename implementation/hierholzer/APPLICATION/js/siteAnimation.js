@@ -31,7 +31,7 @@ function initializeSiteLayout() {
                 $("#tab_tg").data("algo").destroy();
             }
             if(ui.oldPanel[0].id == "tab_ta") {             // Tab Graph ausführen
-                if($("#tab_ta").data("algo").getStatusID() != null && $("#tab_ta").data("algo").getStatusID() < 5) {
+                if($("#tab_ta").data("algo").getStatusID() != null && $("#tab_ta").data("algo").getStatusID() !== 8 && $("#tab_ta").data("algo").getStatusID() !== 2) {
                     if($("#tabs").data("tabChangeDialogOpen") == null) {
                         event.preventDefault();
                         $( "#tabs" ).data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);
@@ -46,8 +46,8 @@ function initializeSiteLayout() {
                     $("#tab_ta").data("algo").destroy();
                 }
             }
-            /* if(ui.oldPanel[0].id == "tab_tf1") {            // Tab Forschungsaufgabe 1
-                if($("#tab_tf1").data("algo").getStatusID() != null && $("#tab_tf1").data("algo").getStatusID() < 5) {
+            if(ui.oldPanel[0].id == "tab_tf1") {            // Tab Forschungsaufgabe 1
+                if($("#tab_tf1").data("algo").getStatusID() != null && $("#tab_tf1").data("algo").getStatusID() < 5) {  // TODO
                     if($("#tabs").data("tabChangeDialogOpen") == null) {
                         event.preventDefault();
                         $( "#tabs" ).data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);
@@ -62,8 +62,8 @@ function initializeSiteLayout() {
                     $("#tab_tf1").data("algo").destroy();
                 }
             }
-            if(ui.oldPanel[0].id == "tab_tf2") {            // Tab Forschungsaufgabe 2
-                if($("#tabs").data("tabChangeDialogOpen") == null && $("#tab_tf2").data("algo").getWarnBeforeLeave()) {
+            /* if(ui.oldPanel[0].id == "tab_tf2") {            // Tab Forschungsaufgabe 2
+                if($("#tabs").data("tabChangeDialogOpen") == null && $("#tab_tf2").data("algo").getWarnBeforeLeave()) { // TODO
                     event.preventDefault();
                     $( "#tabs" ).data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);
                     $("#tabs").data("tabChangeDialogOpen",true);
@@ -84,11 +84,11 @@ function initializeSiteLayout() {
                 algo = new BFAlgorithm($("body").data("graph"),$("#ta_canvas_graph"),$("#tab_ta"));
                 $("#tab_ta").data("algo",algo);
             }
-            /* if(ui.newPanel[0].id == "tab_tf1") {
+            if(ui.newPanel[0].id == "tab_tf1") {
                 algo = new Forschungsaufgabe1($("body").data("graph"),$("#tf1_canvas_graph"),$("#tab_tf1"));
                 $("#tab_tf1").data("algo",algo);
             }
-            if(ui.newPanel[0].id == "tab_tf2") {
+            /* if(ui.newPanel[0].id == "tab_tf2") {
                 algo = new Forschungsaufgabe2($("body").data("graph"),$("#tf2_canvas_graph"),$("#tab_tf2"));
                 $("#tab_tf2").data("algo",algo);
             } */
@@ -235,6 +235,7 @@ function CanvasDrawer(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.drawCanvas = function() {
+
         if(this.needRedraw) {
             var ctx = this.canvas[0].getContext("2d");
             ctx.clearRect(0, 0, this.canvas.width(), this.canvas.height());
