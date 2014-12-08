@@ -50,6 +50,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     var semiEuclideanGraph = false;
     var validGraph = false;
     var euclideanTour = new Array();
+    var euclideanTourEmpty = true;
     var euclideanSubTour = new Array();
     var subtours = new Array();
     var currentPseudoCodeLine = 1;
@@ -782,6 +783,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
 
         euclideanSubTour = new Array();
+        euclideanTourEmpty = false;
 
         if(debugConsole) console.log("Current Complete Euclidean Tour: ", euclideanTour);
 
@@ -935,7 +937,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         if(currentQuestionType === 1 || currentQuestionType === 3 || currentQuestionType === 4) {
             givenAnswer = $("#question"+currentQuestion+"_form").find("input[type='radio']:checked").val();
         }else if(currentQuestionType === 2) {
-            givenAnswer = "bla";
+            givenAnswer = $("#question"+currentQuestion+"_form").find("input[type='text']").val();
+            givenAnswer = givenAnswer.replace(/(\s|\,)+/g,'');
         }
 
         console.log(currentQuestionType, givenAnswer, questions[currentQuestion].rightAnswer);
@@ -985,7 +988,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             <p>'+form+'</p>\
             <button id="tf1_button_questionClose">Antworten</button>');
         $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
-        $("#question"+currentQuestion+"_form").find("input[type='radio']").on("change", function() { algo.activateAnswerButton(); });
+        $("#question"+currentQuestion+"_form").find("input[type='radio']").one("change", function() { algo.activateAnswerButton(); });
 
     };
 
@@ -1010,7 +1013,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         for (var i = 0; i < statusArray.length; i++) {
             if(statusArray[i].key == statusID) {
                 answers.push(statusArray[i]);
-                console.log("answers", answers);
                 statusArray.splice(i, 1);
             }
         };
@@ -1033,19 +1035,32 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             <p>'+form+'</p>\
             <button id="tf1_button_questionClose">Antworten</button>');
         $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
-        $("#question"+currentQuestion+"_form").find("input[type='radio']").on("change", function() { algo.activateAnswerButton(); });
+        $("#question"+currentQuestion+"_form").find("input[type='radio']").one("change", function() { algo.activateAnswerButton(); });
 
     };
 
     this.generateSubtourQuestion = function() {
         $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
-            <p>Frage?</p>\
-            <p>Form</p>\
+            <p>Welche Knoten befinden sich der der aktuellen <strong style="color: '+tourColors[tourColorIndex]+';">Subtour</strong>?<br />\
+            Antworte in der Form <em>x,y,z</em> und beachte die Reihenfolge.</p>\
+            <p><form id="question'+currentQuestion+'_form">\
+            <input type="text" name="question'+currentQuestion+'" value="" placeholder="x,y,z" />\
+            </form>\
+            </p>\
             <button id="tf1_button_questionClose">Antworten</button>');
-        $("#tf1_button_questionClose").button().on("click", function() { algo.closeQuestionModal(); });
-        // Subtour string berechnen
-        // Textfeld geben (a,b,c,a)
-        // Textfeld ohne Whitespaces & Komma mit Berechnung vergleichen
+
+        var result = "";
+        for(var i = 0; i < euclideanSubTour.length; i++) {
+            if(euclideanSubTour[i].type == "vertex") {
+                result = result+graph.nodes[euclideanSubTour[i].id].getLabel();
+            }
+        }
+        result = result.replace(/(\s|\,)+/g,'');
+        questions[currentQuestion] = {type: currentQuestionType, rightAnswer: result};
+
+        $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
+        $("#question"+currentQuestion+"_form").find("input[type='text']").one("keyup", function() { algo.activateAnswerButton(); });
+
     };
 
     this.generateTourQuestion = function() {
@@ -1054,6 +1069,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             <p>Form</p>\
             <button id="tf1_button_questionClose">Antworten</button>');
         $("#tf1_button_questionClose").button().on("click", function() { algo.closeQuestionModal(); });
+
+
         // Berechne richtige Lösung
         // Erstelle eine Lösung, wo an der falschen Stelle ersetzt wurde
         // Erstelle zwei Lösungen wo nur angehängt wurde (vorne, hinten, ohne ersetzen)
@@ -1067,22 +1084,21 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
         if(statusID == 1) {
             // Frage zum Grad (100%)
-            return 4;
-        }else if(statusID == 6) {
-            // TODO nur bei nichtleerer Gesamttour
+            //return 4;
+        }else if(statusID == 6 && !euclideanTourEmpty) {
             // Frage zum Mergeergebnis (40%)
-            if(randomVariable(0, 1) > 0.6) {
+            //if(randomVariable(0, 1) > 0.6) {
                 return 3;
-            }
+            //}
         }else if(statusID == 5) {
             // Frage zur Subtour (40%)
             if(randomVariable(0, 1) > 0.6) {
-                return 2;
+                //return 2;
             }
         }else if(statusID !== 2 && statusID !== 8) {
             // Frage zum nächsten Schritt (20%)
             if(randomVariable(1, 10) > 8) {
-                return 1;
+                //return 1;
             }
         }
         return false;

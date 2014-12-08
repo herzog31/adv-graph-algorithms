@@ -801,7 +801,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     this.compareVertexWithStart = function() {
         this.markPseudoCodeLine(8);
         $("#ta_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
-            <h3>3.3 Kreis entdecken</h3>\
+            <h3>3.3 Auf Kreis prüfen</h3>\
             <p>Um zu prüfen, ob unsere Subtour abgeschlossen ist (d.h. sie bildet einen Kreis), vergleichen wir den aktiven Knoten mit dem ersten Knoten der Subtour. Beide sind <span style="font-weight: bold; color: green;">grün</span> markiert.</p>\
             <h3>3.3.1 Abgeschlossen</h3>\
             <p>Handelt es sich bei beiden um den selben Knoten, ist unsere Subtour abgeschlossen und wir fahren mit <em>Schritt 4</em> fort.</p>\
