@@ -191,6 +191,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
         if(debugConsole) console.log("Current State: " + statusID);
 
+        previousStatusId = statusID;
+        currentQuestionType = this.askQuestion();
+
         switch(statusID) {
         case 0:
             this.initializeGraph();
@@ -227,13 +230,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             break;
         }
 
-        this.updatePseudoCodeValues();
-        this.needRedraw = true;
-
-        currentQuestionType = this.askQuestion();
         if(currentQuestionType !== false) {
             if(currentQuestionType === 1) {
-                this.generateNextStepQuestion();
+                this.generateNextStepQuestion(previousStatusId);
             }else if(currentQuestionType === 2) {
                 this.generateSubtourQuestion();
             }else if(currentQuestionType === 3) {
@@ -244,6 +243,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             this.showQuestionModal();
             this.stopFastForward();
         }
+
+        this.updatePseudoCodeValues();
+        this.needRedraw = true;
 
     };
 
@@ -503,7 +505,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
         for(var knotenID in graph.nodes) {
             var degree = graph.nodes[knotenID].getDegree();
-            graph.nodes[knotenID].setLabel(degree);
+            //graph.nodes[knotenID].setLabel(degree);
             if(degree % 2 === 1) {
                 graph.nodes[knotenID].setLayout("borderColor", "red");
                 graph.nodes[knotenID].setLayout("borderWidth", 3);
@@ -935,8 +937,14 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }else if(currentQuestionType === 2) {
             givenAnswer = "bla";
         }
-        console.log(currentQuestionType, givenAnswer);
+
+        console.log(currentQuestionType, givenAnswer, questions[currentQuestion].rightAnswer);
         questions[currentQuestion].givenAnswer = givenAnswer;
+        if(questions[currentQuestion].givenAnswer == questions[currentQuestion].rightAnswer) {
+            console.log("Correct answer given");
+        }else{
+            console.log("Answer was wrong");
+        }
         currentQuestion++;
         this.closeQuestionModal();
     };
@@ -981,16 +989,52 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     };
 
-    this.generateNextStepQuestion = function() {
+    this.generateNextStepQuestion = function(previousStatusId) {
+
+        console.log("current statusId", statusID);
+        console.log("prev statusId", previousStatusId);
+
+        var answers = [];
+
+        var statusArray = [ {"key": 0, "answer": "1 Initialisierung"},
+                            {"key": 1, "answer": "2 Graph prüfen"},
+                            {"key": 2, "answer": "Graph ist ungültig"},
+                            {"key": 3, "answer": "3.1a Ersten Startknoten finden"},
+                            {"key": 4, "answer": "3.2 Unbesuchten Nachbarn finden"},
+                            {"key": 5, "answer": "3.3 Auf Kreis prüfen"},
+                            {"key": 6, "answer": "4.1 Integriere Subtour in Gesamttour"},
+                            {"key": 7, "answer": "4.2 Gesamttour auf Vollständigkeit prüfen"},
+                            {"key": 8, "answer": "5 Ergebnis anzeigen"},
+                            {"key": 9, "answer": "3.1b Neuen Startknoten finden"}];
+
+        for (var i = 0; i < statusArray.length; i++) {
+            if(statusArray[i].key == statusID) {
+                answers.push(statusArray[i]);
+                console.log("answers", answers);
+                statusArray.splice(i, 1);
+            }
+        };
+
+        statusArray = Utilities.shuffleArray(statusArray);
+        statusArray = statusArray.slice(1, 4);
+        answers = answers.concat(statusArray);
+        answers = Utilities.shuffleArray(answers);
+        questions[currentQuestion] = {type: currentQuestionType, rightAnswer: statusID};
+
+        var form = "";
+        for(var i = 0; i < answers.length; i++) {
+            form += '<input type="radio" id="tf1_input_question'+currentQuestion+'_'+i+'" name="question'+currentQuestion+'" value="'+answers[i].key+'" />\
+            <label for="tf1_input_question'+currentQuestion+'_'+i+'">'+answers[i].answer+'</label><br />';
+        }
+        form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
+
         $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
-            <p>Frage?</p>\
-            <p>Form</p>\
+            <p>Welchen Schritt macht der Algorithmus als nächstes?</p>\
+            <p>'+form+'</p>\
             <button id="tf1_button_questionClose">Antworten</button>');
-        $("#tf1_button_questionClose").button().on("click", function() { algo.closeQuestionModal(); });
-        // Array mit allen Schritten 1-9
-        // Antwort berechnen
-        // Array ohne Antwort shuffeln
-        // Array slice, erste 3
+        $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
+        $("#question"+currentQuestion+"_form").find("input[type='radio']").on("change", function() { algo.activateAnswerButton(); });
+
     };
 
     this.generateSubtourQuestion = function() {
