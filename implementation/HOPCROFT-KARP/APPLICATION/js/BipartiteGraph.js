@@ -171,20 +171,24 @@ function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
     GraphDrawer.call(this,p_graph,p_canvas,p_tab);
     var graph = p_graph;
     var canvas = p_canvas;
-
     graph.setCanvas(canvas);
+    canvas.off("mouseup.GraphDrawer");  // Mouseup off
+    this.base_mouseDownHandler = this.mouseDownHandler;
+
+
+    this.mouseMoveHandler = function(e) {
+        if (this.getSelectedNode() != null) {
+            this.unfinishedEdge.to = {x: e.pageX - canvas.offset().left, y: e.pageY - canvas.offset().top};
+            this.unfinishedEdge.active = true;
+            this.needRedraw = true;
+        }
+    };
 
     this.dblClickHandler = function(e) {
         var isInU = e.pageY - canvas.offset().top < 0.5 * (graph_constants.V_POSITION + graph_constants.U_POSITION);
         graph.addNode(isInU);
         this.needRedraw = true;
     };
-
-/*    this.mouseMoveHandler = function (e) {
-        this.unfinishedEdge.to = {x: e.pageX - canvas.offset().left, y: e.pageY - canvas.offset().top};
-        this.unfinishedEdge.active = true;
-        this.needRedraw = true;
-    };*/
 
     /**
      * Beendet den Tab und startet ihn neu
@@ -228,12 +232,6 @@ function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
         var my = e.pageY - canvas.offset().top;
         for(var knotenID in graph.nodes) {
             if (graph.nodes[knotenID].contains(mx, my)) {
-                for(var kantenID in graph.nodes[knotenID].getInEdges()) {
-                    $("#WeightChangePopup_" +kantenID.toString()).remove();
-                }
-                for(var kantenID in graph.nodes[knotenID].getOutEdges()) {
-                    $("#WeightChangePopup_" +kantenID.toString()).remove();
-                }
                 graph.removeNode(knotenID);
                 this.needRedraw = true;
                 return;                                     // Immer nur einen Knoten löschen
@@ -242,13 +240,21 @@ function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
         for(var kantenID in graph.edges) {
             if (graph.edges[kantenID].contains(mx, my,this.canvas[0].getContext("2d"))) {
                 graph.removeEdge(kantenID);
-                $("#WeightChangePopup_" +kantenID.toString()).remove();
                 this.needRedraw = true;
                 return;                                     // Immer nur eine Kante löschen
             }
         }
     };
-
+    /**
+     * Behandelt Mausklicks im Canvas<br>
+     * @param {jQuery.Event} e jQuery Event Objekt, enthält insbes. die Koordinaten des Mauszeigers.
+     * @method
+     */
+    this.mouseDownHandler = function(e) {
+        if (e.which !== 3) { // Nicht die rechte Taste
+            this.base_mouseDownHandler(e);
+        }
+    };
 }
 BipartiteGraph.prototype.getEdgeBetween= function(source,target) {
     for(var edgeID in this.edges) {

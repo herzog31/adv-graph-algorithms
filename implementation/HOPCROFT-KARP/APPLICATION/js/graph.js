@@ -1223,6 +1223,12 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
         selectedEdge = null;
         this.unfinishedEdge = null;
     };
+
+    /**
+     * Gibt die Variable dragging zurueck
+     */
+    this.dragging = function(){return dragging;};
+    this.getSelectedNode = function(){return selectedNode};
 }
 
 // Vererbung realisieren

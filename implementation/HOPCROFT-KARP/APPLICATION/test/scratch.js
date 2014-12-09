@@ -114,3 +114,21 @@ for(var n in this.vnodes){
 numberOfNodes = Object.keys(this.vnodes).length;
 if(!overstepingBorder) diffv = graph_constants.DIFF;
 else diffv = (canvas.width()-50)/numberOfNodes;
+
+$("#ta_show_match").click(function() {
+    if(toggleMatchButton){
+        //alle Nicht-Matching-Kanten in den Hintergrund
+        for(var e in graph.edges) {
+            var edge = graph.edges[e];
+            if(!matching[edge.getEdgeID()])edge.setLayout("lineWidth", global_Edgelayout.lineWidth * 0.3);
+        }
+    }
+    else{
+        for(var e in graph.edges) {
+            var edge = graph.edges[e];
+            if(!matching[edge.getEdgeID()])edge.setLayout("lineWidth", global_Edgelayout.lineWidth * 0.3);
+        }
+    }
+
+    algo.needRedraw = true;
+});

@@ -95,7 +95,14 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      * @type Boolean
      */
     var end = false;
-
+    /**
+     * Wird fuer die Anzeige des Matchings am Ende des Algorithmus benoetigt.
+     * @type Boolean
+     */
+    var toggleMatchButton = true;
+    /**
+     * Gibt das Statusausgabefenster an.
+     */
     var statusErklaerung = "#ta_div_statusErklaerung";
     /*
     * Hier werden die Statuskonstanten definiert
@@ -462,17 +469,25 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     * Methoden fuer die Visualisierung
     * */
     this.highlightPath = function(){
+        //alle Kanten ein wenig in den Hintergrund
+        for(var e in graph.edges) graph.edges[e].setLayout("lineWidth", global_Edgelayout.lineWidth * 0.9);
+
+        //hervorheben des Augmentationsweges (einschliesslich Knoten und Kanten)
         var path = disjointPaths[currentPath];
         for(var n = 0; n < path.length; n=n+2){
             var node = path[n];
-            node.setLayout('borderColor',const_Colors.NodeBorderHighlight);
-            node.setLayout('borderWidth',global_NodeLayout.borderWidth);
+            node.setLayout('borderColor',"Navy");
+            //node.setLayout('borderColor',const_Colors.NodeBorderHighlight);
+            node.setLayout('borderWidth',global_NodeLayout.borderWidth*1.5);
             if(n < path.length - 1){
                 var edge = path[n+1];
-                edge.setLayout("lineWidth", global_Edgelayout.lineWidth*1.9);
+                edge.setLayout("lineWidth", global_Edgelayout.lineWidth*2.4);
             }
         }
-        // TODO Statusfenster
+        //die freien Knoten hervorheben(erster und letzter Knoten auf dem Weg)
+        path[0].setLayout('fillStyle',"SteelBlue ");
+        path[path.length-1].setLayout('fillStyle',"SteelBlue ");
+        //statuserklaerung
         $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
             + "<h3> "+LNG.K('textdb_msg_path_highlight')+"</h3>"
             + "<p> "+LNG.K('textdb_msg_path_highlight_1')+"<p>");
@@ -579,6 +594,27 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.endAlgorithm = function() {
+        //Button, der das Matching anzeigt
+        toggleMatchButton = true;
+        $(statusErklaerung).append("<button id=ta_show_match>"+LNG.K('algorithm_btn_match')+"</button>");
+        $("#ta_show_match").button();
+        //$("#ta_button_1Schritt").on("click.HKAlgorithm",function() {algo.singleStepHandler();});
+        $("#ta_show_match").click(function() {
+            if(toggleMatchButton){
+                //alle Nicht-Matching-Kanten in den Hintergrund
+                for(var e in graph.edges) graph.edges[e].setLayout("lineWidth", global_Edgelayout.lineWidth * 0.3);
+                $("#ta_show_match").button( "option", "label", LNG.K('algorithm_btn_match1') );
+            }
+            else{
+                for(var e in graph.edges)  graph.edges[e].restoreLayout();
+                $("#ta_show_match").button( "option", "label", LNG.K('algorithm_btn_match') );
+            }
+            //Matching-Kanten formatieren
+            for(var e in matching) setEdgeMatched(matching[e]);
+            toggleMatchButton = !toggleMatchButton;
+            algo.needRedraw = true;
+        });
+        //Forschungsaufgabe und Erklaerung
         $(statusErklaerung).append("<p></p><h3>"+LNG.K('algorithm_msg_finish')+"</h3>");
         $(statusErklaerung).append("<button id=ta_button_gotoIdee>"+LNG.K('algorithm_btn_more')+"</button>");
         $(statusErklaerung).append("<h3>"+LNG.K('algorithm_msg_test')+"</h3>");
@@ -629,7 +665,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
             "iteration": iteration,
             "superNode": jQuery.extend({},superNode),
             "matched": jQuery.extend({},matched),
-            "disjointPaths": jQuery.extend({},disjointPaths),
+            "disjointPaths": jQuery.extend([],disjointPaths),
             "currentPath": currentPath,
             "htmlSidebar": $(statusErklaerung).html()
         });

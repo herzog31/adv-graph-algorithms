@@ -28,14 +28,7 @@
     }
     Pol.prototype = new Super;
     Pol.prototype.constructor = Pol;
-    var addNode = function (xC, yC) {
-        var node = new GraphNode({x: xC, y: yC}, nodeIDCounter);
-        this.nodes[nodeIDCounter] = node;
-        if(isInU === true) this.unodes[nodeIDCounter] = node;
-        else this.vnodes[nodeIDCounter] = node;
-        nodeIDCounter++;
-        return node;
-    };
+    Super.prototype.getTest = function(){return test};
 </script>
 
 </body>

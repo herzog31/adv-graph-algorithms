@@ -10,6 +10,8 @@
     "algorithm_btn_more": "Beschreibung des Algorithmus lesen",
     "algorithm_btn_exe1": "Wie würde der Algorithmus entscheiden?",
     "algorithm_btn_exe2": "Forschungsaufgabe2",
+    "algorithm_btn_match": "Zeige das Matching",
+    "algorithm_btn_match1": "Zeige den Graph",
     "algorithm_status1": "Kosten des Anfangsknotens: ",
     "algorithm_status2": "Kosten der Kante: ",
     "algorithm_status3": "Kosten des Zielknotens: ",
@@ -19,17 +21,17 @@
     "textdb_text_edges": "Kanten",
     "textdb_text_phase": "Phase",
     "textdb_text_of": "von",
-    "textdb_text_iteration": "Iteration",
+    "textdb_text_iteration": "Phase",
 
     "textdb_msg_init": "Initialisierung",
     "textdb_msg_init_1": "Am Anfang des Algorithmus besitzen alle Knoten keinen Matching-Partner. Die Menge des Kanten im Matching M ist dementsprechend leer.",
     "textdb_msg_init_2": "In jeder Iteration suchen wir eine maximale Menge an kürzesten knotendisjunkten Augmentationswegen.",
     "textdb_msg_init_3": "Maximal heißt hier, dass es zusätzlich zu den gefundenen Pfaden keinen anderen kürzesten knotendisjunkten Augmentationsweg gibt.",
 
-    "textdb_msg_begin_it": "Nächste Iteration",
-    "textdb_msg_begin_it_1": "In dieser Iteration werden nur Augmentationswege dieser Länge gesucht.",
-    "textdb_msg_end_it": "Iteration Ende",
-    "textdb_msg_end_it_1": "Es gibt keinen kürzensten Augmentierungsweg, der bezüglich der bereits gefundenen knotendisjunkt ist.",
+    "textdb_msg_begin_it": "Beginn der nächsten Phase",
+    "textdb_msg_begin_it_1": "In dieser Phase werden nur Augmentationswege dieser Länge gesucht. Es wird nach einer maximalen Menge von knotendisjunkten Augmentationswegen gesucht. Wenn kein solcher Augmentationsweg gefunden werden kann, endet diese Phase.",
+    "textdb_msg_end_it": "Ende einer Phase",
+    "textdb_msg_end_it_1": "Es gibt keinen kürzesten Augmentationsweg, der bezüglich der bereits gefundenen knotendisjunkt ist. Die aktuelle Phase endet. Falls es einen Augmentationsweg gibt, wird der kürzeste Augmentatinsweg in der nächsten Phase echt größer sein, als in der aktuellen.",
 
     "textdb_msg_end_algo": "Algorithmus Ende",
     "textdb_msg_end_algo_1": "Es gibt keine Augmentierungspfade mehr. Demzufolge ist das aktuelle Matching optimal.",
@@ -49,14 +51,9 @@
     "textdb_msg_update_2": "Die Kardinalität des Matchings wird um eins erhöht.",
 
     "textdb_msg_gray": "Ausblenden von benutzten Knoten",
-    "textdb_msg_gray_1": "Die Knoten die im aktuellen Augmentationsweg vorkommen, dürfen nicht in anderen Augmentationswegen in dieser Iteration vorkommen. Deshalb werden sie ausgeblendet.",
+    "textdb_msg_gray_1": "Die Knoten die im aktuellen Augmentationsweg vorkommen, dürfen nicht in anderen Augmentationswegen der aktuellen Phase vorkommen. Deshalb werden sie ausgeblendet.",
 
-    "textdb_msg_case3_1": "Ergebnis: Negativer Kreis gefunden",
-    "textdb_msg_case3_2": "Der Graph enthält einen erreichbaren negativen Kreis.",
-    "textdb_msg_case3_3": "Von der Kante, die auf den negativen Kreis hingewiesen hat, sind wir über die Vorgängerkanten so lange zurückgegangen, bis wir  im Kreis gelaufen sind. Dieser negative Kreis wurde im Graphen hellrot markiert.",
     "textdb_msg_case4_1": "Ergebnis: Algorithmus erfolgreich beendet",
-    "textdb_msg_case4_2": "In diesem Graph existiert kein erreichbarer negativer Kreis, und alle Kosten wurden korrekt berechnet.",
-    "textdb_msg_case4_3": "Bewege den Mauszeiger auf einen Knoten, um den günstigsten Weg vom Startknoten aus zu sehen.",
     "textdb_msg_case5_1": "Jetzt kann der Algorithmus beginnen!",
 
     "aufgabe1_btn_next_question": "Zur nächsten Frage vorspulen",
