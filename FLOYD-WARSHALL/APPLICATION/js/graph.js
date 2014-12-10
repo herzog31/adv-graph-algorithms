@@ -1363,7 +1363,7 @@ function GraphDrawer(p_graph, p_canvas, p_tab) {
             case "Standardbeispiel":
                 this.canvas.css("background", "");
                 $("#tg_p_bildlizenz").remove();
-                this.graph = new Graph(1);
+                this.graph = new Graph(4);
                 break;
             case "Kreis":
                 this.canvas.css("background", "");

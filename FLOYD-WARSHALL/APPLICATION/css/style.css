@@ -423,6 +423,12 @@ td.summand-cell{
     text-align: center;
 }
 
+#tf2_matrix td{
+    min-width: 25px;
+    overflow: hidden;
+    text-align: center;
+}
+
 .tableHeader{
     width: 16px;   
 }
@@ -451,6 +457,10 @@ td.summand-cell{
 
 #matrix{
     font-size: 12px;
+}
+
+#tf2_matrix{
+    font-size: 14px;
 }
 
 .not-number-cell{

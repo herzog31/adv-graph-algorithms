@@ -18,9 +18,9 @@
     <script src="js/textDB.js" type="text/javascript"></script>
     <script src="js/algorithm.js" type="text/javascript"></script>
     <script src="graphs/graphs.js" type="text/javascript"></script>
-    <!--<script src="js/aufgabe1.js" type="text/javascript"></script>
+    <!--<script src="js/aufgabe1.js" type="text/javascript"></script>-->
     <script src="js/aufgabe2.js" type="text/javascript"></script>
-    <script src="js/aufgabe3.js" type="text/javascript"></script>-->
+    <!--<script src="js/aufgabe3.js" type="text/javascript"></script>-->
 
     <title>Graphalgorithmen</title>
 </head>
@@ -53,9 +53,6 @@
             </li>
             <li>
                 <a href="#tab_tf2"><span>Forschungsaufgabe 2</span></a>
-            </li>
-            <li>
-                <a href="#tab_tf3"><span>Forschungsaufgabe 3</span></a>
             </li>
             <li>
                 <a href="#tab_tw"><span>Weiteres</span></a>
@@ -440,140 +437,108 @@
                     <h2 class="">Welche Kosten haben die Kanten?</h2>
                     <div id="tf2_div_statusErklaerung">
                         <h3>Entfernungen der Knoten:</h3>
-                        <table class="algoInformationen">
-                            <tr>
-                                <th class="algoInfoTH"><span></span></th>
-                                <th class="algoInfoTH"><span>Start</span></th>
-                                <th class="algoInfoTH"><span>b</span></th>
-                                <th class="algoInfoTH"><span>c</span></th>
-                                <th class="algoInfoTH"><span>d</span></th>
-                                <th class="algoInfoTH"><span>e</span></th>
-                                <th class="algoInfoTH"><span>f</span></th>
-                                <th class="algoInfoTH"><span>g</span></th>
-                                <th class="algoInfoTH"><span>h</span></th>
-                                <th class="algoInfoTH"><span>i</span></th>
-                            </tr>
-                            <tr>
-                                <td class="algoInfoTD">Initiali-<br>sierung</td>
-                                <td class="algoInfoTD">0</td>
-                                <td class="algoInfoTD">&infin;</td>
-                                <td class="algoInfoTD">&infin;</td>
-                                <td class="algoInfoTD">&infin;</td>
-                                <td class="algoInfoTD">&infin;</td>
-                                <td class="algoInfoTD">&infin;</td>
-                                <td class="algoInfoTD">&infin;</td>
-                                <td class="algoInfoTD">&infin;</td>
-                                <td class="algoInfoTD">&infin;</td>
-                            </tr>
-                            <tr>
-                                <td class="algoInfoTD">1. Schritt</td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD">3</td>
-                                <td class="algoInfoTD">2</td>
-                                <td class="algoInfoTD">4</td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD">34</td>
-                            </tr>
-                            <tr>
-                                <td class="algoInfoTD">2. Schritt</td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD">14</td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                            </tr>
-                            <tr>
-                                <td class="algoInfoTD">3. Schritt</td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD">12</td>
-                                <td class="algoInfoTD">13</td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                            </tr>
-                            <tr>
-                                <td class="algoInfoTD">4. Schritt</td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD">6</td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD">8</td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                            </tr>
-                            <tr>
-                                <td class="algoInfoTD">5. Schritt</td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD">12</td>
-                                <td class="algoInfoTD">7</td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                            </tr>
-                            </tr>
-                            <tr>
-                                <td class="algoInfoTD">6. Schritt</td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD">8</td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD">37</td>
-                                <td class="algoInfoTD"></td>
-                            </tr>
-                            <tr>
-                                <td class="algoInfoTD">7. Schritt</td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD">36</td>
-                                <td class="algoInfoTD"></td>
-                            </tr>
-                            <tr>
-                                <td class="algoInfoTD">8. Schritt</td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD">35</td>
-                                <td class="algoInfoTD"></td>
-                            </tr>
-                            <tr>
-                                <td class="algoInfoTD">9. Schritt</td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD"></td>
-                                <td class="algoInfoTD">35</td>
-                                <td class="algoInfoTD"></td>
-                            </tr>
+                        <table id="matrix">
+                        <tbody>
+                          <tr>
+                             <td></td>
+                             <td class="node_label">a</td>
+                             <td class="node_label">b</td>
+                             <td class="node_label">c</td>
+                             <td class="node_label">d</td>
+                             <td class="node_label">e</td>
+                             <td class="node_label">f</td>
+                             <td class="node_label">g</td>
+                             <td class="node_label">h</td>
+                          </tr>
+                          <tr class="table-row">
+                             <td class="node_label">a</td>
+                             <td>0</td>
+                             <td>∞</td>
+                             <td>∞</td>
+                             <td>∞</td>
+                             <td>∞</td>
+                             <td>∞</td>
+                             <td>∞</td>
+                             <td>∞</td>
+                          </tr>
+                          <tr class="table-row">
+                             <td class="node_label">b</td>
+                             <td>12</td>
+                             <td>0</td>
+                             <td>3</td>
+                             <td>12</td>
+                             <td>8</td>
+                             <td>2</td>
+                             <td>5</td>
+                             <td>10</td>
+                          </tr>
+                          <tr class="table-row">
+                             <td class="node_label">c</td>
+                             <td>9</td>
+                             <td>14</td>
+                             <td>0</td>
+                             <td>9</td>
+                             <td>5</td>
+                             <td>16</td>
+                             <td>11</td>
+                             <td>16</td>
+                          </tr>
+                          <tr class="table-row">
+                             <td class="node_label">d</td>
+                             <td>17</td>
+                             <td>22</td>
+                             <td>8</td>
+                             <td>0</td>
+                             <td>13</td>
+                             <td>24</td>
+                             <td>2</td>
+                             <td>7</td>
+                          </tr>
+                          <tr class="table-row">
+                             <td class="node_label">e</td>
+                             <td>4</td>
+                             <td>9</td>
+                             <td>12</td>
+                             <td>4</td>
+                             <td>0</td>
+                             <td>11</td>
+                             <td>6</td>
+                             <td>11</td>
+                          </tr>
+                          <tr class="table-row">
+                             <td class="node_label">f</td>
+                             <td>11</td>
+                             <td>4</td>
+                             <td>7</td>
+                             <td>16</td>
+                             <td>12</td>
+                             <td>0</td>
+                             <td>3</td>
+                             <td>8</td>
+                          </tr>
+                          <tr class="table-row">
+                             <td class="node_label">g</td>
+                             <td>∞</td>
+                             <td>∞</td>
+                             <td>∞</td>
+                             <td>∞</td>
+                             <td>∞</td>
+                             <td>∞</td>
+                             <td>0</td>
+                             <td>5</td>
+                          </tr>
+                          <tr class="table-row">
+                             <td class="node_label">h</td>
+                             <td>∞</td>
+                             <td>∞</td>
+                             <td>∞</td>
+                             <td>∞</td>
+                             <td>∞</td>
+                             <td>∞</td>
+                             <td>1</td>
+                             <td>0</td>
+                          </tr>
+                        </tbody>
                         </table>
                     </div>
                 </div>
@@ -594,89 +559,6 @@
                 </p>
             </div>
         </div>
-        <div id="tab_tf3">
-            <div>
-                <div class="canvasWrapper">
-                    <canvas class="graphCanvas" id="tf3_canvas_graph" width="700" height="500">
-                        Ihr Browser unterstützt kein HTML5 Canvas. Bitte verwenden Sie einen modernen Browser, z.B.<a href="http://www.mozilla.org/de/firefox">Mozilla Firefox</a>
-                    </canvas>
-                    <div class="Legende">
-                        <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
-                        <div class="LegendeText">
-                            <table>
-                                <tr>
-                                    <td class="LegendeTabelle"><img src="img/startknoten.png" alt="Start Knoten" class="LegendeIcon"></td>
-                                    <td><span>Startknoten, von dem aus die Entfernungen und günstigsten Wege berechnet werden.</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="LegendeTabelle"><img src="img/aktuellerKnoten.png" alt="Aktueller Knoten" class="LegendeIcon"></td>
-                                    <td><span>Knoten, der gerade bearbeitet wird</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="LegendeTabelle"><img src="img/PQKnoten.png" alt="Knoten in Warteschlange" class="LegendeIcon"></td>
-                                    <td><span>Knoten, der sich in der Warteschlange befindet</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="LegendeTabelle"><img src="img/markierteKante.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>"Vorgängerkante", die der günstigste Weg zum Knoten benutzt.</span></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="LegendeMinimized">
-                        <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
-                    </div>
-                </div>
-                <div id="tf3_div_statusWindow" class="statusWindow">
-                    <h2 class="">Prüfe dein Wissen: Wie würde der Algorithmus entscheiden?</h2>
-                    <div id="tf3_div_abspielbuttons"></div>
-                    <div id="tf3_div_statusTabs">
-                        <ul>
-                            <li>
-                                <a href="#tf3_div_statusErklaerung">Erklärung</a>
-                            </li>
-                            <li>
-                                <a href="#tf3_div_statusPseudocode">Pseudocode</a>
-                            </li>
-                        </ul>
-                        <div id="tf3_div_statusErklaerung">
-                            <div id="tf3_div_statusText">
-                                <p>
-                                    Hier kannst du den Algorithmus ausführen und Fragen dazu beantworten.
-                                </p>
-                                <button id="tf3_button_start">
-                                    Los geht's!
-                                </button>
-                            </div>
-                        </div>
-                        <div class="PseudocodeWrapper" id="tf3_div_statusPseudocode">
-                            <p class="pseudocode" id="tf3_p_l1">BEGIN</p>
-                            <p class="pseudocode" id="tf3_p_l2">  d(v[1]) &larr; 0</p>
-                            <p class="pseudocode" id="tf3_p_l3">  FOR i = 2,..,n DO</p>
-                            <p class="pseudocode" id="tf3_p_l4">    d(v[i]) &larr; &#8734;, parent(v[i]) &larr; NULL</p>
-                            <p class="pseudocode" id="tf3_p_l5">  WHILE queue &ne; &empty; DO</p>
-                            <p class="pseudocode" id="tf3_p_l6">    u = queue.extractMin()</p>
-                            <p class="pseudocode" id="tf3_p_l7">    FOR ALL (u,w) &isin; E DO</p>
-                            <p class="pseudocode" id="tf3_p_l8">      dist &larr; d(u) + l(u,w)</p>
-                            <p class="pseudocode" id="tf3_p_l9">      IF w &isin; queue AND d(w) > dist DO</p>
-                            <p class="pseudocode" id="tf3_p_l10">       d(w) = dist, parent(w) = (u,w)</p>
-                            <p class="pseudocode" id="tf3_p_l12">      ELSE</p>
-                            <p class="pseudocode" id="tf3_p_l13">       IF parent(w) == NULL THEN</p>
-                            <p class="pseudocode" id="tf3_p_l14">         d(w) = dist, parent(w) = (u,w)</p>
-                            <p class="pseudocode" id="tf3_p_l15">         queue.insert(w,dist)</p>
-                            <p class="pseudocode" id="tf3_p_l16">END</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="tf3_div_confirmTabChange" title="Aufgabe abbrechen?" class="tabChangeWarningDialog">
-                <h2>Beim Wechsel des Tabs wird die Aufgabe abgebrochen.</h2>
-                <p>
-                    Du kannst die Anwendung <a href="#" target="_blank" tabindex=-1> in einem anderen Browserfenster</a> öffnen, um parallel einen anderen Tab zu lesen.
-                </p>
-            </div>
-        </div>
-
         <div id="tab_tw">
             <div id="tw_Accordion">
                 <h3>Wie sieht der (Pseudo-)Code des Algorithmus aus?</h3>
