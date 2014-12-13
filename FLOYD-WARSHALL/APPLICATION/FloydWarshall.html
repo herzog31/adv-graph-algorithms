@@ -18,9 +18,8 @@
     <script src="js/textDB.js" type="text/javascript"></script>
     <script src="js/algorithm.js" type="text/javascript"></script>
     <script src="graphs/graphs.js" type="text/javascript"></script>
-    <!--<script src="js/aufgabe1.js" type="text/javascript"></script>-->
+    <script src="js/aufgabe1.js" type="text/javascript"></script>
     <script src="js/aufgabe2.js" type="text/javascript"></script>
-    <!--<script src="js/aufgabe3.js" type="text/javascript"></script>-->
 
     <title>Graphalgorithmen</title>
 </head>
@@ -360,8 +359,16 @@
                                     <td><span>Startknoten, von dem aus die Entfernungen und günstigsten Wege berechnet werden.</span></td>
                                 </tr>
                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/ordering_node.png" alt="Knoten in Warteschlange" class="LegendeIcon"></td>
-                                    <td><span>Knoten, der korrekt ausgewählt wurde</span></td>
+                                    <td class="LegendeTabelle"><img src="img/aktuellerKnoten.png" alt="Aktueller Knoten" class="LegendeIcon"></td>
+                                    <td><span>Knoten, der gerade bearbeitet wird</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/PQKnoten.png" alt="Knoten in Warteschlange" class="LegendeIcon"></td>
+                                    <td><span>Knoten, der sich in der Warteschlange befindet</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/markierteKante.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td><span>"Vorgängerkante", die der günstigste Weg zum Knoten benutzt.</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -371,31 +378,46 @@
                     </div>
                 </div>
                 <div id="tf1_div_statusWindow" class="statusWindow">
-                    <h2>In welcher Reihenfolge werden die Knoten aus der Warteschlange entnommen?</h2>
-                    <div id="tf1_div_Abspielbuttons"></div>
-                    <select id="tf1_select_aufgabeGraph" name="Wähle einen Graphen">
-                        <option selected>Selbsterstellter Graph</option>
-                        <option>Zufallsgraph</option>
-                        <option>Standardbeispiel</option>
-                        <option>Kreis</option>
-                    </select>
-                    <div id="tf1_div_statusErklaerung">
-                        <h3>Wähle zuerst den Graphen, mit dem du arbeiten möchtest.</h3>
-                        <h3>Klicke danach auf den Startknoten, um die Aufgabe zu beginnen.</h3>
-                        <p>
-                            Klicke anschließend in der Reihenfolge auf die Knoten, in der sie der Algorithmus aus der Warteschlange entnehmen soll.
-                        </p>
+                    <h2 class="">Prüfe dein Wissen: Wie würde der Algorithmus entscheiden?</h2>
+                    <div id="tf1_div_abspielbuttons"></div>
+                    <div id="tf1_div_statusTabs">
+                        <ul>
+                            <li>
+                                <a href="#tf1_div_statusErklaerung">Erklärung</a>
+                            </li>
+                            <li>
+                                <a href="#tf1_div_statusPseudocode">Pseudocode</a>
+                            </li>
+                        </ul>
+                        <div id="tf1_div_statusErklaerung">
+                            <div id="tf1_div_statusText">
+                                <p>
+                                    Hier kannst du den Algorithmus ausführen und Fragen dazu beantworten.
+                                </p>
+                                <button id="tf1_button_start">
+                                    Los geht's!
+                                </button>
+                            </div>
+                        </div>
+                        <div class="PseudocodeWrapper" id="tf1_div_statusPseudocode">
+                            <p class="pseudocode" id="tf1_p_l1">BEGIN</p>
+                            <p class="pseudocode" id="tf1_p_l2">  d(v[1]) &larr; 0</p>
+                            <p class="pseudocode" id="tf1_p_l3">  FOR i = 2,..,n DO</p>
+                            <p class="pseudocode" id="tf1_p_l4">    d(v[i]) &larr; &#8734;, parent(v[i]) &larr; NULL</p>
+                            <p class="pseudocode" id="tf1_p_l5">  WHILE queue &ne; &empty; DO</p>
+                            <p class="pseudocode" id="tf1_p_l6">    u = queue.extractMin()</p>
+                            <p class="pseudocode" id="tf1_p_l7">    FOR ALL (u,w) &isin; E DO</p>
+                            <p class="pseudocode" id="tf1_p_l8">      dist &larr; d(u) + l(u,w)</p>
+                            <p class="pseudocode" id="tf1_p_l9">      IF w &isin; queue AND d(w) > dist DO</p>
+                            <p class="pseudocode" id="tf1_p_l10">       d(w) = dist, parent(w) = (u,w)</p>
+                            <p class="pseudocode" id="tf1_p_l12">      ELSE</p>
+                            <p class="pseudocode" id="tf1_p_l13">       IF parent(w) == NULL THEN</p>
+                            <p class="pseudocode" id="tf1_p_l14">         d(w) = dist, parent(w) = (u,w)</p>
+                            <p class="pseudocode" id="tf1_p_l15">         queue.insert(w,dist)</p>
+                            <p class="pseudocode" id="tf1_p_l16">END</p>
+                        </div>
                     </div>
-                    <div id="tf1_div_Frage"></div>
-                    <div id="tf1_div_Antworten"></div>
                 </div>
-            </div>
-            <div title="Forschungsaufgabe 1" class="tabIntroDialog">
-                <h2> In welcher Reihenfolge werden die Knoten aus der Warteschlange entnommen? </h2>
-                <p>
-                    Deine Aufgabe ist es nun, die Knoten des Graphen in der Reihenfolge anzuklicken, in der sie aus der Warteschlange entnommen würden.
-                    Dies entspricht der Reihenfolge, in der die Knoten bei der Ausführung des Algorithmus rot markiert würden.
-                </p>
             </div>
             <div id="tf1_div_confirmTabChange" title="Aufgabe abbrechen?" class="tabChangeWarningDialog">
                 <h2>Beim Wechsel des Tabs wird die Aufgabe abgebrochen.</h2>
@@ -546,7 +568,7 @@
             <div title="Forschungsaufgabe 2" class="tabIntroDialog">
                 <h2> Welche Kosten haben die Kanten? </h2>
                 <p>
-                    Hier siehst du in einer Tabelle, welche Entfernungen die Knoten zum Startknoten in welcher Runde haben. Allerdings sind nicht alle Felder ausgefüllt.
+                    Hier siehst du in einer Tabelle, welche Entfernungen die Knoten voneinander haben.
                 </p>
                 <p>
                     Kannst du herausfinden, welche Kosten die Kanten haben? Klicke einfach doppelt auf eine Kante im Zeichenbereich und trage die Kosten ein, die diese Kante haben muss.

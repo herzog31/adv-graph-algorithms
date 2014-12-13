@@ -19,17 +19,17 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
     distanceMatrix = distance;
     switch(statusID) {
         case 1:
-            if (tabprefix === "ta") {
+            // if (tabprefix === "ta") {
                 $("#" + tabprefix + "_div_statusText").html("<h3>Jetzt kann der Algorithmus beginnen!</h3>");
                 table = displayMatrix(distance, contextNew, nodes, false);
                 if(distance.length > 13){
                     tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, 10);
-                    $("#ta_div_statusText").append("<table id='matrix'>" + tableSmall + "</table>");
+                    $("#" + tabprefix + "_div_statusText").append("<table id='matrix'>" + tableSmall + "</table>");
                 }else{
                     $("#tg_button_showMatrix").hide();
-                    $("#ta_div_statusText").append("<h3>Die Originalmatrix sieht so aus:</h3><table id='matrix'>" + table + "</table>");
+                    $("#" + tabprefix + "_div_statusText").append("<h3>Die Originalmatrix sieht so aus:</h3><table id='matrix'>" + table + "</table>");
                 }
-            };
+            // };
             $(".not-number-cell").css("color", "black");
             $(".marked").removeClass("marked");
             $("#" + tabprefix + "_p_l2").addClass("marked");
@@ -61,19 +61,19 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
 
         case 3:
             $("#" + tabprefix + "_div_statusText").html("<h3>Ende des Algorithmus</h3>");
-            if (tabprefix === "ta") {
-                $("#ta_div_statusText").append("<p>Nun wurden alle kürzesten beziehungsweise günstigsten Wege berechnet.</p>");
+            // if (tabprefix === "ta") {
+                $("#" + tabprefix + "_div_statusText").append("<p>Nun wurden alle kürzesten beziehungsweise günstigsten Wege berechnet.</p>");
                 table = displayMatrix(distance, contextNew, nodes, false);
                 if(distance.length > 13){
                     tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, 10);
-                    $("#ta_div_statusText").append("<table id='matrix'>" + tableSmall + "</table>");
+                    $("#" + tabprefix + "_div_statusText").append("<table id='matrix'>" + tableSmall + "</table>");
                 }else{
-                    $("#ta_div_statusText").append("<h3>Die Endmatrix sieht so aus:</h3><table id='matrix'>" + table + "</table>");
+                    $("#" + tabprefix + "_div_statusText").append("<h3>Die Endmatrix sieht so aus:</h3><table id='matrix'>" + table + "</table>");
                 }
                 $("#table_div").scrollLeft(0);
                 $("#table_div").scrollTop(0);
                 $(".not-number-cell").css("color", "black");
-            };
+            // };
             $(".marked").removeClass("marked");
             $("#" + tabprefix + "_p_l13").addClass("marked");
             break;
@@ -81,20 +81,6 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
         default:
             console.log("Fehlerhafte StatusID.");
     }
-
-    /*if(distance && contextNew){
-        var table = displayMatrix(distance, true);
-        $("#" + tabprefix + "_div_statusText").html(table);
-    }else if(contextNew){
-        $("#" + tabprefix + "_div_statusText").html("<h3>Jetzt kann der Algorithmus beginnen!</h3>");
-    }else{
-        $("#" + tabprefix + "_div_statusText").html("<h3>Ende des Algorithmus</h3>");
-        if (tabprefix === "ta") {
-            $("#ta_div_statusText").append("<p>Nun wurden alle kürzesten beziehungsweise günstigsten Wege berechnet.</p><p>Die Endmatrix sieht so aus:</p>");
-            var table = displayMatrix(distance, false);
-            $("#ta_div_statusText").append(table);
-        };
-    }*/
 };
 
 function displayMatrix(distance, contextNew, nodes, markChanged){
@@ -271,8 +257,6 @@ function displayMatrixSmall(distance, contextNew, nodes, markChanged){
     }
     cols = cols.sort(function(a,b){return a - b});
     rows = rows.sort(function(a,b){return a - b});
-    console.log(rows);
-    console.log(cols);
     var rowCount = 1;
     var columnCount = 1;
 
@@ -435,11 +419,7 @@ function adjustTable(matrixLength){
         // $("#matrix tr:eq(" + row + ")").removeClass("table-row");
         // console.log("row="+row+"col="+col);    
     });
-    console.log("rows");
-    console.log(rows);
-    console.log("cols");
-    console.log(cols);
-
+    
     if(Math.abs(rows[1] - rows[0]) > Math.abs(rows[2] - rows[1])){
         spacingVertical = Math.abs(rows[1] - rows[0]);
     }else{
@@ -512,10 +492,10 @@ function showMatrixPopup(){
     // $("#matrix-container").html("<table id='matrix-display'>" + table + "</table>");
     // $("#matrix-display td").removeAttr("onmouseover");
     // $("#matrix-display td").removeAttr("onmouseout");
-    $("#ta_div_completeMatrix").dialog("open");
-    $("#ta_div_completeMatrix").html("<table id='matrix-display'>" + table + "</table>");
-    $("#ta_div_completeMatrix").css("width", (distanceMatrix.length + 1)*18 + "px");
-    $("#ta_div_completeMatrix").css("max-width", "476px");
+    $("#" + tabprefix + "_div_completeMatrix").dialog("open");
+    $("#" + tabprefix + "_div_completeMatrix").html("<table id='matrix-display'>" + table + "</table>");
+    $("#" + tabprefix + "_div_completeMatrix").css("width", (distanceMatrix.length + 1)*18 + "px");
+    $("#" + tabprefix + "_div_completeMatrix").css("max-width", "476px");
     $("#matrix-display").css("width", (distanceMatrix.length + 1)*18 + "px");
     $("#matrix-display").css("max-width", "476px");
     $("[aria-describedby='ta_div_completeMatrix']").css("width", (24+(distanceMatrix.length + 1)*18) + "px");

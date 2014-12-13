@@ -109,6 +109,7 @@ function initializeSiteLayout() {
             if (ui.newPanel[0].id == "tab_tf1") {
                 algo = new Forschungsaufgabe1($("body").data("graph"), $("#tf1_canvas_graph"), $("#tab_tf1"));
                 $("#tab_tf1").data("algo", algo);
+                algo.initializeAlgorithm();
             }
             if (ui.newPanel[0].id == "tab_tf2") {
                 algo = new Forschungsaufgabe2($("body").data("graph"), $("#tf2_canvas_graph"), $("#tab_tf2"));

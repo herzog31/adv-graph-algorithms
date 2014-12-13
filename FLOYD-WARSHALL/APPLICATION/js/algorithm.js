@@ -293,24 +293,14 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
     		status = 3;
     	}
 
-        console.log(distance);
 		changeText(distance, "ta", contextNew, graph.nodes, status);
-        // if(distance.length > 13 && status == 2){
-        //     adjustTable(distance.length);
-        // }
-		console.log("now context is ");
-		console.log(contextStack);
         return algo.finished;
 	};
 
 	this.backStep = function(){
 		var status;
-		console.log("before backStep: ");
-		console.log(contextStack);
 		var lastStep = contextStack.pop();
 		if(lastStep){
-			console.log("lastStep:");
-			console.log(lastStep);
 			distance[lastStep.changedRow][lastStep.changedColumn] = lastStep.changedTo;
 			$("#ta_button_Zurueck").button("option", "disabled", false);
 			$("#ta_button_1Schritt").button("option", "disabled", false);
@@ -336,14 +326,11 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 		var keyDictionary = new Object();
 		for(var key in graph.nodes){
 			keyDictionary[key] = i;
-			// console.log("key = " + key + " i = " + i);
-			// console.log(graph.nodes);
 			graph.nodes[i] = graph.nodes[key];
 			graph.nodes[i].setNodeID(i);
 			if(i != key){
 				delete graph.nodes[key];
 			}
-			// console.log(graph.nodes);
 			i++;
 		}
 		for(var key in graph.edges){
@@ -374,16 +361,16 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 		changeText(distance, "ta", null, graph.nodes, 1);
 	};
 
-	this.visualize = function(){
-		for(var i = 0; i < distance.length; i++){
-			var str = "";
-			for(var j = 0; j < distance.length; j++){
-				str += " " + distance[i][j];
-			}
-			console.log(str);
-		}
-		console.log("");
-	};
+	// this.visualize = function(){
+	// 	for(var i = 0; i < distance.length; i++){
+	// 		var str = "";
+	// 		for(var j = 0; j < distance.length; j++){
+	// 			str += " " + distance[i][j];
+	// 		}
+	// 		console.log(str);
+	// 	}
+	// 	console.log("");
+	// };
 
 	this.end = function(context) {
         algo.finished = true;
@@ -397,19 +384,10 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 		$("#ta_button_Zurueck").button("option", "disabled", false);
         $("#ta_button_1Schritt").button("option", "disabled", true);
         $("#ta_button_vorspulen").button("option", "disabled", true);
-		console.log("paths");
-        console.log(paths);
         return;
     };
 
 };
-
-// var matrix = [[0, "inf", -2, "inf"], [4, 0, 3, "inf"], ["inf", "inf", 0, 2], ["inf", -1, "inf", 0]];
-// var algo = new FloydWarshallAlgorithm(matrix);
-// algo.initializeAlgorithm();
-// while(!algo.nextStepChoice()){
-// 	algo.visualize();
-// }
 
 /***************************************************************************************************************************/
 
