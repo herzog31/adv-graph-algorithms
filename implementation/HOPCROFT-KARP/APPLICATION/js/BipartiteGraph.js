@@ -31,27 +31,30 @@ function BipartiteGraph(filename,p_canvas){
      * @method
      */
     this.reorderNodes = function(){
-        var diffu;
-        var diffv;
+        var diffu; // der Abstand zwischen den Knoten in der oberen Partition
+        var diffv; // der Abstand zwischen den Knoten in der unteren Partition
+        var sizeu = Object.keys(this.unodes).length;
+        var sizev = Object.keys(this.vnodes).length;
         if(canvas == null){
             diffu = diffv = graph_constants.DIFF;
         }
         else{
-            var numberOfNodes;
-            numberOfNodes = Object.keys(this.unodes).length;
-            diffu = Math.min((canvas.width()-50)/numberOfNodes,graph_constants.DIFF);
-            numberOfNodes = Object.keys(this.vnodes).length;
-            diffv = Math.min((canvas.width()-50)/numberOfNodes,graph_constants.DIFF);
+            diffu = Math.min((canvas.width()-50)/sizeu,graph_constants.DIFF);
+            diffv = Math.min((canvas.width()-50)/sizev,graph_constants.DIFF);
         }
         var i = 0;
         for(var n in this.unodes){
             var node = this.unodes[n];
-            node.setCoordinates({x: graph_constants.LEFT_POSITION + (i++*diffu), y: graph_constants.U_POSITION});
+            var offset = 0;
+            //if(diffu<graph_constants.DIFF) offset = graph_constants.LEFT_POSITION / graph_constants.MAX_NODES * sizeu;
+            node.setCoordinates({x: graph_constants.LEFT_POSITION -offset + (i++*diffu), y: graph_constants.U_POSITION});
         }
         i = 0;
         for(var n in this.vnodes){
             var node = this.vnodes[n];
-            node.setCoordinates({x: graph_constants.LEFT_POSITION + (i++*diffv), y: graph_constants.V_POSITION});
+            var offset = 0;
+            //if(diffu<graph_constants.DIFF) offset = graph_constants.LEFT_POSITION / graph_constants.MAX_NODES * sizev;
+            node.setCoordinates({x: graph_constants.LEFT_POSITION - offset + (i++*diffv), y: graph_constants.V_POSITION});
         }
     };
 

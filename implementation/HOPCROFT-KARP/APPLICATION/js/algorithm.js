@@ -292,13 +292,13 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
                 this.endIteration();
                 break;
             case NEXT_AUGMENTING_PATH:
-                this.highlightPath()
+                this.highlightPath();
                 break;
             case UPDATE_MATCHING:
-                this.dfsUpdateMatching()
+                this.updateMatching();
                 break;
             case GRAY_PATH:
-                this.grayPath()
+                this.grayPath();
                 break;
             case END_ALGORITHM:
                 this.endAlgorithm();
@@ -510,7 +510,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         node.setLayout('borderColor',"Gray");
     };
 
-    this.dfsUpdateMatching = function(){
+    this.updateMatching = function(){
         var path = disjointPaths[currentPath];
         //iterate over all edges in the path
         for (var i = 1; i < path.length-1; i = i + 2) {
@@ -707,10 +707,13 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
 
     this.setOutputFenster = function(fenster){
         statusErklaerung = fenster;
-    }
+    };
     this.getShortestPathLength = function(){
         return shortestPathLength;
-    }
+    };
+    this.getMatching = function(){return matching};
+    this.getPath = function () {return disjointPaths[currentPath];};
+    this.getGraph = function () {return graph;};
 }
 
 // Vererbung realisieren

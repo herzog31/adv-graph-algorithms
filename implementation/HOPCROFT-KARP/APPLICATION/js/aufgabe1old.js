@@ -548,7 +548,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         if(stoppKanten[updateID]) {
             // Neuer Status -> checkEdgeForUpdate
             statusID = 2;
-            var Antworten = this.generateAnswers(aktKante,oldWeight);
+            var Antworten = this.generateAnswers1(aktKante,oldWeight);
             var AntwortGrund = "";
             if(oldWeight != null) {
                 AntwortGrund = "<p>"+LNG.K('aufgabe1_answer2_reason1')+"</p>"
@@ -856,7 +856,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      * @returns {Array} 3 Antwortmöglichkeiten, wobei die erste korrekt ist.
      * @method
      */
-    this.generateAnswers = function(aktKante,oldWeight) {
+    this.generateAnswers1 = function(aktKante,oldWeight) {
         if(oldWeight == "inf") {
             oldWeight = LNG.K('aufgabe1_text_infinity');
         }

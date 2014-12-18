@@ -3,7 +3,7 @@
  */
 
 
-this.dfsUpdateMatching = function(){
+this.updateMatching = function(){
     var path = disjointPaths[currentPath];
     for(var n in path){
         var node = path[n];

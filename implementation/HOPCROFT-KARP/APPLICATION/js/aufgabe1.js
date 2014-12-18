@@ -33,7 +33,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      */
     var fastForwardIntervalID = null;
     /*
-    * hk algo
+    * Das Objekt, das den Hopcroft-Karp-Algorithmus ausfuehrt
     * */
     var hkAlgo = new HKAlgorithm(graph,canvas,p_tab);
     /**
@@ -85,10 +85,12 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     /*
      * Hier werden die Statuskonstanten definiert
      * */
-
     const ALGOINIT = 0;
     const BEGIN_ITERATION = 1;
     const END_ITERATION = 2;
+    const NEXT_AUGMENTING_PATH = 3;
+    const UPDATE_MATCHING = 4;
+    const GRAY_PATH = 5;
     const END_ALGORITHM = 6;
     /**
      * Startet die Ausführung des Algorithmus.
@@ -237,12 +239,19 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
                 frageStatus.warAktiv = false;
             }
             var algoStatus = hkAlgo.getStatusID();
-            if(algoStatus==BEGIN_ITERATION || algoStatus==ALGOINIT){
-                hkAlgo.nextStepChoice();
-                this.askQuestion();
-            }
-            else if(algoStatus==END_ALGORITHM){
+            if(algoStatus == END_ALGORITHM){
                 this.endAlgorithm();
+            }
+            else if(algoStatus == BEGIN_ITERATION || algoStatus == ALGOINIT){
+                hkAlgo.nextStepChoice();
+                if(Math.random() < 0.6) this.askQuestion1();
+            }
+            else if(algoStatus == UPDATE_MATCHING){
+                if(Math.random() < 0.3){
+                    if(Math.random() < 0.5) this.askQuestion2();
+                    else this.askQuestion3();
+                }
+                else hkAlgo.nextStepChoice();
             }
             else hkAlgo.nextStepChoice();
         }
@@ -379,15 +388,14 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             frageStats.falsch++;
         }
         frageStatus = {"aktiv" :false, "warAktiv": true};
-        hkAlgo.nextStepChoice();
+        hkAlgo.nextStepChoice();// Hier wird der nächste Schritt des Algorithmus ausgefuehrt
         this.needRedraw = true;
-
     };
 
-    this.askQuestion = function () {
+    this.askQuestion1 = function () {
         var NUMBER_OF_ANSWERS = 5;
         var sp = hkAlgo.getShortestPathLength();
-        var Antworten = this.generateAnswers(NUMBER_OF_ANSWERS);
+        var Antworten = this.generateAnswers1(NUMBER_OF_ANSWERS);
         var AntwortGrund = "";
         if (sp==0) {
             AntwortGrund = "<p>" + LNG.K('aufgabe1_answer1_reason0') + "</p>";
@@ -406,32 +414,29 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             gewusst: true
         };
         var antwortReihenfolge = this.generateRandomOrder(NUMBER_OF_ANSWERS);
-        $("#tf1_div_Frage").html(LNG.K('aufgabe1_text_question') + " " + ++frageStats.gestellt + " " + LNG.K('textdb_text_of') + " " + frageStats.anzahlFragen);
+        $("#tf1_div_Frage").html(LNG.K('aufgabe1_text_question') + " " + ++frageStats.gestellt);
         $("#tf1_div_Frage").append("<p class=\"frage\">" + LNG.K('aufgabe1_question1') + "</p>");
         for (var i = 0; i < antwortReihenfolge.length; i++) {
             $("#tf1_div_Antworten").append("<input type=\"radio\" id=\"tf1_input_frage1_" + antwortReihenfolge[i] + "\" name=\"frage1\"/>"
             + "<label id=\"tf1_label_frage1_" + antwortReihenfolge[i] + "\" for=\"tf1_input_frage1_" + antwortReihenfolge[i]
             + "\">" + Antworten[antwortReihenfolge[i]] + "</label><br>");
         }
-        for(var i = 1;i<NUMBER_OF_ANSWERS;i++){
-            $("#tf1_input_frage1_"+i).click(function () {
-                $("#tf1_label_frage1_"+i).addClass("ui-state-error");
-                algo.frageParam.gewusst = false;
-            });
-        }
+        $("#tf1_input_frage1_1").click(function() {$("#tf1_label_frage1_1").addClass("ui-state-error");algo.frageParam.gewusst = false;});
+        $("#tf1_input_frage1_2").click(function() {$("#tf1_label_frage1_2").addClass("ui-state-error");algo.frageParam.gewusst = false;});
+        $("#tf1_input_frage1_3").click(function() {$("#tf1_label_frage1_3").addClass("ui-state-error");algo.frageParam.gewusst = false;});
+        $("#tf1_input_frage1_4").click(function() {$("#tf1_label_frage1_4").addClass("ui-state-error");algo.frageParam.gewusst = false;});
         $("#tf1_input_frage1_0").click(function () {
             algo.handleCorrectAnswer();
         });
     };
-
     /**
-     * Generiert Antwortmöglichkeiten für Fragen zu Knotenupdates.
+     * Generiert Antwortmöglichkeiten fuer die erste Frage
      * Das erste Element des Rückgabewerts ist stets die richtige Antwort
      * @param {Number} Anzahl von Antwortmöglichkeiten.
      * @returns {Array} Antwortmöglichkeiten, wobei die erste korrekt ist.
      * @method
      */
-    this.generateAnswers = function(number) {
+    this.generateAnswers1 = function(number) {
         var answers = new Array();
         var sp = hkAlgo.getShortestPathLength();
         if(sp!=0) answers.push(sp);
@@ -449,9 +454,140 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         return answers;
     };
 
+    this.askQuestion2 = function () {
+        var NUMBER_OF_ANSWERS = 5;
+        var mc = Object.keys(hkAlgo.getMatching()).length +1;
+        var Antworten = this.generateAnswers2(NUMBER_OF_ANSWERS, mc);
+        var AntwortGrund = "<p>" + LNG.K('aufgabe1_answer2_reason0') + "</p>";
+        this.addFrageTab();
+        frageStatus = {"aktiv": true, "warAktiv": false};
+        this.frageParam = {
+            "Antwort": mc,
+            "AntwortGrund": AntwortGrund,
+            gewusst: true
+        };
+        var antwortReihenfolge = this.generateRandomOrder(NUMBER_OF_ANSWERS);
+        $("#tf1_div_Frage").html(LNG.K('aufgabe1_text_question') + " " + (++frageStats.gestellt));
+        $("#tf1_div_Frage").append("<p class=\"frage\">" + LNG.K('aufgabe1_question2') + "</p>");
+        for (var i = 0; i < antwortReihenfolge.length; i++) {
+            $("#tf1_div_Antworten").append("<input type=\"radio\" id=\"tf1_input_frage2_" + antwortReihenfolge[i] + "\" name=\"frage2\"/>"
+                                         + "<label id=\"tf1_label_frage2_" + antwortReihenfolge[i] + "\" for=\"tf1_input_frage2_" + antwortReihenfolge[i] + "\">" + Antworten[antwortReihenfolge[i]] + "</label><br>");
+        }
+        $("#tf1_input_frage2_1").click(function() {$("#tf1_label_frage2_1").addClass("ui-state-error");algo.frageParam.gewusst = false;});
+        $("#tf1_input_frage2_2").click(function() {$("#tf1_label_frage2_2").addClass("ui-state-error");algo.frageParam.gewusst = false;});
+        $("#tf1_input_frage2_3").click(function() {$("#tf1_label_frage2_3").addClass("ui-state-error");algo.frageParam.gewusst = false;});
+        $("#tf1_input_frage2_4").click(function() {$("#tf1_label_frage2_4").addClass("ui-state-error");algo.frageParam.gewusst = false;});
+/*        for(var i = 1;i<NUMBER_OF_ANSWERS;i++){
+            $("#tf1_input_frage2_"+i).click(function (e) {
+                $(e.target).addClass("ui-state-error"); algo.frageParam.gewusst = false;
+            });
+        }*/
+        $("#tf1_input_frage2_0").click(function () {
+            algo.handleCorrectAnswer();
+        });
+    };
+    /**
+     * Generiert Antwortmöglichkeiten fuer die zweite Frage
+     * Das erste Element des Rückgabewerts ist stets die richtige Antwort
+     * @param {Number} Anzahl von Antwortmöglichkeiten.
+     * @param {Number} Richtige Antwort.
+     * @returns {Array} Antwortmöglichkeiten, wobei die erste korrekt ist.
+     * @method
+     */
+    this.generateAnswers2 = function(number,correctAnswer) {
+        var answers = new Array();
+        answers.push(correctAnswer);
+        var values = [correctAnswer-1,correctAnswer+1,correctAnswer-2,correctAnswer+2,correctAnswer-3,correctAnswer+3,correctAnswer-4,correctAnswer+4,correctAnswer-5,correctAnswer+5];
+        var count = answers.length;
+        while(count<5){
+            var a = Math.floor((Math.random()*values.length));
+            if(values[a]>=0){
+                answers.push((values[a]));
+                count++;
+            }
+            values.splice(a,1);
+        }
+        return answers;
+    };
+
+    this.askQuestion3 = function () {
+        var answer = chooseEdge();
+        var onPath = answer[0];
+        var inMatching = answer[1];
+        var correctAnswer;
+        var AntwortGrund;
+        if(onPath == true){
+            if(inMatching == true){
+                correctAnswer = "nein";
+                AntwortGrund = "<p>" + LNG.K('aufgabe1_answer3_reason0') + "</p>";
+            }
+            else{
+                correctAnswer = "ja";
+                AntwortGrund = "<p>" + LNG.K('aufgabe1_answer3_reason1') + "</p>";
+            }
+        }
+        else {
+            if(inMatching == true){
+                correctAnswer = "ja";
+                AntwortGrund = "<p>" + LNG.K('aufgabe1_answer3_reason2') + "</p>";
+            }
+            else{
+                correctAnswer = "nein";
+                AntwortGrund = "<p>" + LNG.K('aufgabe1_answer3_reason2') + "</p>";
+            }
+        }
+        this.addFrageTab();
+        frageStatus = {"aktiv": true, "warAktiv": false};
+        this.frageParam = {
+            "Antwort": correctAnswer,
+            "AntwortGrund": AntwortGrund,
+            gewusst: true
+        };
+        $("#tf1_div_Frage").html(LNG.K('aufgabe1_text_question') + " " + (++frageStats.gestellt));
+        $("#tf1_div_Frage").append("<p class=\"frage\">" + LNG.K('aufgabe1_question3') + "</p>");
+        $("#tf1_div_Antworten").append("<input type=\"radio\" id=\"tf1_input_frage3_0\" name=\"frage1\"/><label id=\"tf1_label_frage3_0\" for=\"tf1_input_frage3_0\"> ja </label><br>");
+        $("#tf1_div_Antworten").append("<input type=\"radio\" id=\"tf1_input_frage3_1\" name=\"frage1\"/><label id=\"tf1_label_frage3_1\" for=\"tf1_input_frage3_1\"> nein </label><br>");
+        var pos = 0;
+        if(correctAnswer == "nein") pos = 1;
+        $("#tf1_input_frage3_" + pos).click(function () { algo.handleCorrectAnswer(); });
+        $("#tf1_input_frage3_" + (1-pos)).click(function () {
+            $("#tf1_label_frage3_" + (1-pos)).addClass("ui-state-error"); algo.frageParam.gewusst = false;
+        });
+    };
+
+    var chooseEdge = function(){
+        var matching = hkAlgo.getMatching();
+        var path = hkAlgo.getPath();
+        var tradeoff = 0.5;
+        var edge;
+        if(Math.random()<tradeoff){
+            var rand = Math.floor(Math.random()*path.length);
+            rand = Math.max(1,rand - (rand+1)%2);
+            edge = path[rand];
+        }
+        else{
+            var keys = Object.keys(hkAlgo.getGraph().edges);
+            var rand = Math.floor(Math.random()*keys.length);
+            edge = hkAlgo.getGraph().edges[keys[rand]];
+        }
+        var onPath = false;
+        for (var i = 1; i < path.length-1; i = i + 2) {
+            if (edge === path[i]){
+                onPath = true;
+                break;
+            }
+        }
+        var inMatching = matching.hasOwnProperty(edge.getEdgeID());
+        edge.setLayout("lineWidth", global_Edgelayout.lineWidth*4);
+        //graph.nodes[edge.getSourceID()].setLayout('borderColor',"Red");
+        //graph.nodes[edge.getTargetID()].setLayout('borderColor',"Red");
+        //edge.setLayout("lineColor", const_Colors.EdgeHighlight4);
+        return [onPath,inMatching,edge];
+    };
     /**
      * Generiert eine zufällige Permutation von einem Array<br>
-     * @returns {Array} zufällige Permutation von der Eingabe
+     * @param {Number} Anzahl von Elementen der Permutation
+     * @returns {Array} zufällige Permutation
      * @method
      */
     this.generateRandomOrder = function(l) {
