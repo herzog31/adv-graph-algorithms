@@ -115,39 +115,6 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     const GRAY_PATH = 5;
     const END_ALGORITHM = 6;
 
-    /*
-    * Hier wird das Aussehen der Kanten und Knoten bestimmt
-    * */
-    const MATCHED_EDGE_COLOR = "DarkBlue";
-    const MATCHED_NODE_COLOR = const_Colors.NodeFillingHighlight;
-
-/*    *//**
-     * Aussehen einer Matching-Kante.
-     * @type Object
-     *//*
-    var greyedEdge = {'arrowAngle' : Math.PI/8,	// Winkel des Pfeilkopfs relativ zum Pfeilkörper
-        'arrowHeadLength' : 15,    // Länge des Pfeilkopfs
-        'lineColor' : "blue",		// Farbe des Pfeils
-        'lineWidth' : 2,		    // Dicke des Pfeils
-        'font'	: 'Arial',		    // Schrifart
-        'fontSize' : 14,		    // Schriftgrösse in Pixeln
-        'isHighlighted': false     // Ob die Kante eine besondere Markierung haben soll
-    };
-
-    *//**
-     * Aussehen eines Matching-Knotens.
-     * @type Object
-     *//*
-    var greyedNode = {'fillStyle' : "#D8BFD8",    // Farbe der Füllung
-        'nodeRadius' : 15,                         // Radius der Kreises
-        'borderColor' : const_Colors.NodeBorder,   // Farbe des Rands (ohne Markierung)
-        'borderWidth' : 2,                         // Breite des Rands
-        'fontColor' : 'black',                     // Farbe der Schrift
-        'font' : 'bold',                           // Schriftart
-        'fontSize' : 14                            // Schriftgrösse in Pixeln
-    };*/
-
-
     /**
      * Startet die Ausführung des Algorithmus.
      * @method
@@ -292,13 +259,13 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
                 this.endIteration();
                 break;
             case NEXT_AUGMENTING_PATH:
-                this.highlightPath();
+                this.highlightPath(disjointPaths[currentPath]);
                 break;
             case UPDATE_MATCHING:
-                this.updateMatching();
+                this.augmentMatching(disjointPaths[currentPath]);
                 break;
             case GRAY_PATH:
-                this.grayPath();
+                this.hidePath(disjointPaths[currentPath]);
                 break;
             case END_ALGORITHM:
                 this.endAlgorithm();
@@ -331,8 +298,8 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         disjointPaths = [];
         currentPath = 0;
         shortestPathLength = 0;
-        this.bfs();
-        this.dfs();
+        bfs();
+        dfs();
         if(shortestPathLength > 0){
             statusID = NEXT_AUGMENTING_PATH;
             $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
@@ -349,7 +316,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     /*
     * Mit Hilfe der Breitensuche wird ein Augmentierungsgraph aufgebaut.
     * */
-    this.bfs = function () {
+    var bfs = function () {
         //Initialize
         var freeNodeFound = false;
         var emptyLayer = false;
@@ -420,7 +387,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     * Mittels der Tiefensuche wird nach knotendisjunkten verbessernden Pfaden gesucht. Dabei wird der Augmentierungsgraph aus der Bfs-Phase verwendet.
     * @method
     * */
-   this.dfs = function(){
+   var dfs = function(){
        var dfsStack = [];
        for (var node in superNode) {
            var foundAugmentingPath = recursiveDfs(superNode[node], dfsStack);
@@ -466,71 +433,98 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     };
 
     /*
-    * Methoden fuer die Visualisierung
-    * */
-    this.highlightPath = function(){
-        //alle Kanten ein wenig in den Hintergrund
-        for(var e in graph.edges) graph.edges[e].setLayout("lineWidth", global_Edgelayout.lineWidth * 0.9);
-
-        //hervorheben des Augmentationsweges (einschliesslich Knoten und Kanten)
-        var path = disjointPaths[currentPath];
-        for(var n = 0; n < path.length; n=n+2){
-            var node = path[n];
-            node.setLayout('borderColor',"Navy");
-            //node.setLayout('borderColor',const_Colors.NodeBorderHighlight);
-            node.setLayout('borderWidth',global_NodeLayout.borderWidth*1.5);
-            if(n < path.length - 1){
-                var edge = path[n+1];
-                edge.setLayout("lineWidth", global_Edgelayout.lineWidth*2.4);
-            }
-        }
-        //die freien Knoten hervorheben(erster und letzter Knoten auf dem Weg)
-        path[0].setLayout('fillStyle',"SteelBlue ");
-        path[path.length-1].setLayout('fillStyle',"SteelBlue ");
-        //statuserklaerung
-        $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
-            + "<h3> "+LNG.K('textdb_msg_path_highlight')+"</h3>"
-            + "<p> "+LNG.K('textdb_msg_path_highlight_1')+"<p>");
-        statusID = UPDATE_MATCHING;
-    };
-
+     * Methoden fuer die Visualisierung.
+     * */
     var setEdgeMatched = function(edge){
+        var MATCHED_EDGE_COLOR = "DarkBlue";
         edge.setLayout("lineColor", MATCHED_EDGE_COLOR);
         edge.setLayout("lineWidth", global_Edgelayout.lineWidth*1.3);
     };
-
+    var setEdgeNotMatched = function(edge){
+        edge.setLayout("lineColor", global_Edgelayout.lineColor);
+        edge.setLayout("lineWidth", global_Edgelayout.lineWidth);
+    };
     var setNodeMatched = function(node){
+        var MATCHED_NODE_COLOR = const_Colors.NodeFillingHighlight;
         node.setLayout('fillStyle',MATCHED_NODE_COLOR);
         node.setLayout('borderColor',global_NodeLayout.borderColor);
     };
-
-    var setNodeGray = function(node){
+    var setNodeNotMatched = function(node){
+        node.restoreLayout();
+    };
+    var highlightNode = function(node){
+        node.setLayout('borderColor',"Navy");
+        //node.setLayout('borderColor',const_Colors.NodeBorderHighlight);
+        node.setLayout('borderWidth',global_NodeLayout.borderWidth*1.5);
+    };
+    var highlightEdge = function(edge){
+        edge.setLayout("lineWidth", global_Edgelayout.lineWidth*2.4);
+    };
+    var highlightFreeNode = function(node){
+        node.setLayout('borderWidth',global_NodeLayout.borderWidth * 2);
+        node.setLayout('fillStyle',"SteelBlue ");
+    };
+    var hideEdge = function(edge) {
+        edge.setLayout("lineWidth", global_Edgelayout.lineWidth * 0.3);
+    };
+    var hideNode = function(node){
         node.setLayout('fillStyle',"DarkGray");
         node.setLayout('borderWidth',global_NodeLayout.borderWidth);
         node.setLayout('borderColor',"Gray");
     };
 
-    this.updateMatching = function(){
-        var path = disjointPaths[currentPath];
-        //iterate over all edges in the path
+    /*
+     * Hebt den Augmentationsweg hervor.
+     * @method
+     * */
+    this.highlightPath = function(path){
+        //alle Kanten ein wenig in den Hintergrund
+        for(var e in graph.edges) graph.edges[e].setLayout("lineWidth", global_Edgelayout.lineWidth * 0.9);
+        //hervorheben des Augmentationsweges(Knoten und Kanten)
+        for(var n = 0; n < path.length; n=n+2){
+            var node = path[n];
+            highlightNode(node);
+            if(n < path.length - 1){
+                var edge = path[n+1];
+                highlightEdge(edge);
+            }
+        }
+        //die freien Knoten hervorheben(erster und letzter Knoten auf dem Weg)
+        highlightFreeNode(path[0]);
+        highlightFreeNode(path[path.length-1]);
+
+        //statuserklaerung
+        $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
+        + "<h3> "+LNG.K('textdb_msg_path_highlight')+"</h3>"
+        + "<p> "+LNG.K('textdb_msg_path_highlight_1')+"<p>");
+        statusID = UPDATE_MATCHING;
+    };
+
+    /*
+     * Vertauscht die Kanten auf dem Augmentationsweg.
+     * @method
+     * */
+    this.augmentMatching = function(path){
+        //iteriere ueber alle Kanten auf dem Augmentierungsweg
         for (var i = 1; i < path.length-1; i = i + 2) {
             var edge = path[i];
-            //if its matching edge then delete it from the matching
+            //vertausche die Kanten
             if(matching[edge.getEdgeID()]){
                 delete matching[edge.getEdgeID()];
-                edge.setLayout("lineColor", "black"); //set the color to black
+                setEdgeNotMatched(edge);
+                highlightEdge(edge);
             }
-            //else insert it
             else{
                 matching[edge.getEdgeID()] = edge;
                 matched[path[i-1].getNodeID()] =  path[i+1];
                 matched[path[i+1].getNodeID()] =  path[i-1];
-                edge.setLayout("lineColor", MATCHED_EDGE_COLOR); // set the matching color
+                setEdgeMatched(edge);
+                highlightEdge(edge);
             }
             setNodeMatched(path[i-1]);
         }
         setNodeMatched(path[path.length-1]);
-
+        //statuserklaerung
         statusID = GRAY_PATH;
         $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
             + "<h3> "+LNG.K('textdb_msg_update')+"</h3>"
@@ -538,36 +532,39 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
             + "<p>"+LNG.K('textdb_msg_update_2')+ "</p>");
     };
 
-    this.grayPath = function(){
-        var path = disjointPaths[currentPath];
+    /*
+     * Versteckt alle auf dem Augmentationsweg benutzten Knoten und inzidente Kanten.
+     * @method
+     * */
+    this.hidePath = function(path){
         for (var i = 0; i < path.length; i = i + 2) {
             var node = path[i];
-            setNodeGray(node);
+            hideNode(node);
             // gray out OutEdges
             var edges = node.getOutEdges();
             for(var e in edges){
-              edges[e].setLayout("lineWidth", global_Edgelayout.lineWidth * 0.3);
+                hideEdge(edges[e]);
             }
             // gray out InEdges
             edges = node.getInEdges();
             for(var e in edges){
-                edges[e].setLayout("lineWidth", global_Edgelayout.lineWidth * 0.3);
+                hideEdge(edges[e]);
             }
         }
         currentPath++;
 
+        //statuserklaerung
         if(currentPath < disjointPaths.length){
             statusID = NEXT_AUGMENTING_PATH;
         }
         else statusID = END_ITERATION;
-        // TODO Statusfenster
         $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
             + "<h3> "+LNG.K('textdb_msg_gray')+"</h3>"
             + "<p>"+LNG.K('textdb_msg_gray_1')+ "</p>");
     };
 
     /*
-    * Beende die Iteration
+    * Beendet die Iteration.
     * @method
     * */
     this.endIteration = function(){
@@ -575,14 +572,16 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         //restore Layouts
         for(var n in graph.nodes){
             var node = graph.nodes[n];
-            if(matched[n])setNodeMatched(node);
+            if(this.isMatched(node)) setNodeMatched(node);
+            else setNodeNotMatched(node);
         }
         for(var e in graph.edges){
-            graph.edges[e].restoreLayout();
+            setEdgeNotMatched(graph.edges[e]);
         }
         for(var e in matching){
             setEdgeMatched(graph.edges[e]);
         }
+        //statuserklaerung
         $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
             + "<h3> "+LNG.K('textdb_msg_end_it')+"</h3>"
             + "<p>"+LNG.K('textdb_msg_end_it_1')+"</p>");
@@ -711,9 +710,19 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     this.getShortestPathLength = function(){
         return shortestPathLength;
     };
+    this.isMatched = function (node){
+        return (matched[node.getNodeID()] != null);
+    };
+    this.getPartner = function (node){
+        return matched[node.getNodeID()];
+    };
     this.getMatching = function(){return matching};
     this.getPath = function () {return disjointPaths[currentPath];};
     this.getGraph = function () {return graph;};
+    this.startNewIteration = function() {
+        this.endIteration();
+        this.nextStepChoice();
+    };
 }
 
 // Vererbung realisieren

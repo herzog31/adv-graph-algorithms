@@ -3,7 +3,7 @@
  */
 /**
  * @author Ruslan Zabrodin
- * Code für Forschungsaufgabe 1<br>
+ * Code fuer Forschungsaufgabe 1<br>
  * Basiert auf dem Code für den normalen Algorithmus
  */
 
@@ -77,7 +77,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      * @type Object
      */
     var frageStats = {
-        anzahlFragen: 5,
         richtig: 0,
         falsch: 0,
         gestellt:0

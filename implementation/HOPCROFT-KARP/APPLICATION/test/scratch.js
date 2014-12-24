@@ -3,7 +3,7 @@
  */
 
 
-this.updateMatching = function(){
+this.augmentMatching = function(){
     var path = disjointPaths[currentPath];
     for(var n in path){
         var node = path[n];

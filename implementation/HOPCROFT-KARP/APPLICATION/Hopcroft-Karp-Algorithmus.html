@@ -323,36 +323,35 @@
                 </div>
                 <div id="tf2_div_statusWindow" class="statusWindow">
                     <h2>Versuche die Augmentationswege selbst zu finden</h2>
-                    <div id="tf2_div_Abspielbuttons"></div>
+                    <div id="tf2_div_abspielbuttons"></div>
 <!--                    <select id="tf2_select_aufgabeGraph" name="Wähle einen Graphen">
                         <option selected>Selbsterstellter Graph</option>
                         <option>Standardbeispiel</option>
                     </select>-->
                     <div id="tf2_div_statusErklaerung">
 <!--                        <h3>Wähle zuerst den Graphen, mit dem du arbeiten möchtest.</h3>-->
-                        <h3>Klicke auf die Knoten um einen Augmentationsweg einzuzeichnen.</h3>
-                        <p>Klicke in der Reihenfolge auf die Knoten, wie sie in dem Augmentationsweg vorkommen.</p>
+                        <h3>Klicke auf den Button "Nächter Schritt", um mit der Forschungsaufgabe zu beginnen.</h3>
+                        <p>Klicke auf die Knoten um einen Augmentationsweg einzuzeichnen. Klicke dabei in der Reihenfolge auf die Knoten, wie sie in dem Augmentationsweg vorkommen.</p>
+                        <p>Mit einem Linksklick wählst du die Knoten aus und mit einem Rechtsklich kann du deine Wahl rückgängigmachen.</p>
+                    </div>
+<!--                    <div id="tf2_div_legende">
                         <p>Mit einem Linksklick wählst du die Knoten aus und mit einem Rechtsklich kann du deine Wahl rückgängigmachen.</p>
                         <p>Klicke in der Reihenfolge auf die Knoten, wie sie in dem Augmentationsweg vorkommen.</p>
-                    </div>
+                    </div>-->
                     <div id="tf2_div_Frage">
                     </div>
                     <div id="tf2_div_Antworten">
                     </div>
                 </div>
             </div>
-<!--            <div title="Forschungsaufgabe 2" class="tabIntroDialog">
+            <div title="Forschungsaufgabe 2" class="tabIntroDialog">
                 <h2>
-                    Wie ist die optimale Sortierung der Kanten?
+                    Versuche die Augmentationswege selbst zu finden.
                 </h2>
-                <p>Der Bellman-Ford-Algorithmus kann schon nach einer einzigen Phase alle Entfernungen korrekt berechnet haben.</p>
-                <p>Dafür müssen die Kanten allerdings in der <strong>optimalen Reihenfolge</strong> betrachtet werden.
-                    <strong>Diese Reihenfolge ist aber nicht leicht zu finden</strong> &ndash; das dauert genauso lange wie der Bellman-Ford-Algorithmus selbst.</p>
-                <img src="img/FA2BeispielGut.png" alt="Diese Reihenfolge ist sinnvoll">
-                <img src="img/FA2BeispielSchlecht.png" id="tf2_img_beispielSchlecht" alt="Diese Reihenfolge ist weniger sinnvoll">
-                <p>Im Beispiel sieht man: Links ist die Reihenfolge sinnvoll, der Algorithmus kann schon nach einer Runde alle Kosten korrekt berechnet haben. Rechts ist das nicht der Fall.</p>
-                <p>In dieser Aufgabe kannst du experimentieren, wie viele Phasen der Bellman-Ford-Algorithmus bei verschiedenen Sortierungen benötigt.</p>
-            </div>-->
+                <p>Der Hopcroft-Karp-Algorithmus nutzt Augmentationswege um ein maximales Matching zu finden.</p>
+                <p>In dieser Aufgabe kannst du mit Augmentationspfaden selber experimentieren. Der Algorithmus stoppt an einigen Stellen, an denen du einen Augmentationspfad einzeichnen musst.
+                    Dabei ist es nicht notwendig den kürzesten Augmentationsweg einzuzeichnen. Du kannst selber entscheiden, welchen Augmentationsweg du nuzten möchtest.</p>
+            </div>
             <div id="tf2_div_confirmTabChange" title="Aufgabe abbrechen?" class="tabChangeWarningDialog">
                 <h2>Beim Wechsel des Tabs wird die Aufgabe abgebrochen.</h2>
                 <p>Du kannst die Anwendung <a href="#" target="_blank" tabindex=-1> in einem anderen Browserfenster</a> öffnen, um parallel einen anderen Tab zu lesen.</p>
