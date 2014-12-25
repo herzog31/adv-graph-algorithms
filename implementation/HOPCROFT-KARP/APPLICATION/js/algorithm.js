@@ -486,7 +486,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      * */
     this.highlightPath = function(path){
         //alle Kanten ein wenig in den Hintergrund
-        for(var e in graph.edges) graph.edges[e].setLayout("lineWidth", global_Edgelayout.lineWidth * 0.9);
+        //for(var e in graph.edges) graph.edges[e].setLayout("lineWidth", global_Edgelayout.lineWidth * 0.9);
         //hervorheben des Augmentationsweges(Knoten und Kanten)
         for(var n = 0; n < path.length; n=n+2){
             var node = path[n];

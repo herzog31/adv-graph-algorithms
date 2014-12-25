@@ -37,18 +37,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     * */
     var hkAlgo = new HKAlgorithm(graph,canvas,p_tab);
     /**
-     * Der Algorithmus kann in verschiedenen Zuständen sein, diese Variable
-     * speichert die ID des aktuellen Zustands.<br>
-     * Siehe Dokumentation bei der Funktion nextStepChoice
-     * @type Number
-     */
-    var statusID = 0;
-    /**
      * Closure Variable für dieses Objekt
      * @type Forschungsaufgabe1
      */
     var algo = this;
-
     /**
      * Status der Frage.<br>
      * Keys: aktiv, warAktiv
@@ -143,7 +135,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      * @returns {Number} StatusID des Algorithmus
      */
     this.getStatusID = function() {
-        return statusID;
+        return hkAlgo.getStatusID();
     };
 
     /**
@@ -254,48 +246,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             }
             else hkAlgo.nextStepChoice();
         }
-        this.needRedraw = true;
-    };
-
-    /**
-     * Initialisiere den Algorithmus, stelle die Felder auf ihre Startwerte.
-     * @method
-     */
-    this.initializeAlgorithm = function() {
-        // Frage stellen
-        this.addFrageTab();
-        var knotenIDs = Utilities.arrayOfKeys(graph.nodes);
-        if(knotenIDs.length <= 1) {
-            statusID = 6;
-            this.needRedraw = true;
-            return;
-        }
-        var frageID = Math.floor(Math.random()*knotenIDs.length);
-        while(knotenIDs[frageID] == startNode.getNodeID()) {
-            frageID = Math.floor(Math.random()*knotenIDs.length);
-        }
-        frageStatus = {"aktiv" :true, "warAktiv": false};
-        this.frageParam = {frageKnoten: graph.nodes[knotenIDs[frageID]],
-            Antwort : LNG.K('aufgabe1_answer1'),
-            AntwortGrund: "<p>"+LNG.K('aufgabe1_answer1_reason')+"</p>",
-            newNodeLabel: String.fromCharCode(8734),
-            gewusst: true
-        };
-        var antwortReihenfolge = this.generateRandomOrder();
-        var Antworten = [LNG.K('aufgabe1_text_infinity'), this.getWeightOfInEdge(this.frageParam.frageKnoten.getNodeID(),[0]), "0"];
-        this.frageParam.frageKnoten.setLayout("fillStyle",const_Colors.NodeFillingQuestion);
-        this.frageParam.frageKnoten.setLabel("");
-        $("#tf1_div_Frage").html(LNG.K('aufgabe1_text_question')+" " + ++frageStats.gestellt +" "+LNG.K('textdb_text_of')+" " +frageStats.anzahlFragen);
-        $("#tf1_div_Frage").append("<p class=\"frage\">"+LNG.K('aufgabe1_question1')+"</p>");
-        for(var i=0;i<antwortReihenfolge.length;i++) {
-            $("#tf1_div_Antworten").append("<input type=\"radio\" id=\"tf1_input_frage1_"+antwortReihenfolge[i].toString() + "\" name=\"frage1\"/>"
-            + "<label id=\"tf1_label_frage1_"+antwortReihenfolge[i].toString() +"\" for=\"tf1_input_frage1_"+antwortReihenfolge[i].toString()
-            + "\">"+ Antworten[antwortReihenfolge[i]]+"</label><br>");
-        }
-
-        $("#tf1_input_frage1_1").click(function() {$("#tf1_label_frage1_1").addClass("ui-state-error");algo.frageParam.gewusst = false;});
-        $("#tf1_input_frage1_2").click(function() {$("#tf1_label_frage1_2").addClass("ui-state-error");algo.frageParam.gewusst = false;});
-        $("#tf1_input_frage1_0").click(function() {algo.handleCorrectAnswer();});
         this.needRedraw = true;
     };
 

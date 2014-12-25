@@ -100,9 +100,9 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      */
     this.destroy = function() {
         this.removeAdditionalLabels();
+        //hkAlgo.destroy();
         this.destroyCanvasDrawer();
         this.deregisterEventHandlers();
-        hkAlgo.destroy();
     };
     
     /**
@@ -179,6 +179,13 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_button_1Schritt").button("option", "disabled", false);
         window.clearInterval(fastForwardIntervalID);
         fastForwardIntervalID = null;
+    };
+    /**
+     * Zeigt and, in welchem Zustand sich der Algorithmus im Moment befindet.
+     * @returns {Number} StatusID des Algorithmus
+     */
+    this.getStatusID = function() {
+        return hkAlgo.getStatusID();
     };
     /**
      * In dieser Funktion wird der nächste Schritt des Algorithmus ausgewählt.
@@ -307,7 +314,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
         return null;
     };
-    var augmentMatching = function () {
+/*    var augmentMatching = function () {
         var path = path;
         setNodeMatched(path[0]);
         //iterate over all edges in the path
@@ -329,7 +336,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             }
             setNodeMatched(path[i]);
         }
-    };
+    };*/
     var highlightNode = function(node){
         node.setLayout('borderColor',"Navy");
         //node.setLayout('borderColor',const_Colors.NodeBorderHighlight);
