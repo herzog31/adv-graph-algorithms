@@ -102,6 +102,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         this.removeAdditionalLabels();
         this.destroyCanvasDrawer();
         this.deregisterEventHandlers();
+        hkAlgo.destroy();
     };
     
     /**
@@ -122,33 +123,40 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     this.getWarnBeforeLeave = function() {
         return warnBeforeLeave;
     };
-    
+
+    this.registerClickHandlers = function() {
+        canvas.on("click.Forschungsaufgabe2",function(e) {algo.canvasClickHandler(e);});
+        canvas.on("contextmenu.Forschungsaufgabe2",function(e) {algo.rightClickHandler(e);});
+    };
+    this.deregisterClickHandlers = function() {
+        canvas.off("click.Forschungsaufgabe2");
+        canvas.off("contextmenu.Forschungsaufgabe2");
+    };
+
     /**
      * Registriere die Eventhandler an Buttons und canvas<br>
      * Nutzt den Event Namespace ".Forschungsaufgabe2SN"
      * @method
      */
     this.registerEventHandlers = function() {
-        canvas.on("click.Forschungsaufgabe1",function(e) {algo.canvasClickHandler(e);});
-        canvas.on("contextmenu.Forschungsaufgabe1",function(e) {algo.rightClickHandler(e);});
         //$("#tf2_select_aufgabeGraph").on("change",function() {algo.setGraphHandler();});
         //this.canvas.on("click.Forschungsaufgabe2SN",function(e) {algo.startNodeFinder(e);});
-        //$("#tf2_tr_LegendeClickable").on("click.Forschungsaufgabe2",function() {algo.changeVorgaengerVisualization();});
+        $("#tf2_tr_LegendeClickable").on("click.Forschungsaufgabe2",function() {algo.changeVorgaengerVisualization();});
     };
-    
+
     /**
      * Entferne die Eventhandler von Buttons und canvas im Namespace ".Forschungsaufgabe2"
      * und ".Forschungsaufgabe2SN"
      * @method
      */
     this.deregisterEventHandlers = function() {
-        //$("#tf1_select_aufgabeGraph").off("change");
-        //this.canvas.off(".Forschungsaufgabe2SN");
-        //this.canvas.off(".Forschungsaufgabe2");
-        canvas.off("click.Forschungsaufgabe1");
-        canvas.off("contextmenu.Forschungsaufgabe1");
-        //$("#tf2_tr_LegendeClickable").off(".Forschungsaufgabe2");
-        //$("#tf2_button_Zurueck").off(".Forschungsaufgabe2");
+        $("#tf1_select_aufgabeGraph").off("change");
+        this.canvas.off(".Forschungsaufgabe2SN");
+        this.canvas.off(".Forschungsaufgabe2");
+        canvas.off("click.Forschungsaufgabe2");
+        canvas.off("contextmenu.Forschungsaufgabe2");
+        $("#tf2_tr_LegendeClickable").off(".Forschungsaufgabe2");
+        $("#tf2_button_Zurueck").off(".Forschungsaufgabe2");
     };
     /**
      * "Spult vor", führt den Algorithmus mit hoher Geschwindigkeit aus.
@@ -195,18 +203,18 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
         else{
             var algoStatus = hkAlgo.getStatusID();
-/*            if(algoStatus == END_ALGORITHM){
-                this.end();
-            }*/
-            if(algoStatus == BEGIN_ITERATION || algoStatus == ALGOINIT){
+            if(algoStatus == END_ALGORITHM){
+                this.showResult();
+            }
+            else if(algoStatus == BEGIN_ITERATION || algoStatus == ALGOINIT){
                 hkAlgo.nextStepChoice();
-                if(Math.random() < 0.7) {
+                if(Math.random() < 0.7 && paths <= MAX) { // mit bestimmter Wahrscheinlichkeit am Iterationsanfang Weg einzeichnen
                     this.stopFastForward();
                     this.drawPath();
                 }
             }
             else if(algoStatus == NEXT_AUGMENTING_PATH){
-                if(Math.random() < 0.5){
+                if(Math.random() < 0.5 && paths <= MAX){
                     this.stopFastForward();
                     hkAlgo.startNewIteration();
                     this.drawPath();
@@ -219,7 +227,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     };
 
     this.drawPath = function() {
-        this.registerEventHandlers();
+        this.registerClickHandlers();
         $("#tf2_button_1Schritt").button("option", "disabled", true);
         $("#tf2_div_statusErklaerung").html("<h3>"+LNG.K('aufgabe2_header')+"</h3>" + "<p>"+LNG.K('aufgabe2_path')+"</p>" + "<p>"+LNG.K('aufgabe2_legend')+"</p>");
     };
@@ -272,7 +280,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                         $("#tf1_button_1Schritt").button({disabled: false});
                         $("#tf1_button_1Schritt").show();
                         this.stopFastForward();
-                        this.deregisterEventHandlers();
+                        this.deregisterClickHandlers();
                     }
                     else{//grow Path
                         $("#tf2_div_statusErklaerung").html("<h3> "+LNG.K('aufgabe2_header')+"</h3>" + "<p>"+LNG.K('aufgabe2_path')+"</p>" + "<p>"+LNG.K('aufgabe2_legend')+"</p>"
@@ -384,34 +392,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         // Ändere auch die lokalen Variablen (und vermeide "div
         this.needRedraw = true;
     };
-    
-    /**
-     * Wird aufgerufen, sobald auf das Canvas geklickt wird. 
-     * @param {jQuery.Event} e jQuery Event Objekt, gibt Koordinaten
-     */
-    this.startNodeFinder = function(e) {
-        if(startNode == null) {
-            var mx = e.pageX - this.canvas.offset().left;
-            var my = e.pageY - this.canvas.offset().top;
-            for(var knotenID in this.graph.nodes) {
-                if (this.graph.nodes[knotenID].contains(mx, my)) {
-                    this.graph.nodes[knotenID].setLayout("fillStyle",const_Colors.NodeFillingHighlight);
-                    startNode = this.graph.nodes[knotenID];
-                    this.needRedraw = true;
-                    $("#tf2_select_aufgabeGraph").hide();
-                    $("#tf2_div_Abspielbuttons").append('<button id="tf2_button_Zurueck">'+LNG.K('aufgabe2_btn_rev')+'</button>');
-                    $("#tf2_button_Zurueck").button({icons:{primary: "ui-icon-seek-start"}, disabled: true});
-                    this.canvas.off(".Forschungsaufgabe2SN");
-                    this.canvas.on("click.Forschungsaufgabe2",function(e) {algo.setNextEdge(e);});
-                    this.canvas.on("mousemove.Forschungsaufgabe2",function(e) {algo.hoverOverEdge(e);});
-                    $("#tf2_button_Zurueck").on("click.Forschungsaufgabe2",function() {algo.reverseLastStep();})
-                    warnBeforeLeave = true;
-                    this.initializeAlgorithm();
-                    break;                   // Maximal einen Knoten auswählen
-                }
-            }
-        }
-    };
+
     
     /**
      * Initialisiere den Algorithmus, stelle die Felder auf ihre Startwerte.
@@ -438,63 +419,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
     };
     
-    /**
-     * Definiert die ausgewählte Kante als nächste Kante, die der Algorithmus ausgewählt hat
-     * @param {jQuery.Event} e jQuery Event Objekt, gibt Koordinaten
-     * @method
-     */
-    this.setNextEdge = function(e) {
-        var mx = e.pageX - this.canvas.offset().left;
-        var my = e.pageY - this.canvas.offset().top;
-        for(var kantenID in this.graph.edges) {
-            if (this.graph.edges[kantenID].contains(mx, my,this.canvas[0].getContext("2d")) && edgeOrder.indexOf(kantenID) == -1) {
-                this.updateOnEdge(kantenID);
-                break;                   // Maximal einen Knoten auswählen
-            }
-        }
-    };
 
     this.showResult = function() {
-        this.graph.edges[previousEdge].setLayout("lineColor",const_Colors.EdgeHighlight4);
-        this.graph.edges[previousEdge].setLayout("lineWidth",2);
-        /** @type Edge*/
-        var aktKante = null;
-        var notOptimal = null;
-        
-        for(var kantenID in this.graph.edges) {
-            aktKante = this.graph.edges[kantenID];
-            var u = aktKante.getSourceID();
-            var v = aktKante.getTargetID();
-            if(distanz[u] != "inf" && (distanz[v] == "inf" || distanz[u] + aktKante.weight < distanz[v])) {
-                notOptimal = aktKante;
-                break;
-            }
-        }
-        var numberOfPhases = this.computeNumberOfBFPhases();
-        // Keine Verbesserung gefunden
-        if(numberOfPhases == 1) {
-            $("#tf2_div_statusErklaerung").html("<h3>"+LNG.K('aufgabe1_result1')+"</h3>");
-            $("#tf2_div_statusErklaerung").append("<p>"+LNG.K('aufgabe2_result_2')+"</p>");
-        }
-        else {
-            notOptimal.setLayout("lineColor",const_Colors.EdgeHighlight1);
-            notOptimal.setLayout("lineWidth",3);
-            if(numberOfPhases == -1) {
-                $("#tf2_div_statusErklaerung").html("<h3>"+LNG.K('aufgabe2_result_3')+"</h3>");
-                $("#tf2_div_statusErklaerung").append("<p>"+LNG.K('aufgabe2_result_4_a')+" <strong>"+(Utilities.objectSize(this.graph.nodes)-1) +" "+LNG.K('aufgabe2_result_4_b')+" </strong> "+LNG.K('aufgabe2_result_4_c')+"</p>");
-            }
-            else {
-                $("#tf2_div_statusErklaerung").html("<h3>"+LNG.K('aufgabe2_result_3')+"</h3>");
-                $("#tf2_div_statusErklaerung").append("<p>"+LNG.K('aufgabe2_result_5_a')+"<strong> "+numberOfPhases +" "+LNG.K('aufgabe2_result_4_b')+" </strong> "+LNG.K('aufgabe2_result_5_b')+"</p>");
-                $("#tf2_div_statusErklaerung").append('<button id="tf2_button_neuerVersuch">'+LNG.K('aufgabe1_btn_retry')+'</button>');
-                $("#tf2_button_neuerVersuch").button().click(function() {algo.retry();});
-            }
-        }
-        $("#tf2_div_statusErklaerung").append("<h3>"+LNG.K('aufgabe2_explan1')+"</h3>");
-        $("#tf2_div_statusErklaerung").append("<p>"+LNG.K('aufgabe2_explan2')+"</p>");
-        $("#tf2_div_statusErklaerung").append("<h3>"+LNG.K('aufgabe2_explan3')+"</h3>");
-        $("#tf2_div_statusErklaerung").append("<p>"+LNG.K('aufgabe2_explan4')+"</p>");
-        $("#tf2_div_statusErklaerung").append("<p>"+LNG.K('aufgabe2_explan5')+"</p>");
+        $("#tf2_div_statusErklaerung").html("<h3> "+LNG.K('textdb_msg_end_algo')+"</h3>" + "<p>"+LNG.K('textdb_msg_end_algo_1')+"</p>");
+
         $("#tf2_div_statusErklaerung").append('<button id="tf2_button_gotoWeiteres">'+LNG.K('aufgabe2_btn_more')+'</button>');
         $("#tf2_button_gotoWeiteres").button().click(function() {$("#tabs").tabs("option","active", 6);});
         this.needRedraw = true;

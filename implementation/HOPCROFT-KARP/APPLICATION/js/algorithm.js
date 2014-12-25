@@ -45,13 +45,13 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      * @type Object
      */
     var matching = new Object();
-    /**
+/*    *//**
      * Enthaelt alle freien Knoten (derzeit) der linken Seite
      * Wird als Ausgangspunkt fuer die Erstellung des alternierenden Graphen benutzt.
      * Keys: KnotenIDs Value: Knoten
      * @type Object
-     */
-    var superNode = new Object();
+     *//*
+    var superNode = new Object();*/
     /*
     * Repraesentiert den Augmentierungsgraphen.
     * @type Object
@@ -281,9 +281,9 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      * Initialisiere den Algorithmus.
      */
     this.initialize = function () {
-        for (var knotenID in graph.unodes) {
+/*        for (var knotenID in graph.unodes) {
             superNode[knotenID] = graph.unodes[knotenID];
-        }
+        }*/
         this.beginIteration();
         $("#ta_button_Zurueck").button("option", "disabled", false);
         //$(".marked").removeClass("marked");
@@ -298,8 +298,15 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         disjointPaths = [];
         currentPath = 0;
         shortestPathLength = 0;
-        bfs();
-        dfs();
+        // finde alle freien Knoten in der U-Partition
+        var superNode = {};
+        for (var n in graph.unodes) {
+            var node = graph.unodes[n];
+            if(!this.isMatched(node))superNode[node.getNodeID()] = node;
+        }
+        //fuehre Breiten- und Tiefensuche aus
+        bfs(superNode);
+        dfs(superNode);
         if(shortestPathLength > 0){
             statusID = NEXT_AUGMENTING_PATH;
             $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
@@ -316,7 +323,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     /*
     * Mit Hilfe der Breitensuche wird ein Augmentierungsgraph aufgebaut.
     * */
-    var bfs = function () {
+    var bfs = function (superNode) {
         //Initialize
         var freeNodeFound = false;
         var emptyLayer = false;
@@ -387,7 +394,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     * Mittels der Tiefensuche wird nach knotendisjunkten verbessernden Pfaden gesucht. Dabei wird der Augmentierungsgraph aus der Bfs-Phase verwendet.
     * @method
     * */
-   var dfs = function(){
+   var dfs = function(superNode){
        var dfsStack = [];
        for (var node in superNode) {
            var foundAugmentingPath = recursiveDfs(superNode[node], dfsStack);
@@ -662,7 +669,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
             "bfsEdges": jQuery.extend({},bfsEdges),
             "shortestPathLength": shortestPathLength,
             "iteration": iteration,
-            "superNode": jQuery.extend({},superNode),
+            //"superNode": jQuery.extend({},superNode),
             "matched": jQuery.extend({},matched),
             "disjointPaths": jQuery.extend([],disjointPaths),
             "currentPath": currentPath,
@@ -680,7 +687,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
             bfsEdges = oldState.bfsEdges;
             shortestPathLength = oldState.shortestPathLength;
             iteration = oldState.iteration;
-            superNode = oldState.superNode;
+            //superNode = oldState.superNode;
             matched = oldState.matched;
             disjointPaths = oldState.disjointPaths;
             currentPath = oldState.currentPath;

@@ -96,11 +96,8 @@
     "aufgabe2_msg_4": "Als nächstes muss der Matching-Partner ausgewählt werden.",
     "aufgabe2_result_1": "Du hast den ersten Knoten ausgewählt.",
     "aufgabe2_result_3": "Der Augmentationsweg wird um einen Knoten vergrößert.",
-    "aufgabe2_result_4_a": "Der Graph enthält einen erreichbaren negativen Kreis. Da dies erst am Ende erkannt werden kann, hätte der Algorithmus alle",
-    "aufgabe2_result_4_b": "Phasen",
-    "aufgabe2_result_4_c": "benötigt. Es ist beispielsweise noch eine Abkürzung über die rote Kante möglich.",
-    "aufgabe2_result_5_a": "Mit dieser Reihenfolge würde der Algorithmus nach",
-    "aufgabe2_result_5_b": "ein korrektes Ergebnis haben. Es ist beispielsweise noch eine Abkürzung über die rote Kante möglich.",
+    "aufgabe2_end": "Der Graph enthält einen erreichbaren negativen Kreis. Da dies erst am Ende erkannt werden kann, hätte der Algorithmus alle",
+
     "aufgabe2_explan1": "Welche Reihenfolgen sind optimal?",
     "aufgabe2_explan2": "Leider ist es aufwendig, die optimale Reihenfolge zu finden. Es ist genauso schwierig (also langwierig), wie der Algorithmus selbst.",
     "aufgabe2_explan3": "Wofür braucht man eine gute Sortierung?",
