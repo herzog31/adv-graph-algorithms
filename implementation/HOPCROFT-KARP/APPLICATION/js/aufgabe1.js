@@ -35,7 +35,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     /*
     * Das Objekt, das den Hopcroft-Karp-Algorithmus ausfuehrt
     * */
-    var hkAlgo = new HKAlgorithm(graph,canvas,p_tab);
+    var hkAlgo;
     /**
      * Closure Variable für dieses Objekt
      * @type Forschungsaufgabe1
@@ -89,6 +89,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      */
     this.run = function() {
         this.initCanvasDrawer();
+        hkAlgo = new HKAlgorithm(graph,canvas,p_tab);
         hkAlgo.deregisterEventHandlers();
         hkAlgo.setOutputFenster("#tf1_div_statusErklaerung");
         // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
@@ -238,7 +239,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
                 if(Math.random() < 0.6) this.askQuestion1();
             }
             else if(algoStatus == UPDATE_MATCHING){
-                if(Math.random() < 0.3){
+                if(Math.random() < 0.4){
                     if(Math.random() < 0.5) this.askQuestion2();
                     else this.askQuestion3();
                 }
@@ -527,7 +528,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             }
         }
         var inMatching = matching.hasOwnProperty(edge.getEdgeID());
-        edge.setLayout("lineWidth", global_Edgelayout.lineWidth*4);
+        edge.setLayout("lineWidth", global_Edgelayout.lineWidth*5);
         //graph.nodes[edge.getSourceID()].setLayout('borderColor',"Red");
         //graph.nodes[edge.getTargetID()].setLayout('borderColor',"Red");
         //edge.setLayout("lineColor", const_Colors.EdgeHighlight4);

@@ -38,7 +38,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     /*
      * Das Objekt, das den Hopcroft-Karp-Algorithmus ausfuehrt
      * */
-    var hkAlgo = new HKAlgorithm(graph,canvas,p_tab);
+    var hkAlgo;
 
     var path = new Array();
 
@@ -81,6 +81,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      */
     this.run = function() {
         this.initCanvasDrawer();
+        hkAlgo = new HKAlgorithm(graph,canvas,p_tab);
         hkAlgo.deregisterEventHandlers();
         hkAlgo.setOutputFenster("#tf2_div_statusErklaerung");
         // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
@@ -212,16 +213,18 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             var algoStatus = hkAlgo.getStatusID();
             if(algoStatus == END_ALGORITHM){
                 this.showResult();
+                this.stopFastForward();
             }
             else if(algoStatus == BEGIN_ITERATION || algoStatus == ALGOINIT){
                 hkAlgo.nextStepChoice();
-                if(Math.random() < 0.7 && paths <= MAX) { // mit bestimmter Wahrscheinlichkeit am Iterationsanfang Weg einzeichnen
+                if(Math.random() < 0 && paths < MAX) { // mit bestimmter Wahrscheinlichkeit am Iterationsanfang Weg einzeichnen
                     this.stopFastForward();
                     this.drawPath();
                 }
+                else this.fastForwardAlgorithm();
             }
             else if(algoStatus == NEXT_AUGMENTING_PATH){
-                if(Math.random() < 0.5 && paths <= MAX){
+                if(Math.random() < 0.5 && paths < MAX){
                     this.stopFastForward();
                     hkAlgo.startNewIteration();
                     this.drawPath();
@@ -428,8 +431,9 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     
 
     this.showResult = function() {
+        this.stopFastForward();
+        $("#tf2_button_1Schritt").hide();
         $("#tf2_div_statusErklaerung").html("<h3> "+LNG.K('textdb_msg_end_algo')+"</h3>" + "<p>"+LNG.K('textdb_msg_end_algo_1')+"</p>");
-
         $("#tf2_div_statusErklaerung").append('<button id="tf2_button_gotoWeiteres">'+LNG.K('aufgabe2_btn_more')+'</button>');
         $("#tf2_button_gotoWeiteres").button().click(function() {$("#tabs").tabs("option","active", 6);});
         this.needRedraw = true;
