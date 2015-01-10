@@ -1,12 +1,10 @@
 /**
- * @author Lisa Velden
+ * @author Aleksejs Voroncovs
  * Text Management
  */
 
 /********************************************** Erklärungstext / Anzeige in Pseudocode **********************************************/
 
-var scrollPositionI = 0;
-var scrollPositionJ = 0;
 var table;
 var distanceMatrix;
 
@@ -19,17 +17,15 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
     distanceMatrix = distance;
     switch(statusID) {
         case 1:
-            // if (tabprefix === "ta") {
-                $("#" + tabprefix + "_div_statusText").html("<h3>Jetzt kann der Algorithmus beginnen!</h3>");
+                $("#" + tabprefix + "_div_statusText").html("<h3>" + LNG.K('textdb_msg_can_start') + "</h3>");
                 table = displayMatrix(distance, contextNew, nodes, false);
                 if(distance.length > 13){
                     tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, 10);
                     $("#" + tabprefix + "_div_statusText").append("<table id='matrix'>" + tableSmall + "</table>");
                 }else{
                     $("#tg_button_showMatrix").hide();
-                    $("#" + tabprefix + "_div_statusText").append("<h3>Die Originalmatrix sieht so aus:</h3><table id='matrix'>" + table + "</table>");
+                    $("#" + tabprefix + "_div_statusText").append("<h3>" + LNG.K('textdb_msg_original_matrix') + "</h3><table id='matrix'>" + table + "</table>");
                 }
-            // };
             $(".not-number-cell").css("color", "black");
             $(".marked").removeClass("marked");
             $("#" + tabprefix + "_p_l2").addClass("marked");
@@ -60,20 +56,18 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
             break;
 
         case 3:
-            $("#" + tabprefix + "_div_statusText").html("<h3>Ende des Algorithmus</h3>");
-            // if (tabprefix === "ta") {
-                $("#" + tabprefix + "_div_statusText").append("<p>Nun wurden alle kürzesten beziehungsweise günstigsten Wege berechnet.</p>");
+            $("#" + tabprefix + "_div_statusText").html("<h3>" + LNG.K('textdb_msg_algo_end') + "</h3>");
+                $("#" + tabprefix + "_div_statusText").append("<p>" + LNG.K('textdb_msg_paths_computed') + "</p>");
                 table = displayMatrix(distance, contextNew, nodes, false);
                 if(distance.length > 13){
                     tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, 10);
                     $("#" + tabprefix + "_div_statusText").append("<table id='matrix'>" + tableSmall + "</table>");
                 }else{
-                    $("#" + tabprefix + "_div_statusText").append("<h3>Die Endmatrix sieht so aus:</h3><table id='matrix'>" + table + "</table>");
+                    $("#" + tabprefix + "_div_statusText").append("<h3>" + LNG.K('textdb_msg_endmatrix') + "</h3><table id='matrix'>" + table + "</table>");
                 }
                 $("#table_div").scrollLeft(0);
                 $("#table_div").scrollTop(0);
                 $(".not-number-cell").css("color", "black");
-            // };
             $(".marked").removeClass("marked");
             $("#" + tabprefix + "_p_l13").addClass("marked");
             break;
@@ -92,11 +86,7 @@ function displayMatrix(distance, contextNew, nodes, markChanged){
     var finalI, finalJ;
     for(var i = 0; i < distance.length; i++){
         var trContent = "<td class='node_label unimportant-cell'>" + nodes[i].getLabel() + "</td>";
-        var displayNeeded = false;
         for(var j = 0; j < distance.length; j++){
-            // if(distance[i][j] != "inf" && i != j){
-            //     displayNeeded = true;
-            // }
             if(contextNew && markChanged && i == contextNew.changedRow && j == contextNew.changedColumn){
                 finalJ = j; finalI = i;
                 trContent += "<td class='";
@@ -127,44 +117,8 @@ function displayMatrix(distance, contextNew, nodes, markChanged){
                     " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "</td>";
             }
         }
-        // table += "</tr>";
-        // if(displayNeeded){
         table += "<tr class='table-row'>" + trContent + "</tr>";
-        // }else{
-        //     table += "<tr style='display: none'>" + trContent + "</tr>";
-        // }
     }
-    //table += "</table>";
-    /*var table = '<table cellspacing="0" cellpadding="0" border="0" ><tr><td id="firstTd"></td><td>' + 
-        '<div id="divHeader" style="overflow:hidden;width:284px;"><table id="upperRowTable" cellspacing="0" cellpadding="0"><tr>';
-    for(var key in nodes){
-        table += '<td><div class="tableHeader">' + nodes[key].getLabel() + '</div></td>';
-    }
-    table += '</tr></table></div></td></tr><tr><td valign="top"><div id="firstcol" style="overflow: hidden;height:85px">' + 
-        '<table cellspacing="0" cellpadding="0">';
-    for(var key in nodes){
-        table += '<tr><td class="tableFirstCol">' + nodes[key].getLabel() + '</td></tr>';
-    }
-    table += '</table></div></td><td valign="top">' + 
-        '<div id="table_div" style="overflow: auto;width:300px;height:100px;position:relative" onscroll="fnScroll()" >' + 
-        '<table style="table-layout: fixed;" width="0px" cellspacing="0" cellpadding="0">';
-
-    for(var i = 0; i < distance.length; i++){
-        table += '<tr>';
-        for(var j = 0; j < distance.length; j++){
-            if (contextNew && markChanged && i == contextNew.changedRow && j == contextNew.changedColumn){
-                table += "<th class='matrix-cell' i=" + i + " j=" + j + 
-                    " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'><font color='red'>" + distance[i][j] + "</font></th>";
-                scrollPositionI = i;
-                scrollPositionJ = j;
-            } else{
-                table += "<td class='matrix-cell' i=" + i + " j=" + j + 
-                    " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "</td>";
-            }
-        }
-        table += '</tr>';
-    }
-    table += '</table></div></td></tr></table>';*/
 
     return table;
 };
@@ -178,7 +132,6 @@ function displayMatrixCorner(distance, contextNew, nodes, markChanged, limit){
     var finalI, finalJ;
     for(var i = 0; i < limit; i++){
         var trContent = "<td class='node_label unimportant-cell'>" + nodes[i].getLabel() + "</td>";
-        var displayNeeded = false;
         for(var j = 0; j < limit; j++){
             if(contextNew && markChanged && i == contextNew.changedRow && j == contextNew.changedColumn){
                 finalJ = j; finalI = i;
@@ -382,116 +335,13 @@ function unmarkPath(object){
     algo.needRedraw = true;
 };
 
-function adjustTable(matrixLength){
-    var rows = new Array();
-    var cols = new Array();
-    var spacingVertical = 0;
-    var spacingHorizontal = 0;
-    $(".important-cell").each(function(){
-        var col = $(this).parent().children().index($(this));
-        var row = $(this).parent().parent().children().index($(this).parent());
-        
-        cols.push(col);
-        if(col - 1 < 1){
-            cols.push(col + 2);
-        }else{
-            cols.push(col - 1);
-        }
-        if(col + 1 > matrixLength){
-            cols.push(col - 2);
-        }else{
-            cols.push(col + 1);
-        }
-
-        rows.push(row);
-        if(row - 1 < 1){
-            rows.push(row + 2);
-        }else{
-            rows.push(row - 1);
-        }
-        if(row + 1 > matrixLength){
-            rows.push(row - 2);
-        }else{
-            rows.push(row + 1);
-        }
-        // $("#matrix tr:eq(0) td:eq(" + (col) + ")").removeClass("unimportant-cell").addClass("important-cell");
-        // $("#matrix tr:eq(" + row + ") td:eq(0)").removeClass("unimportant-cell").addClass("important-cell");
-        // $("#matrix tr:eq(" + row + ")").removeClass("table-row");
-        // console.log("row="+row+"col="+col);    
-    });
-    
-    if(Math.abs(rows[1] - rows[0]) > Math.abs(rows[2] - rows[1])){
-        spacingVertical = Math.abs(rows[1] - rows[0]);
-    }else{
-        spacingVertical = Math.abs(rows[2] - rows[1]);
-    }
-
-    if(Math.abs(cols[1] - cols[0]) > Math.abs(cols[2] - cols[1])){
-        spacingHorizontal = Math.abs(cols[1] - cols[0]);
-    }else{
-        spacingHorizontal = Math.abs(cols[2] - cols[1]);
-    }
-
-
-
-    for(var i in rows){
-        $("#matrix tr:eq(" + rows[i] + ") td:eq(0)").removeClass("unimportant-cell").addClass("important-cell");
-        $("#matrix tr:eq(" + rows[i] + ")").removeClass("table-row");
-        for(var j in cols){
-            $("#matrix tr:eq(0) td:eq(" + (cols[j]) + ")").removeClass("unimportant-cell").addClass("important-cell");
-            $("#matrix tr:eq(" + rows[i] + ") td:eq(" + cols[j] + ")").removeClass("unimportant-cell").addClass("important-cell");
-            // if(rows[i] - 1 < 1){
-            //     $("#matrix tr:eq(" + (rows[i] + 2) + ") td:eq(" + cols[j] + ")").removeClass("unimportant-cell").addClass("important-cell");
-            // }else{
-            //     $("#matrix tr:eq(" + (rows[i] - 1) + ") td:eq(" + cols[j] + ")").removeClass("unimportant-cell").addClass("important-cell");
-            // }
-            // if(rows[i] + 1 > matrixLength){
-            //     $("#matrix tr:eq(" + (rows[i] - 2) + ") td:eq(" + cols[j] + ")").removeClass("unimportant-cell").addClass("important-cell");
-            // }else{
-            //     $("#matrix tr:eq(" + (rows[i] - 1) + ") td:eq(" + cols[j] + ")").removeClass("unimportant-cell").addClass("important-cell");
-            // }
-
-            // if(cols[j] - 1 < 1){
-            //     $("#matrix tr:eq(" + rows[i] + ") td:eq(" + (cols[j] + 2) + ")").removeClass("unimportant-cell").addClass("important-cell");
-            // }else{
-            //     $("#matrix tr:eq(" + rows[i] + ") td:eq(" + (cols[j] - 1) + ")").removeClass("unimportant-cell").addClass("important-cell");
-            // }
-            // if(cols[j] + 1 > matrixLength){
-            //     $("#matrix tr:eq(" + rows[i] + ") td:eq(" + (cols[j] - 2) + ")").removeClass("unimportant-cell").addClass("important-cell");
-            // }else{
-            //     $("#matrix tr:eq(" + rows[i] + ") td:eq(" + (cols[j] - 1) + ")").removeClass("unimportant-cell").addClass("important-cell");
-            // }
-        }
-    }
-
-    $(".table-row").css("display", "none");
-    $(".unimportant-cell").css("display", "none");
-    $(".important-cell").css("display", "table-cell");
-    // var col = $(".important-cell").parent().children().index($(".important-cell"));
-    // var row = $(".important-cell").parent().parent().children().index($(".important-cell").parent());
-    // console.log("row="+row+"col="+col);
-    // $("#matrix tr:eq(0) td:eq(" + (col - 1) + ")").removeClass("unimportant-cell").addClass("important-cell");
-    // $("#matrix tr:eq(" + row + ") td:eq(0)").removeClass("unimportant-cell").addClass("important-cell");
-    // $("#matrix tr:eq(" + row + ")").removeClass("table-row");
-
-    // $(".table-row").css("display", "none");
-    // $(".unimportant-cell").css("display", "none");
-    // $("#matrix").find("[i=" + (row - 1) + "][j=0]").css("display", "table-row");
-    // $("#matrix").find("[i=0][j=" + (col - 1) + "]").css("display", "table-row");
-};
-
 //function to support scrolling of title and first column
 fnScroll = function(){
     $('#divHeader').scrollLeft($('#table_div').scrollLeft());
     $('#firstcol').scrollTop($('#table_div').scrollTop());
 };
-// onmouseover='markPath(" + i + ", + " + j + ")'
 
 function showMatrixPopup(){
-    // $("#matrix-overlay").css("display", "block");
-    // $("#matrix-container").html("<table id='matrix-display'>" + table + "</table>");
-    // $("#matrix-display td").removeAttr("onmouseover");
-    // $("#matrix-display td").removeAttr("onmouseout");
     $("#" + tabprefix + "_div_completeMatrix").dialog("open");
     $("#" + tabprefix + "_div_completeMatrix").html("<table id='matrix-display'>" + table + "</table>");
     $("#" + tabprefix + "_div_completeMatrix").css("width", (distanceMatrix.length + 1)*18 + "px");
@@ -511,9 +361,3 @@ function showMatrixPopup(){
     $(window).scrollTop(0);
     return;
 };
-
-// function hideMatrixPopup(){
-//     $("#matrix-container").html();
-//     $("#matrix-overlay").css("display", "none");
-//     return;
-// };

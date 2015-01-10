@@ -1,6 +1,6 @@
 /**
- * @author Lisa Velden
- * Forschungsaufgabe 3<br>
+ * @author Aleksejs Voroncovs
+ * Forschungsaufgabe 1
  */
 
 /**
@@ -110,8 +110,6 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
 
     var distance = new Array();
 
-    var contextStack = new Array();
-
     var paths = new Array();
 
     var keyToIndex = new Array();
@@ -129,7 +127,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
     this.run = function() {
         this.initCanvasDrawer();
         // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
-        $("#tf1_div_abspielbuttons").append("<button id=\"tf1_button_1Schritt\">Nächster Schritt</button><br>" + "<button id=\"tf1_button_vorspulen\">Zur nächsten Frage vorspulen</button>" + "<button id=\"tf1_button_stoppVorspulen\">Pause</button>");
+        $("#tf1_div_abspielbuttons").append("<button id=\"tf1_button_1Schritt\">" + LNG.K('textdb_msg_can_start') + "</button><br>" + "<button id=\"tf1_button_vorspulen\">" + LNG.K('aufgabe1_btn_next_question') + "</button>" + "<button id=\"tf1_button_stoppVorspulen\">" + LNG.K('algorithm_btn_paus') + "</button>");
         $("#tf1_button_stoppVorspulen").hide();
         $("#tf1_button_1Schritt").button({
             icons : {
@@ -160,7 +158,11 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
         $("#tf1_button_vorspulen").hide();
         $("#tf1_div_statusTabs").tabs();
         $(".marked").removeClass("marked");
-        $("#tf1_p_l1").addClass("marked");
+        $(".marked").removeClass("marked");
+        $("#tf1_p_l2").addClass("marked");
+        $("#tf1_p_l3").addClass("marked");
+        $("#tf1_p_l4").addClass("marked");
+        $("#tf1_p_l5").addClass("marked");
         $("#tf1_tr_LegendeClickable").removeClass("greyedOutBackground");
     };
 
@@ -182,6 +184,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
         this.destroy();
         var algo = new Forschungsaufgabe1($("body").data("graph"), $("#tf1_canvas_graph"), $("#tab_tf1"));
         $("#tab_tf1").data("algo", algo);
+        algo.initializeAlgorithm();
         algo.run();
     };
 
@@ -256,7 +259,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
     };
 
     /******************************************************************************************************************************************/
-    /************************************************* Dijkstra spezifische Funktionen ********************************************************/
+    /************************************************* Floyd-Warshall spezifische Funktionen ***************************************************/
     /******************************************************************************************************************************************/
 
     /**
@@ -307,6 +310,27 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
         }
 
         changeText(distance, "tf1", contextNew, graph.nodes, status);
+
+        if(contextStack.length == 4){
+            this.poseQuestion(0);
+        }else if(contextStack.length == 10){
+            this.poseQuestion(1);
+        }else if(contextStack.length == 35){
+            this.poseQuestion(2);
+        }else if(contextStack.length == 20){
+            this.poseQuestion(3);
+        }else if(contextStack.length == 2){
+            this.poseQuestion(4);
+        }else if(contextStack.length == 28){
+            this.poseQuestion(5);
+        }
+
+        if (questionStatus.aktiv) {
+            this.stopFastForward();
+        }else if (questionStatus.warAktiv) {
+            this.removeQuestionTab();
+            questionStatus.warAktiv = false;
+        }
         return algo.finished;
     };
 
@@ -393,188 +417,6 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
             paths[keyToIndex[graph.edges[key].getSourceID()]][keyToIndex[graph.edges[key].getTargetID()]] = "" + key;
         }
 
-        // changeText(distance, "tf1", null, graph.nodes, 1);
-    };
-
-    /**
-     * Iteriere durch die Hauptschleife: solange Elemente in der Priority Queue vorhanden sind, entnehme das erste Element.
-     * @method
-     * @param {Context} context
-     * @returns {Context} context
-     */
-    this.extractMin = function(context) {
-        if ($("#ta_button_Zurueck").button("option", "disabled") && fastForwardIntervalID == null) {
-            $("#ta_button_Zurueck").button("option", "disabled", false);
-        }
-        var currentWrapperNode = context.pqueue.extractMin();
-        context.currentNode = currentWrapperNode.getValue();
-        context.nodeColors[context.currentNode.getNodeID()] = const_Colors.CurrentNodeColor;
-
-        var outEdges = context.currentNode.getOutEdges();
-        context.copiedOutEdges = _.values(outEdges);
-
-        if (context.copiedOutEdges.length > 0) {
-            // Neuer Status -> nächste Kante: loopOutEdges()
-            context.statusID = 2;
-        } else {
-            // Neuer Status -> Vaterknoten abgearbeitet: markAsProcessed()
-            context.statusID = 5;
-        };
-
-        return context;
-    };
-
-    /**
-     * Alle ausgehenden Kanten des aktuellen Knotens betrachten
-     * @method
-     * @param {Context} context
-     * @returns {Context} context
-     */
-    this.loopOutEdges = function(context) {
-        if (context.anotherEdgeRed) {
-            context.anotherEdgeRed = false;
-            context.edgeColors[context.currentEdge.getEdgeID()] = const_Colors.NormalEdgeColor;
-        };
-        context.currentEdge = context.copiedOutEdges.shift();
-        context.oppositeNodeID = context.currentEdge.getTargetID();
-        context.oppositeNode = graph.nodes[context.oppositeNodeID];
-        context.edgeColors[context.currentEdge.getEdgeID()] = const_Colors.EdgeHighlight1;
-        context.neighbourDistance = context.distance[context.currentEdge.getSourceID()] + context.currentEdge.weight;
-
-        //Distanzen und Prioritäten für bereits entdeckte Knoten updaten
-        if (context.pqueue.contains(graph.nodes[context.oppositeNodeID]) && (context.neighbourDistance < context.pqueue.getKey(graph.nodes[context.oppositeNodeID]))) {
-            // Neuer Status -> updateVisitedNode()
-            context.statusID = 3;
-            //Neu entdeckten Knoten in Priority Queue einfügen
-        } else if (context.parentNodes[context.oppositeNodeID] == undefined) {
-            // Neuer Status -> insertNewNode()
-            context.statusID = 4;
-        } else {
-            if (context.copiedOutEdges.length > 0) {
-                // merke für Animation, dass Kante unbehandelt war
-                context.anotherEdgeRed = true;
-                // Neuer Status -> nächste Kante: loopOutEdges()
-                context.statusID = 2;
-            } else {
-                // Neuer Status -> Vaterknoten abgearbeitet: markAsProcessed()
-                context.statusID = 5;
-            };
-        }
-        ;
-
-        // Frage zu eingehenden Kanten von Knoten f:
-        if ((context.currentEdge.getEdgeID() == 3 || context.currentEdge.getEdgeID() == 5 || context.currentEdge.getEdgeID() == 7) && questionStats.gestellt < questionStats.numQuestions) {
-            this.poseQuestion("assets/question_edge_" + context.currentEdge.getEdgeID() + ".json");
-        };
-
-        return context;
-
-    };
-
-    /**
-     * Ist der Knoten bereits in der Priority Queue enthalten und die neuberechnete Distanz kleiner, so wird der Distanzwert aktualisiert.
-     * @method
-     * @param {Context} context
-     * @returns {Context} context
-     */
-    this.updateVisitedNode = function(context) {
-
-        context.pqueue.decreaseKey(graph.nodes[context.oppositeNodeID], context.neighbourDistance);
-
-        context.nodeColors[context.oppositeNodeID] = const_Colors.PQColor;
-
-        context.distance[context.oppositeNodeID] = context.neighbourDistance;
-        context.parentEdges[context.oppositeNodeID] = context.currentEdge.getEdgeID();
-        context.parentNodes[context.oppositeNodeID] = context.currentNode.getNodeID();
-
-        // Farben der eingehenden Kanten setzen
-        for (var edgeID in context.oppositeNode.getInEdges()) {
-            if (edgeID != context.currentEdge.getEdgeID()) {
-                context.edgeColors[edgeID] = const_Colors.NormalEdgeColor;
-            } else {
-                context.edgeColors[context.currentEdge.getEdgeID()] = const_Colors.ShortestPathColor;
-            };
-        };
-
-        // Knotenlabel updaten
-        context.nodeLabels[context.oppositeNodeID] = context.oppositeNode.getName() + ": " + context.neighbourDistance.toString();
-
-        if (context.copiedOutEdges.length > 0) {
-            // Neuer Status -> nächste Kante: loopOutEdges()
-            context.statusID = 2;
-        } else {
-            // Neuer Status -> Vaterknoten abgearbeitet: markAsProcessed()
-            context.statusID = 5;
-        };
-
-        // Frage zu Warteschlange bei Aktualisierung von Knoten f:
-        if (context.oppositeNodeID == 5 && questionStats.gestellt < questionStats.numQuestions) {
-            this.poseQuestion("assets/question_pq_after_" + context.currentEdge.getEdgeID() + ".json");
-        };
-
-        return context;
-    };
-
-    /**
-     * Wurde der Knoten erst neu entdeckt, so wird er in die Priority Queue eingefügt.
-     * @method
-     * @param {Context} context
-     * @returns {Context} context
-     */
-    this.insertNewNode = function(context) {
-        context.pqueue.insert(new Node(context.neighbourDistance, context.oppositeNode));
-        context.distance[context.oppositeNodeID] = context.neighbourDistance;
-        context.parentEdges[context.oppositeNodeID] = context.currentEdge.getEdgeID();
-        context.parentNodes[context.oppositeNodeID] = context.currentNode.getNodeID();
-        context.nodeColors[context.oppositeNodeID] = const_Colors.PQColor;
-        context.nodeLabels[context.oppositeNodeID] = context.oppositeNode.getName() + ": " + context.distance[context.oppositeNodeID].toString();
-        context.edgeColors[context.currentEdge.getEdgeID()] = const_Colors.ShortestPathColor;
-
-        if (context.copiedOutEdges.length > 0) {
-            // Neuer Status -> nächste Kante: loopOutEdges()
-            context.statusID = 2;
-        } else {
-            // Neuer Status -> Vaterknoten abgearbeitet: markAsProcessed()
-            context.statusID = 5;
-        };
-
-        // Frage zu Warteschlange bei Einfügen von Knoten f:
-        if (context.oppositeNodeID == 5 && questionStats.gestellt < questionStats.numQuestions) {
-            this.poseQuestion("assets/question_pq_after_" + context.currentEdge.getEdgeID() + ".json");
-        };
-
-        return context;
-    };
-
-    /**
-     * Markiert bereits abgearbeitete Knoten.
-     * @method
-     * @param {Context} context
-     * @returns {Context} context
-     */
-    this.markAsProcessed = function(context) {
-        context.nodeColors[context.currentNode.getNodeID()] = const_Colors.FinishedNodeColor;
-
-        if (context.currentEdge) {
-            // rote Kanten korrigieren
-            if (context.edgeColors[context.currentEdge.getEdgeID()] == const_Colors.EdgeHighlight1) {
-                context.edgeColors[context.currentEdge.getEdgeID()] = const_Colors.NormalEdgeColor;
-            };
-            // Frage stellen
-            if (context.currentEdge.getEdgeID() == 7) {
-                this.poseQuestion("assets/question_pq_after_7.json");
-            };
-        };
-
-        if (context.pqueue.length() > 0) {
-            // Neuer Status -> nächster Knoten: extractMin()
-            context.statusID = 1;
-        } else {
-            // Neuer Status -> Ende
-            context.statusID = 6;
-        };
-
-        return context;
     };
 
     /******************************************************** Ende des Algorithmus ********************************************************/
@@ -585,7 +427,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
      * @param {Context} context
      * @returns {Context} context
      */
-    this.end = function(context) {
+    this.end = function() {
         algo.finished = true;
 
         // Falls wir im "Vorspulen" Modus waren, daktiviere diesen
@@ -594,9 +436,9 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
         }
         
         // Ausführung nicht mehr erlauben
-        $("#ta_button_Zurueck").button("option", "disabled", false);
-        $("#ta_button_1Schritt").button("option", "disabled", true);
-        $("#ta_button_vorspulen").button("option", "disabled", true);
+        $("#tf1_button_Zurueck").button("option", "disabled", false);
+        $("#tf1_button_1Schritt").button("option", "disabled", true);
+        $("#tf1_button_vorspulen").button("option", "disabled", true);
         return;
     };
 
@@ -685,74 +527,67 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
      * @method
      * @param {String} questionURL
      */
-    this.poseQuestion = function(questionURL) {
-        var request = $.ajax({
-            url : questionURL,
-            async : false,
-            dataType : "text"
-        });
+    this.poseQuestion = function(questionID) {
 
         this.addQuestionTab();
 
-        request.done(function(data) {
-            var question = $.parseJSON(data);
+        var question = questions[questionID];
 
-            questionStats.gestellt++;
+        questionStats.gestellt++;
 
-            $("#tf1_div_Frage").html("Frage " + questionStats.gestellt + " von " + questionStats.numQuestions);
-            $("#tf1_div_Frage").append("<p class=\"question\">" + question.question + "</p>");
+        $("#tf1_div_Frage").html("Frage " + questionStats.gestellt + " von " + questionStats.numQuestions);
+        $("#tf1_div_Frage").append("<p class=\"question\">" + question.question + "</p>");
 
-            var firstTry = true;
+        var firstTry = true;
 
-            for (var i = 0; i < question.answers.length; i++) {
-                var answer = question.answers[i];
+        for (var i = 0; i < question.answers.length; i++) {
+            var answer = question.answers[i];
 
-                var idInput = 'answer_' + i;
-                var idLabel = 'answer_' + i + '_label';
+            var idInput = 'answer_' + i;
+            var idLabel = 'answer_' + i + '_label';
 
-                var inputHTML = '<input type="radio" id="' + idInput + '" name="group1"/>';
-                var labelHTML = '<label id="' + idLabel + '" for="' + idInput + '">' + answer.answer + '</label>';
+            var inputHTML = '<input type="radio" id="' + idInput + '" name="group1"/>';
+            var labelHTML = '<label id="' + idLabel + '" for="' + idInput + '">' + answer.answer + '</label>';
 
-                $("#tf1_div_Antworten").append(inputHTML + labelHTML + '<br>');
+            $("#tf1_div_Antworten").append(inputHTML + labelHTML + '<br>');
 
-                if (i === question.correctAnswerIndex) {
-                    var ans = answer.answer;
-                    var exp = answer.explanation;
+            if (i === question.correctAnswerIndex) {
+                var ans = answer.answer;
+                var exp = answer.explanation;
 
-                    $("#" + idInput).click(function() {
-                        $("#tf1_button_1Schritt").button("option", "disabled", false);
-                        $("#tf1_button_vorspulen").button("option", "disabled", false);
+                $("#" + idInput).click(function() {
+                    $("#tf1_button_1Schritt").button("option", "disabled", false);
+                    $("#tf1_button_vorspulen").button("option", "disabled", false);
 
-                        $("p.question").css("color", const_Colors.GreenText);
+                    $("p.question").css("color", const_Colors.GreenText);
 
-                        $("#tf1_div_Antworten").html("<h2>Richtige Antwort: " + ans + "</h2>");
-                        $("#tf1_div_Antworten").append(exp);
+                    $("#tf1_div_Antworten").html("<h2>"+LNG.K('aufgabe1_text_right_answer')+" " + ans + "</h2>");
+                    $("#tf1_div_Antworten").append(exp);
 
-                        if (firstTry) {
-                            questionStats.correct++;
-                        } else {
-                            questionStats.wrong++;
-                        }
+                    if (firstTry) {
+                        questionStats.correct++;
+                    } else {
+                        questionStats.wrong++;
+                    }
 
-                        algo.needRedraw = true;
-                        questionStatus = {
-                            "aktiv" : false,
-                            "warAktiv" : true
-                        };
-
-                    });
-                } else {
-                    // Closure durch Funktion, um lokale Variablen zu schützen
-                    var f = function(id, label) {
-                        $("#" + id).click(function() {
-                            $("#" + label).addClass("ui-state-error");
-                            firstTry = false;
-                        });
+                    algo.needRedraw = true;
+                    questionStatus = {
+                        "aktiv" : false,
+                        "warAktiv" : true
                     };
-                    f(idInput, idLabel);
+
+                });
+            } else {
+                // Closure durch Funktion, um lokale Variablen zu schützen
+                var f = function(id, label) {
+                    $("#" + id).click(function() {
+                        $("#" + label).addClass("ui-state-error");
+                        firstTry = false;
+                    });
                 };
+                f(idInput, idLabel);
             };
-        });
+        };
 
         questionStatus = {
             "aktiv" : true,
@@ -766,7 +601,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
      * @method
      */
     this.addQuestionTab = function() {
-        var li = "<li id='tf1_li_FrageTab'><a href='#tf1_div_FrageTab'>Frage</a></li>", id = "tf1_div_FrageTab";
+        var li = "<li id='tf1_li_FrageTab'><a href='#tf1_div_FrageTab'>"+LNG.K('aufgabe1_text_question')+"</a></li>", id = "tf1_div_FrageTab";
         $("#tf1_div_statusTabs").find(".ui-tabs-nav").append(li);
         $("#tf1_div_statusTabs").append("<div id='" + id + "'><div id='tf1_div_Frage'></div><div id='tf1_div_Antworten'></div></div>");
         $("#tf1_div_statusTabs").tabs("refresh");
@@ -795,27 +630,28 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
      */
     this.showResults = function() {
         warnBeforeLeave = false;
-        var li = "<li id='tf1_li_ErgebnisseTab'><a href='#tf1_div_ErgebnisseTab'>Ergebnisse</a></li>", id = "tf1_div_ErgebnisseTab";
+        var li = "<li id='tf1_li_ErgebnisseTab'><a href='#tf1_div_ErgebnisseTab'>"+LNG.K('aufgabe1_text_results')+"</a></li>", id = "tf1_div_ErgebnisseTab";
         $("#tf1_div_statusTabs").find(".ui-tabs-nav").append(li);
         $("#tf1_div_statusTabs").append("<div id='" + id + "'></div>");
         $("#tf1_div_statusTabs").tabs("refresh");
-        $("#tf1_div_statusTabs").tabs("option", "active", 2);
+        $("#tf1_div_statusTabs").tabs("option", "active", 3);
         if (questionStats.numQuestions == questionStats.correct) {
-            $("#tf1_div_ErgebnisseTab").append("<h2>Herzlichen Glückwunsch!</h2>");
-            $("#tf1_div_ErgebnisseTab").append("<p>Du hast alle Fragen korrekt beantwortet</p>");
+            $("#tf1_div_ErgebnisseTab").append("<h2>"+LNG.K('aufgabe1_result1')+"</h2>");
+            $("#tf1_div_ErgebnisseTab").append("<p>"+LNG.K('aufgabe1_result2')+"</p>");
         } else {
-            $("#tf1_div_ErgebnisseTab").append("<h2>Forschungsaufgabe beendet</h2>");
-            $("#tf1_div_ErgebnisseTab").append("<p>Anzahl Fragen: " + questionStats.numQuestions + "</p>");
-            $("#tf1_div_ErgebnisseTab").append("<p>Richtig beantwortet: " + questionStats.correct + "</p>");
-            $("#tf1_div_ErgebnisseTab").append("<p>Falsch beantwortet: " + questionStats.wrong + "</p>");
-            $("#tf1_div_ErgebnisseTab").append('<button id="tf1_button_Retry">Nochmal versuchen</button>');
+            $("#tf1_div_ErgebnisseTab").append("<h2>"+LNG.K('aufgabe1_result3')+"</h2>");
+            $("#tf1_div_ErgebnisseTab").append("<p>"+LNG.K('aufgabe1_result4')+" " + questionStats.numQuestions + "</p>");
+            $("#tf1_div_ErgebnisseTab").append("<p>"+LNG.K('aufgabe1_result5')+" " + questionStats.correct + "</p>");
+            $("#tf1_div_ErgebnisseTab").append("<p>"+LNG.K('aufgabe1_result6')+" " + questionStats.wrong + "</p>");
+            $("#tf1_div_ErgebnisseTab").append("<button id='tf1_button_Retry'>"+LNG.K('aufgabe1_btn_retry')+"</button>");
             $("#tf1_button_Retry").button().click(function() {
                 algo.refresh();
             });
         }
-        $("#tf1_div_ErgebnisseTab").append('<button id="tf1_button_gotoWeiteres">Erfahre mehr über den Algorithmus und das Problem negativer Kantenkosten</button>');
-        $("#tf1_button_gotoWeiteres").button().click(function() {
-            $("#tabs").tabs("option", "active", 7);
+        $("#tf1_div_ErgebnisseTab").append("<h3>"+LNG.K('aufgabe1_btn_exe2')+"</h3>");
+        $("#tf1_div_ErgebnisseTab").append('<button id="tf1_button_gotoFA2">'+LNG.K('algorithm_btn_exe2')+'</button>');
+        $("#tf1_button_gotoFA2").button().click(function() {
+            $("#tabs").tabs("option", "active", 5);
             $("#tw_Accordion").accordion("option", "active", 3);
         });
     };
@@ -829,6 +665,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
     };
 
     this.findShortestPaths = function(context){
+        console.log(distance);
         var isStepMade = false;
         while(!isStepMade && (context.i < distance.length - 1 || context.j < distance.length - 1 
             || context.k < distance.length - 1)){
@@ -875,33 +712,6 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
             }
         }
         return isStepMade;
-    };
-
-    this.showResults = function() {
-        warnBeforeLeave = false;
-        var li = "<li id='tf1_li_ErgebnisseTab'><a href='#tf1_div_ErgebnisseTab'>Ergebnisse</a></li>", id = "tf1_div_ErgebnisseTab";
-        $("#tf1_div_statusTabs").find(".ui-tabs-nav").append(li);
-        $("#tf1_div_statusTabs").append("<div id='" + id + "'></div>");
-        $("#tf1_div_statusTabs").tabs("refresh");
-        $("#tf1_div_statusTabs").tabs("option", "active", 2);
-        if (questionStats.numQuestions == questionStats.correct) {
-            $("#tf1_div_ErgebnisseTab").append("<h2>Herzlichen Glückwunsch!</h2>");
-            $("#tf1_div_ErgebnisseTab").append("<p>Du hast alle Fragen korrekt beantwortet</p>");
-        } else {
-            $("#tf1_div_ErgebnisseTab").append("<h2>Forschungsaufgabe beendet</h2>");
-            $("#tf1_div_ErgebnisseTab").append("<p>Anzahl Fragen: " + questionStats.numQuestions + "</p>");
-            $("#tf1_div_ErgebnisseTab").append("<p>Richtig beantwortet: " + questionStats.correct + "</p>");
-            $("#tf1_div_ErgebnisseTab").append("<p>Falsch beantwortet: " + questionStats.wrong + "</p>");
-            $("#tf1_div_ErgebnisseTab").append('<button id="tf1_button_Retry">Nochmal versuchen</button>');
-            $("#tf1_button_Retry").button().click(function() {
-                algo.refresh();
-            });
-        }
-        $("#tf1_div_ErgebnisseTab").append('<button id="tf1_button_gotoWeiteres">Erfahre mehr über den Algorithmus und das Problem negativer Kantenkosten</button>');
-        $("#tf1_button_gotoWeiteres").button().click(function() {
-            $("#tabs").tabs("option", "active", 7);
-            $("#tw_Accordion").accordion("option", "active", 3);
-        });
     };
 }
 

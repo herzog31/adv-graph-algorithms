@@ -1,5 +1,5 @@
 /**
- * @author Lisa Velden
+ * @author Aleksejs Voroncovs
  * Forschungsaufgabe 2
  */"use strict";
 
@@ -191,13 +191,9 @@ function Forschungsaufgabe2(p_graph, p_canvas, p_tab) {
      * @method
      */
     this.end = function() {
-        $("#tf2_div_statusErklaerung").html("<h3><font color=green>Herzlichen Glückwunsch! </font> Du hast alle Kantenkosten richtig bestimmt.</h3><p>Was m&ouml;chtest du nun tun?</p>");
-        $("#tf2_div_statusErklaerung").append('<button id="tf2_button_gotoWeiteres">Weitere Informationen über den Algorithmus</button>');
-        $("#tf2_div_statusErklaerung").append('<button id="tf2_button_gotoFA3">Forschungsaufgabe: Negative Kantenkosten</button>');
+        $("#tf2_div_statusErklaerung").html("<h3><font color=green>" + LNG.K('aufgabe1_result1') + " </font> " + LNG.K('aufgabe1_result2') + "</h3><p>" + LNG.K('aufgabe2_whats_next') + "</p>");
+        $("#tf2_div_statusErklaerung").append("<button id='tf2_button_gotoWeiteres'>" + LNG.K('aufgabe2_btn_more') + "</button>");
         $("#tf2_button_gotoWeiteres").button().click(function() {
-            $("#tabs").tabs("option", "active", 7);
-        });
-        $("#tf2_button_gotoFA3").button().click(function() {
             $("#tabs").tabs("option", "active", 6);
         });
         warnBeforeLeave = false;
@@ -239,7 +235,7 @@ function Forschungsaufgabe2(p_graph, p_canvas, p_tab) {
         $("#WeightChangePopup_" + edgeID.toString()).remove();
         $("body").append("<div id=\"WeightChangePopup_" + edgeID.toString() + "\"></div>");
         $("#WeightChangePopup_" + edgeID.toString()).append("<input id=\"WeightInput_" + edgeID.toString() + "\" value=" + algo.graph.edges[edgeID].weight.toString() + "></input>");
-        $("#WeightChangePopup_" + edgeID.toString()).append("<button id=\"WeightSave_" + edgeID.toString() + "\">speichern</button>");
+        $("#WeightChangePopup_" + edgeID.toString()).append("<button id=\"WeightSave_" + edgeID.toString() + "\">" + LNG.K('aufgabe2_save') + "</button>");
         $("#WeightInput_" + edgeID.toString()).spinner({
             culture : "de",
             min : 1

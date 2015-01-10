@@ -1,5 +1,5 @@
 /**
- * @author Richard Stotz, Lisa Velden
+ * @author Aleksejs Voroncovs
  * Allgemeine Animationen der Seite, Initialisierungscode<br>
  * Es wird auch die Oberklasse CanvasDrawer definiert, von der alle Klassen erben, die
  * mit dem Canvas arbeiten.
@@ -109,6 +109,7 @@ function initializeSiteLayout() {
             if (ui.newPanel[0].id == "tab_tf1") {
                 algo = new Forschungsaufgabe1($("body").data("graph"), $("#tf1_canvas_graph"), $("#tab_tf1"));
                 $("#tab_tf1").data("algo", algo);
+                console.log("initializing");
                 algo.initializeAlgorithm();
             }
             if (ui.newPanel[0].id == "tab_tf2") {

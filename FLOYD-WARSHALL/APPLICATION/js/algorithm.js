@@ -72,7 +72,7 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
     this.run = function() {
         this.initCanvasDrawer();
         // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
-        $("#ta_div_abspielbuttons").append("<button id=\"ta_button_Zurueck\">Zur&uumlck</button>" + "<button id=\"ta_button_1Schritt\">N&aumlchster Schritt</button>" + "<button id=\"ta_button_vorspulen\">Vorspulen</button>" + "<button id=\"ta_button_stoppVorspulen\">Pause</button>");
+        $("#ta_div_abspielbuttons").append("<button id=\"ta_button_Zurueck\">" + LNG.K('algorithm_btn_prev') + "</button>" + "<button id=\"ta_button_1Schritt\">" + LNG.K('algorithm_btn_next') + "</button>" + "<button id=\"ta_button_vorspulen\">" + LNG.K('algorithm_btn_frwd') + "</button>" + "<button id=\"ta_button_stoppVorspulen\">" + LNG.K('algorithm_btn_paus') + "</button>");
         $("#ta_button_stoppVorspulen").hide();
         $("#ta_button_Zurueck").button({
             icons : {
@@ -185,6 +185,7 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
         this.destroy();
         var algo = new FloydWarshallAlgorithm($("body").data("graph"), $("#ta_canvas_graph"), $("#tab_ta"));
         $("#tab_ta").data("algo", algo);
+        algo.initializeAlgorithm();
         algo.run();
     };
 
@@ -248,16 +249,6 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 			}
 		}
 		return isStepMade;
-		/*for(context.k = 0; k < distance.length; k++){
-			for(context.i = 0; i < distance.length; i++){
-				for(context.j = 0; j < distance.length; j++){
-					if(distance[i][k] != "inf" && distance[k][j] != "inf" 
-							&& (distance[i][j] == "inf" || distance[i][j] > distance[i][k] + distance[k][j])){
-						distance[i][j] = distance[i][k] + distance[k][j];
-					}
-				}
-			}
-		}*/
 	};
 
 	this.nextStepChoice = function(){
@@ -315,9 +306,6 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 			status = 1;
 		}
 		changeText(distance, "ta", lastStep, graph.nodes, status);
-        // if(distance.length > 13 && status == 2){
-        //     adjustTable(distance.length);
-        // }
 		return;
 	};
 
@@ -360,17 +348,6 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 
 		changeText(distance, "ta", null, graph.nodes, 1);
 	};
-
-	// this.visualize = function(){
-	// 	for(var i = 0; i < distance.length; i++){
-	// 		var str = "";
-	// 		for(var j = 0; j < distance.length; j++){
-	// 			str += " " + distance[i][j];
-	// 		}
-	// 		console.log(str);
-	// 	}
-	// 	console.log("");
-	// };
 
 	this.end = function(context) {
         algo.finished = true;
