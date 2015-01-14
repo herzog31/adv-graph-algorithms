@@ -83,7 +83,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         this.initCanvasDrawer();
         hkAlgo = new HKAlgorithm(graph,canvas,p_tab);
         hkAlgo.deregisterEventHandlers();
-        hkAlgo.setOutputFenster("#tf2_div_statusErklaerung");
+        hkAlgo.setOutputFenster("#dummy");
         // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
         $("#tf2_div_abspielbuttons").append("<button id=\"tf2_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button><br>");
         $("#tf2_button_1Schritt").on("click.Forschungsaufgabe1",function() {algo.nextStepChoice();});
@@ -111,6 +111,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.refresh = function() {
+        this.stopFastForward();
         this.destroy();
         var algo = new Forschungsaufgabe2($("body").data("graph"),$("#tf2_canvas_graph"),$("#tab_tf2"));
         $("#tab_tf2").data("algo",algo);
@@ -167,8 +168,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         //$("#tf2_button_vorspulen").hide();
         //$("#tf2_button_stoppVorspulen").show();
         $("#tf2_button_1Schritt").button("option", "disabled", true);
-        var geschwindigkeit = 200;	// Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
-        fastForwardIntervalID = window.setInterval(function(){algo.nextStepChoice();},geschwindigkeit);
+        if(fastForwardIntervalID == null){
+            var geschwindigkeit = 200;	// Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
+            fastForwardIntervalID = window.setInterval(function(){algo.nextStepChoice();},geschwindigkeit);
+        }
     };
     /**
      * Stoppt das automatische Abspielen des Algorithmus
@@ -213,7 +216,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             var algoStatus = hkAlgo.getStatusID();
             if(algoStatus == END_ALGORITHM){
                 this.showResult();
-                this.stopFastForward();
             }
             else if(algoStatus == BEGIN_ITERATION || algoStatus == ALGOINIT){
                 hkAlgo.nextStepChoice();
@@ -246,14 +248,13 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         var node = getClickedNode(e);
         if(node!=null){
             var free = !(hkAlgo.isMatched(node));
+            $("#tf2_div_statusErklaerung").html("<h3>"+LNG.K('aufgabe2_header')+"</h3>" + "<p>"+LNG.K('aufgabe2_path')+"</p>" + "<p>"+LNG.K('aufgabe2_legend')+"</p>");
             if(path.length == 0){
                 if(!free) {
-                    $("#tf2_div_statusErklaerung").html("<h3>1 "+LNG.K('aufgabe2_header')+"</h3>" + "<p>"+LNG.K('aufgabe2_path')+"</p>" + "<p>"+LNG.K('aufgabe2_legend')+"</p>"
-                    + "<p>"+LNG.K('aufgabe2_msg_1')+"</p>");
+                    $("#tf2_div_statusErklaerung").append(getWarning(LNG.K('aufgabe2_warn_1')));
                 }
                 else{
-                    $("#tf2_div_statusErklaerung").html("<h3>1 "+LNG.K('aufgabe2_header')+"</h3>" + "<p>"+LNG.K('aufgabe2_path')+"</p>" + "<p>"+LNG.K('aufgabe2_legend')+"</p>"
-                    + "<p>"+LNG.K('aufgabe2_result_1')+"</p>");
+                    $("#tf2_div_statusErklaerung").append("<p>"+LNG.K('aufgabe2_result_1')+"</p>");
                     path.push(node);
                     layoutStack.push(node.getLayout());
                     highlightNode(node);
@@ -271,21 +272,17 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                 if(((path.length-1)/2)%2 == 1 && hkAlgo.getPartner(node)!= path[path.length-1]) notPartner=true;
 
                 if(used){
-                    $("#tf2_div_statusErklaerung").html("<h3> "+LNG.K('aufgabe2_header')+"</h3>" + "<p>"+LNG.K('aufgabe2_path')+"</p>" + "<p>"+LNG.K('aufgabe2_legend')+"</p>"
-                    + "<p>"+LNG.K('aufgabe2_msg_2')+"</p>");
+                    $("#tf2_div_statusErklaerung").append(getWarning(LNG.K('aufgabe2_warn_2')));
                 }
                 else if(unconnected){
-                    $("#tf2_div_statusErklaerung").html("<h3> "+LNG.K('aufgabe2_header')+"</h3>" + "<p>"+LNG.K('aufgabe2_path')+"</p>" + "<p>"+LNG.K('aufgabe2_legend')+"</p>"
-                    + "<p>"+LNG.K('aufgabe2_msg_3')+"</p>");
+                    $("#tf2_div_statusErklaerung").append(getWarning(LNG.K('aufgabe2_warn_3')));
                 }
                 else if(notPartner){
-                    $("#tf2_div_statusErklaerung").html("<h3> "+LNG.K('aufgabe2_header')+"</h3>" + "<p>"+LNG.K('aufgabe2_path')+"</p>" + "<p>"+LNG.K('aufgabe2_legend')+"</p>"
-                    + "<p>"+LNG.K('aufgabe2_msg_4')+"</p>");
+                    $("#tf2_div_statusErklaerung").append(getWarning(LNG.K('aufgabe2_warn_4')));
                 }
                 else {
                     if(free){//end of the augmenting path
-                        $("#tf2_div_statusErklaerung").html("<h3> "+LNG.K('aufgabe2_header')+"</h3>"
-                        + "<p>"+LNG.K('aufgabe2_found')+"</p>");
+                        $("#tf2_div_statusErklaerung").html("<h3> "+LNG.K('aufgabe2_header')+"</h3>" + "<p>"+LNG.K('aufgabe2_found')+"</p>");
                         update = true;
                         $("#tf1_button_1Schritt").button({disabled: false});
                         $("#tf1_button_1Schritt").show();
@@ -293,8 +290,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                         this.deregisterClickHandlers();
                     }
                     else{//grow Path
-                        $("#tf2_div_statusErklaerung").html("<h3> "+LNG.K('aufgabe2_header')+"</h3>" + "<p>"+LNG.K('aufgabe2_path')+"</p>" + "<p>"+LNG.K('aufgabe2_legend')+"</p>"
-                        + "<p>"+LNG.K('aufgabe2_result_3')+"</p>");
+                        $("#tf2_div_statusErklaerung").append("<p>"+LNG.K('aufgabe2_result_3')+"</p>");
                     }
                     path.push(edge);
                     path.push(node);
@@ -316,6 +312,14 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             }
         }
         return null;
+    };
+    var getWarning = function(string){
+        return  '<div id ="tg_div_warning" class="ui-widget"> \
+        <div class="ui-state-highlight ui-corner-all" style="padding: .7em;"> \
+        <div class="ui-icon ui-icon-alert errorIcon"></div> \
+        ' + string +'\
+        </div> \
+        </div>';
     };
 /*    var augmentMatching = function () {
         var path = path;
@@ -431,7 +435,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     
 
     this.showResult = function() {
-        this.stopFastForward();
+        // Falls wir im "Vorspulen" Modus waren, daktiviere diesen
+        if(fastForwardIntervalID != null) {
+            this.stopFastForward();
+        }
         $("#tf2_button_1Schritt").hide();
         $("#tf2_div_statusErklaerung").html("<h3> "+LNG.K('textdb_msg_end_algo')+"</h3>" + "<p>"+LNG.K('textdb_msg_end_algo_1')+"</p>");
         $("#tf2_div_statusErklaerung").append('<button id="tf2_button_gotoWeiteres">'+LNG.K('aufgabe2_btn_more')+'</button>');

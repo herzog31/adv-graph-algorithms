@@ -38,7 +38,8 @@ var global_Edgelayout = {'arrowAngle' : Math.PI/8,	// Winkel des Pfeilkopfs rela
 			 'lineWidth' : 2,		// Dicke des Pfeils
                          'font'	: 'Arial',		// Schrifart 
                          'fontSize' : 14,		// Schriftgrösse in Pixeln
-                         'isHighlighted': false         // Ob die Kante eine besondere Markierung haben soll
+                         'isHighlighted': false, // Ob die Kante eine besondere Markierung haben soll
+                         'dashed': false
 			};
                         
 /**
@@ -514,7 +515,8 @@ Edge.prototype.draw = function(ctx) {
          CanvasDrawMethods.drawArrow(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),this.weight.toString(), this.additionalLabel);
     }
     else {
-        CanvasDrawMethods.drawLine(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates());
+        if(this.getLayout().dashed) CanvasDrawMethods.drawDashedLine(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates());
+        else CanvasDrawMethods.drawLine(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates());
     }
 };
 

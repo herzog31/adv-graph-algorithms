@@ -77,6 +77,11 @@ CanvasDrawMethods.drawLine = function(ctx,layout,source,target) {
     ctx.stroke();
 };
 
+CanvasDrawMethods.drawDashedLine = function(ctx,layout,source,target) {
+    ctx.setLineDash([10]);
+    this.drawLine(ctx,layout,source,target);
+    ctx.setLineDash([0]);
+};
 /**
  * Zeichnet einen Text auf eine Linie.
  * Der Text wird ensprechend gedreht.

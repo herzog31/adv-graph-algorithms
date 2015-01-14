@@ -239,8 +239,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
                 if(Math.random() < 0.6) this.askQuestion1();
             }
             else if(algoStatus == UPDATE_MATCHING){
-                if(Math.random() < 0.4){
-                    if(Math.random() < 0.5) this.askQuestion2();
+                if(Math.random() < 1.4){ //standard 0.4
+                    if(Math.random() < 0.0) this.askQuestion2();//standard 0.5
                     else this.askQuestion3();
                 }
                 else hkAlgo.nextStepChoice();
@@ -337,6 +337,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         else {
             frageStats.falsch++;
         }
+        if(this.frageParam.qid == 3) this.frageParam.edge.setLayout("dashed",false);
         frageStatus = {"aktiv" :false, "warAktiv": true};
         hkAlgo.nextStepChoice();// Hier wird der nächste Schritt des Algorithmus ausgefuehrt
         this.needRedraw = true;
@@ -359,6 +360,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         this.addFrageTab();
         frageStatus = {"aktiv": true, "warAktiv": false};
         this.frageParam = {
+            qid: 1,
             "Antwort": sp,
             "AntwortGrund": AntwortGrund,
             gewusst: true
@@ -412,6 +414,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         this.addFrageTab();
         frageStatus = {"aktiv": true, "warAktiv": false};
         this.frageParam = {
+            qid: 2,
             "Antwort": mc,
             "AntwortGrund": AntwortGrund,
             gewusst: true
@@ -489,9 +492,11 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         this.addFrageTab();
         frageStatus = {"aktiv": true, "warAktiv": false};
         this.frageParam = {
+            qid: 3,
             "Antwort": correctAnswer,
             "AntwortGrund": AntwortGrund,
-            gewusst: true
+            gewusst: true,
+            edge: answer[2]
         };
         $("#tf1_div_Frage").html(LNG.K('aufgabe1_text_question') + " " + (++frageStats.gestellt));
         $("#tf1_div_Frage").append("<p class=\"frage\">" + LNG.K('aufgabe1_question3') + "</p>");
@@ -528,11 +533,13 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             }
         }
         var inMatching = matching.hasOwnProperty(edge.getEdgeID());
-        edge.setLayout("lineWidth", global_Edgelayout.lineWidth*5);
-        //graph.nodes[edge.getSourceID()].setLayout('borderColor',"Red");
-        //graph.nodes[edge.getTargetID()].setLayout('borderColor',"Red");
-        //edge.setLayout("lineColor", const_Colors.EdgeHighlight4);
+        //edge.setLayout("lineWidth", global_Edgelayout.lineWidth*2);
+        edge.setLayout("dashed", true);
         return [onPath,inMatching,edge];
+    };
+
+    var drawDasheLine = function(ctx,edge){
+        CanvasDrawMethods.drawLine(ctx,edge.getLayout(),edge.getSourceCoordinates(),edge.getTargetCoordinates());
     };
     /**
      * Generiert eine zufällige Permutation von einem Array<br>

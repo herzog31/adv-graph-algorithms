@@ -1,34 +1,22 @@
 <!DOCTYPE html>
 <html>
 <body>
-<script type="text/javascript" src="bipartiteMatching.js"> </script>
 
-<!--<button onclick="testFunction()">Try it</button>-->
-
-<p id="demo"></p>
-<br>
-<br>
-<!--<img src="match.jpg">-->
-<h1 style="font: arial bold;
-    font-size: 44px;
-    color: #0A5096;
-    line-height: 25px;">Algorithmus von Hopcroft und Karp</h1>
+<canvas id="canvas" width="500" height="130">[No canvas support]</canvas>
 
 <script>
-    function Super() {
-        var test = 1;
-        this.plus = function(a,b){
-            test = a + b;
-        }
-    };
-    function Pol(){
-        this.plus = function(){
-            Super.plus.call(this,1,2);
-        }
-    }
-    Pol.prototype = new Super;
-    Pol.prototype.constructor = Pol;
-    Super.prototype.getTest = function(){return test};
+    context = document.getElementById("canvas").getContext('2d');
+
+    // Anti aliasing fix
+    context.translate(0.5, 0.5);
+
+    context.beginPath();
+    context.setLineDash([5]);
+    context.moveTo(145,115);
+    context.lineTo(195,15);
+    context.strokeStyle = "black";
+    context.lineWidth = 2;
+    context.stroke();
 </script>
 
 </body>

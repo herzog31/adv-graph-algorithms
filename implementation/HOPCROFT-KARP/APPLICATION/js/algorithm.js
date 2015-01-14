@@ -655,11 +655,11 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     this.addReplayStep = function() {
         var nodeProperties = {};
         for(var key in graph.nodes) {
-            nodeProperties[graph.nodes[key].getNodeID()] = {layout: JSON.stringify(graph.nodes[key].getLayout())};
+            nodeProperties[graph.nodes[key].getNodeID()] = {edge: JSON.stringify(graph.nodes[key].getLayout())};
         }
         var edgeProperties = {}
         for(var key in graph.edges) {
-            edgeProperties[graph.edges[key].getEdgeID()] = {layout: JSON.stringify(graph.edges[key].getLayout())};
+            edgeProperties[graph.edges[key].getEdgeID()] = {edge: JSON.stringify(graph.edges[key].getLayout())};
         }
         history.push({
             "previousStatusId": statusID,
@@ -693,11 +693,11 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
             currentPath = oldState.currentPath;
             $("#ta_div_statusErklaerung").html(oldState.htmlSidebar);
             for(var key in oldState.nodeProperties) {
-                graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].layout));
+                graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].edge));
                 //graph.nodes[key].setLabel(oldState.nodeProperties[key].label);
             }
             for(var key in oldState.edgeProperties) {
-                graph.edges[key].setLayoutObject(JSON.parse(oldState.edgeProperties[key].layout));
+                graph.edges[key].setLayoutObject(JSON.parse(oldState.edgeProperties[key].edge));
                 //graph.edges[key].setAdditionalLabel(oldState.edgeProperties[key].label);
             }
         }

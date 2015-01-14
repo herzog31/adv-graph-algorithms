@@ -63,8 +63,8 @@
                 <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="img/bipartite_graph.png" alt="Bipartiter Graph"><p>Wie groß ist das maximale Matching?</p></div>
                 <h1>Bipartites Matching</h1>
                 <p>In vielen Anwendungen müssen häufig Elemente aus verschiedenen Klassen kombiniert werden.
-                    Existieren nur zwei Klassen von Objekten und existieren auch bestimmte Präferenzen zwischen den Objekten der verschiedenen Klassen, so nennt man dieses Problem
-                    &ndash; <strong>Bipartites Matching</strong>.</p>
+                    Wenn nur bestimmte  Zuordnungen möglich sind, so nennt man dieses Problem &ndash; <strong>Bipartites Matching</strong>.
+                </p>
                 <h2>Hier wird der Hopcroft-Karp-Algorithmus veranschaulicht, der das Problem des Matchings auf bipartiten Graphen löst.</h2>
                 <div id ="te_div_Entscheidung">
                     <h2>Was möchtest du zuerst tun?</h2>
@@ -168,7 +168,7 @@
                         </ul>
                         <div id="ta_div_statusErklaerung">
                             <h3>Initialisierung des Algorithmus.</h3>
-                            <p>Am Anfang des Algorithmus besitzen alle Knoten keinen Matching-Partner. Die Menge des Kanten im Matching M ist dementsprechend leer.</p>
+                            <p>Am Anfang des Algorithmus besitzt kein Knoten einen Matching-Partner. Die Menge des Kanten im Matching M ist dementsprechend leer.</p>
                             <p>In jeder Iteration suchen wir eine maximale Menge an kürzesten knotendisjunkten Augmentationswegen.</p>
                             <p>Maximal heißt hier, dass es zusätzlich zu den gefundenen Pfaden keinen anderen kürzesten knotendisjunkten Augmentationsweg gibt.</p>
                             <p>Ein Augmentationsweg ist ein Weg, der mit einem freien Knoten anfängt, mit einem freien Knoten endet und alternierend Matching-Kanten und Nicht-Matching-Kanten benutzt.</p>
@@ -334,21 +334,31 @@
                         <p>Klicke auf die Knoten um einen Augmentationsweg einzuzeichnen. Klicke dabei in der Reihenfolge auf die Knoten, wie sie in dem Augmentationsweg vorkommen.</p>
                         <p>Mit einem Linksklick wählst du die Knoten aus und mit einem Rechtsklich kann du deine Wahl rückgängigmachen.</p>
                     </div>
-<!--                    <div id="tf2_div_legende">
+
+<!--                <div id="tf2_div_legende">
                         <p>Mit einem Linksklick wählst du die Knoten aus und mit einem Rechtsklich kann du deine Wahl rückgängigmachen.</p>
                         <p>Klicke in der Reihenfolge auf die Knoten, wie sie in dem Augmentationsweg vorkommen.</p>
                     </div>-->
-                    <div id="tf2_div_Frage">
+<!--                    <div id ="tf2_div_warning" class="ui-widget">
+                        <div class="ui-state-highlight ui-corner-all" style="padding: .7em;">
+                            <div class="ui-icon ui-icon-alert errorIcon"></div>
+                            <div id ="tf2_div_warning_text"></div>
+                        </div>
                     </div>
-                    <div id="tf2_div_Antworten">
-                    </div>
+                    <div id ="tf2_div_status" class="ui-widget">
+
+                        &lt;!&ndash;<div class="ui-state-highlight ui-corner-all" style="padding: .7em;">
+                            <div class="ui-icon ui-icon-alert errorIcon"></div>
+                            <div id ="tf2_div_status_text"></div>
+                        </div>&ndash;&gt;
+                    </div>-->
                 </div>
             </div>
             <div title="Forschungsaufgabe 2" class="tabIntroDialog">
                 <h2>
                     Versuche die Augmentationswege selbst zu finden.
                 </h2>
-                <p>Der Hopcroft-Karp-Algorithmus nutzt Augmentationswege um ein maximales Matching zu finden.</p>
+                <p>Der Hopcroft-Karp-Algorithmus nutzt Augmentationswege, um ein maximales Matching zu finden.</p>
                 <p>In dieser Aufgabe kannst du mit Augmentationspfaden selber experimentieren. Der Algorithmus stoppt an einigen Stellen, an denen du einen Augmentationspfad einzeichnen musst.
                     Dabei ist es nicht notwendig den kürzesten Augmentationsweg einzuzeichnen. Du kannst selber entscheiden, welchen Augmentationsweg du nuzten möchtest.</p>
             </div>
