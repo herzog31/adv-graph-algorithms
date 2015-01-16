@@ -94,7 +94,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
      * @type Object
      */
     var questionStats = {
-        numQuestions : 6,
+        numQuestions : 7,
         correct : 0,
         wrong : 0,
         gestellt : 0
@@ -111,6 +111,8 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
     this.finished = false;
 
     this.paths = paths;
+
+    this.contextStack = contextStack;
 
     /******************************************************************************************************************************************/
     /***************************************************** Funktionen aller Tabs **************************************************************/
@@ -527,7 +529,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
      * @param {String} questionURL
      */
     this.poseQuestion = function(questionID) {
-
+        $("#questionDiv").remove();
         this.addQuestionTab();
 
         var question = questions[questionID];
@@ -570,10 +572,15 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
                     }
 
                     algo.needRedraw = true;
-                    questionStatus = {
-                        "aktiv" : false,
-                        "warAktiv" : true
-                    };
+                    if(algo.contextStack.length == 35 && !algo.finished){
+                        algo.finished = true;
+                        algo.poseQuestion(6);
+                    }else {
+                        questionStatus = {
+                            "aktiv": false,
+                            "warAktiv": true
+                        };
+                    }
 
                 });
             } else {

@@ -100,3 +100,17 @@ questions[5] = {
     ],
     "correctAnswerIndex" : 2
 };
+
+questions[6] = {
+    "question": "Ist Knoten a von Knoten c erreichber?",
+    "answers" : [
+        {
+            "answer" : "ja"
+        },
+        {
+            "answer" : "nein",
+            "explanation" : "Es gibt keine Kanten Menge, mit der man Knoten a von Knoten c erreichen kann."
+        }
+    ],
+    "correctAnswerIndex" : 1
+};
