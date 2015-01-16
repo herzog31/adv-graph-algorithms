@@ -407,20 +407,24 @@ td.summand-cell{
     background-color: #98C6EA;
 }
 
-#matrix-display{
-    table-layout: fixed;
+#matrix-display td{
+    min-width: 14px;
+    overflow: hidden;
+    text-align: center;
 }
 
-#matrix-display td{
-    overflow: hidden;
-    width: 14px;
-    /*display: block;*/
+#matrix-display{
+    font-size: 12px;
 }
 
 #matrix td{
     min-width: 21px;
     overflow: hidden;
     text-align: center;
+}
+
+#matrix{
+    font-size: 12px;
 }
 
 #tf2_matrix td{
@@ -453,10 +457,6 @@ td.summand-cell{
     width: 600px;
     height: 600px;
     overflow: auto;
-}
-
-#matrix{
-    font-size: 12px;
 }
 
 #tf2_matrix{

@@ -77,12 +77,6 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
     var showWayOfNode = null;
 
     /**
-     * Zeigt an, ob die Vorgängerkanten markiert werden sollen oder nicht.
-     * @type Boolean
-     */
-    var showParent = true;
-
-    /**
      * Zeigt an, ob vor dem Verlassen des Tabs gewarnt werden soll.
      * @type Boolean
      */
@@ -113,6 +107,8 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
     var paths = new Array();
 
     var keyToIndex = new Array();
+
+    this.finished = false;
 
     this.paths = paths;
 
@@ -276,6 +272,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
      *  @method
      */
     this.nextStepChoice = function(){
+        $("#questionDiv").remove();
         var c;
         var contextNew;
         if(actualContext){
@@ -328,7 +325,9 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
         if (questionStatus.aktiv) {
             this.stopFastForward();
         }else if (questionStatus.warAktiv) {
-            this.removeQuestionTab();
+            if(!algo.finished) {
+                this.removeQuestionTab();
+            }
             questionStatus.warAktiv = false;
         }
         return algo.finished;
@@ -601,12 +600,8 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
      * @method
      */
     this.addQuestionTab = function() {
-        var li = "<li id='tf1_li_FrageTab'><a href='#tf1_div_FrageTab'>"+LNG.K('aufgabe1_text_question')+"</a></li>", id = "tf1_div_FrageTab";
-        $("#tf1_div_statusTabs").find(".ui-tabs-nav").append(li);
-        $("#tf1_div_statusTabs").append("<div id='" + id + "'><div id='tf1_div_Frage'></div><div id='tf1_div_Antworten'></div></div>");
-        $("#tf1_div_statusTabs").tabs("refresh");
-        tabBeforeQuestion = $("#tf1_div_statusTabs").tabs("option", "active");
-        $("#tf1_div_statusTabs").tabs("option", "active", 2);
+        $("#tf1_div_statusErklaerung").append("<div id='questionDiv'></div>");
+        $("#questionDiv").append("<div id='tf1_div_Frage'></div><div id='tf1_div_Antworten'></div>");
         $("#tf1_button_1Schritt").button("option", "disabled", true);
         $("#tf1_button_vorspulen").button("option", "disabled", true);
     };
@@ -634,7 +629,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
         $("#tf1_div_statusTabs").find(".ui-tabs-nav").append(li);
         $("#tf1_div_statusTabs").append("<div id='" + id + "'></div>");
         $("#tf1_div_statusTabs").tabs("refresh");
-        $("#tf1_div_statusTabs").tabs("option", "active", 3);
+        $("#tf1_div_statusTabs").tabs("option", "active", 2);
         if (questionStats.numQuestions == questionStats.correct) {
             $("#tf1_div_ErgebnisseTab").append("<h2>"+LNG.K('aufgabe1_result1')+"</h2>");
             $("#tf1_div_ErgebnisseTab").append("<p>"+LNG.K('aufgabe1_result2')+"</p>");
@@ -665,7 +660,6 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
     };
 
     this.findShortestPaths = function(context){
-        console.log(distance);
         var isStepMade = false;
         while(!isStepMade && (context.i < distance.length - 1 || context.j < distance.length - 1 
             || context.k < distance.length - 1)){
