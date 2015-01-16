@@ -13,7 +13,6 @@ var LNG = (function () {
         var jsonObj;
 
         for (var i = 0; i < arguments.length; i++) {
-            console.log(arguments);
             if (arguments[i][1] === 'success') {
                 jsonObj = arguments[i][0];
                 config[jsonObj.name] = jsonObj.fields;
@@ -41,7 +40,6 @@ var LNG = (function () {
             if (result !== undefined)
                 return result;
             else {
-                console.log(key);
                 return '__UNDEFINED__';
             }
         }

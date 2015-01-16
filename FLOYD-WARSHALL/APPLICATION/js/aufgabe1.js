@@ -127,7 +127,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
     this.run = function() {
         this.initCanvasDrawer();
         // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
-        $("#tf1_div_abspielbuttons").append("<button id=\"tf1_button_1Schritt\">" + LNG.K('textdb_msg_can_start') + "</button><br>" + "<button id=\"tf1_button_vorspulen\">" + LNG.K('aufgabe1_btn_next_question') + "</button>" + "<button id=\"tf1_button_stoppVorspulen\">" + LNG.K('algorithm_btn_paus') + "</button>");
+        $("#tf1_div_abspielbuttons").append("<button id=\"tf1_button_1Schritt\">" + LNG.K('algorithm_btn_next') + "</button><br>" + "<button id=\"tf1_button_vorspulen\">" + LNG.K('aufgabe1_btn_next_question') + "</button>" + "<button id=\"tf1_button_stoppVorspulen\">" + LNG.K('algorithm_btn_paus') + "</button>");
         $("#tf1_button_stoppVorspulen").hide();
         $("#tf1_button_1Schritt").button({
             icons : {

@@ -125,7 +125,7 @@ function initializeSiteLayout() {
             }
         }
     });
-    $("body").data("graph", new Graph("./graphs/graph1.txt"));
+    $("body").data("graph", new Graph(4));
 }
 
 /**

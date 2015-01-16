@@ -7,25 +7,33 @@
 
 var table;
 var distanceMatrix;
+var prefix;
 
 /**
  * Passe Text in Erklärungs- und Pseudocodebereich an.
  * @method
  * @param {Object} distance
+ * @param {String} tabprefix
+ * @param {Object} contextNew
+ * @param {Object} nodes
+ * @param {Integer} statusID
  */
 function changeText(distance, tabprefix, contextNew, nodes, statusID) {
+    prefix = tabprefix;
     distanceMatrix = distance;
     switch(statusID) {
         case 1:
-                $("#" + tabprefix + "_div_statusText").html("<h3>" + LNG.K('textdb_msg_can_start') + "</h3>");
-                table = displayMatrix(distance, contextNew, nodes, false);
-                if(distance.length > 13){
-                    tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, 10);
-                    $("#" + tabprefix + "_div_statusText").append("<table id='matrix'>" + tableSmall + "</table>");
-                }else{
-                    $("#tg_button_showMatrix").hide();
-                    $("#" + tabprefix + "_div_statusText").append("<h3>" + LNG.K('textdb_msg_original_matrix') + "</h3><table id='matrix'>" + table + "</table>");
-                }
+            console.log(distance.length);
+            $("#" + tabprefix + "_div_statusText").html("<h3>" + LNG.K('textdb_msg_can_start') + "</h3>");
+            table = displayMatrix(distance, contextNew, nodes, false);
+            if(distance.length > 11){
+                tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, 10);
+                $("#" + tabprefix + "_div_statusText").append("<table id='matrix'>" + tableSmall + "</table>");
+                $("#tg_button_showMatrix").show();
+            }else{
+                $("#tg_button_showMatrix").hide();
+                $("#" + tabprefix + "_div_statusText").append("<h3>" + LNG.K('textdb_msg_original_matrix') + "</h3><table id='matrix'>" + table + "</table>");
+            }
             $(".not-number-cell").css("color", "black");
             $(".marked").removeClass("marked");
             $("#" + tabprefix + "_p_l2").addClass("marked");
@@ -35,9 +43,10 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
             break;
 
         case 2:
+            console.log(distance.length);
             table = displayMatrix(distance, contextNew, nodes,  true);
             var formula = "<p>" + contextNew.formula + "</p>";
-            if(distance.length > 13){
+            if(distance.length > 11){
                 tableSmall = displayMatrixSmall(distance, contextNew, nodes,  true);
                 $("#" + tabprefix + "_div_statusText").html("<table id='matrix'>" + tableSmall + "</table>");
                 $("#" + tabprefix + "_div_statusText").append(formula);
@@ -56,10 +65,11 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
             break;
 
         case 3:
+            console.log(distance.length);
             $("#" + tabprefix + "_div_statusText").html("<h3>" + LNG.K('textdb_msg_algo_end') + "</h3>");
                 $("#" + tabprefix + "_div_statusText").append("<p>" + LNG.K('textdb_msg_paths_computed') + "</p>");
                 table = displayMatrix(distance, contextNew, nodes, false);
-                if(distance.length > 13){
+                if(distance.length > 11){
                     tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, 10);
                     $("#" + tabprefix + "_div_statusText").append("<table id='matrix'>" + tableSmall + "</table>");
                 }else{
@@ -342,10 +352,10 @@ fnScroll = function(){
 };
 
 function showMatrixPopup(){
-    $("#" + tabprefix + "_div_completeMatrix").dialog("open");
-    $("#" + tabprefix + "_div_completeMatrix").html("<table id='matrix-display'>" + table + "</table>");
-    $("#" + tabprefix + "_div_completeMatrix").css("width", (distanceMatrix.length + 1)*18 + "px");
-    $("#" + tabprefix + "_div_completeMatrix").css("max-width", "476px");
+    $("#" + prefix + "_div_completeMatrix").dialog("open");
+    $("#" + prefix + "_div_completeMatrix").html("<table id='matrix-display'>" + table + "</table>");
+    $("#" + prefix + "_div_completeMatrix").css("width", (distanceMatrix.length + 1)*18 + "px");
+    $("#" + prefix + "_div_completeMatrix").css("max-width", "476px");
     $("#matrix-display").css("width", (distanceMatrix.length + 1)*18 + "px");
     $("#matrix-display").css("max-width", "476px");
     $("[aria-describedby='ta_div_completeMatrix']").css("width", (24+(distanceMatrix.length + 1)*18) + "px");
