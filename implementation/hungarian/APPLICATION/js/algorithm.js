@@ -114,7 +114,6 @@ function setAll(arr, val) {
 //
 //function hungarianMethod(){
 //    var ret = 0;
-//    maxMatch = 0;
 //    initLabels();
 //    augment();
 //    for (var x = 0; x < n; x++)
@@ -134,7 +133,7 @@ function setAll(arr, val) {
 //    slack = new Array(cost.length),
 //    slackx = new Array(cost.length),
 //    prev = new Array(cost.length),
-//    maxMatch;
+//    maxMatch = 0;
 //var n = cost.length;
 //setAll(S, false);
 //setAll(T, false);
@@ -254,15 +253,23 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     /*
      * Hier werden die Statuskonstanten definiert
      * */
-    const ALGOINIT = 0;
-    const BEGIN_ITERATION = 1;
-    const END_ITERATION = 2;
-    const NEXT_AUGMENTING_PATH = 3;
-    const UPDATE_MATCHING = 4;
-    const GRAY_PATH = 5;
-    const END_ALGORITHM = 6;
+    //const ALGOINIT = 0;
+    //const BEGIN_ITERATION = 1;
+    //const END_ITERATION = 2;
+    //const NEXT_AUGMENTING_PATH = 3;
+    //const UPDATE_MATCHING = 4;
+    //const GRAY_PATH = 5;
+    //const END_ALGORITHM = 6;
+    const BEGIN = 0;
+    const READY_TO_START = 1;
+    const AUGMENTING_PATH_FOUND = 3;
+    const AUGMENTING_PATH_NOT_FOUND = 4;
+    const READY_FOR_SEARCHING = 5;
+    const LABELS_UPDATED = 6;
+    const MATCHING_INCREASED = 7;
+    const FINISHED = 8;
 
-    var cost = [[7,4,3],[3,1,2],[3,0,0]];
+    var cost = [[7,4,3],[6,8,5],[9,4,4]];
 
     var lx = new Array(cost.length),
         ly = new Array(cost.length),
@@ -273,8 +280,11 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         slack = new Array(cost.length),
         slackx = new Array(cost.length),
         prev = new Array(cost.length),
-        maxMatch;
+        maxMatch = 0;
     var n = cost.length;
+    var wr = 0, rd = 0;
+    var x, y, root = -1;
+    var q = new Array(n);
 
     /**
      * Startet die Ausführung des Algorithmus.
@@ -370,10 +380,10 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.fastForwardAlgorithm = function () {
-        $("#ta_button_vorspulen").hide();
-        $("#ta_button_stoppVorspulen").show();
-        $("#ta_button_1Schritt").button("option", "disabled", true);
-        $("#ta_button_Zurueck").button("option", "disabled", true);
+        //$("#ta_button_vorspulen").hide();
+        //$("#ta_button_stoppVorspulen").show();
+        //$("#ta_button_1Schritt").button("option", "disabled", true);
+        //$("#ta_button_Zurueck").button("option", "disabled", true);
         var geschwindigkeit = 200;	// Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
 
         fastForwardIntervalID = window.setInterval(function () {
@@ -409,30 +419,42 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
      */
     this.nextStepChoice = function () {
         this.addReplayStep();
+        console.log(statusID);
         switch (statusID) {
-            case ALGOINIT:
+            case BEGIN:
+                console.log("BEGIN");
                 this.initLabels();
                 break;
-            case BEGIN_ITERATION:
-                this.beginIteration();
+            case READY_FOR_SEARCHING:
+                console.log("READY_FOR_SEARCHING");
+                this.tryToFindAugmentingPath();
                 break;
-            case END_ITERATION:
-                this.endIteration();
+            case AUGMENTING_PATH_NOT_FOUND:
+                console.log("AUGMENTING_PATH_NOT_FOUND");
+                this.update_labels();
                 break;
-            case NEXT_AUGMENTING_PATH:
-                this.highlightPath(disjointPaths[currentPath]);
+            case LABELS_UPDATED:
+                console.log("LABELS_UPDATED");
+                this.findAugmentPathAfterLabeling();
                 break;
-            case UPDATE_MATCHING:
-                this.augmentMatching(disjointPaths[currentPath]);
+            case MATCHING_INCREASED:
+                console.log("MATCHING_INCREASED");
+                this.augment();
                 break;
-            case GRAY_PATH:
-                this.hidePath(disjointPaths[currentPath]);
+            case READY_TO_START:
+                console.log("READY_TO_START");
+                this.augment();
                 break;
-            case END_ALGORITHM:
-                this.endAlgorithm();
+            case AUGMENTING_PATH_FOUND:
+                console.log("AUGMENTING_PATH_FOUND");
+                this.increaseMatching();
+                break;
+            case FINISHED:
+                console.log("FINISHED");
+                this.end();
                 break;
             default:
-                //console.log("Fehlerhafte StatusID.");
+                console.log("Fehlerhafte StatusID.");
                 break;
         }
         this.needRedraw = true;
@@ -452,8 +474,165 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                 }
             }
         }
-    }
+        statusID = READY_TO_START;
+        return READY_TO_START;
+    };
 
+    this.augment = function() {
+        if (maxMatch == cost.length) {
+            statusID = FINISHED;
+            return FINISHED;
+        }
+        x, y, root = -1;
+        q = new Array(n);
+        wr = 0, rd = 0;
+        setAll(S, false);
+        setAll(T, false);
+        setAll(prev, -1);
+        for (x = 0; x < n; x++) {
+            if (xy[x] == -1) {
+                q[wr++] = root = x;
+                prev[x] = -2;
+                S[x] = true;
+                break;
+            }
+        }
+
+        for (y = 0; y < n; y++) {
+            slack[y] = lx[root] + ly[y] - cost[root][y];
+            slackx[y] = root;
+        }
+        statusID = READY_FOR_SEARCHING;
+        return READY_FOR_SEARCHING;
+        //while (true) {
+        //    if(this.buildTree()){
+        //        return AUGMENTING_PATH_FOUND;
+        //    }
+        //    return AUGMENTING_PATH_NOT_FOUND;
+            //this.update_labels();
+            //this.findAugmentPathAfterLabeling();
+                        //wr = rd = 0;
+                        //for (y = 0; y < n; y++)
+                        //    if (!T[y] && slack[y] == 0) {
+                        //        if (yx[y] == -1) {
+                        //            x = slackx[y];
+                        //            break;
+                        //        } else {
+                        //            T[y] = true;
+                        //            if (!S[yx[y]]) {
+                        //                q[wr++] = yx[y];
+                        //                this.add_to_tree(yx[y], slackx[y]);
+                        //            }
+                        //        }
+                        //    }
+                        //if (y < n) break;
+        //}
+        //this.increaseMatching();
+            //if (y < n) {
+            //    maxMatch++;
+            //    for (var cx = x, cy = y, ty; cx != -2; cx = prev[cx], cy = ty) {
+            //        ty = xy[cx];
+            //        yx[cy] = cx;
+            //        xy[cx] = cy;
+            //    }
+            //    return MATCHING_INCREASED;//this.augment();
+            //}
+    };
+
+    this.increaseMatching = function(){
+        //if (y < n) {
+            maxMatch++;
+            for (var cx = x, cy = y, ty; cx != -2; cx = prev[cx], cy = ty) {
+                ty = xy[cx];
+                yx[cy] = cx;
+                xy[cx] = cy;
+            }
+            statusID = MATCHING_INCREASED;
+            return MATCHING_INCREASED;//this.augment();
+        //}
+        //return -1;
+    };
+
+    this.tryToFindAugmentingPath = function(){
+        if(this.buildTree()){
+            statusID = AUGMENTING_PATH_FOUND;
+            return AUGMENTING_PATH_FOUND;
+        }
+        statusID = AUGMENTING_PATH_NOT_FOUND;
+        return AUGMENTING_PATH_NOT_FOUND;
+    };
+
+    this.buildTree = function(){
+        while (rd < wr) {
+            x = q[rd++];
+            for (y = 0; y < n; y++) {
+                if (cost[x][y] == lx[x] + ly[y] && !T[y]) {
+                    if (yx[y] == -1) break;
+                    T[y] = true;
+                    q[wr++] = yx[y];
+                    this.add_to_tree(yx[y], x);
+                }
+            }
+            if (y < n) return true; //augmenting path found
+        }
+        return false; //augmenting path not found
+    };
+
+    this.findAugmentPathAfterLabeling = function(){
+        wr = rd = 0;
+        for (y = 0; y < n; y++)
+            if (!T[y] && slack[y] == 0) {
+                if (yx[y] == -1) {
+                    x = slackx[y];
+                    break;
+                } else {
+                    T[y] = true;
+                    if (!S[yx[y]]) {
+                        q[wr++] = yx[y];
+                        this.add_to_tree(yx[y], slackx[y]);
+                    }
+                }
+            }
+        if (y < n){
+            statusID = AUGMENTING_PATH_FOUND
+            return AUGMENTING_PATH_FOUND;
+        }
+
+        statusID = READY_FOR_SEARCHING;
+        return READY_FOR_SEARCHING;
+    };
+
+    this.add_to_tree = function (x, prevx){
+        S[x] = true;
+        prev[x] = prevx;
+        for (var y = 0; y < n; y++) {
+            if (lx[x] + ly[y] - cost[x][y] < slack[y]) {
+                slack[y] = lx[x] + ly[y] - cost[x][y];
+                slackx[y] = x;
+            }
+        }
+    };
+
+    this.update_labels = function(){
+        var x, y, delta = -1;
+        for (y = 0; y < n; y++) {
+            if (!T[y] && (delta == -1 || slack[y] < delta)) {
+                delta = slack[y];
+            }
+        }
+        for (x = 0; x < n; x++) {
+            if (S[x]) lx[x] -= delta;
+        }
+        for (y = 0; y < n; y++) {
+            if (T[y]) ly[y] += delta;
+        }
+        for (y = 0; y < n; y++) {
+            if (!T[y])
+                slack[y] -= delta;
+        }
+        statusID = LABELS_UPDATED;
+        return LABELS_UPDATED;
+    };
     /*
      * Methoden fuer die Visualisierung.
      * */
@@ -527,46 +706,14 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
      * Zeigt Texte und Buttons zum Ende des Algorithmus
      * @method
      */
-    this.endAlgorithm = function() {
-        //Button, der das Matching anzeigt
-        toggleMatchButton = true;
-        $(statusErklaerung).append("<button id=ta_show_match>"+LNG.K('algorithm_btn_match')+"</button>");
-        $("#ta_show_match").button();
-        //$("#ta_button_1Schritt").on("click.HungarianMethod",function() {algo.singleStepHandler();});
-        $("#ta_show_match").click(function() {
-            if(toggleMatchButton){
-                //alle Nicht-Matching-Kanten in den Hintergrund
-                for(var e in graph.edges) graph.edges[e].setLayout("lineWidth", global_Edgelayout.lineWidth * 0.3);
-                $("#ta_show_match").button( "option", "label", LNG.K('algorithm_btn_match1') );
-            }
-            else{
-                for(var e in graph.edges)  graph.edges[e].restoreLayout();
-                $("#ta_show_match").button( "option", "label", LNG.K('algorithm_btn_match') );
-            }
-            //Matching-Kanten formatieren
-            for(var e in matching) setEdgeMatched(matching[e]);
-            toggleMatchButton = !toggleMatchButton;
-            algo.needRedraw = true;
-        });
-        //Forschungsaufgabe und Erklaerung
-        $(statusErklaerung).append("<p></p><h3>"+LNG.K('algorithm_msg_finish')+"</h3>");
-        $(statusErklaerung).append("<button id=ta_button_gotoIdee>"+LNG.K('algorithm_btn_more')+"</button>");
-        $(statusErklaerung).append("<h3>"+LNG.K('algorithm_msg_test')+"</h3>");
-        $(statusErklaerung).append("<button id=ta_button_gotoFA1>"+LNG.K('algorithm_btn_exe1')+"</button>");
-        $(statusErklaerung).append("<button id=ta_button_gotoFA2>"+LNG.K('algorithm_btn_exe2')+"</button>");
-        $("#ta_button_gotoIdee").button();
-        $("#ta_button_gotoFA1").button();
-        $("#ta_button_gotoFA2").button();
-        $("#ta_button_gotoIdee").click(function() {$("#tabs").tabs("option","active", 3);});
-        $("#ta_button_gotoFA1").click(function() {$("#tabs").tabs("option","active", 4);});
-        $("#ta_button_gotoFA2").click(function() {$("#tabs").tabs("option","active", 5);});
-        // Falls wir im "Vorspulen" Modus waren, daktiviere diesen
-        if(fastForwardIntervalID != null) {
-            this.stopFastForward();
-        }
+    this.end = function() {
+        this.stopFastForward();
         end = true;
-        $("#ta_button_1Schritt").button("option", "disabled", true);
-        $("#ta_button_vorspulen").button("option", "disabled", true);
+        var ret = 0;
+        for (var x = 0; x < n; x++) {
+            ret += cost[x][xy[x]];
+        }
+        console.log("otvet: "  + ret);
     };
 
     /**
