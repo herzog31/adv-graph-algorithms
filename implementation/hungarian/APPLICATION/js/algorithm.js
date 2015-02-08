@@ -474,6 +474,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                 }
             }
         }
+        showLabels(lx, ly);
         statusID = READY_TO_START;
         return READY_TO_START;
     };
@@ -502,6 +503,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             slack[y] = lx[root] + ly[y] - cost[root][y];
             slackx[y] = root;
         }
+        showTreeRoot(S, lx.length);
         statusID = READY_FOR_SEARCHING;
         return READY_FOR_SEARCHING;
         //while (true) {
