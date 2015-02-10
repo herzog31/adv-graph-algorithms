@@ -269,19 +269,24 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     const MATCHING_INCREASED = 7;
     const FINISHED = 8;
 
-    var cost = [[7,4,3],[6,8,5],[9,4,4]];
+    //var cost = [[7,4,3],[6,8,5],[9,4,4]];
+    var cost = new Array();
+    this.cost = cost;
 
-    var lx = new Array(cost.length),
-        ly = new Array(cost.length),
-        xy = new Array(cost.length),
-        yx = new Array(cost.length),
-        S = new Array(cost.length),
-        T = new Array(cost.length),
-        slack = new Array(cost.length),
-        slackx = new Array(cost.length),
-        prev = new Array(cost.length),
+    var currentAugmPath = new Array();
+
+    var n = Object.keys(graph.nodes).length/2;
+    var lx = new Array(n),
+        ly = new Array(n),
+        xy = new Array(n),
+        yx = new Array(n),
+        S = new Array(n),
+        T = new Array(n),
+        slack = new Array(n),
+        slackx = new Array(n),
+        prev = new Array(n),
         maxMatch = 0;
-    var n = cost.length;
+
     var wr = 0, rd = 0;
     var x, y, root = -1;
     var q = new Array(n);
@@ -291,6 +296,19 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.run = function() {
+        var iCounter = 0;
+        for(var i in graph.nodes){
+            if(!$.isEmptyObject(graph.nodes[i].getOutEdges())) {
+                cost[iCounter] = new Array();
+                var jCounter = 0;
+                for (var j in graph.nodes[i].getOutEdges()) {
+                    cost[iCounter][jCounter] = graph.nodes[i].getOutEdges()[j].weight;
+                    jCounter++;
+                }
+                iCounter++;
+            }
+        }
+        console.log(cost);
         this.initCanvasDrawer();
         // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
         $("#ta_div_abspielbuttons").append("<button id=\"ta_button_Zurueck\">"+LNG.K('algorithm_btn_prev')+"</button>"
@@ -422,35 +440,27 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         console.log(statusID);
         switch (statusID) {
             case BEGIN:
-                console.log("BEGIN");
                 this.initLabels();
                 break;
             case READY_FOR_SEARCHING:
-                console.log("READY_FOR_SEARCHING");
                 this.tryToFindAugmentingPath();
                 break;
             case AUGMENTING_PATH_NOT_FOUND:
-                console.log("AUGMENTING_PATH_NOT_FOUND");
                 this.update_labels();
                 break;
             case LABELS_UPDATED:
-                console.log("LABELS_UPDATED");
                 this.findAugmentPathAfterLabeling();
                 break;
             case MATCHING_INCREASED:
-                console.log("MATCHING_INCREASED");
                 this.augment();
                 break;
             case READY_TO_START:
-                console.log("READY_TO_START");
                 this.augment();
                 break;
             case AUGMENTING_PATH_FOUND:
-                console.log("AUGMENTING_PATH_FOUND");
                 this.increaseMatching();
                 break;
             case FINISHED:
-                console.log("FINISHED");
                 this.end();
                 break;
             default:
@@ -469,19 +479,25 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         setAll(ly, 0);
         for (var x = 0; x < n; x++) {
             for (var y = 0; y < n; y++) {
-                if(cost[x][y] > lx[x]){
+                if(this.cost[x][y] > lx[x]){
                     lx[x] = cost[x][y];
                 }
             }
         }
         showLabels(lx, ly);
+        //console.log(lx);
+        //console.log(ly);
         statusID = READY_TO_START;
+        console.log("READY_TO_START");
         return READY_TO_START;
     };
 
     this.augment = function() {
+        //resetEdgeLayout();
+        showEqualityGraph(lx, ly);
         if (maxMatch == cost.length) {
             statusID = FINISHED;
+            console.log("FINISHED");
             return FINISHED;
         }
         x, y, root = -1;
@@ -505,6 +521,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         }
         showTreeRoot(S, lx.length);
         statusID = READY_FOR_SEARCHING;
+        console.log("READY_FOR_SEARCHING");
         return READY_FOR_SEARCHING;
         //while (true) {
         //    if(this.buildTree()){
@@ -543,14 +560,19 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
 
     this.increaseMatching = function(){
         //if (y < n) {
-            maxMatch++;
-            for (var cx = x, cy = y, ty; cx != -2; cx = prev[cx], cy = ty) {
-                ty = xy[cx];
-                yx[cy] = cx;
-                xy[cx] = cy;
-            }
-            statusID = MATCHING_INCREASED;
-            return MATCHING_INCREASED;//this.augment();
+        //    resetEdgeLayout();
+        showEqualityGraph(lx, ly);
+        maxMatch++;
+        for (var cx = x, cy = y, ty; cx != -2; cx = prev[cx], cy = ty) {
+            ty = xy[cx];
+            yx[cy] = cx;
+            xy[cx] = cy;
+        }
+        console.log(xy);
+        showCurrentMatching(xy);
+        statusID = MATCHING_INCREASED;
+        console.log("MATCHING_INCREASED");
+        return MATCHING_INCREASED;//this.augment();
         //}
         //return -1;
     };
@@ -558,9 +580,13 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     this.tryToFindAugmentingPath = function(){
         if(this.buildTree()){
             statusID = AUGMENTING_PATH_FOUND;
+            showAugmentingPath(x, y, prev, xy, yx);
+            console.log("AUGMENTING_PATH_FOUND");
             return AUGMENTING_PATH_FOUND;
         }
+        resetNodeLayout();
         statusID = AUGMENTING_PATH_NOT_FOUND;
+        console.log("AUGMENTING_PATH_NOT_FOUND");
         return AUGMENTING_PATH_NOT_FOUND;
     };
 
@@ -575,12 +601,18 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                     this.add_to_tree(yx[y], x);
                 }
             }
-            if (y < n) return true; //augmenting path found
+            if (y < n) {
+                //currentAugmPath[currentAugmPath.length] = x;
+                //currentAugmPath[currentAugmPath.length] = y;
+                //console.log(currentAugmPath);
+                return true;
+            } //augmenting path found
         }
         return false; //augmenting path not found
     };
 
     this.findAugmentPathAfterLabeling = function(){
+        resetNodeLayout();
         wr = rd = 0;
         for (y = 0; y < n; y++)
             if (!T[y] && slack[y] == 0) {
@@ -596,11 +628,17 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                 }
             }
         if (y < n){
-            statusID = AUGMENTING_PATH_FOUND
+            //currentAugmPath[currentAugmPath.length] = x;
+            //currentAugmPath[currentAugmPath.length] = y;
+            showAugmentingPath(x, y, prev, xy, yx);
+            //console.log(currentAugmPath);
+            statusID = AUGMENTING_PATH_FOUND;
+            console.log("AUGMENTING_PATH_FOUND");
             return AUGMENTING_PATH_FOUND;
         }
 
         statusID = READY_FOR_SEARCHING;
+        console.log("READY_FOR_SEARCHING");
         return READY_FOR_SEARCHING;
     };
 
@@ -616,6 +654,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     };
 
     this.update_labels = function(){
+        resetNodeLayout();
         var x, y, delta = -1;
         for (y = 0; y < n; y++) {
             if (!T[y] && (delta == -1 || slack[y] < delta)) {
@@ -633,6 +672,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                 slack[y] -= delta;
         }
         statusID = LABELS_UPDATED;
+        showLabels(lx, ly);
+        console.log("LABELS_UPDATED");
         return LABELS_UPDATED;
     };
     /*
