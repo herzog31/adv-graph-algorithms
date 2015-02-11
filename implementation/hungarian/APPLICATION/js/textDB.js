@@ -34,6 +34,7 @@ function showTreeRoot(S){
             $("body").data("graph").nodes[i].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
         }
     }
+
 }
 
 function showAugmentingPath(x, y, prev, xy, yx){

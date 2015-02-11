@@ -438,6 +438,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     this.nextStepChoice = function () {
         this.addReplayStep();
         console.log(statusID);
+        $("#ta_div_statusErklaerung").text("");
         switch (statusID) {
             case BEGIN:
                 this.initLabels();
@@ -489,17 +490,20 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         //console.log(ly);
         statusID = READY_TO_START;
         console.log("READY_TO_START");
+        $("#ta_div_statusErklaerung").text("Ursprungliche Markierungen sowie Gleichheitsgraph wurden bestimmt.");
         return READY_TO_START;
     };
 
     this.augment = function() {
         //resetEdgeLayout();
-        showEqualityGraph(lx, ly);
         if (maxMatch == cost.length) {
             statusID = FINISHED;
             console.log("FINISHED");
+            $("#ta_div_statusErklaerung").text("Der Algorithmus ist fertig.");
+            $("#ta_button_1Schritt").button("option", "disabled", true);
             return FINISHED;
         }
+        showEqualityGraph(lx, ly);
         x, y, root = -1;
         q = new Array(n);
         wr = 0, rd = 0;
@@ -522,6 +526,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         showTreeRoot(S, lx.length);
         statusID = READY_FOR_SEARCHING;
         console.log("READY_FOR_SEARCHING");
+        $("#ta_div_statusErklaerung").text("Die Wurzel des alternierenden Baums wurde bestimmt.");
         return READY_FOR_SEARCHING;
         //while (true) {
         //    if(this.buildTree()){
@@ -561,6 +566,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     this.increaseMatching = function(){
         //if (y < n) {
         //    resetEdgeLayout();
+        resetNodeLayout();
         showEqualityGraph(lx, ly);
         maxMatch++;
         for (var cx = x, cy = y, ty; cx != -2; cx = prev[cx], cy = ty) {
@@ -572,6 +578,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         showCurrentMatching(xy);
         statusID = MATCHING_INCREASED;
         console.log("MATCHING_INCREASED");
+        $("#ta_div_statusErklaerung").text("Matching wurde vergrößert.");
         return MATCHING_INCREASED;//this.augment();
         //}
         //return -1;
@@ -582,11 +589,13 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             statusID = AUGMENTING_PATH_FOUND;
             showAugmentingPath(x, y, prev, xy, yx);
             console.log("AUGMENTING_PATH_FOUND");
+            $("#ta_div_statusErklaerung").text("Augmentationsweg wurde gefunden.");
             return AUGMENTING_PATH_FOUND;
         }
-        resetNodeLayout();
+        //resetNodeLayout();
         statusID = AUGMENTING_PATH_NOT_FOUND;
         console.log("AUGMENTING_PATH_NOT_FOUND");
+        $("#ta_div_statusErklaerung").text("Augmentationsweg wurde nicht gefunden.");
         return AUGMENTING_PATH_NOT_FOUND;
     };
 
@@ -612,7 +621,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     };
 
     this.findAugmentPathAfterLabeling = function(){
-        resetNodeLayout();
+        //resetNodeLayout();
         wr = rd = 0;
         for (y = 0; y < n; y++)
             if (!T[y] && slack[y] == 0) {
@@ -634,11 +643,13 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             //console.log(currentAugmPath);
             statusID = AUGMENTING_PATH_FOUND;
             console.log("AUGMENTING_PATH_FOUND");
+            $("#ta_div_statusErklaerung").text("Augmentationsweg wurde gefunden.");
             return AUGMENTING_PATH_FOUND;
         }
 
         statusID = READY_FOR_SEARCHING;
         console.log("READY_FOR_SEARCHING");
+        $("#ta_div_statusErklaerung").text("Augmentationsweg wurde nicht gefunden.");
         return READY_FOR_SEARCHING;
     };
 
@@ -654,7 +665,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     };
 
     this.update_labels = function(){
-        resetNodeLayout();
+        //resetNodeLayout();
         var x, y, delta = -1;
         for (y = 0; y < n; y++) {
             if (!T[y] && (delta == -1 || slack[y] < delta)) {
@@ -674,6 +685,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         statusID = LABELS_UPDATED;
         showLabels(lx, ly);
         console.log("LABELS_UPDATED");
+        $("#ta_div_statusErklaerung").text("Markierungen sowie Gleichheitsgraph wurden aktualisiert.");
         return LABELS_UPDATED;
     };
     /*
