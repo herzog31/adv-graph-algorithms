@@ -451,15 +451,106 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
     };
 
-    this.computeEulerTour = function(){
-        //TODO
-        /*
-        * hier uebergebe ich den graphen graph an die eulertour-Methode
-        * ich erwarte einen array mit den Kanten in der richtigen Reihenfolge
-        * euler_tour = eulertour(graph);
-        * */
+    this.computeEulerTour = function() {
+
+        // Check node degrees
+        for(var knotenID in graph.nodes) {
+            var inDegree = graph.nodes[knotenID].getInEdges().length;
+            var outDegree = graph.nodes[knotenID].getOutEdges().length;
+            if(inDegree !== outDegree || inDegree < 1 || outDegree < 1)
+                return
+        }
+
+        // Starting node
+        var start = graph.nodes[0];
+        // Current node
+        var current = start;
+        // Current subtour
+        var subtour = [];
+        // Complete tour
+        var tour = [];
+        // IDs of visited edges
+        var visitedEdges = [];
+        // Number of edges in graph
+        var numberOfEdgesInGraph = Object.keys(graph.edges).length;
+        // number of edges in tour
+        var numberOfEdgesInTour = 0;
+
+        // Add start to subtour
+        subtour.push({type: "vertex", id: start.getNodeID()});
+
+        // As long as tour not eulerian
+        while(numberOfEdgesInTour < numberOfEdgesInGraph) {
+
+            // While start != current, except first iteration
+            do {
+                // Get out edges
+                var outEdges = current.getOutEdges();
+                var nextEdge = null;
+
+                // Find unvisited out edge
+                for(var kantenID in outEdges) {
+                    if(visitedEdges.indexOf() !== -1) {
+                        nextEdge = outEdges[kantenID];
+                        visitedEdges.push(kantenID);
+                        subtour.push({type: "edge", id: kantenID});
+                    }
+                }
+
+                if(nextEdge === null) {
+                    return
+                }
+
+                // Get other Vertex which is new current
+                current = graph.edges[nextEdge].getTargetID();
+                subtour.push({type: "vertex", id: current.getNodeID()});
+
+            } while(start.getNodeID() === current.getNodeID());
+
+            // Merge
+            // If tour is empty, just replace with subtour
+            if(tour.length === 0) {
+                tour = subtour;
+            }else{
+                // Start node of subtour
+                var startOfSubTour = subtour[0];
+                var newTour = new Array();
+
+                // Find subtour's start node in tour
+                for(var i = 0; i < tour.length; i++) {
+                    // If found, add complete subtour
+                    if(JSON.stringify(tour[i]) == JSON.stringify(startOfSubTour) && !replaced) {
+                        for(var j = 0; j < subtour.length; j++) {
+                            newTour.push(subtour[j]);
+                        }
+                        replaced = true;
+                    // Otherwise add elements from tour
+                    }else{
+                        newTour.push(tour[i]);
+                    }
+                }
+                tour = newTour;
+            } 
+
+            subtour = []
+
+            // Count number of edges in tour
+            numberOfEdgesInTour = 0;
+            for(var i = 0; i < tour.length; i++) {
+                if(tour[i].type === "edge") {
+                    numberOfEdgesInTour++;
+                }
+            }
+        }
+
         euler_tour = [];
-     };
+
+        for(var i = 0; i < euclideanTour.length; i++) {
+            if(euclideanTour[i].type === "edge") {
+                euler_tour.push(euclideanTour[i].id);
+            }
+        }
+    };
 
 
     this.showUnbalancedNodes = function () {
