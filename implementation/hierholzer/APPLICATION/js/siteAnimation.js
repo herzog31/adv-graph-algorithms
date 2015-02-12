@@ -62,7 +62,7 @@ function initializeSiteLayout() {
                     $("#tab_tf1").data("algo").destroy();
                 }
             }
-            /* if(ui.oldPanel[0].id == "tab_tf2") {            // Tab Forschungsaufgabe 2
+            if(ui.oldPanel[0].id == "tab_tf2") {            // Tab Forschungsaufgabe 2
                 if($("#tabs").data("tabChangeDialogOpen") == null && $("#tab_tf2").data("algo").getWarnBeforeLeave()) { // TODO
                     event.preventDefault();
                     $( "#tabs" ).data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);
@@ -72,7 +72,7 @@ function initializeSiteLayout() {
                 else {
                     $("#tab_tf2").data("algo").destroy();
                 }
-            } */
+            }
         },
         activate: function(event, ui) {
             var algo;
@@ -88,10 +88,10 @@ function initializeSiteLayout() {
                 algo = new Forschungsaufgabe1($("body").data("graph"),$("#tf1_canvas_graph"),$("#tab_tf1"));
                 $("#tab_tf1").data("algo",algo);
             }
-            /* if(ui.newPanel[0].id == "tab_tf2") {
+            if(ui.newPanel[0].id == "tab_tf2") {
                 algo = new Forschungsaufgabe2($("body").data("graph"),$("#tf2_canvas_graph"),$("#tab_tf2"));
                 $("#tab_tf2").data("algo",algo);
-            } */
+            }
             if(algo) {
                 algo.run();
             }

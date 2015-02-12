@@ -52,8 +52,8 @@
             <li><a href="#tab_ta"><span>Algorithmus ausführen</span></a></li>
             <li><a href="#tab_ti"><span>Beschreibung des Algorithmus</span></a></li>
             <li><a href="#tab_tf1"><span>Forschungsaufgabe 1</span></a></li>
-            <!-- <li><a href="#tab_tf2"><span>Forschungsaufgabe 2</span></a></li>
-            <li><a href="#tab_tw"><span>Weiteres</span></a></li> -->
+            <li><a href="#tab_tf2"><span>Forschungsaufgabe 2</span></a></li>
+            <li><a href="#tab_tw"><span>Weiteres</span></a></li>
         </ul>
 
         <!-- TAB Einführung -->
@@ -420,23 +420,28 @@
         <div id="tab_tw" style="display: none;">
             <div id="tw_Accordion">
                 <h3>Wie sieht der (Pseudo-)Code des Algorithmus aus?</h3>
-                <div><pre><code>Eingabe: Gewichteter, ungerichteter Graph G=(V,E) mit Gewichtsfunktion l.
-Ausgabe: Eine Liste {d(v[j]) : j = 1,..,n}, die die Distanzen dist(v[1],v[j]) = d(v[j]) enthält,
-         falls von v[1] aus keine Kreise negativer Länge erreichbar sind. 
-         Die Meldung "Kreis negativer Länge", falls von v[1] ein solcher Kreis erreichbar ist.</code></pre>
-<hr><pre><code>
-BEGIN
-   d(v[1]) &larr; 0
-   FOR j = 2,..,n DO
-      d(v[j]) &larr; &#8734;
-   FOR i = 1,..,(|V|-1) DO
-      FOR ALL (u,v) aus E DO
-         d(v) &larr; min(d(v), d(u) + l(u,v))
-   FOR ALL (u,v) aus E DO
-      IF d(v) > d(u) + l(u,v) DO
-         Meldung: "Kreis negativer Länge"
-END</code></pre></div>
-                <h3>Wie schnell ist der Algorithmus?</h3>
+                <div>
+                    <pre><code>Eingabe: Ungerichteter Graph G=(V,E), keine oder genau zwei Knoten besitzen einen ungeraden Grad
+Ausgabe: Eulertour/-weg als Liste von Knoten</code></pre>
+<hr>
+<pre>
+<code>BEGIN
+   IF Graph ungültig THEN END
+   akt = start &larr; beliebiger Startknoten
+   subtour &larr; {start}, tour &larr; &empty;
+   REPEAT
+      DO
+         (akt, u) &larr; Suche unbesuchte Kante
+         subtour &larr; subtour &#8746; {u}
+         akt &larr; u
+      WHILE start &#8800; akt
+      tour = tour &#8746;<sub>merge</sub> subtour
+      subtour &larr; &empty;
+      akt = start &larr; Knoten aus tour mit unbesuchten Kanten
+   UNTIL tour ist Eulerweg/-tour
+END</code></pre>
+            </div>
+                <!-- <h3>Wie schnell ist der Algorithmus?</h3>
                 <div>
                     <h2>Geschwindigkeit von Algorithmen</h2>
                     <p>Die Geschwindigkeit von Algorithmen wird üblicherweise in der <strong>Anzahl an Einzelschritten</strong> gemessen, die der Algorithmus bei der Ausführung benötigt.</p>
@@ -487,10 +492,10 @@ END</code></pre></div>
                     Da wir angenommen haben, dass alle Kreise negatives Gesamtgewicht haben, wäre es kürzer gewesen, nicht im Kreis zu laufen.</p>
                     <p>Falls es Kreise mit Gesamtgewicht 0 gibt, so ist es schlicht genauso teuer, diese zu durchlaufen, wie sie auszulassen. 
                         Auch in diesem Fall reichen also die Wege, die weniger Kanten benutzen, als es Knoten gibt.</p>
-                </div>
+                </div> -->
                 <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>
-                <div><p>Weitere Graphalgorithmen werden auf der <a href="http://www-m9.ma.tum.de/Allgemeines/Routenplanung">Webseite des Lehrstuhls M9</a> der TU München erklärt.</p>
-                <p>Außerdem es ein interessantes Buch zu kürzesten Wegen:  <a href="http://www-m9.ma.tum.de/Ruth/WebHome">Das Geheimnis des kürzesten Weges</a></p>
+                <div><p>Weitere Graphalgorithmen werden auf der <a href="http://www-m9.ma.tum.de/Allgemeines/GraphAlgorithmen">Webseite des Lehrstuhls M9</a> der TU München erklärt.</p>
+                <p>Außerdem es ein interessantes Buch zu kürzesten Wegen: <a href="http://www-m9.ma.tum.de/Ruth/WebHome">Das Geheimnis des kürzesten Weges</a></p>
                 <p>Ein <a href="http://www.ma.tum.de/Studium/Studieninteressierte">Mathematikstudium an der TU München</a> beantwortet alle Fragen zur Graphentheorie (falls eine Lösung bekannt ist).</p>
                 </div>
             </div>
