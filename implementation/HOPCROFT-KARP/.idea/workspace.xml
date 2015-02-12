@@ -2,23 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9fe4afd7-b25e-4b88-87b3-52f1a2ddd288" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/HOPCROFT-KARP.iml" afterPath="$PROJECT_DIR$/.idea/HOPCROFT-KARP.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/APPLICATION/Hopcroft-Karp-Algorithmus.html" afterPath="$PROJECT_DIR$/APPLICATION/Hopcroft-Karp-Algorithmus.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/APPLICATION/js/algorithm.js" afterPath="$PROJECT_DIR$/APPLICATION/js/algorithm.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/APPLICATION/js/BipartiteGraph.js" afterPath="$PROJECT_DIR$/APPLICATION/js/BipartiteGraph.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/APPLICATION/js/aufgabe1.js" afterPath="$PROJECT_DIR$/APPLICATION/js/aufgabe1.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/APPLICATION/js/aufgabe2.js" afterPath="$PROJECT_DIR$/APPLICATION/js/aufgabe2.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/APPLICATION/js/canvasDrawing.js" afterPath="$PROJECT_DIR$/APPLICATION/js/canvasDrawing.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/APPLICATION/lang/de.json" afterPath="$PROJECT_DIR$/APPLICATION/lang/de.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/APPLICATION/js/graph.js" afterPath="$PROJECT_DIR$/APPLICATION/js/graph.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/APPLICATION/test/index.html" afterPath="$PROJECT_DIR$/APPLICATION/test/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/APPLICATION/test/t1.html" afterPath="$PROJECT_DIR$/APPLICATION/test/t1.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="HOPCROFT-KARP.iws" />
     <ignored path=".idea/workspace.xml" />
+    <ignored path=".idea/" />
+    <ignored path="projectFilesBackup/" />
+    <ignored path="APPLICATION/test/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -42,19 +35,31 @@
       <file leaf-file-name="Hopcroft-Karp-Algorithmus.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/APPLICATION/Hopcroft-Karp-Algorithmus.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="6345" max-vertical-offset="7225">
-              <caret line="382" column="44" selection-start-line="382" selection-start-column="44" selection-end-line="382" selection-end-column="44" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="612" max-vertical-offset="7225">
+              <caret line="387" column="21" selection-start-line="387" selection-start-column="21" selection-end-line="387" selection-end-column="21" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="canvasDrawing.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/APPLICATION/js/canvasDrawing.js">
+      <file leaf-file-name="BipartiteGraph.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/APPLICATION/js/BipartiteGraph.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1105" max-vertical-offset="3043">
-              <caret line="79" column="52" selection-start-line="79" selection-start-column="52" selection-end-line="79" selection-end-column="52" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1353" max-vertical-offset="4828">
+              <caret line="89" column="57" selection-start-line="89" selection-start-column="57" selection-end-line="89" selection-end-column="57" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="siteAnimation.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/APPLICATION/js/siteAnimation.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="1496" max-vertical-offset="6681">
+              <caret line="104" column="28" selection-start-line="104" selection-start-column="28" selection-end-line="104" selection-end-column="28" />
+              <folding>
+                <marker date="1419468264968" expanded="true" signature="14029:14049" placeholder="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -62,18 +67,8 @@
       <file leaf-file-name="de.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/APPLICATION/lang/de.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1275" max-vertical-offset="1921">
+            <state vertical-scroll-proportion="0.0" vertical-offset="1041" max-vertical-offset="1921">
               <caret line="95" column="83" selection-start-line="95" selection-start-column="83" selection-end-line="95" selection-end-column="83" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="aufgabe1.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/APPLICATION/js/aufgabe1.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="15.35584" vertical-offset="0" max-vertical-offset="9656">
-              <caret line="497" column="26" selection-start-line="497" selection-start-column="26" selection-end-line="497" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -82,31 +77,29 @@
       <file leaf-file-name="graph.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/APPLICATION/js/graph.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="8309" max-vertical-offset="21046">
-              <caret line="516" column="10" selection-start-line="516" selection-start-column="10" selection-end-line="516" selection-end-column="10" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="153" max-vertical-offset="21046">
+              <caret line="37" column="23" selection-start-line="37" selection-start-column="14" selection-end-line="37" selection-end-column="23" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="aufgabe2.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/APPLICATION/js/aufgabe2.js">
+      <file leaf-file-name="aufgabe1.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/APPLICATION/js/aufgabe1.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1160" max-vertical-offset="7922">
-              <caret line="85" column="39" selection-start-line="85" selection-start-column="39" selection-end-line="85" selection-end-column="39" />
-              <folding>
-                <marker date="1421186001920" expanded="true" signature="11749:11828" placeholder="..." />
-                <marker date="1421186001920" expanded="true" signature="11749:11890" placeholder="..." />
-                <marker date="1421186001920" expanded="true" signature="11749:11904" placeholder="..." />
-                <marker date="1421186001920" expanded="true" signature="11749:11930" placeholder="..." />
-                <marker date="1421186001920" expanded="true" signature="11749:11948" placeholder="..." />
-                <marker date="1421186001920" expanded="true" signature="11814:11828" placeholder="..." />
-                <marker date="1421186001920" expanded="true" signature="11829:11890" placeholder="..." />
-                <marker date="1421186001920" expanded="true" signature="11829:11902" placeholder="..." />
-                <marker date="1421186001920" expanded="true" signature="11829:11904" placeholder="..." />
-                <marker date="1421186001920" expanded="true" signature="11829:11930" placeholder="..." />
-                <marker date="1421186001920" expanded="true" signature="11829:11931" placeholder="..." />
-              </folding>
+            <state vertical-scroll-proportion="3.8233995" vertical-offset="650" max-vertical-offset="9775">
+              <caret line="244" column="17" selection-start-line="244" selection-start-column="17" selection-end-line="244" selection-end-column="17" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="algorithm.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/APPLICATION/js/algorithm.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="11951" max-vertical-offset="12614">
+              <caret line="730" column="30" selection-start-line="730" selection-start-column="30" selection-end-line="730" selection-end-column="30" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -126,11 +119,13 @@
       <list>
         <option value="$PROJECT_DIR$/APPLICATION/test/index.html" />
         <option value="$PROJECT_DIR$/APPLICATION/js/graph.js" />
-        <option value="$PROJECT_DIR$/APPLICATION/js/aufgabe1.js" />
         <option value="$PROJECT_DIR$/APPLICATION/js/canvasDrawing.js" />
         <option value="$PROJECT_DIR$/APPLICATION/lang/de.json" />
-        <option value="$PROJECT_DIR$/APPLICATION/Hopcroft-Karp-Algorithmus.html" />
         <option value="$PROJECT_DIR$/APPLICATION/js/aufgabe2.js" />
+        <option value="$PROJECT_DIR$/APPLICATION/Hopcroft-Karp-Algorithmus.html" />
+        <option value="$PROJECT_DIR$/APPLICATION/test/t1.html" />
+        <option value="$PROJECT_DIR$/APPLICATION/js/BipartiteGraph.js" />
+        <option value="$PROJECT_DIR$/APPLICATION/js/aufgabe1.js" />
       </list>
     </option>
   </component>
@@ -169,7 +164,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -202,8 +196,27 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HOPCROFT-KARP" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HOPCROFT-KARP" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="APPLICATION" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -212,12 +225,33 @@
     <property name="FullScreen" value="false" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="HbShouldOpenHtmlAsHb" value="" />
-    <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
+    <property name="options.lastSelected" value="project.propVCSSupport.Ignored.Files" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
-    <property name="last_opened_file_path" value="$USER_HOME$/AppData/Local/GitHub/PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad/bin/git.exe" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/APPLICATION/test" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="301" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="300" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth2" value="301" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder2" value="2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="975" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder3" value="3" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth0" value="301" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder0" value="0" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth1" value="300" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth2" value="301" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder2" value="2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="975" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder3" value="3" />
   </component>
   <component name="RunManager" selected="JavaScript Debug.Hopcroft-Karp-Algorithmus.html">
+    <configuration default="false" name="t1.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/HOPCROFT-KARP/APPLICATION/test/t1.html">
+      <RunnerSettings RunnerId="JavascriptDebugRunner" />
+      <ConfigurationWrapper RunnerId="JavascriptDebugRunner" />
+      <method />
+    </configuration>
     <configuration default="true" type="DartUnitRunConfigurationType" factoryName="DartUnit">
       <method />
     </configuration>
@@ -251,6 +285,7 @@
       <node-options />
       <gulpfile />
       <tasks />
+      <arguments />
       <pass-parent-envs>true</pass-parent-envs>
       <envs />
       <method />
@@ -260,9 +295,15 @@
       <ConfigurationWrapper RunnerId="JavascriptDebugRunner" />
       <method />
     </configuration>
-    <list size="1">
+    <list size="2">
       <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.Hopcroft-Karp-Algorithmus.html" />
+      <item index="1" class="java.lang.String" itemvalue="JavaScript Debug.t1.html" />
     </list>
+    <recent_temporary>
+      <list size="1">
+        <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.t1.html" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
   <component name="SvnConfiguration">
@@ -275,10 +316,17 @@
       <option name="number" value="Default" />
       <updated>1419698863176</updated>
     </task>
+    <task id="LOCAL-00001" summary="updates">
+      <created>1421228330026</created>
+      <option name="number" value="00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1421228330026</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -287,18 +335,19 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19739583" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3780359" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32946146" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32946146" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32946146" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3780359" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -316,10 +365,19 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
+    <MESSAGE value="updates" />
+    <option name="LAST_COMMIT_MESSAGE" value="updates" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="17" />
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/APPLICATION/test/t1.html</url>
+          <line>5</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="27" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="JavascriptDebugType">
@@ -329,64 +387,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/APPLICATION/js/aufgabe2.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="6399" max-vertical-offset="7922">
-          <caret line="272" column="0" selection-start-line="272" selection-start-column="0" selection-end-line="272" selection-end-column="0" />
-          <folding>
-            <marker date="1421186001920" expanded="true" signature="11749:11828" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11890" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11904" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11930" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11948" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11814:11828" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11890" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11902" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11904" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11930" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11931" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/APPLICATION/Hopcroft-Karp-Algorithmus.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="782" max-vertical-offset="7055">
-          <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/APPLICATION/js/canvasDrawing.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1105" max-vertical-offset="3043">
-          <caret line="82" column="25" selection-start-line="82" selection-start-column="25" selection-end-line="82" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/APPLICATION/js/algorithm.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3045" max-vertical-offset="12614">
-          <caret line="205" column="0" selection-start-line="205" selection-start-column="0" selection-end-line="205" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/APPLICATION/js/aufgabe1.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="9622">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/APPLICATION/js/siteAnimation.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3366" max-vertical-offset="6681">
-          <caret line="214" column="0" selection-start-line="214" selection-start-column="0" selection-end-line="214" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/APPLICATION/js/graph.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="8003" max-vertical-offset="21046">
@@ -407,19 +407,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="7514" max-vertical-offset="7854">
           <caret line="442" column="0" selection-start-line="442" selection-start-column="0" selection-end-line="442" selection-end-column="0" />
-          <folding>
-            <marker date="1421186001920" expanded="true" signature="11749:11828" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11890" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11904" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11930" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11948" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11814:11828" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11890" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11902" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11904" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11930" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11931" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -458,19 +446,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="7514" max-vertical-offset="7854">
           <caret line="442" column="0" selection-start-line="442" selection-start-column="0" selection-end-line="442" selection-end-column="0" />
-          <folding>
-            <marker date="1421186001920" expanded="true" signature="11749:11828" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11890" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11904" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11930" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11948" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11814:11828" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11890" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11902" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11904" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11930" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11931" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -509,19 +485,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="7514" max-vertical-offset="7854">
           <caret line="442" column="0" selection-start-line="442" selection-start-column="0" selection-end-line="442" selection-end-column="0" />
-          <folding>
-            <marker date="1421186001920" expanded="true" signature="11749:11828" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11890" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11904" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11930" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11948" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11814:11828" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11890" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11902" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11904" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11930" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11931" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -560,19 +524,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="7429" max-vertical-offset="7786">
           <caret line="437" column="0" selection-start-line="437" selection-start-column="0" selection-end-line="437" selection-end-column="0" />
-          <folding>
-            <marker date="1421186001920" expanded="true" signature="11749:11828" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11890" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11904" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11930" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11948" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11814:11828" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11890" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11902" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11904" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11930" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11931" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -611,19 +563,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="7315" max-vertical-offset="7854">
           <caret line="437" column="0" selection-start-line="437" selection-start-column="0" selection-end-line="437" selection-end-column="0" />
-          <folding>
-            <marker date="1421186001920" expanded="true" signature="11749:11828" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11890" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11904" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11930" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11948" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11814:11828" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11890" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11902" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11904" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11930" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11931" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -671,17 +611,7 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/APPLICATION/img/hk.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/APPLICATION/img/kette.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/APPLICATION/img/titel.png">
       <provider selected="true" editor-type-id="images">
         <state />
       </provider>
@@ -696,69 +626,44 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/APPLICATION/js/BipartiteGraph.js">
+    <entry file="file://$PROJECT_DIR$/APPLICATION/js/canvasDrawing.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.323034" vertical-offset="3186" max-vertical-offset="4760">
-          <caret line="55" column="23" selection-start-line="55" selection-start-column="23" selection-end-line="55" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/APPLICATION/js/jquery-1.9.1.min.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="170">
-          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1105" max-vertical-offset="3043">
+          <caret line="79" column="52" selection-start-line="79" selection-start-column="52" selection-end-line="79" selection-end-column="52" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/APPLICATION/test/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.8461537" vertical-offset="0" max-vertical-offset="476">
+        <state vertical-scroll-proportion="0.22844344" vertical-offset="0" max-vertical-offset="893">
           <caret line="12" column="24" selection-start-line="12" selection-start-column="24" selection-end-line="12" selection-end-column="24" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/APPLICATION/js/siteAnimation.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334" vertical-offset="3366" max-vertical-offset="6681">
-          <caret line="214" column="0" selection-start-line="214" selection-start-column="0" selection-end-line="214" selection-end-column="0" />
-        </state>
+    <entry file="file://$PROJECT_DIR$/APPLICATION/img/titel.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/APPLICATION/js/algorithm.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.836007" vertical-offset="9530" max-vertical-offset="12614">
-          <caret line="203" column="0" selection-start-line="203" selection-start-column="0" selection-end-line="203" selection-end-column="0" />
-        </state>
+    <entry file="file://$PROJECT_DIR$/APPLICATION/img/logo1.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/APPLICATION/js/canvasDrawing.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1105" max-vertical-offset="3043">
-          <caret line="79" column="52" selection-start-line="79" selection-start-column="52" selection-end-line="79" selection-end-column="52" />
-          <folding />
-        </state>
+    <entry file="file://$PROJECT_DIR$/APPLICATION/img/rawlogo.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/APPLICATION/lang/de.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1275" max-vertical-offset="1921">
-          <caret line="95" column="83" selection-start-line="95" selection-start-column="83" selection-end-line="95" selection-end-column="83" />
-          <folding />
-        </state>
+    <entry file="file://$PROJECT_DIR$/APPLICATION/img/hk.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/APPLICATION/js/graph.js">
+    <entry file="file://$PROJECT_DIR$/APPLICATION/test/t1.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="8360" max-vertical-offset="21046">
-          <caret line="516" column="10" selection-start-line="516" selection-start-column="10" selection-end-line="516" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/APPLICATION/Hopcroft-Karp-Algorithmus.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="6345" max-vertical-offset="7225">
-          <caret line="382" column="44" selection-start-line="382" selection-start-column="44" selection-end-line="382" selection-end-column="44" />
+        <state vertical-scroll-proportion="0.317757" vertical-offset="0" max-vertical-offset="535">
+          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -766,27 +671,94 @@
     <entry file="file://$PROJECT_DIR$/APPLICATION/js/aufgabe2.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="1160" max-vertical-offset="7922">
-          <caret line="85" column="39" selection-start-line="85" selection-start-column="39" selection-end-line="85" selection-end-column="39" />
+          <caret line="71" column="28" selection-start-line="71" selection-start-column="28" selection-end-line="71" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/APPLICATION/Hopcroft-Karp-Algorithmus.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="612" max-vertical-offset="7225">
+          <caret line="387" column="21" selection-start-line="387" selection-start-column="21" selection-end-line="387" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/APPLICATION/lang/de.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1041" max-vertical-offset="1921">
+          <caret line="95" column="83" selection-start-line="95" selection-start-column="83" selection-end-line="95" selection-end-column="83" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/APPLICATION/js/siteAnimation.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1496" max-vertical-offset="6681">
+          <caret line="104" column="28" selection-start-line="104" selection-start-column="28" selection-end-line="104" selection-end-column="28" />
           <folding>
-            <marker date="1421186001920" expanded="true" signature="11749:11828" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11890" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11904" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11930" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11749:11948" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11814:11828" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11890" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11902" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11904" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11930" placeholder="..." />
-            <marker date="1421186001920" expanded="true" signature="11829:11931" placeholder="..." />
+            <marker date="1419468264968" expanded="true" signature="14029:14049" placeholder="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/APPLICATION/js/jquery-1.9.1.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.124087594" vertical-offset="0" max-vertical-offset="548">
+          <caret line="4" column="17562" selection-start-line="4" selection-start-column="17562" selection-end-line="4" selection-end-column="17562" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/APPLICATION/js/algorithm.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="11951" max-vertical-offset="12614">
+          <caret line="730" column="30" selection-start-line="730" selection-start-column="30" selection-end-line="730" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/APPLICATION/js/graph.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="153" max-vertical-offset="21046">
+          <caret line="37" column="23" selection-start-line="37" selection-start-column="14" selection-end-line="37" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/APPLICATION/js/BipartiteGraph.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1353" max-vertical-offset="4828">
+          <caret line="89" column="57" selection-start-line="89" selection-start-column="57" selection-end-line="89" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/APPLICATION/test/BELLMAN-FORD/APPLICATION/js/graph.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="4177" max-vertical-offset="20655">
+          <caret line="458" column="9" selection-start-line="458" selection-start-column="9" selection-end-line="458" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/APPLICATION/test/BELLMAN-FORD/APPLICATION/js/aufgabe1.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1927" max-vertical-offset="17850">
+          <caret line="129" column="8" selection-start-line="129" selection-start-column="8" selection-end-line="129" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/APPLICATION/js/aufgabe1old.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.1459854" vertical-offset="2045" max-vertical-offset="17255">
+          <caret line="129" column="8" selection-start-line="129" selection-start-column="8" selection-end-line="129" selection-end-column="8" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/APPLICATION/js/aufgabe1.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="15.35584" vertical-offset="0" max-vertical-offset="9656">
-          <caret line="497" column="26" selection-start-line="497" selection-start-column="26" selection-end-line="497" selection-end-column="26" />
+        <state vertical-scroll-proportion="3.8233995" vertical-offset="650" max-vertical-offset="9775">
+          <caret line="244" column="17" selection-start-line="244" selection-start-column="17" selection-end-line="244" selection-end-column="17" />
           <folding />
         </state>
       </provider>
