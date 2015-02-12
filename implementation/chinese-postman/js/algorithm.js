@@ -96,7 +96,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
     var euler_tour = new Array();
 
     var SHOW_UNBALANCED_NODES = 3;
-
+    var INFEASIBLE = 10;
 
 
     /**
@@ -308,24 +308,29 @@ function algorithm(p_graph, p_canvas, p_tab) {
      * Initialisiere den Algorithmus
      */
     this.initializeAlgorithm = function () {
-        var length = graph.nodes.length;
-        distance[startNode.getNodeID()] = 0;
-        graph.nodes[startNode.getNodeID()].setLabel("0");
-        for (var knotenID in graph.nodes) {
-            if (knotenID != startNode.getNodeID()) {
-                distance[knotenID] = "inf";
-                graph.nodes[knotenID].setLabel(String.fromCharCode(8734));   // Unendlich
-            }
-            predecessor[knotenID] = null;
+        if(this.isFeasible()){
+            this.findUnbalancedNodes();
+            this.findShortestPaths();
+            this.findMatching();
+            this.addNewEdges();
+            this.computeEulerTour();
+            statusID = SHOW_UNBALANCED_NODES;
+            // Erklärung im Statusfenster
+            $("#ta_div_statusErklaerung").html("<h3>1 " + LNG.K('textdb_msg_case0_1') + "</h3>"
+            + "<p>" + LNG.K('textdb_msg_case0_2') + "</p>"
+            + "<p>" + LNG.K('textdb_msg_case0_3') + "</p>"
+            + "<p>" + LNG.K('textdb_msg_case0_4') + "</p>");
+            $(".marked").removeClass("marked");
         }
-        statusID = 1;
-
-        // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3>1 " + LNG.K('textdb_msg_case0_1') + "</h3>"
-        + "<p>" + LNG.K('textdb_msg_case0_2') + "</p>"
-        + "<p>" + LNG.K('textdb_msg_case0_3') + "</p>"
-        + "<p>" + LNG.K('textdb_msg_case0_4') + "</p>");
-        $(".marked").removeClass("marked");
+        else{
+            statusID = INFEASIBLE;
+            // Erklärung im Statusfenster
+            $("#ta_div_statusErklaerung").html("<h3>1 " + LNG.K('textdb_msg_case0_1') + "</h3>"
+            + "<p>" + LNG.K('textdb_msg_case0_2') + "</p>"
+            + "<p>" + LNG.K('textdb_msg_case0_3') + "</p>"
+            + "<p>" + LNG.K('textdb_msg_case0_4') + "</p>");
+            $(".marked").removeClass("marked");
+        }
     };
 
     this.isFeasible =function(){
@@ -334,7 +339,8 @@ function algorithm(p_graph, p_canvas, p_tab) {
         * brauche eine Methode aus dem hierholzer-algo
         * strongly_connected = isStronglyConnected(graph);
         * */
-     };
+        return true;
+      };
 
 
 
@@ -377,7 +383,6 @@ function algorithm(p_graph, p_canvas, p_tab) {
         var mg = new BipartiteGraph();
         var unodes = {};
         var vnodes = {};
-        //var idmap = {};
         var id_map = {};
         //insert supply nodes
         for(var node in supplyNodes){
@@ -403,7 +408,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
                 var id1 = id_map[n1.getNodeID()];
                 var id2 = id_map[n2.getNodeID()];
                 var dist = distance[id1][id2];
-                mg.addEdge(n1,n2,dist);
+                mg.addEdge(n1,n2,-dist);
             }
         }
         //TODO
