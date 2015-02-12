@@ -333,14 +333,42 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
     };
 
-    this.isFeasible =function(){
-        //TODO
-        /* Hier erfolgt der Test, ob der Graph stark zusammenhaengend ist
-        * brauche eine Methode aus dem hierholzer-algo
-        * strongly_connected = isStronglyConnected(graph);
-        * */
+    this.isFeasible = function() {
+
+        // check from every node
+        for (var startNode in graph.nodes) {
+            var reachableVertices = [];
+            var visitedEdges = [];
+            var queue = [startNode];
+
+            while(queue.length > 0) {
+                var currentNode = queue.shift();
+                // add current node to reachable vertices if not yet in
+                if(reachableVertices.indexOf(currentNode) === -1) reachableVertices.push(currentNode);
+
+                // check every neighbor
+                var outEdges = graph.nodes[currentNode].getOutEdges();
+                for(var kantenID in outEdges) {
+                    // skip already used edges
+                    if (visitedEdges.indexOf(kantenID) !== -1) continue;
+                    // add unvisited neighbors to queue
+                    queue.push(graph.edges[kantenID].getTargetID());
+                    // set edge to visited
+                    visitedEdges.push(kantenID);
+                }
+
+            }
+
+            // return false if not all nodes can be reached
+            if(Object.keys(graph.nodes) !== reachableVertices.length) {
+                return false;
+            }
+
+        }
+
         return true;
-      };
+
+    };
 
 
 
