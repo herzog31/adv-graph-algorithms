@@ -59,19 +59,17 @@
         <!-- TAB Einführung -->
         <div id="tab_te">
             <div id="te_div_Einfuehrungstext">
-                <p style="color: red;">
-                    TODO
-                </p>
-                <!-- <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="img/beispiel1.png" alt="Einfacher Graph mit 4 Knoten."><p>Wie komme ich am günstigsten von links nach rechts?</p></div>
-                <h1>Kürzeste Wege und günstigste Wege</h1>
-                <p>In vielen Anwendungen kann es nützlich sein, den kürzesten Weg von a nach b zu berechnen.
-                Dabei muss die Länge eines Weges nicht unbedingt die Länge in Metern sein: Genauso gut kann man die Kosten eines Weges betrachten &ndash; man sucht also den <strong>günstigsten Weg</strong>.</p>
-                <h2>Hier wird der Bellman-Ford-Algorithmus vorgestellt, der günstigste Wege auch bei negativen Kosten berechnet.</h2>
+
+                <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="img/beispiel1.png" alt="Einfacher Graph mit 4 Knoten."><p>Kantenzüge ohne doppelte Kanten</p></div>
+                <h1>Das Eulertour Problem</h1>
+                <p>Nicht immer ist die Länge eines Weges entscheidend, oft reicht es schon aus, einen passenden Weg zu kennen. Du möchtest beim Zeitungsaustragen den optimalen Weg wissen, sodass du keine Straße doppelt abgehen musst. Analog dazu nennt man das Finden eines Kantenzugs im Graphen ohne doppelte Kanten das Eulertour Problem.</p>
+                <h2>Der hier vorgestellte Hierholzer Algorithmus löst das Eulertour Problem für passenden Graphen.</h2>
                 <div id ="te_div_Entscheidung">
                     <h2>Was möchtest du zuerst tun?</h2>
                     <button id="te_button_gotoDrawGraph">Den Algorithmus testen!</button> <button id="te_button_gotoIdee">Genauere Beschreibung des Algorithmus lesen</button>
                 </div>
-                <p></p> -->
+                <p></p>
+                <br style="clear: both;" />
             </div>
         </div>
 
@@ -328,7 +326,7 @@
                             <p class="pseudocode" id="tf1_p_l11">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten</p>
                             <p class="pseudocode" id="tf1_p_l12">  UNTIL tour ist Eulerweg/-tour</p>
                             <p class="pseudocode" id="tf1_p_l13">END</p> 
-                            
+
                             <h3>Status der Variablen:</h3>
                             <table class="algoInformationen">
                                 <tr>

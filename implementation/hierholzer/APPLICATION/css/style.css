@@ -217,6 +217,10 @@ table.algoInformationen {
     padding-left: 15px;
 }
 
+#te_div_beispiel1Container img {
+    background-color: #ffffff;
+}
+
 #tf1_div_statusErklaerung {
     text-align: left;
     padding-top: 10px;
