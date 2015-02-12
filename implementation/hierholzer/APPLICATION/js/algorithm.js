@@ -833,7 +833,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             <h3>4.1.1 Erste Subtour</h3>\
             <p>Im einfachsten Fall integrieren wir die letzte Subtour einfach in die noch leere Gesamttour.</p>\
             <h3>4.1.2 Zyklische Subtour</h3>\
-            <p>In diesem Fall bildet unsere Subtour einen Kreis. Zum Integireren, suchen wir den Start- & Endknoten der Subtour in der Gesamttour und ersetzen diesen mit unserer Subtour.</p>\
+            <p>In diesem Fall bildet unsere Subtour einen Kreis. Zum Integrieren, suchen wir den Start- & Endknoten der Subtour in der Gesamttour und ersetzen diesen mit unserer Subtour.</p>\
             <h3>4.1.3 Azyklische Subtour</h3>\
             <p>Dieser Fall tritt nur einmal in einem semi-eulerschen Graph auf. Es handelt sich hierbei um die Subtour, die mit einem Knoten ungeraden Grads beginnt und bei dem zweiten Knoten mit ungeradem Grad endet. Diese Subtour muss so integriert werden, dass der ungerade Knoten, welcher nicht den Anfang der Gesamttour bildet, den Schluss der Gesamttour bildet.</p>');
 
