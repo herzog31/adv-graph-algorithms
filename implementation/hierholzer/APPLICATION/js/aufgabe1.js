@@ -63,6 +63,17 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     var currentQuestion = 0;
     var currentQuestionType = 0;
     var questions = new Array();
+
+    var statusArray = [ {"key": 0, "answer": "1 Initialisierung"},
+                        {"key": 1, "answer": "2 Graph prüfen"},
+                        {"key": 2, "answer": "Graph ist ungültig"},
+                        {"key": 3, "answer": "3.1a Ersten Startknoten finden"},
+                        {"key": 4, "answer": "3.2 Unbesuchten Nachbarn finden"},
+                        {"key": 5, "answer": "3.3 Auf Kreis prüfen"},
+                        {"key": 6, "answer": "4.1 Integriere Subtour in Gesamttour"},
+                        {"key": 7, "answer": "4.2 Gesamttour auf Vollständigkeit prüfen"},
+                        {"key": 8, "answer": "5 Ergebnis anzeigen"},
+                        {"key": 9, "answer": "3.1b Neuen Startknoten finden"}];
     
     /**
      * Startet die Ausführung des Algorithmus.
@@ -165,9 +176,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     this.stopFastForward = function() {
         $("#tf1_button_vorspulen").show();
         $("#tf1_button_stoppVorspulen").hide();
-        //if(!frageStatus || !frageStatus.aktiv) {
-            $("#tf1_button_1Schritt").button("option", "disabled", false);
-        //}
+        $("#tf1_button_1Schritt").button("option", "disabled", false);
         window.clearInterval(fastForwardIntervalID);
         fastForwardIntervalID = null;
     };
@@ -246,6 +255,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             }
             this.showQuestionModal();
             this.stopFastForward();
+            $("#tf1_button_1Schritt").button("option", "disabled", true);
+            $("#tf1_button_vorspulen").button("option", "disabled", true);
+            
         }
 
         this.updatePseudoCodeValues();
@@ -927,12 +939,15 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     this.showQuestionModal = function() {
         $("#tf1_div_statusTabs").hide();
         $("#tf1_div_questionModal").show();
+        $("#tf1_questionSolution").hide();
     };
 
     this.closeQuestionModal = function() {
         $("#tf1_div_statusTabs").show();
         $("#tf1_div_questionModal").hide();
         $("#tf1_button_questionClose").off();
+        $("#tf1_button_1Schritt").button("option", "disabled", false);
+        $("#tf1_button_vorspulen").button("option", "disabled", false);
     };
 
     this.saveAnswer = function() {
@@ -944,6 +959,20 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             givenAnswer = givenAnswer.replace(/(\s|\,)+/g,'');
         }
 
+        if(questions[currentQuestion].type === 1) { // Next Step
+            for (var i = 0; i < statusArray.length; i++) {
+                if(statusArray[i].key == questions[currentQuestion].rightAnswer) {
+                    $("#tf1_questionSolution").find(".answer").html(statusArray[i].answer);
+                }
+            }
+        }else if(questions[currentQuestion].type === 2) { // Subtour
+            $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswer.split("").join(","));
+        }else if(questions[currentQuestion].type === 3) { // Tour
+            $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswer);
+        }else if(questions[currentQuestion].type === 4) { // Degree
+            $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswer);
+        }
+
         questions[currentQuestion].givenAnswer = givenAnswer;
         if(questions[currentQuestion].givenAnswer == questions[currentQuestion].rightAnswer) {
             if(debugConsole) console.log("Answer given ", givenAnswer, " was right!");
@@ -951,7 +980,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             if(debugConsole) console.log("Answer given ", givenAnswer, " was wrong! Right answer was ", questions[currentQuestion].rightAnswer);
         }
         currentQuestion++;
-        this.closeQuestionModal();
+
+        $("#tf1_questionSolution").show();
+        $("#tf1_button_questionClose").hide();
+        $("#tf1_button_questionClose2").button("option", "disabled", false);
     };
 
     this.activateAnswerButton = function() {
@@ -987,7 +1019,12 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
             <p>Welchen Grad hat der Knoten <strong>'+randomNode.getLabel()+'</strong>?</p>\
             <p>'+form+'</p>\
-            <button id="tf1_button_questionClose">Antworten</button>');
+            <button id="tf1_button_questionClose">Antworten</button>\
+            <p id="tf1_questionSolution">Die korrekte Antwort ist: <span class="answer"></span><br /><br />\
+            <button id="tf1_button_questionClose2">Weiter</button>\
+            </p>');
+
+        $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
         $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
         $("#question"+currentQuestion+"_form").find("input[type='radio']").one("change", function() { algo.activateAnswerButton(); });
 
@@ -997,27 +1034,19 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
         var answers = [];
 
-        var statusArray = [ {"key": 0, "answer": "1 Initialisierung"},
-                            {"key": 1, "answer": "2 Graph prüfen"},
-                            {"key": 2, "answer": "Graph ist ungültig"},
-                            {"key": 3, "answer": "3.1a Ersten Startknoten finden"},
-                            {"key": 4, "answer": "3.2 Unbesuchten Nachbarn finden"},
-                            {"key": 5, "answer": "3.3 Auf Kreis prüfen"},
-                            {"key": 6, "answer": "4.1 Integriere Subtour in Gesamttour"},
-                            {"key": 7, "answer": "4.2 Gesamttour auf Vollständigkeit prüfen"},
-                            {"key": 8, "answer": "5 Ergebnis anzeigen"},
-                            {"key": 9, "answer": "3.1b Neuen Startknoten finden"}];
+        // Create copy of status array
+        var statusArrayCopy = $.extend(true, [], statusArray);
 
-        for (var i = 0; i < statusArray.length; i++) {
-            if(statusArray[i].key == statusID) {
-                answers.push(statusArray[i]);
-                statusArray.splice(i, 1);
+        for (var i = 0; i < statusArrayCopy.length; i++) {
+            if(statusArrayCopy[i].key == statusID) {
+                answers.push(statusArrayCopy[i]);
+                statusArrayCopy.splice(i, 1);
             }
         };
 
-        statusArray = Utilities.shuffleArray(statusArray);
-        statusArray = statusArray.slice(1, 4);
-        answers = answers.concat(statusArray);
+        statusArrayCopy = Utilities.shuffleArray(statusArray);
+        statusArrayCopy = statusArrayCopy.slice(1, 4);
+        answers = answers.concat(statusArrayCopy);
         answers = Utilities.shuffleArray(answers);
         questions[currentQuestion] = {type: currentQuestionType, rightAnswer: statusID};
 
@@ -1031,7 +1060,12 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
             <p>Welchen Schritt macht der Algorithmus als nächstes?</p>\
             <p>'+form+'</p>\
-            <button id="tf1_button_questionClose">Antworten</button>');
+            <button id="tf1_button_questionClose">Antworten</button>\
+            <p id="tf1_questionSolution">Die korrekte Antwort ist: <span class="answer"></span><br /><br />\
+            <button id="tf1_button_questionClose2">Weiter</button>\
+            </p>');
+
+        $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
         $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
         $("#question"+currentQuestion+"_form").find("input[type='radio']").one("change", function() { algo.activateAnswerButton(); });
 
@@ -1045,7 +1079,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             <input type="text" name="question'+currentQuestion+'" value="" placeholder="x,y,z" />\
             </form>\
             </p>\
-            <button id="tf1_button_questionClose">Antworten</button>');
+            <button id="tf1_button_questionClose">Antworten</button>\
+            <p id="tf1_questionSolution">Die korrekte Antwort ist: <span class="answer"></span><br /><br />\
+            <button id="tf1_button_questionClose2">Weiter</button>\
+            </p>');
 
         var result = "";
         for(var i = 0; i < euclideanSubTour.length; i++) {
@@ -1056,6 +1093,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         result = result.replace(/(\s|\,)+/g,'');
         questions[currentQuestion] = {type: currentQuestionType, rightAnswer: result};
 
+        $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
         $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
         $("#question"+currentQuestion+"_form").find("input[type='text']").one("keyup", function() { algo.activateAnswerButton(); });
 
@@ -1118,8 +1156,12 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             <p>In diesem Schritt wird die Subtour ('+prevSubtour+') in die Gesamttour ('+prevTour+') integriert. Wie sieht das Ergebnis aus?</p>\
             <p><em>Hinweis: Es gibt u.U. mehrere Lösungsmöglichkeiten, es ist allerdings nur eine der gegebenen Antwortmöglichkeit korrekt.</em></p>\
             <p>'+form+'</p>\
-            <button id="tf1_button_questionClose">Antworten</button>');
+            <button id="tf1_button_questionClose">Antworten</button>\
+            <p id="tf1_questionSolution">Die korrekte Antwort ist: <span class="answer"></span><br /><br />\
+            <button id="tf1_button_questionClose2">Weiter</button>\
+            </p>');
 
+        $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
         $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
         $("#question"+currentQuestion+"_form").find("input[type='radio']").one("change", function() { algo.activateAnswerButton(); });
 

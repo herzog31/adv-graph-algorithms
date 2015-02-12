@@ -373,3 +373,10 @@ html {
 .quizTable td span {
     float: left;
 }
+#tf1_questionSolution {
+    font-weight: normal;
+    color: green;
+}
+#tf1_questionSolution .answer {
+    font-weight: bold;
+}
