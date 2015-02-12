@@ -164,20 +164,23 @@
                         </div>
                         <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
                             <p class="pseudocode" id="ta_p_l1">BEGIN</p>
-                            <p class="pseudocode" id="ta_p_l2">  E<sub>visited</sub> = &empty;</p>
-                            <p class="pseudocode" id="ta_p_l3">  IF invalid(G) &rarr; END</p>
-                            <p class="pseudocode" id="ta_p_l4">  WHILE |E| > |{tour &#8745; E}|</p>
-                            <p class="pseudocode" id="ta_p_l5">    s = c<sub>prev</sub> &#8712; V : &#8707;{u,s} &#8712; E \ E<sub>visited</sub><br />    subtour &larr; s<br />    E<sub>visited</sub> &larr; {u,s}</p>
+                            <p class="pseudocode" id="ta_p_l2">  IF Graph ungültig THEN END</p>
+                            <p class="pseudocode" id="ta_p_l3">    akt = start &larr; beliebiger Startknoten<br /></p>
+                            <p class="pseudocode" id="ta_p_l4">    subtour &larr; {start}, tour &larr; &empty;</p>
+                            <p class="pseudocode" id="ta_p_l5">  REPEAT</p>
                             <p class="pseudocode" id="ta_p_l6">    DO</p>
-                            <p class="pseudocode" id="ta_p_l7">      c &#8712; V : &#8707;{c,c<sub>prev</sub>} &#8712; E \ E<sub>visited</sub><br />      subtour &larr; c<br />      E<sub>visited</sub> &larr; {c,c<sub>prev</sub>}<br />      c<sub>prev</sub> = c</p>
-                            <p class="pseudocode" id="ta_p_l8">    WHILE start &#8800; cur</p>
-                            <p class="pseudocode" id="ta_p_l9">    tour = tour &#8746;<sub>merge</sub> subtour<br />    subtour = &empty;</p>
-                            <p class="pseudocode" id="ta_p_l10">END</p>
+                            <p class="pseudocode" id="ta_p_l7">      (akt, u) &larr; Suche unbesuchte Kante</p>
+                            <p class="pseudocode" id="ta_p_l8">      subtour &larr; subtour &#8746; {u}<br />      akt &larr; u</p>
+                            <p class="pseudocode" id="ta_p_l9">    WHILE start &#8800; akt</p>
+                            <p class="pseudocode" id="ta_p_l10">    tour = tour &#8746;<sub>merge</sub> subtour<br />    subtour &larr; &empty;</p>
+                            <p class="pseudocode" id="ta_p_l11">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten</p>
+                            <p class="pseudocode" id="ta_p_l12">  UNTIL tour ist Eulerweg/-tour</p>
+                            <p class="pseudocode" id="ta_p_l13">END</p> 
                             <h3>Status der Variablen:</h3>
                             <table class="algoInformationen">
                                 <tr>
                                     <th class="algoInfoTH"><span>start</span></th>
-                                    <th class="algoInfoTH"><span>cur</span></th>
+                                    <th class="algoInfoTH"><span>akt</span></th>
                                     <th class="algoInfoTH"><span>subtour</span></th>
                                     <th class="algoInfoTH"><span>tour</span></th>
                                 </tr>
@@ -313,20 +316,24 @@
                         </div>
                         <div class="PseudocodeWrapper" id="tf1_div_statusPseudocode">
                             <p class="pseudocode" id="tf1_p_l1">BEGIN</p>
-                            <p class="pseudocode" id="tf1_p_l2">  E<sub>visited</sub> = &empty;</p>
-                            <p class="pseudocode" id="tf1_p_l3">  IF invalid(G) &rarr; END</p>
-                            <p class="pseudocode" id="tf1_p_l4">  WHILE |E| > |{tour &#8745; E}|</p>
-                            <p class="pseudocode" id="tf1_p_l5">    s = c<sub>prev</sub> &#8712; V : &#8707;{u,s} &#8712; E \ E<sub>visited</sub><br />    subtour &larr; s<br />    E<sub>visited</sub> &larr; {u,s}</p>
+                            <p class="pseudocode" id="tf1_p_l2">  IF Graph ungültig THEN END</p>
+                            <p class="pseudocode" id="tf1_p_l3">    akt = start &larr; beliebiger Startknoten<br /></p>
+                            <p class="pseudocode" id="tf1_p_l4">    subtour &larr; {start}, tour &larr; &empty;</p>
+                            <p class="pseudocode" id="tf1_p_l5">  REPEAT</p>
                             <p class="pseudocode" id="tf1_p_l6">    DO</p>
-                            <p class="pseudocode" id="tf1_p_l7">      c &#8712; V : &#8707;{c,c<sub>prev</sub>} &#8712; E \ E<sub>visited</sub><br />      subtour &larr; c<br />      E<sub>visited</sub> &larr; {c,c<sub>prev</sub>}<br />      c<sub>prev</sub> = c</p>
-                            <p class="pseudocode" id="tf1_p_l8">    WHILE start &#8800; cur</p>
-                            <p class="pseudocode" id="tf1_p_l9">    tour = tour &#8746;<sub>merge</sub> subtour<br />    subtour = &empty;</p>
-                            <p class="pseudocode" id="tf1_p_l10">END</p>
+                            <p class="pseudocode" id="tf1_p_l7">      (akt, u) &larr; Suche unbesuchte Kante</p>
+                            <p class="pseudocode" id="tf1_p_l8">      subtour &larr; subtour &#8746; {u}<br />      akt &larr; u</p>
+                            <p class="pseudocode" id="tf1_p_l9">    WHILE start &#8800; akt</p>
+                            <p class="pseudocode" id="tf1_p_l10">    tour = tour &#8746;<sub>merge</sub> subtour<br />    subtour &larr; &empty;</p>
+                            <p class="pseudocode" id="tf1_p_l11">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten</p>
+                            <p class="pseudocode" id="tf1_p_l12">  UNTIL tour ist Eulerweg/-tour</p>
+                            <p class="pseudocode" id="tf1_p_l13">END</p> 
+                            
                             <h3>Status der Variablen:</h3>
                             <table class="algoInformationen">
                                 <tr>
                                     <th class="algoInfoTH"><span>start</span></th>
-                                    <th class="algoInfoTH"><span>cur</span></th>
+                                    <th class="algoInfoTH"><span>akt</span></th>
                                     <th class="algoInfoTH"><span>subtour</span></th>
                                     <th class="algoInfoTH"><span>tour</span></th>
                                 </tr>

@@ -560,7 +560,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Edge visited = false
     // Benennung v1, v2, ... & e1, e2, ...
     this.initializeGraph = function() {
-        this.markPseudoCodeLine(2);
+        this.markPseudoCodeLine(1);
 
         $("#ta_div_statusErklaerung").html('<h3>1 Initialisierung</h3>\
             <p>Um besser mit dem Graphen arbeiten können, haben wir seine Knoten mittels Buchstaben beschriftet.</p>\
@@ -585,7 +585,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
     // Check ob Graph Euclidisch oder Semi Euclidisch ist
     this.checkGraph = function() {
-        this.markPseudoCodeLine(3);
+        this.markPseudoCodeLine(2);
         $("#ta_div_statusErklaerung").html('<h3>2 Graph prüfen</h3>\
             <p>Nur wenn unser Graph die folgenden Eigenschaften aufweist, kann der Hierholzer Algorithmus funktionieren:</p>\
             <h3>2.1 Anzahl der Knoten</h3>\
@@ -680,7 +680,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
     // Selectiere Start Vertice, entweder #1 (Euclidisch) oder #1 mit ungeradem Grad (Semi Euclidisch)
     this.findStartingVertex = function() {
-        this.markPseudoCodeLine(5);
+        this.markPseudoCodeLine(3);
         $("#ta_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
             <h3>3.1a Ersten Startknoten finden</h3>\
             <p>Damit der Algorithmus mit der ersten Subtour starten kann, benötigt er einen Startknoten. Hierfür unterscheidet man zwei Fälle:</p>\
@@ -799,7 +799,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn gleich -> mergeTour()
     // Wenn ungleich -> findNextVertexForTour()
     this.compareVertexWithStart = function() {
-        this.markPseudoCodeLine(8);
+        this.markPseudoCodeLine(9);
         $("#ta_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
             <h3>3.3 Auf Kreis prüfen</h3>\
             <p>Um zu prüfen, ob unsere Subtour abgeschlossen ist (d.h. sie bildet einen Kreis), vergleichen wir den aktiven Knoten mit dem ersten Knoten der Subtour. Beide sind <span style="font-weight: bold; color: green;">grün</span> markiert.</p>\
@@ -826,7 +826,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Bei leerer Tour, Tour = Subtour
     // Bei vorhandener Tour, Replace Start mit Subtour
     this.mergeTour = function() {
-        this.markPseudoCodeLine(9);
+        this.markPseudoCodeLine(10);
         $("#ta_div_statusErklaerung").html('<h3>4 Gesamttour bestimmen</h3>\
             <h3>4.1 Integriere Subtour in Gesamttour</h3>\
             <p>Damit der Hierholzer Algorithmus am Ende eine Eulertour bzw. einen Eulerkreis liefert, müssen wir sämtliche Subtouren passend aneinanderhängen. Wir unterscheiden hier drei Fälle:</p>\
@@ -911,7 +911,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn ja -> returnTour()
     // Wenn nein -> findNewStartingVertex()
     this.checkForEuclideanTour = function() {
-        this.markPseudoCodeLine(4);
+        this.markPseudoCodeLine(12);
         $("#ta_div_statusErklaerung").html('<h3>4 Gesamttour bestimmen</h3>\
             <h3>4.2 Auf Vollständigkeit prüfen</h3>\
             <p>Nach jeder Integration einer Subtour in die Gesamttour müssen wir prüfen, ob unsere Gesamttour vollständig ist und der Algorithmus terminieren kann.</p>\
@@ -942,7 +942,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
 
     // Zeige Tour
     this.returnTour = function() {
-        this.markPseudoCodeLine(10);
+        this.markPseudoCodeLine(13);
         $("#ta_div_statusErklaerung").html('<h3>5 Ergebnis</h3>\
             <p>Der Algorithmus konnte erfolgreich eine Eulertour bzw. einen Eulerkreis bestimmen.</p>');
 
@@ -1004,7 +1004,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Finde neuen Startpunkt in Tour
     // Erster Knoten, dessen Grad unbesuchter Kanten größer 0 ist -> findNextVertexForTour()
     this.findNewStartingVertex = function() {
-        this.markPseudoCodeLine(5);
+        this.markPseudoCodeLine(11);
         $("#ta_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
             <h3>3.1b Neuen Startknoten finden</h3>\
             <p>Im Gegensatz zum Finden eines Startknotens für die erste Subtour, gibt es nun keine Fallunterscheidung mehr.</p>\
