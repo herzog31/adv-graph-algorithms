@@ -379,36 +379,50 @@
                     </div>
                 </div>
                 <div id="tf2_div_statusWindow" class="statusWindow">
-                    <h2>Wie ist die optimale Sortierung der Kanten?</h2>
-                    <div id="tf2_div_Abspielbuttons"></div>
-                    <select id="tf2_select_aufgabeGraph" name="Wähle einen Graphen">
-                        <option selected>Selbsterstellter Graph</option>
-                        <option>Standardbeispiel</option>
-                        <option>Negativer Kreis</option>
-                        <option>Positiver Kreis</option>
-                    </select>
-                    <div id="tf2_div_statusErklaerung">
-                        <h3>Wähle zuerst den Graphen, mit dem du arbeiten möchtest.</h3>
-                        <h3>Klicke danach auf den Startknoten, um die Aufgabe zu beginnen.</h3>
-                        <p>Klicke danach in der Reihenfolge auf die Kanten, in der Sie der Algorithmus betrachten soll.</p>
+                    <h2 class="">Status des Algorithmus</h2>
+                    <div id="tf2_div_abspielbuttons">
                     </div>
-                    <div id="tf2_div_Frage">
-                    </div>
-                    <div id="tf2_div_Antworten">
+                    <div id="tf2_div_statusTabs">
+                         <ul>
+                            <li><a href="#tf2_div_statusErklaerung">Erklärung</a></li>
+                            <li><a href="#tf2_div_statusPseudocode">Pseudocode</a></li>
+                        </ul>
+                        <div id="tf2_div_statusErklaerung">
+                            <h3>Hierholzer Algorithmus</h3>
+                            <p>Klicke auf <strong>Nächster Schritt</strong> um den Algorithmus zu starten.</p>
+                        </div>
+                        <div class="PseudocodeWrapper" id="tf2_div_statusPseudocode">
+                            <p class="pseudocode" id="tf2_p_l1">BEGIN</p>
+                            <p class="pseudocode" id="tf2_p_l2">  IF Graph ungültig THEN END</p>
+                            <p class="pseudocode" id="tf2_p_l3">    akt = start &larr; beliebiger Startknoten<br /></p>
+                            <p class="pseudocode" id="tf2_p_l4">    subtour &larr; {start}, tour &larr; &empty;</p>
+                            <p class="pseudocode" id="tf2_p_l5">  REPEAT</p>
+                            <p class="pseudocode" id="tf2_p_l6">    DO</p>
+                            <p class="pseudocode" id="tf2_p_l7">      (akt, u) &larr; Suche unbesuchte Kante</p>
+                            <p class="pseudocode" id="tf2_p_l8">      subtour &larr; subtour &#8746; {u}<br />      akt &larr; u</p>
+                            <p class="pseudocode" id="tf2_p_l9">    WHILE start &#8800; akt</p>
+                            <p class="pseudocode" id="tf2_p_l10">    tour = tour &#8746;<sub>merge</sub> subtour<br />    subtour &larr; &empty;</p>
+                            <p class="pseudocode" id="tf2_p_l11">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten</p>
+                            <p class="pseudocode" id="tf2_p_l12">  UNTIL tour ist Eulerweg/-tour</p>
+                            <p class="pseudocode" id="tf2_p_l13">END</p> 
+                            <h3>Status der Variablen:</h3>
+                            <table class="algoInformationen">
+                                <tr>
+                                    <th class="algoInfoTH"><span>start</span></th>
+                                    <th class="algoInfoTH"><span>akt</span></th>
+                                    <th class="algoInfoTH"><span>subtour</span></th>
+                                    <th class="algoInfoTH"><span>tour</span></th>
+                                </tr>
+                                <tr>
+                                    <td id="tf2_td_tourStartVertex" class="algoInfoTD">-</td>
+                                    <td id="tf2_td_tourCurrentVertex" class="algoInfoTD">-</td>
+                                    <td id="tf2_td_euclideanSubtour" class="algoInfoTD">&#8709;</td>
+                                    <td id="tf2_td_euclideanTour" class="algoInfoTD">&#8709;</td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div title="Forschungsaufgabe 2" class="tabIntroDialog">
-                <h2>
-                    Wie ist die optimale Sortierung der Kanten?
-                </h2>
-                <p>Der Bellman-Ford-Algorithmus kann schon nach einer einzigen Phase alle Entfernungen korrekt berechnet haben.</p>
-                <p>Dafür müssen die Kanten allerdings in der <strong>optimalen Reihenfolge</strong> betrachtet werden.
-                    <strong>Diese Reihenfolge ist aber nicht leicht zu finden</strong> &ndash; das dauert genauso lange wie der Bellman-Ford-Algorithmus selbst.</p>
-                <img src="img/FA2BeispielGut.png" alt="Diese Reihenfolge ist sinnvoll">
-                <img src="img/FA2BeispielSchlecht.png" id="tf2_img_beispielSchlecht" alt="Diese Reihenfolge ist weniger sinnvoll">
-                <p>Im Beispiel sieht man: Links ist die Reihenfolge sinnvoll, der Algorithmus kann schon nach einer Runde alle Kosten korrekt berechnet haben. Rechts ist das nicht der Fall.</p>
-                <p>In dieser Aufgabe kannst du experimentieren, wie viele Phasen der Bellman-Ford-Algorithmus bei verschiedenen Sortierungen benötigt.</p>
             </div>
             <div id="tf2_div_confirmTabChange" title="Aufgabe abbrechen?" class="tabChangeWarningDialog">
                 <h2>Beim Wechsel des Tabs wird die Aufgabe abgebrochen.</h2>
