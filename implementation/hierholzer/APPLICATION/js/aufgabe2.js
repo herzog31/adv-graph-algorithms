@@ -349,47 +349,40 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         return;
     };
 
-    this.performBFS = function() {
+    this.performStrongBFS = function() {
 
-        var reachableVertices = new Array();
-        var visitedEdges = new Array();
-        var queue = new Array();
+        // check from every node
+        for(var startNode in graph.nodes) {
+            var reachableVertices = [];
+            var visitedEdges = [];
+            var queue = [parseInt(startNode)];
 
-        for (var startNode in graph.nodes) break;
-        queue.push(startNode);
+            while(queue.length > 0) {
+                var currentNode = parseInt(queue.shift());
+                // add current node to reachable vertices if not yet in
+                if(reachableVertices.indexOf(currentNode) === -1) reachableVertices.push(currentNode);
 
-        while(queue.length > 0) {
-            var currentNode = queue.shift();
-
-            if(reachableVertices.indexOf(currentNode) === -1) reachableVertices.push(currentNode);
-
-            var outEdges = graph.nodes[currentNode].getOutEdges();
-            var inEdges = graph.nodes[currentNode].getInEdges();
-            var edges = new Array();
-
-            for(var kantenID in outEdges) {
-                if (visitedEdges.indexOf(kantenID) != -1) continue;
-                edges.push(kantenID);
-                visitedEdges.push(kantenID);
-            }
-
-            for(var kantenID in inEdges) {
-                if (visitedEdges.indexOf(kantenID) != -1) continue;
-                edges.push(kantenID);
-                visitedEdges.push(kantenID);
-            }
-
-            for (var i = 0; i < edges.length; i++) {
-                if(graph.edges[edges[i]].getSourceID() == currentNode) {
-                    queue.push(graph.edges[edges[i]].getTargetID());
-                }else{
-                    queue.push(graph.edges[edges[i]].getSourceID());
+                // check every neighbor
+                var outEdges = graph.nodes[currentNode].getOutEdges();
+                for(var kantenID in outEdges) {
+                    // skip already used edges
+                    if (visitedEdges.indexOf(kantenID) !== -1) continue;
+                    // add unvisited neighbors to queue
+                    if(reachableVertices.indexOf(graph.edges[kantenID].getTargetID()) === -1) queue.push(graph.edges[kantenID].getTargetID());
+                    // set edge to visited
+                    visitedEdges.push(kantenID);
                 }
+
+            }
+
+            // return false if not all nodes can be reached
+            if(Object.keys(graph.nodes).length !== reachableVertices.length) {
+                return false;
             }
 
         }
 
-        return reachableVertices;
+        return true;
 
     };
 
@@ -532,11 +525,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             nodeCounter++;
         };
 
-        /* for(var kantenID in graph.edges) {
-            graph.edges[kantenID].setAdditionalLabel("{"+graph.nodes[graph.edges[kantenID].getSourceID()].getLabel()+", "+graph.nodes[graph.edges[kantenID].getTargetID()].getLabel()+"}")
-            edgeCounter++;
-        }; */
-
     };
 
     // Edge visited = false
@@ -578,7 +566,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             <p>Der Hierholzer Algorithmus stellt strenge Voraussetzungen an den Grad der Knoten. Der Grad eines Knoten beschreibt die Anzahl seiner Kanten. Zur Veranschaulichung haben wir jeden Knoten mit seinem Grad beschriftet. Ein <span style="font-weight: bold; color: green;">grüner</span> Rahmen bedeutet, dass der Grad gerade ist, während ein <span style="font-weight: bold; color: red;">roter</span> Rahmen auf einen ungeraden Grad hinweist.</p>\
             <p>Ein Graph dessen Knoten alle einen geraden Grad aufweisen, nennt man <em>eulersch</em>. Trifft dies auf alle außer exakt zwei Knoten zu, so spricht man von einem <em>semi-eulerschen</em> Graph.</p>\
             <p>Damit der Hierholzer Algorithmus funktioniert muss der Graph entweder eulersch oder semi-eulersch sein.</p>');
-        $("#tab_tf2").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/knoten_even.png" alt="Knoten" class="LegendeIcon"></td><td><span>Knoten mit geradem Grad 2</span></td></tr><tr><td class="LegendeTabelle"><img src="img/knoten_odd.png" alt="Knoten" class="LegendeIcon"></td><td><span>Knoten mit ungeradem Grad 3</span></td></tr></table>');
+        $("#tab_tf2").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/knoten_even_gerichtet.png" alt="Knoten" class="LegendeIcon"></td><td><span>Knoten mit Ingrad gleich Ausgrad</span></td></tr><tr><td class="LegendeTabelle"><img src="img/knoten_odd_gerichtet.png" alt="Knoten" class="LegendeIcon"></td><td><span>Knoten mit Ingrad ungleich Ausgrad</span></td></tr></table>');
 
         var numberOfOddVertices = 0;
         var firstOddVertex = null;
@@ -592,28 +580,33 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             return false;
         }
 
-        var reachableVertices = this.performBFS();      // Graph connected
-        if(Utilities.objectSize(graph.nodes) != reachableVertices.length) {
+        // Graph strongly connected
+        var result = this.performStrongBFS();
+        console.log("BFS result", result);
+        if(!result) {
             statusID = 2;
             validGraph = false;
             if(debugConsole) console.log("Invalid graph: Unconnected graph detected");
-            return false;
-            
+            return false;  
         }
 
+
         for(var knotenID in graph.nodes) {
-            var degree = graph.nodes[knotenID].getDegree();
-            graph.nodes[knotenID].setLabel(degree);
-            if(degree % 2 === 1) {
+
+            var inDegree = graph.nodes[knotenID].getInDegree();
+            var outDegree = graph.nodes[knotenID].getOutDegree();
+
+            if(inDegree === outDegree) {
+                graph.nodes[knotenID].setLayout("borderColor", "green");
+            }else{
                 graph.nodes[knotenID].setLayout("borderColor", "red");
                 graph.nodes[knotenID].setLayout("borderWidth", 3);
                 numberOfOddVertices++;
                 if(firstOddVertex === null) {
                     firstOddVertex = knotenID;
                 }
-            }else{
-                graph.nodes[knotenID].setLayout("borderColor", "green");
             }
+            graph.nodes[knotenID].setLabel(inDegree + "/" + outDegree);
         }
 
         if(numberOfOddVertices === 0) {              // Euclidean Graph
@@ -622,17 +615,17 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             semiEuclideanGraph = false;
             return true;
 
-        }else if(numberOfOddVertices === 2) {        // Semi Euclidean Graph
+        /* }else if(numberOfOddVertices === 2) {        // Semi Euclidean Graph
             validGraph = true;
             statusID = 3;
             semiEuclideanGraph = true;
             tourStartOddVertex = firstOddVertex;
-            return true;
+            return true; */
 
         }else{                                       // Invalid Graph
             statusID = 2;
             validGraph = false;
-            if(debugConsole) console.log("Invalid graph: Graph is not euclidean or semi euclidean");
+            if(debugConsole) console.log("Invalid graph: Graph is not eulerian");
             return false;
         }
 
@@ -644,8 +637,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             <p style="color: white;">Dein Graph erfüllt mindestens eine der folgenden Eigenschaften nicht:</p>\
             <ul style="color: white;">\
             <li>mind. 2 Knoten</li>\
-            <li>zusammenhängend</li>\
-            <li>eulersch oder semi-eulersch</li>\
+            <li>stark zusammenhängend</li>\
+            <li>eulersch</li>\
             </ul>').addClass("ui-state-error");
 
         if(fastForwardIntervalID != null) {
@@ -660,7 +653,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
     };
 
-    // Selectiere Start Vertice, entweder #1 (Euclidisch) oder #1 mit ungeradem Grad (Semi Euclidisch)
+    // Selectiere Start Vertice, entweder #1 (Eulerisch) oder #1 mit ungeradem Grad (Semi Eulerisch)
     this.findStartingVertex = function() {
         this.markPseudoCodeLine(3);
         $("#tf2_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
@@ -669,20 +662,16 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             <p><strong>Eulerscher Graph:</strong> Wähle beliebigen Knoten.</p>\
             <p><strong>Semi-eulerscher Graph:</strong> Wähle einen der beiden Knoten mit ungeradem Grad.</p>\
             <p>Der ausgewählte und damit aktive Knoten wurde <span style="font-weight: bold; color: green;">grün</span> markiert.</p>');
-        $("#tab_tf2").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>Startknoten bzw. Knoten der mit dem Startknoten verglichen wird</span></td></tr><tr><td class="LegendeTabelle"><img src="img/pfad.png" alt="Kante" class="LegendeIcon"></td><td><span>Kante der Eulertour im aktuellen Durchgang</span></td></tr></table>');
+        $("#tab_tf2").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>Startknoten bzw. Knoten der mit dem Startknoten verglichen wird</span></td></tr><tr><td class="LegendeTabelle"><img src="img/pfad_gerichtet.png" alt="Kante" class="LegendeIcon"></td><td><span>Kante der Eulertour im aktuellen Durchgang</span></td></tr></table>');
 
         // Restore Naming
         this.addNamingLabels();
 
         // Set Starting & Current Vertex
-        if(semiEuclideanGraph) {
-            tourStartVertex = tourStartOddVertex;
-        }else{
-            for (var knotenID in graph.nodes) {
-                tourStartVertex = knotenID;
-                break;
-            };
-        }
+        for (var knotenID in graph.nodes) {
+            tourStartVertex = knotenID;
+            break;
+        };
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
         tourCurrentVertex = tourStartVertex;
@@ -715,8 +704,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
 
         var outEdges = graph.nodes[tourCurrentVertex].getOutEdges();
-        var inEdges = graph.nodes[tourCurrentVertex].getInEdges();
-
         var nextEdge = null;
 
         // Find first unvisited Edge
@@ -730,19 +717,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                 }else{
                     break;
                 }   
-            }
-        }
-
-        for(var kantenID in inEdges) {
-            if(!inEdges[kantenID].getVisited()) {
-                if(nextEdge === null) {
-                    nextEdge = kantenID;
-                    inEdges[kantenID].setVisited(true);
-                    inEdges[kantenID].setLayout("lineColor", tourColors[tourColorIndex]);
-                    inEdges[kantenID].setLayout("lineWidth", 3);
-                }else{
-                    break;
-                }  
             }
         }
 
@@ -760,11 +734,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFilling);
 
         // Get other Vertex
-        if(graph.edges[nextEdge].getSourceID() == tourCurrentVertex) {
-            tourCurrentVertex = graph.edges[nextEdge].getTargetID();
-        }else{
-            tourCurrentVertex = graph.edges[nextEdge].getSourceID();
-        }
+        tourCurrentVertex = graph.edges[nextEdge].getTargetID();
 
         this.addVertexToTour(graph.nodes[tourCurrentVertex], euclideanSubTour);
         if(debugConsole) console.log("Subtour: ", euclideanSubTour);
@@ -832,32 +802,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
         if(euclideanTour.length === 0) {
             euclideanTour = euclideanSubTour;          
-        }else if(JSON.stringify(euclideanSubTour[0]) !== JSON.stringify(euclideanSubTour[(euclideanSubTour.length - 1)])) {
-            if(debugConsole) console.log("Spezialfall mit 2 Odd Vertices");
-
-            var startOfSubTour = euclideanSubTour[0];
-            var newTour = new Array();
-            var specialLast = null;
-
-            for(var i = 0; i < euclideanTour.length; i++) {
-                if(JSON.stringify(euclideanTour[i]) === JSON.stringify(startOfSubTour)) {
-                    specialLast = i;
-                }
-            }
-
-            for(var i = 0; i < euclideanTour.length; i++) {
-                if(specialLast == i) {
-                    for(var j = 0; j < euclideanSubTour.length; j++) {
-                        newTour.push(euclideanSubTour[j]);
-                    }
-                    replaced = true;
-                }else{
-                    newTour.push(euclideanTour[i]);
-                }
-            }
-
-            euclideanTour = newTour;
-
         }else{
             var startOfSubTour = euclideanSubTour[0];
             var newTour = new Array();
@@ -865,9 +809,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             for(var i = 0; i < euclideanTour.length; i++) {
                 if(JSON.stringify(euclideanTour[i]) == JSON.stringify(startOfSubTour) && !replaced) {
                     for(var j = 0; j < euclideanSubTour.length; j++) {
-                        /* if(euclideanSubTour[j].type == "edge") {
-                            graph.edges[euclideanSubTour[j].id].setLayout("lineColor", tourColors[0]);
-                        } */
                         newTour.push(euclideanSubTour[j]);
                     }
                     replaced = true;
@@ -936,12 +877,9 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             }
             if(euclideanTour[i].type == "edge") {
                 var layout = graph.edges[euclideanTour[i].id].getLayout();
-                //output += "<li>{"+graph.nodes[graph.edges[euclideanTour[i].id].getSourceID()].getLabel()+", "+graph.nodes[graph.edges[euclideanTour[i].id].getTargetID()].getLabel()+"}</li>";
-                output += ' <span style="color: '+layout.lineColor+';">&#8211;</span> ';
+                output += ' <span style="color: '+layout.lineColor+';">&rarr;</span> ';
             }
         }
-
-        //output = output.slice(0,-3);
 
         var output_subtours = "";
 
@@ -952,17 +890,15 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                 if(cur['tour'][j].type == "vertex" && j == 0) {
                     output_subtours += graph.nodes[cur['tour'][j].id].getLabel();
                 }else if(cur['tour'][j].type == "vertex") {
-                    output_subtours += "&#8211;"+graph.nodes[cur['tour'][j].id].getLabel();
+                    output_subtours += "&rarr;"+graph.nodes[cur['tour'][j].id].getLabel();
                 }
             }
             output_subtours += '</li>';
         }
 
-        if(semiEuclideanGraph) {
-            if(debugConsole) console.log("Complete Euclidean Trail: ", euclideanTour);
-        }else{
-            if(debugConsole) console.log("Complete Euclidean Circle: ", euclideanTour);
-        }  
+
+        if(debugConsole) console.log("Complete Euclidean Circle: ", euclideanTour);
+          
 
         $("#tf2_div_statusErklaerung").append('<h3>5.1 Eulertour:</h3>\
             <p class="result_euleriantour">' + output + '</p>\

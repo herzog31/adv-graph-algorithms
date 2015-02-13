@@ -34,9 +34,9 @@ function initializeSiteLayout() {
                 if($("#tab_ta").data("algo").getStatusID() != null && $("#tab_ta").data("algo").getStatusID() !== 8 && $("#tab_ta").data("algo").getStatusID() !== 2) {
                     if($("#tabs").data("tabChangeDialogOpen") == null) {
                         event.preventDefault();
-                        $( "#tabs" ).data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);
+                        $("#tabs").data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);
                         $("#tabs").data("tabChangeDialogOpen",true);
-                        $( "#ta_div_confirmTabChange" ).dialog("open");
+                        $("#ta_div_confirmTabChange").dialog("open");
                     }
                     else {
                         $("#tab_ta").data("algo").destroy();
@@ -63,11 +63,16 @@ function initializeSiteLayout() {
                 }
             }
             if(ui.oldPanel[0].id == "tab_tf2") {            // Tab Forschungsaufgabe 2
-                if($("#tabs").data("tabChangeDialogOpen") == null && $("#tab_tf2").data("algo").getWarnBeforeLeave()) {
-                    event.preventDefault();
-                    $("#tabs").data("requestedTab",$("#" + ui.newPanel.attr("id")).index()-1);
-                    $("#tabs").data("tabChangeDialogOpen", true);
-                    $("#tf2_div_confirmTabChange").dialog("open");
+                if($("#tab_tf2").data("algo").getStatusID() != null && $("#tab_tf2").data("algo").getStatusID() !== 8 && $("#tab_tf2").data("algo").getStatusID() !== 2) {
+                    if($("#tabs").data("tabChangeDialogOpen") == null) {
+                        event.preventDefault();
+                        $("#tabs").data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);
+                        $("#tabs").data("tabChangeDialogOpen",true);
+                        $("#tf2_div_confirmTabChange").dialog("open");
+                    }
+                    else {
+                        $("#tab_tf2").data("algo").destroy();
+                    }
                 }
                 else {
                     $("#tab_tf2").data("algo").destroy();

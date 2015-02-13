@@ -102,7 +102,15 @@ function GraphNode(coordinates,nodeID) {
 
 
     this.getDegree = function() {
-        return Object.keys(inEdges).length + Object.keys(outEdges).length;
+        return this.getInDegree() + this.getOutDegree();
+    };
+
+    this.getInDegree = function() {
+        return Object.keys(inEdges).length;
+    };
+
+    this.getOutDegree = function() {
+        return Object.keys(outEdges).length;
     };
 
     this.getUnvisitedDegree = function() {

@@ -167,7 +167,7 @@
                             <p class="pseudocode" id="ta_p_l4">    subtour &larr; {start}, tour &larr; &empty;</p>
                             <p class="pseudocode" id="ta_p_l5">  REPEAT</p>
                             <p class="pseudocode" id="ta_p_l6">    DO</p>
-                            <p class="pseudocode" id="ta_p_l7">      (akt, u) &larr; Suche unbesuchte Kante</p>
+                            <p class="pseudocode" id="ta_p_l7">      {akt, u} &larr; Suche unbesuchte Kante</p>
                             <p class="pseudocode" id="ta_p_l8">      subtour &larr; subtour &#8746; {u}<br />      akt &larr; u</p>
                             <p class="pseudocode" id="ta_p_l9">    WHILE start &#8800; akt</p>
                             <p class="pseudocode" id="ta_p_l10">    tour = tour &#8746;<sub>merge</sub> subtour<br />    subtour &larr; &empty;</p>
@@ -319,7 +319,7 @@
                             <p class="pseudocode" id="tf1_p_l4">    subtour &larr; {start}, tour &larr; &empty;</p>
                             <p class="pseudocode" id="tf1_p_l5">  REPEAT</p>
                             <p class="pseudocode" id="tf1_p_l6">    DO</p>
-                            <p class="pseudocode" id="tf1_p_l7">      (akt, u) &larr; Suche unbesuchte Kante</p>
+                            <p class="pseudocode" id="tf1_p_l7">      {akt, u} &larr; Suche unbesuchte Kante</p>
                             <p class="pseudocode" id="tf1_p_l8">      subtour &larr; subtour &#8746; {u}<br />      akt &larr; u</p>
                             <p class="pseudocode" id="tf1_p_l9">    WHILE start &#8800; akt</p>
                             <p class="pseudocode" id="tf1_p_l10">    tour = tour &#8746;<sub>merge</sub> subtour<br />    subtour &larr; &empty;</p>
@@ -368,8 +368,8 @@
                                     <td><span>Knoten</span></td>
                                 </tr>
                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/kante.png" alt="Kante" class="LegendeIcon"></td>
-                                    <td><span>Ungerichtete Kante</span></td>
+                                    <td class="LegendeTabelle"><img src="img/kante_gerichtet.png" alt="Kante" class="LegendeIcon"></td>
+                                    <td><span>Gerichtete Kante</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -403,7 +403,7 @@
                             <p class="pseudocode" id="tf2_p_l9">    WHILE start &#8800; akt</p>
                             <p class="pseudocode" id="tf2_p_l10">    tour = tour &#8746;<sub>merge</sub> subtour<br />    subtour &larr; &empty;</p>
                             <p class="pseudocode" id="tf2_p_l11">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten</p>
-                            <p class="pseudocode" id="tf2_p_l12">  UNTIL tour ist Eulerweg/-tour</p>
+                            <p class="pseudocode" id="tf2_p_l12">  UNTIL tour ist Eulertour</p>
                             <p class="pseudocode" id="tf2_p_l13">END</p> 
                             <h3>Status der Variablen:</h3>
                             <table class="algoInformationen">
@@ -445,7 +445,7 @@ Ausgabe: Eulertour/-weg als Liste von Knoten</code></pre>
    subtour &larr; {start}, tour &larr; &empty;
    REPEAT
       DO
-         (akt, u) &larr; Suche unbesuchte Kante
+         {akt, u} &larr; Suche unbesuchte Kante
          subtour &larr; subtour &#8746; {u}
          akt &larr; u
       WHILE start &#8800; akt
