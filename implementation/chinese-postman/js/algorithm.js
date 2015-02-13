@@ -339,10 +339,10 @@ function algorithm(p_graph, p_canvas, p_tab) {
         for (var startNode in graph.nodes) {
             var reachableVertices = [];
             var visitedEdges = [];
-            var queue = [startNode];
+            var queue = [parseInt(startNode)];
 
             while(queue.length > 0) {
-                var currentNode = queue.shift();
+                var currentNode = parseInt(queue.shift());
                 // add current node to reachable vertices if not yet in
                 if(reachableVertices.indexOf(currentNode) === -1) reachableVertices.push(currentNode);
 
@@ -352,7 +352,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
                     // skip already used edges
                     if (visitedEdges.indexOf(kantenID) !== -1) continue;
                     // add unvisited neighbors to queue
-                    queue.push(graph.edges[kantenID].getTargetID());
+                    if(reachableVertices.indexOf(graph.edges[kantenID].getTargetID()) === -1) queue.push(graph.edges[kantenID].getTargetID());
                     // set edge to visited
                     visitedEdges.push(kantenID);
                 }
@@ -360,7 +360,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             }
 
             // return false if not all nodes can be reached
-            if(Object.keys(graph.nodes) !== reachableVertices.length) {
+            if(Object.keys(graph.nodes).length !== reachableVertices.length) {
                 return false;
             }
 
