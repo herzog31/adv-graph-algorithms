@@ -25,8 +25,8 @@ function initializeSiteLayout() {
     $("#ti_button_gotoFA1").click(function() {$("#tabs").tabs( "option", "active", 4);});
     $("#ti_button_gotoFA2").click(function() {$("#tabs").tabs( "option", "active", 5);});
     $("#tw_Accordion").accordion({heightStyle: "content"});
-    $( "#tabs" ).tabs({
-        beforeActivate: function( event, ui ) {
+    $("#tabs").tabs({
+        beforeActivate: function(event, ui) {
             if(ui.oldPanel[0].id == "tab_tg") {             // Tab Graph erstellen
                 $("#tab_tg").data("algo").destroy();
             }
@@ -63,11 +63,11 @@ function initializeSiteLayout() {
                 }
             }
             if(ui.oldPanel[0].id == "tab_tf2") {            // Tab Forschungsaufgabe 2
-                if($("#tabs").data("tabChangeDialogOpen") == null && $("#tab_tf2").data("algo").getWarnBeforeLeave()) { // TODO
+                if($("#tabs").data("tabChangeDialogOpen") == null && $("#tab_tf2").data("algo").getWarnBeforeLeave()) {
                     event.preventDefault();
-                    $( "#tabs" ).data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);
-                    $("#tabs").data("tabChangeDialogOpen",true);
-                    $( "#tf2_div_confirmTabChange" ).dialog("open");
+                    $("#tabs").data("requestedTab",$("#" + ui.newPanel.attr("id")).index()-1);
+                    $("#tabs").data("tabChangeDialogOpen", true);
+                    $("#tf2_div_confirmTabChange").dialog("open");
                 }
                 else {
                     $("#tab_tf2").data("algo").destroy();
@@ -77,27 +77,29 @@ function initializeSiteLayout() {
         activate: function(event, ui) {
             var algo;
             if(ui.newPanel[0].id == "tab_tg") {
-                algo = new GraphDrawer($("body").data("graph"),$("#tg_canvas_graph"),$("#tab_tg"));
-                $("#tab_tg").data("algo",algo);
+                algo = new GraphDrawer($("body").data("graph"), $("#tg_canvas_graph"), $("#tab_tg"));
+                $("#tab_tg").data("algo", algo);
             }
             if(ui.newPanel[0].id == "tab_ta") {
-                algo = new BFAlgorithm($("body").data("graph"),$("#ta_canvas_graph"),$("#tab_ta"));
-                $("#tab_ta").data("algo",algo);
+                algo = new BFAlgorithm($("body").data("graph"), $("#ta_canvas_graph"), $("#tab_ta"));
+                $("#tab_ta").data("algo", algo);
             }
             if(ui.newPanel[0].id == "tab_tf1") {
-                algo = new Forschungsaufgabe1($("body").data("graph"),$("#tf1_canvas_graph"),$("#tab_tf1"));
-                $("#tab_tf1").data("algo",algo);
+                algo = new Forschungsaufgabe1($("body").data("graph"), $("#tf1_canvas_graph"), $("#tab_tf1"));
+                $("#tab_tf1").data("algo", algo);
             }
             if(ui.newPanel[0].id == "tab_tf2") {
-                algo = new Forschungsaufgabe2($("body").data("graph"),$("#tf2_canvas_graph"),$("#tab_tf2"));
-                $("#tab_tf2").data("algo",algo);
+                // TODO New directed Graph...
+                var directedGraph = new Graph("graphs/graph1.txt", null, true);
+                algo = new Forschungsaufgabe2(directedGraph, $("#tf2_canvas_graph"), $("#tab_tf2"));
+                $("#tab_tf2").data("algo", algo);
             }
             if(algo) {
                 algo.run();
             }
         }
     });
-    $("body").data("graph",new Graph("graphs/graph1.txt"));
+    $("body").data("graph", new Graph("graphs/graph1.txt", null, false));
 }
 
 /**

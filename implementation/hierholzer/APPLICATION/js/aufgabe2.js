@@ -83,6 +83,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         this.registerEventHandlers();
         $("#tf2_tr_LegendeClickable").removeClass("greyedOutBackground");
         this.needRedraw = true;
+        this.minimizeLegend();
     };
     
     /**
@@ -101,7 +102,9 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      */
     this.refresh = function() {
         this.destroy();
-        var algo = new Forschungsaufgabe2($("body").data("graph"),$("#tf2_canvas_graph"),$("#tab_tf2"));
+        // TODO
+        var directedGraph = new Graph("graphs/graph1.txt", null, true);
+        var algo = new Forschungsaufgabe2(directedGraph, $("#tf2_canvas_graph"), $("#tab_tf2"));
         $("#tab_tf2").data("algo",algo);
         algo.run();
     };
