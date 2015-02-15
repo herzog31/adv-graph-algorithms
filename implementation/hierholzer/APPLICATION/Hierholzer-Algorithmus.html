@@ -114,6 +114,7 @@
                         <option>Standardbeispiel</option>
                         <option>Negativer Kreis</option>
                         <option>Positiver Kreis</option>
+                        <option>Königsberger Brücken</option>
                         <option>Großstädte Europas</option>
                     </select>
                     <p><button id="tg_button_gotoAlgorithmTab">Fertig &ndash; weiter zum Algorithmus!</button></p>
@@ -202,27 +203,33 @@
         <!-- TAB Beschreibung des Algorithmus -->
         <div id="tab_ti" style="display: none;">
             <div id="ti_div_Einfuehrungstext">
-                <div class="BeispielbildContainer"><img id="ti_img_beispiel1" src="img/beispiel1.png" alt="" /><p>Königsberg</p></div>
+                <div class="BeispielbildContainer">
+                    <img id="ti_img_beispiel1" src="img/koenigsberg.png" alt="Königsberger Brücken" /><p>Königsberger Brücken</p><br />
+                    <img id="ti_img_beispiel1" src="img/koenigsberg_degree.png" alt="Gerade (grün) und ungerade (rot) Grade" /><p>Gerade (grün) und ungerade Grade (rot)</p><br />
+                    <img id="ti_img_beispiel1" src="img/graph1.png" alt="Eulerscher Graph" /><p>Eulerscher Graph</p><br />
+                    <img id="ti_img_beispiel1" src="img/graph2.png" alt="Der erste gefundene Kreis (blau)" /><p>Der erste gefundene Kreis (blau)</p><br />
+                    <img id="ti_img_beispiel1" src="img/graph3.png" alt="Zweiter Kreis (grün) und komplette Eulertour (a - c - e - f - c - d - b - a)" /><p>Zweiter Kreis (grün) und komplette Eulertour<br />(a - c - e - f - c - d - b - a)</p>
+                </div>
                 <h1>Das Eulertour Problem</h1>
                 <p>Das Eulertour Problem kam das erste mal im 18. Jahrhundert auf. In der Stadt Königsberg (heute Kaliningrad) gab es zu der Zeit genau sieben Brücken und es stellte sich die Frage, ob man einen Weg oder sogar einen Rundweg finden kann, sodass man alle Brücken genau einmal überquert. Das gleiche Problem ergibt sich auch beim "Haus vom Nikolaus", bei dem man ein Haus in einem Zug, ohne Absetzen des Stiftes zeichnen muss.</p>
                 <p>In Graphen nennt man diese Fragestellung das Eulertour Problem, benannt nach Leonard Euler. Man versucht eine Folge von Kanten (Kantenzug) so zu finden, dass alle Kanten des Graphen in der Folge genau einmal vorkommen. Wenn man dabei wieder bei dem Knoten ankommt, bei dem man gestartet ist, nennt man diesen Kantenzug Eulertour, andernfalls Eulerweg.</p>
-                <div class="BeispielbildContainer"><img id="ti_img_beispiel1" src="img/beispiel1.png" alt="" /><p>Königsberg Grad</p></div>
+                <p>&nbsp;</p>
+                
                 <h1>Eulersche Graphen</h1>
-                <p>Leonard Euler fand heraus, welche Vorraussetzungen ein Graph erfüllen muss, sodass dieser einen Eulerweg oder eine Eulertour enthält. Hierbei unterscheiden wir von gerichteten und ungerichteten Graphen:</p>
+                <p>Leonard Euler fand heraus, welche Voraussetzungen ein Graph erfüllen muss, sodass dieser einen Eulerweg oder eine Eulertour enthält. Hierbei unterscheiden wir von gerichteten und ungerichteten Graphen:</p>
                 <p><strong>Ungerichtete Graphen</strong><br />
                 Ein ungerichteter Graph besitzt mind. eine Eulertour, wenn alle seine Knoten einen geraden Grad haben. Das bedeutet, dass alle Knoten genau durch zwei, vier, sechs, ... Kanten mit anderen Knoten verbunden sein müssen. Klar wird dies, wenn man sich Folgendes überlegt: Für jeden Knoten benötigt man genau zwei Kanten, eine um ihn zu erreichen und eine um ihn wieder zu verlassen, bzw. ein Vielfaches davon, je nach dem, wie oft wir den Knoten besucht. Einen Graph der diese Bedingung für alle Knoten erfüllt, nennt man eulerschen Graph.</p>
                 <p>Für einen Eulerweg kann man diese Bedingung etwas lockern. Und zwar für genau zwei Knoten, deren Grad dann ungerade sein muss. Bei diesen Knoten bleibt dann jeweils eine Kante übrig, sodass man sich ein zusätzliches Mal von dem Knoten entfernen muss bzw. den Knoten besuchen muss. Diese beiden Knoten sind dann genau die Start- und Endknoten des Eulerwegs. Einen solchen Graph nennt man semi-eulersch.</p>
                 <p><strong>Gerichtete Graphen</strong><br />
                 Für gerichtete Graphen gelten die die o.g. Regeln weiterhin, man muss nur zusätzlich zwischen eingehenden und ausgehenden Kanten unterscheiden. Hierfür teilt man den Grad eines Knotens in Ingrad und Ausgrad auf. Der Ingrad beschreibt die Anzahl der eingehenden Kanten und der Ausgrad die Anzahl der ausgehenden Kanten. Für einen gerichteten eulerschen Graph muss dann neben dem geraden Grad auch Ingrad gleich Ausgrad für jeden Knoten gelten.</p>
                 <p>Bei semi-eulerschen Graphen benötigt man weiterhin einen Startknoten mit einer zusätzlichen ausgehenden Kante und einen Zielknoten mit einer zusätzlichen eingehenden Kante.</p>
-                <p>Liegt nun schließlich ein eulerscher oder semi-eulerscher Graph vor, kann man seine Eulertouren bzw. -wege schließlich mittels des Algorithmus von Hierholzer finden.</p>
-                <div class="BeispielbildContainer"><img id="ti_img_beispiel1" src="img/beispiel1.png" alt="" /><p>Anderer Graph</p></div>
-                <div class="BeispielbildContainer"><img id="ti_img_beispiel1" src="img/beispiel1.png" alt="" /><p>Anderer Graph mit Subtour</p></div>
-                <div class="BeispielbildContainer"><img id="ti_img_beispiel1" src="img/beispiel1.png" alt="" /><p>Anderer Graph mit Eulertour</p></div>
+                <p>Betrachtet man nun das Königsberger Brückenproblem unter den von Euler gefunden Voraussetzungen, stellt man fest, dass es dort weder eine Eulertour noch einen Eulerweg gibt. Hat man aber einen geeigneten Graphen vorliegen, kann man seine Eulertouren bzw. -wege schließlich mittels des Algorithmus von Hierholzer finden.</p>
+                <p>&nbsp;</p>
+
                 <h1>Idee des Algorithmus</h1>
-
-
-                
+                <p>Die Grundidee des Hierholzer Algorithmus ist die schrittweise Konstruktion der Eulertour aus mehreren disjunkten Kreisen. Man beginnt mit einem zufällig ausgewähltem Knoten und folgt dann einer beliebigen bisher unbesuchten Kante des Knotens zu einem weiteren Knoten. Dies wiederholt man, bis man wieder am Startknoten angekommen ist. Durch dieses Verfahren erhält man einen ersten Kreis, genannt Tour. Deckt diese Tour bereits alle Kanten des Graphen ab, ist sie eine Eulertour und der Algorithmus terminiert. Andernfalls sucht man sich einen weiteren Startknoten aus der Menge der Knoten der Tour und bildet einen weiteren Kreis, genannt Subtour. Der neue Kreis enthält nun offensichtlich keine Kanten des ersten Kreises, sie sind also disjunkt. Da sich beide Kreise durch die Wahl des Startknotens aus dem ersten Kreis aber in mindestens einem Knoten schneiden, kann man beide zu einem neuen Kreis zusammenfassen. Dazu betrachtet man die Knotenfolge der Tour und ersetzt den Startknoten der Subtour mit der kompletten Knotenfolge des Kreises. Man erweitert also die ursprüngliche Tour um weitere gefundene Kreise. Schließt die erweiterte Tour nun alle Kanten des Graphen ein, terminiert der Algorithmus, andernfalls kann die Tour noch um eine weitere Subtour erweitert werden.</p>
+                <p>Im Falle eines ungerichteten semi-eulerschen Graphen startet der Algorithmus mit einem der beiden Knoten mit ungeradem Grad. Im gerichteten Fall genau mit dem Knoten, mit einer zusätzlichen ausgehenden Kante. Eine der gefundenen Subtouren enthält dann keinen Kreis, ist also ein Weg. Wenn die Tour nun um diesen "Subweg" erweitert wird, muss die Erweiterung so erfolgen, dass Anfangs- und Endknoten des Subweges auch Anfangs- und Endknoten der Gesamttour sind.</p>
+                <p>&nbsp;</p>
 
                 <h1>Was nun?</h1>
                 <br style="clear: both;" />
@@ -233,72 +240,10 @@
                 </div>
                 <div class="Entscheidungsweg" id="ti_div_EntscheidungRight">
                     <h3>Sein Wissen an den Forschungsaufgaben testen</h3>
-                    <button id="ti_button_gotoFA1">Forschungsaufgabe: Wie würde der Algorithmus entscheiden?</button><br>
+                    <button id="ti_button_gotoFA1">Forschungsaufgabe: Wie würde der Algorithmus entscheiden?</button>
                     <button id="ti_button_gotoFA2">Forschungsaufgabe: Algorithmus am gerichteten Graphen</button>
                 </div>
                 <br style="clear: both;" />
-                
-
-
-
-                <!-- <div class="BeispielbildContainer"><img id="ti_img_beispiel1" src="img/beispiel1.png" alt="Einfacher Graph mit 4 Knoten."><p>Wie komme ich am günstigsten von links nach rechts?</p></div>
-                <h1>Kürzeste Wege</h1>
-                <p>In vielen Anwendungen kann es nützlich sein, den kürzesten Weg von a nach b zu berechnen.
-                Dabei muss die Länge eines Weges nicht unbedingt die Länge in Metern sein: Genauso gut kann man die Fahrzeit eines Weges betrachten oder, ob wir für dessen Benutzung Geld zahlen müssen &ndash; oder Geld erhalten.</p>
-                <p><strong>Im Allgemeinen sprechen wir von Kosten</strong>.
-                Dementsprechend weist man jedem Teilstück des Weges &ndash; auch "Kante" genannt &ndash; Kosten zu.</p>
-                <p>Der Algorithmus von Dijkstra berechnet kürzeste &ndash; oder eben kostengünstigste Wege, wenn alle Kosten positive Zahlen sind.
-                Wenn man allerdings auch negative Zahlen zulässt, scheitert der Algorithmus.</p>
-                <p>Der Bellman-Ford-Algorithmus dagegen kann auch mit negativen Kosten arbeiten.</p>
-                <p>Diese können beispielsweise für einen Taxifahrer entstehen, wenn er einen Fahrgast transportiert und für die Fahrt mehr Geld einnimmt, als ihn Benzin und Fahrzeug für die Fahrt kosten. Fährt er ohne Fahrgast, sind seine Kosten positiv.</p>
-                <h1>Idee des Algorithmus</h1>
-                <div class="BeispielbildContainer">
-                    <img id="ti_img_beispiel4_1" src="img/beispiel4_1.png" alt="Kante vor Update"><p>Die Kante ist eine Abkürzung:<br> Wir wissen, dass es uns 20 kostet, um vom Startknoten zum linken Knoten zu gelangen. Der Weg vom linken zum rechten Knoten kostet 1.<br> Also kommt man vom Startknoten zum rechten Knoten mit Kosten 21.</p>
-                    <img id="ti_img_beispiel4_2" src="img/beispiel4_2.png" alt="Kante vor Update">
-                </div>
-                <p>Der Bellman-Ford-Algorithmus berechnet die <strong>Kosten</strong> der günstigsten Wege von einem Startknoten aus zu allen anderen Knoten im Graph. Er kann dadurch die günstigsten Wege selbst konstruieren.</p>
-                <p>Der Algorithmus geht dabei iterativ vor, er geht also zunächst von einer sehr schlechten Schätzung der Kosten aus, und verbessert diese so lange, bis die korrekten Werte gefunden sind.</p>
-                <p>Die erste Schätzung ist:</p>
-                <ul>
-                    <li> <strong>Der Startknoten hat Kosten 0</strong>, denn seine Entfernung zu sich selbst ist natürlich 0.
-                    <li> <strong>Alle anderen Knoten haben Kosten unendlich</strong>, also die schlechtestmögliche Schätzung.
-                </ul>
-                <p>Danach prüft er alle Kanten auf folgende Bedingung: <strong>Sind die Kosten des Anfangsknotens der Kante plus die Kosten für die Benutzung der Kante niedriger als die Kosten des Zielknotens der Kante?</strong></p>
-                <p>Falls dies der Fall ist, so haben wir eine <strong>Abkürzung</strong> gefunden: Es ist besser, die eben geprüfte Kante zu nutzen, als den bisherigen Weg. 
-                    Deshalb werden die Kosten des Zielknotens der Kante aktualisiert: Sie entsprechen jetzt genau den Kosten des Anfangsknotens der Kante plus den Kosten für die Benutzung der Kante (siehe Beispiel rechts).</p>
-                <p>Alle Kanten des Graphen zu betrachten und die Kosten der Knoten zu aktualisieren, nennen wir <strong>Phase</strong>. Leider reicht es nicht aus, alle Kanten nur einmal zu betrachten. 
-                    Nach der ersten Phase haben wir die Kosten für alle Knoten korrekt berechnet, für die der günstigste Weg nur eine Kante benutzt. Nach 2 Phasen haben wir schon die Wege,
-                    die maximal 2 Kanten benutzen, korrekt berechnet und so weiter.</p>
-                <div class="BeispielbildContainer"><img id="ti_img_beispiel3" src="img/beispiel3.png" alt="Graph mit eingezeichneten Abstandswerten">
-                    <p>Der grüne Weg vom Startknoten ist der günstigste Weg. Er benutzt 3 Kanten.</p>
-                </div>
-                <p>Wie viele Phasen brauchen wir also? Hier hilft uns die Beobachtung, dass <strong>ein kürzester Weg weniger Kanten benutzen muss, als es Knoten im Graph gibt.</strong>
-                    Wir brauchen also eine Phase weniger, als es Knoten im Graph gibt. Ein kürzester Weg, der mehr Kanten benutzte, als es Knoten gibt, würde einen Knoten zweimal besuchen und somit im Kreis laufen.</p>
-                <h1>Konstruktion des günstigsten Weges</h1>
-                <p>Bei jeder Aktualisierung der Kosten speichert der Algorithmus die Kante, mit deren Hilfe er aktualisiert wurde, als <strong>Vorgängerkante</strong> des Knotens.</p>
-                <p>Am Ende des Algorithmus kann dann der günstigste Weg für jeden Knoten konstruiert werden, indem man so lange über Vorgängerkanten läuft, bis man am Startknoten angekommen ist.</p>
-                <h1>Kreise mit negativem Gewicht</h1>
-                <div class="BeispielbildContainer"><img id="ti_img_beispiel2" src="img/beispiel2.png" alt="Graph mit negativem Kreis."><p>Hier müsste ein günstigster Weg unendlich oft im Kreis laufen. Der Weg würde bei jedem Durchlauf kürzer werden.</p></div>
-                <p>Falls im Graph ein Kreis existiert, bei dem die Summe der Kantengewichte negativ ist &ndash; ein <strong>negativer Kreis</strong>, wird der Algorithmus möglicherweise keinen günstigsten Weg finden.</p>
-                <p>Wie man an dem Beispiel rechts schon sehen kann, sind Wege in diesem Fall nämlich möglicherweise unendlich günstig &ndash; man läuft einfach immer weiter durch den Kreis.</p>
-                <p>Dieses Problem tritt auf, falls der negative Kreis vom Startknoten aus erreichbar ist.
-                    Erfreulicherweise kann der Algorithmus aber entdecken, ob ein solcher negativer Kreis existiert.
-                    Dies wird im letzten Teil des Algorithmus überprüft.</p>
-                <p>Ein erreichbarer negativer Kreis existiert genau dann, wenn nach dem Durchlaufen aller Phasen immer noch Abkürzungen möglich sind. 
-                    <strong>Der Algorithmus überprüft also am Ende nochmals bei allen Kanten</strong>, ob die Kosten des Anfangsknotens der Kante plus die Kosten für die Benutzung der Kante niedriger sind als die Kosten des Zielknotens der Kante.
-                    Falls dies bei einer Kante der Fall ist, so wird die Meldung "negativer Kreis gefunden" ausgegeben.</p>
-                <p>Mithilfe der Vorgängerkanten kann man den negativen Kreis sogar finden: Man läuft so lange zurück, bis man im Kreis gelaufen ist (und das Gewicht des Kreises negativ ist).</p>
-                <h1>Was nun?</h1>
-                <div class="Entscheidungsweg" id="ti_div_EntscheidungLeft">
-                    <h3>Einen Graph erstellen und den Algorithmus durchspielen</h3>
-                    <button id="ti_button_gotoDrawGraph">Graph erstellen und daran den Algorithmus testen</button>
-                    <button id="ti_button_gotoAlgorithm">Algorithmus am fertigen Beispiel ausprobieren</button>
-                </div>
-                <div class="Entscheidungsweg" id="ti_div_EntscheidungRight">
-                    <h3>Sein Wissen an den Forschungsaufgaben testen</h3>
-                    <button id="ti_button_gotoFA1">Forschungsaufgabe: Wie würde der Algorithmus entscheiden?</button><br>
-                    <button id="ti_button_gotoFA2">Forschungsaufgabe: Wie ist die optimale Sortierung der Knoten?</button>
-                </div> -->
             </div>
         </div>
 

@@ -121,12 +121,16 @@ div.tabChangeWarningDialog {}
 
 div.Entscheidungsweg {
     width: 400px;
-    height: 100px;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding: 15px;
     border: 2px groove #78C8FF;
     text-align: center;
     vertical-align: middle;
+}
+div.Entscheidungsweg h3 {
+    margin: 0px 0px 5px 0px;
+}
+div.Entscheidungsweg button {
+    margin-bottom: 5px;
 }
 
 div.PseudocodeWrapper {
@@ -259,7 +263,6 @@ table.algoInformationen {
 #ti_div_Einfuehrungstext {
     padding-left: 15px;
     padding-right: 15px;
-    width: 1000px;
     text-align: justify;
 }
 
@@ -300,7 +303,8 @@ table.algoInformationen {
 }
 
 #ti_div_EntscheidungRight {
-    margin-left: 470px;
+    float: left;
+    margin-left: 15px;
 }
 
 #tw_Accordion {

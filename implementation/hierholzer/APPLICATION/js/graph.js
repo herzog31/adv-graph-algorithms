@@ -1255,6 +1255,11 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("graphs/graph7.txt", null, false);
                 break;
+            case "Königsberger Brücken":
+                this.canvas.css("background","");
+                $("#tg_p_bildlizenz").remove();
+                this.graph = new Graph("graphs/koenigsberg.txt", null, false);
+                break;
             case "Großstädte Europas":
                 this.canvas.css("background","url(img/europa.png)");
                 $("#tg_div_Legende").append("<p id=\"tg_p_bildlizenz\">Bild: <a href=\"https://www.cia.gov/library/publications/the-world-factbook/index.html\">CIA World Factbook</a></p>");
