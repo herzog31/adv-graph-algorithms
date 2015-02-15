@@ -91,23 +91,48 @@ CanvasDrawMethods.drawDashedLine = function(ctx,layout,source,target) {
  * @param {Object} target        Koordinaten des Zielpunkts
  * @param {String} label         Text
  */
-CanvasDrawMethods.drawTextOnLine = function(ctx,layout,source,target,label) {
+CanvasDrawMethods.drawTextOnLine = function(ctx,layout,source,target,label,even,nodeCount,sourceNode) {
     ctx.save();								// Aktuellen Zustand speichern (vor den Transformationen)
     ctx.font = layout.fontSize.toString() +"px " +layout.font;
     var arrowHeight = Math.sin(layout.arrowAngle)*layout.arrowHeadLength;
     var arrowWidth = Math.cos(layout.arrowAngle)*layout.arrowHeadLength;
     var labelMeasure = ctx.measureText(label);
     var alpha = Math.atan2(target.y-source.y,target.x-source.x);
-    var center = {x: (target.x+source.x)/2, y:(target.y+source.y)/2};
+    //var center = {x: (target.x+source.x)/2, y:(target.y+source.y)/2};
+    var center;
+    if(source.x > target.x){
+        //if(even) {
+            center = {
+                x: Math.max(target.x, source.x) - Math.abs(target.x - source.x) / (nodeCount+1) - sourceNode*Math.abs(target.x - source.x)/(nodeCount+1),
+                y: Math.min(target.y, source.y) + Math.abs(target.y - source.y) / (nodeCount+1) + sourceNode*Math.abs(target.y - source.y)/(nodeCount+1)
+            };
+        //}else{
+        //    center = {
+        //        x: Math.min(target.x, source.x) + Math.abs(target.x - source.x) / (nodeCount+1) + sourceNode*Math.abs(target.x - source.x)/(nodeCount+1),
+        //        y: Math.max(target.y, source.y) - Math.abs(target.y - source.y) / (nodeCount+1) - sourceNode*Math.abs(target.y - source.y)/(nodeCount+1)
+        //    };
+        //}
+    }else{
+        //if(even) {
+            center = {
+                x: Math.min(target.x, source.x) + Math.abs(target.x - source.x) / (nodeCount+1) + sourceNode*Math.abs(target.x - source.x)/(nodeCount+1),
+                y: Math.min(target.y, source.y) + Math.abs(target.y - source.y) / (nodeCount+1) + sourceNode*Math.abs(target.y - source.y)/(nodeCount+1)
+            };
+        //}else{
+        //    center = {
+        //        x: Math.max(target.x, source.x) - Math.abs(target.x - source.x) / (nodeCount+1) - sourceNode*Math.abs(target.x - source.x)/(nodeCount+1),
+        //        y: Math.max(target.y, source.y) - Math.abs(target.y - source.y) / (nodeCount+1) - sourceNode*Math.abs(target.y - source.y)/(nodeCount+1)
+        //    };
+        //}
+    }
     ctx.translate(center.x, center.y);
     ctx.rotate(alpha);
     if(Math.abs(alpha)>Math.PI/2) {					// Verhindere, dass Text auf dem Kopf angezeigt wird.
-        ctx.translate(0, layout.fontSize/2);				// Gehe in die Mitte des Texts 
         ctx.rotate(Math.PI);				// Rotiere um 180 Grad
-        ctx.fillText(label, -arrowWidth/2, layout.fontSize+3+layout.lineWidth +arrowHeight);		// Schreibe Text an Position 
-    }
-    else {
-        ctx.fillText(label, -labelMeasure.width/2, -3-arrowHeight);									// Verschriebung um 3, um nicht zu nah am Pfeil zu sein.
+        ctx.fillText(label, 0, -3);		// Schreibe Text an Position
+    }else {
+        console.log(label);
+        ctx.fillText(label, -labelMeasure.width/2, -3);									// Verschriebung um 3, um nicht zu nah am Pfeil zu sein.
     }
     ctx.restore();							// Ursprünglichen Zustand wiederherstellen.
 };

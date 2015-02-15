@@ -41,59 +41,14 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
      */
 
     /**
-     * Hier die Variablen vom HK-Algo
+     * Hier die Variablen vom UM-Algo
      */
-    /**
-     * Enthaelt alle Kanten, die zu aktuellem Zeitpunkt zum Matching gehoeren.
-     * Keys: KantenIDs Value: Kanten
-     * @type Object
-     */
-    var matching = new Object();
-    /*    *//**
-     * Enthaelt alle freien Knoten (derzeit) der linken Seite
-     * Wird als Ausgangspunkt fuer die Erstellung des alternierenden Graphen benutzt.
-     * Keys: KnotenIDs Value: Knoten
-     * @type Object
-     *//*
-     var superNode = new Object();*/
-    /*
-     * Repraesentiert den Augmentierungsgraphen.
-     * @type Object
-     * */
-    var bfsEdges = new Object();
-    /*
-     * Die Laenge des kuerzesten verbessernden Pfades in der aktuellen Iteration.
-     * @type Number
-     * */
-    var shortestPathLength = 0;
-    /*
-     * Enthaelt die Matching-Partner der Knoten.
-     * Keys: KnotenIDs Value: Knoten
-     * @type Object
-     * */
-    var matched = new Object();
-    /*
-     * Enthaelt die disjunkten augmentierenden Pfade der aktuellen Iteration.
-     * Die Pfade sehen wie folgt aus: v1,e1,v2,...,en-1,vn.
-     * Dabei bezeichnen vi Knoten und ei Kanten
-     * @type Array
-     * */
-    var disjointPaths = new Array();
-    /*
-     * Der Pfad, der aktuell bearbeitet wird.
-     * @type Number
-     * */
-    var currentPath = 0;
+
     /**
      * Alle benoetigten Information zur Wiederherstellung der vorangegangenen Schritte werden hier gespeichert.
      * @type Array
      */
     var history = new Array();
-    /**
-     * Zählt die Phasen / Runden.
-     * @type Number
-     */
-    var iteration = 0;
     /**
      * Gibt an, ob der Algorithmus am Ende ist.
      * @type Boolean
@@ -141,16 +96,54 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.run = function() {
-        var iCounter = 0;
-        for(var i in graph.nodes){
-            if(!$.isEmptyObject(graph.nodes[i].getOutEdges())) {
-                cost[iCounter] = new Array();
-                var jCounter = 0;
-                for (var j in graph.nodes[i].getOutEdges()) {
-                    cost[iCounter][jCounter] = graph.nodes[i].getOutEdges()[j].weight;
-                    jCounter++;
+        console.log(graph.nodes);
+        var cnt = 0;
+        for(var i in graph.nodes) {
+            if (!$.isEmptyObject(graph.nodes[i].getOutEdges())){
+                console.log(i + " " + cnt);
+                if(cnt != i){
+                    graph.nodes[cnt] = graph.nodes[i];
+                    delete graph.nodes[i];
+                    for(var edge in graph.edges){
+                        if(graph.edges[edge].getSourceID() == i){
+                            graph.edges[edge].setSourceID(cnt);
+                        }
+                        if(graph.edges[edge].getTargetID() == i){
+                            graph.edges[edge].setTargetID(cnt);
+                        }
+                    }
                 }
-                iCounter++;
+                cnt++;
+            }
+        }
+        for(var i in graph.nodes) {
+            if ($.isEmptyObject(graph.nodes[i].getOutEdges())){
+                if(cnt != i){
+                    graph.nodes[cnt] = graph.nodes[i];
+                    delete graph.nodes[i];
+                    for(var edge in graph.edges){
+                        if(graph.edges[edge].getSourceID() == i){
+                            graph.edges[edge].setSourceID(cnt);
+                        }
+                        if(graph.edges[edge].getTargetID() == i){
+                            graph.edges[edge].setTargetID(cnt);
+                        }
+                    }
+                }
+                cnt++;
+            }
+        }
+        console.log(graph.nodes);
+        for(var i in graph.nodes){
+            if (!$.isEmptyObject(graph.nodes[i].getOutEdges())) {
+                cost[i] = new Array();
+                for (var j in graph.nodes) {
+                    for (var edge in graph.edges) {
+                        if (graph.edges[edge].getSourceID() == i && graph.edges[edge].getTargetID() == j) {
+                            cost[i][j - Object.keys(graph.nodes).length/2] = graph.edges[edge].weight;
+                        }
+                    }
+                }
             }
         }
         console.log(cost);
@@ -288,7 +281,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             return;
         }
         currentDisplayStep++;
-        console.log(statusID);
+        //console.log(statusID);
         $("#ta_div_statusErklaerung").text("");
         switch (statusID) {
             case BEGIN:
@@ -542,41 +535,14 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             "previousStatusId": statusID,
             "nodeProperties": nodeProperties,
             "edgeProperties": edgeProperties,
-            "matching": jQuery.extend({},matching),
-            "bfsEdges": jQuery.extend({},bfsEdges),
-            "shortestPathLength": shortestPathLength,
-            "iteration": iteration,
-            //"superNode": jQuery.extend({},superNode),
-            "matched": jQuery.extend({},matched),
-            "disjointPaths": jQuery.extend([],disjointPaths),
-            "currentPath": currentPath,
-            //"lx":jQuery.extend({},lx),
-            //"ly":jQuery.extend({},ly),
             "htmlSidebar": $(statusErklaerung).html()
-
-
-            //"previousStatusId": statusID,
-            //"nodeProperties": nodeProperties,
-            //"edgeProperties": edgeProperties,
-            //"lx":jQuery.extend({},lx),
-            //"ly":jQuery.extend({},ly),
-            //"htmlSidebar": $(statusErklaerung).html()
         });
     };
 
     this.replayStep = function(current) {
         if(current > 0){
-            var oldState = history[current - 1];//history.pop();
-            //console.log("Replay Step", oldState);
+            var oldState = history[current - 1];
             statusID = oldState.previousStatusId;
-            matching = oldState.matching;
-            bfsEdges = oldState.bfsEdges;
-            shortestPathLength = oldState.shortestPathLength;
-            iteration = oldState.iteration;
-            //superNode = oldState.superNode;
-            matched = oldState.matched;
-            disjointPaths = oldState.disjointPaths;
-            currentPath = oldState.currentPath;
             $("#ta_div_statusErklaerung").html(oldState.htmlSidebar);
             for(var key in oldState.nodeProperties) {
                 graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].edge));
@@ -589,7 +555,14 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             $("#ta_button_Zurueck").button("option", "disabled", false);
         }else{
             $("#ta_button_Zurueck").button("option", "disabled", true);
-            //TODO add initial state setting
+            for(var key in graph.nodes) {
+                graph.nodes[key].setLayout("fillStyle", const_Colors.NodeFilling);
+                graph.nodes[key].setLabel("");
+            }
+            for(var key in graph.edges) {
+                graph.edges[key].setLayout("lineColor", "black");
+                graph.edges[key].setLayout("lineWidth", 2);
+            }
         }
         if(end){
             end = false;

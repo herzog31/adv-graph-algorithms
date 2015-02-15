@@ -354,11 +354,27 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
         return sourceID;
     };
     /**
+     * Trage eine Kante als entgegengesetzte Kante ein.
+     * @method
+     * @param {Number} edgeID ID der entgegengesetzten Kante
+     */
+    this.setSourceID = function(sourceId) {
+        sourceID = sourceId;
+    };
+    /**
      * @method
      * @returns {Number} ID des Zielknotens
      */
     this.getTargetID = function() {
         return targetID;
+    };
+    /**
+     * Trage eine Kante als entgegengesetzte Kante ein.
+     * @method
+     * @param {Number} edgeID ID der entgegengesetzten Kante
+     */
+    this.setTargetID = function(targetId) {
+        targetID = targetId;
     };
     /**
      * @method
@@ -510,7 +526,7 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
  * @this {Edge}
  * @method
  */
-Edge.prototype.draw = function(ctx) {
+Edge.prototype.draw = function(ctx, nodeCount, sourceNode) {
     if(this.getDirected()) {
          CanvasDrawMethods.drawArrow(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),this.weight.toString(), this.additionalLabel);
     }
@@ -519,7 +535,11 @@ Edge.prototype.draw = function(ctx) {
             CanvasDrawMethods.drawDashedLine(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates());
         } else {
             CanvasDrawMethods.drawLine(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates());
-            CanvasDrawMethods.drawTextOnLine(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),this.weight);
+            if(this.getSourceID()%2===0) {
+                CanvasDrawMethods.drawTextOnLine(ctx, this.getLayout(), this.getSourceCoordinates(), this.getTargetCoordinates(), this.weight, true, nodeCount, sourceNode);
+            }else{
+                CanvasDrawMethods.drawTextOnLine(ctx, this.getLayout(), this.getSourceCoordinates(), this.getTargetCoordinates(), this.weight, false, nodeCount, sourceNode);
+            }
         }
     }
 };
@@ -1033,7 +1053,8 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
                 }
             }
         }
-        graph.addNode(e.pageX - canvas.offset().left, e.pageY - canvas.offset().top);
+        var isInU = e.pageY - canvas.offset().top < 0.5 * (graph_constants.V_POSITION + graph_constants.U_POSITION);
+        graph.addNode(isInU);
         this.needRedraw = true;
     };
     

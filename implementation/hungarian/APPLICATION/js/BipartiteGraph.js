@@ -186,13 +186,7 @@ function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
             this.needRedraw = true;
         }
     };
-
-    this.dblClickHandler = function(e) {
-        var isInU = e.pageY - canvas.offset().top < 0.5 * (graph_constants.V_POSITION + graph_constants.U_POSITION);
-        graph.addNode(isInU);
-        this.needRedraw = true;
-    };
-
+    
     /**
      * Beendet den Tab und startet ihn neu
      * @method

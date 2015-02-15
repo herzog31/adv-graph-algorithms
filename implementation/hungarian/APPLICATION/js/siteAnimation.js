@@ -234,7 +234,7 @@ function CanvasDrawer(p_graph,p_canvas,p_tab) {
             
             // Zeichne alle Elemente des Graph
             for(var kantenID in this.graph.edges) {
-                this.graph.edges[kantenID].draw(ctx);
+                this.graph.edges[kantenID].draw(ctx, Object.keys(this.graph.nodes).length/2, this.graph.edges[kantenID].getSourceID());
             }
             for(var knotenID in this.graph.nodes) {
                 this.graph.nodes[knotenID].draw(ctx);
