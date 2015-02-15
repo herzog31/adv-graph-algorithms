@@ -720,7 +720,7 @@ function Graph(filename,canvas) {
         //    }
         //}
         if(weight == null) {
-            weight = Math.round(Math.random()*200 -100);			// Zufälliges Gewicht zwischen -100 und 100
+            weight = Math.round(Math.random()*100);			// Zufälliges Gewicht zwischen -0 und 100
         }
         var edge = new Edge(source,target,weight,edgeIDCounter,directed);
         this.edges[edgeIDCounter] = edge;

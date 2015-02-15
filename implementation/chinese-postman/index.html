@@ -14,10 +14,12 @@
     <script src="js/siteAnimation.js" type="text/javascript"></script>
     <script src="js/canvasDrawing.js" type="text/javascript"></script>
     <script src="js/graph.js" type="text/javascript"></script>
-    <script src="../library/js/BipartiteGraph.js" type="text/javascript"></script>
     <script src="js/algorithm.js" type="text/javascript"></script>
     <script src="js/aufgabe1.js" type="text/javascript"></script>
     <script src="js/aufgabe2.js" type="text/javascript"></script>
+    <script src="../library/js/BipartiteGraph.js" type="text/javascript"></script>
+    <script src="../library/js/floydWarshall.js" type="text/javascript"></script>
+    <script src="../library/js/maxMatching.js" type="text/javascript"></script>
 
     <title>Der Chinese-Postman-Algorithmus</title>
 </head>
@@ -161,6 +163,7 @@
                         <div id="ta_div_statusErklaerung">
                             <h3>Initialisierung</h3>
                             <p>Im nächsten Schritt wird festgestellt, ob das Briefträgerproblem auf dem Graphen lösbar ist. Dazu muss der Graph stark zusammenhängend sein. D.h. von jedem Knoten muss jeder andere Knoten erreichbar sein.</p>
+                            <p>Zuerst werden alle Knoten gelöscht, die keine Eingangs- und Ausgangskanten besitzen. Diese isolierten Knoten haben keine Auswirkung auf den weiteren Verlauf des Algorithmus.</p>
                             <p>Kliche auf den "Nächster Schritt"-Button um den Algorithmus zu starten.</p>
                         </div>
                         <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">

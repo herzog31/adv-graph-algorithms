@@ -657,7 +657,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         for(var key in graph.nodes) {
             nodeProperties[graph.nodes[key].getNodeID()] = {edge: JSON.stringify(graph.nodes[key].getLayout())};
         }
-        var edgeProperties = {}
+        var edgeProperties = {};
         for(var key in graph.edges) {
             edgeProperties[graph.edges[key].getEdgeID()] = {edge: JSON.stringify(graph.edges[key].getLayout())};
         }

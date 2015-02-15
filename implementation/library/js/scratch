@@ -1,0 +1,86 @@
+  //construct matching graph
+        var mg = new BipartiteGraph();
+        var unodes = {};
+        var vnodes = {};
+        var id_map = {};
+        //insert supply nodes
+        for(var node in supplyNodes){
+            var id = node.getNodeID();
+            for (var i=0;i<-delta[id];i++){
+                var tmp = mg.addNode(true);
+                id_map[tmp.getNodeID()] = id;
+                unodes[tmp.getNodeID()]=tmp;
+            }
+        }
+        //insert demand nodes
+        for(var node in demandNodes){
+            var id = node.getNodeID();
+            for (var i=0;i<delta[id];i++){
+                var tmp = mg.addNode(false);
+                id_map[tmp.getNodeID()] = id;
+                vnodes[tmp.getNodeID()]=tmp;
+            }
+        }
+        //insert edges
+        for(var n1 in unodes){
+            for(var n2 in vnodes){
+                var id1 = id_map[n1.getNodeID()];
+                var id2 = id_map[n2.getNodeID()];
+                var dist = distance[id1][id2];
+                mg.addEdge(n1,n2,-dist);
+            }
+        }
+        //TODO
+        /*
+        * hier uebergebe ich den Graphen mg an die ungarische Methode
+        * als rueckgabewert erwarte ich eine Menge von Kanten
+        * var edges = ungarisch(mg);
+        * */
+        var edges = {};
+
+        //find the original nodes and paths of the matching
+        paths = {};
+        for(var v in supplyNodes){
+            paths[v] = [];
+        }
+        for(var e in edges){
+            var edge = edges[e];
+            var s = id_map[edge.getSourceID()];
+            var t = id_map[edge.getTargetID()];
+            if(delta[s]>0) {
+                paths[s].push(t);
+            }
+            else paths[t].push(s);
+        }
+
+               //TODO
+                /*
+                * hier uebergebe ich den Graphen an die floyd-warshall-methode
+                * ich brauche die abstandswerte und die vorgaengermatrix
+                * falls moeglich brauche ich die benutzten Kanten in der Vorgaengermatrix
+                * d = distance[nodeId1][nodeId2] soll diese form haben
+                * edge = predecessor[nodeId1][nodeId2]
+                * floydWarshall(graph,distance,predecessor);
+                * */
+               /* var keys = Object.keys(graph.nodes);
+                var matrix = new Array(keys.length);
+                var keymap = {};
+                for (var i = 0; i<keys.length; i++){
+                    keymap[keys[i]] = i;
+                    matrix[i] = new Array(keys.length);
+                }
+                for (var e in graph.edges){
+                    var edge = graph.edges[e];
+                    matrix[keymap[edge.getSourceID()]][keymap[edge.getSourceID()]] = edge.weight;
+                }*/
+
+
+/*        for(var n1 in graph.nodes){
+            var nodeId = graph.nodes[n1].getNodeID();
+            distance[nodeId] = new Object();
+            for(var n2 in graph.nodes){
+                var tmpId = graph.nodes[n2].getNodeID();
+                if(n1 == n2) distance[nodeId][tmpId] = 0;
+                else distance[nodeId][tmpId] = Math.random()*30;
+            }
+        }*/
