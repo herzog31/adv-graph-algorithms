@@ -111,6 +111,9 @@ div.BeispielbildContainer {
     padding-left: 15px;
     width: 330px;
 }
+div.BeispielbildContainer img {
+    background-color: #ffffff;
+}
 
 div.tabIntroDialog {}
 
@@ -257,6 +260,7 @@ table.algoInformationen {
     padding-left: 15px;
     padding-right: 15px;
     width: 1000px;
+    text-align: justify;
 }
 
 #ta_div_statusTabs .ui-widget-header {
