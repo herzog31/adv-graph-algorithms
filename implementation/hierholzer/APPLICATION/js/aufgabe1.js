@@ -47,11 +47,11 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     var tourStartVertex = null;
     var tourStartOddVertex = null;
     var tourCurrentVertex = null;
-    var semiEuclideanGraph = false;
+    var semiEulerianGraph = false;
     var validGraph = false;
-    var euclideanTour = new Array();
-    var euclideanTourEmpty = true;
-    var euclideanSubTour = new Array();
+    var eulerianTour = new Array();
+    var eulerianTourEmpty = true;
+    var eulerianSubTour = new Array();
     var subtours = new Array();
     var currentPseudoCodeLine = 1;
     var tourColors = new Array("#0000cc", "#006600", "#990000", "#999900", "#cc6600", "#660099", "#330000");
@@ -202,8 +202,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         if(debugConsole) console.log("Current State: " + statusID);
 
         var previousStatusId = statusID;
-        var previousTour = euclideanTour;
-        var previousSubtour = euclideanSubTour;
+        var previousTour = eulerianTour;
+        var previousSubtour = eulerianSubTour;
         currentQuestionType = this.askQuestion();
 
         switch(statusID) {
@@ -229,7 +229,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             this.mergeTour();
             break;
         case 7:
-            this.checkForEuclideanTour();
+            this.checkForeulerianTour();
             break;
         case 8:
             this.returnTour();
@@ -297,24 +297,24 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     this.animateTourStep = function(event) {
 
-        if(tourAnimationIndex > 0 && euclideanTour[(tourAnimationIndex - 1)].type == "vertex") {
-            graph.nodes[euclideanTour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
+        if(tourAnimationIndex > 0 && eulerianTour[(tourAnimationIndex - 1)].type == "vertex") {
+            graph.nodes[eulerianTour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
         }
-        if(tourAnimationIndex > 0 && euclideanTour[(tourAnimationIndex - 1)].type == "edge") {
-            graph.edges[euclideanTour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
+        if(tourAnimationIndex > 0 && eulerianTour[(tourAnimationIndex - 1)].type == "edge") {
+            graph.edges[eulerianTour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
         }
         this.needRedraw = true;
 
-        if(tourAnimationIndex >= euclideanTour.length) {
+        if(tourAnimationIndex >= eulerianTour.length) {
             this.animateTourStop(event);
             return;
         }
 
-        if(euclideanTour[tourAnimationIndex].type == "vertex") {
-            graph.nodes[euclideanTour[tourAnimationIndex].id].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+        if(eulerianTour[tourAnimationIndex].type == "vertex") {
+            graph.nodes[eulerianTour[tourAnimationIndex].id].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
         }
-        if(euclideanTour[tourAnimationIndex].type == "edge") {
-            graph.edges[euclideanTour[tourAnimationIndex].id].setLayout("lineWidth", 6);
+        if(eulerianTour[tourAnimationIndex].type == "edge") {
+            graph.edges[eulerianTour[tourAnimationIndex].id].setLayout("lineWidth", 6);
         }
 
         this.needRedraw = true;
@@ -330,11 +330,11 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     };
 
     this.animateTourStop = function(event) {
-        if(tourAnimationIndex > 0 && euclideanTour[(tourAnimationIndex - 1)].type == "vertex") {
-            graph.nodes[euclideanTour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
+        if(tourAnimationIndex > 0 && eulerianTour[(tourAnimationIndex - 1)].type == "vertex") {
+            graph.nodes[eulerianTour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
         }
-        if(tourAnimationIndex > 0 && euclideanTour[(tourAnimationIndex - 1)].type == "edge") {
-            graph.edges[euclideanTour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
+        if(tourAnimationIndex > 0 && eulerianTour[(tourAnimationIndex - 1)].type == "edge") {
+            graph.edges[eulerianTour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
         }
         event.data.org.needRedraw = true;
         tourAnimationIndex = 0;
@@ -406,27 +406,27 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }else{
             $("#tf1_td_tourCurrentVertex").html("-");
         }
-        if(euclideanSubTour.length == 0) {
-            $("#tf1_td_euclideanSubtour").html("&#8709;");
+        if(eulerianSubTour.length == 0) {
+            $("#tf1_td_eulerianSubTour").html("&#8709;");
         }else{
             var subtour = new Array();
-            for(var i = 0; i < euclideanSubTour.length; i++) {
-                if(euclideanSubTour[i].type == "vertex") {
-                    subtour.push(graph.nodes[euclideanSubTour[i].id].getLabel());
+            for(var i = 0; i < eulerianSubTour.length; i++) {
+                if(eulerianSubTour[i].type == "vertex") {
+                    subtour.push(graph.nodes[eulerianSubTour[i].id].getLabel());
                 }
             }
-            $("#tf1_td_euclideanSubtour").html("{" + subtour.join(',') + "}");
+            $("#tf1_td_eulerianSubTour").html("{" + subtour.join(',') + "}");
         }
-        if(euclideanTour.length == 0) {
-            $("#tf1_td_euclideanTour").html("&#8709;");
+        if(eulerianTour.length == 0) {
+            $("#tf1_td_eulerianTour").html("&#8709;");
         }else{
             var tour = new Array();
-            for(var i = 0; i < euclideanTour.length; i++) {
-                if(euclideanTour[i].type == "vertex") {
-                    tour.push(graph.nodes[euclideanTour[i].id].getLabel());
+            for(var i = 0; i < eulerianTour.length; i++) {
+                if(eulerianTour[i].type == "vertex") {
+                    tour.push(graph.nodes[eulerianTour[i].id].getLabel());
                 }
             }
-            $("#tf1_td_euclideanTour").html("{" + tour.join(',') + "}");
+            $("#tf1_td_eulerianTour").html("{" + tour.join(',') + "}");
         }
         
 
@@ -462,9 +462,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     this.initializeGraph = function() {
         this.markPseudoCodeLine(1);
 
-        $("#tf1_div_statusErklaerung").html('<h3>1 Initialisierung</h3>\
-            <p>Um besser mit dem Graphen arbeiten können, haben wir seine Knoten mittels Buchstaben beschriftet.</p>\
-            <p>Der Algorithmus muss bei der Ausführung prüfen können, welche Kanten er schon besucht hat. Wir benutzen dafür die derzeitig noch leere Menge besuchter Kanten (vgl. Pseudocode).</p>');
+        $("#tf1_div_statusErklaerung").html('<h3>1 '+LNG.K('algorithm_status1_head')+'</h3>\
+            <p>'+LNG.K('algorithm_status1_desc')+'</p>');
 
         this.addNamingLabels();
 
@@ -483,20 +482,17 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     };
 
-    // Check ob Graph Euclidisch oder Semi Euclidisch ist
+    // Check ob Graph Eulersch oder Semi Eulersch ist
     this.checkGraph = function() {
         this.markPseudoCodeLine(2);
-        $("#tf1_div_statusErklaerung").html('<h3>2 Graph prüfen</h3>\
-            <p>Nur wenn unser Graph die folgenden Eigenschaften aufweist, kann der Hierholzer Algorithmus funktionieren:</p>\
-            <h3>2.1 Anzahl der Knoten</h3>\
-            <p>Damit ein Kantenweg im Graph existieren kann, muss dieser mindestens <em>zwei</em> zusammenhängende Knoten besitzen.</p>\
-            <h3>2.2 Zusammenhängend</h3>\
-            <p>Um einen Kantenweg über alle Kanten im Graph zu ermitteln, muss man natürlich auch alle Kanten im Graph erreichen können. Dazu muss dieser zusammenhängend sein. Diese Eigenschaft prüft man bspw. mit einer Breitensuche.</p>\
-            <h3>2.3 Grad</h3>\
-            <p>Der Hierholzer Algorithmus stellt strenge Voraussetzungen an den Grad der Knoten. Der Grad eines Knoten beschreibt die Anzahl seiner Kanten. Zur Veranschaulichung haben wir jeden Knoten mit seinem Grad beschriftet. Ein <span style="font-weight: bold; color: green;">grüner</span> Rahmen bedeutet, dass der Grad gerade ist, während ein <span style="font-weight: bold; color: red;">roter</span> Rahmen auf einen ungeraden Grad hinweist.</p>\
-            <p>Ein Graph dessen Knoten alle einen geraden Grad aufweisen, nennt man <em>eulersch</em>. Trifft dies auf alle außer exakt zwei Knoten zu, so spricht man von einem <em>semi-eulerschen</em> Graph.</p>\
-            <p>Damit der Hierholzer Algorithmus funktioniert muss der Graph entweder eulersch oder semi-eulersch sein.</p>');
-        $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/knoten_even.png" alt="Knoten" class="LegendeIcon"></td><td><span>Knoten mit geradem Grad 2</span></td></tr><tr><td class="LegendeTabelle"><img src="img/knoten_odd.png" alt="Knoten" class="LegendeIcon"></td><td><span>Knoten mit ungeradem Grad 3</span></td></tr></table>');
+        $("#tf1_div_statusErklaerung").html('<h3>2 '+LNG.K('algorithm_status2_head')+'</h3>\
+            <p>'+LNG.K('algorithm_status2_desc1')+'</p>\
+            <ul>\
+            <li><strong>'+LNG.K('algorithm_status2_desc2')+'</strong></li>\
+            <li><strong>'+LNG.K('algorithm_status2_desc3')+'</strong></li>\
+            <li><strong>'+LNG.K('algorithm_status2_desc4')+'</strong><br />'+LNG.K('algorithm_status2_desc5')+'</li>\
+            </ul>');
+        $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/knoten_even.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_degree2')+'</span></td></tr><tr><td class="LegendeTabelle"><img src="img/knoten_odd.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_degree3')+'</span></td></tr></table>');
 
         var numberOfOddVertices = 0;
         var firstOddVertex = null;
@@ -534,23 +530,23 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             }
         }
 
-        if(numberOfOddVertices === 0) {              // Euclidean Graph
+        if(numberOfOddVertices === 0) {              // Eulerian Graph
             validGraph = true;
             statusID = 3;
-            semiEuclideanGraph = false;
+            semiEulerianGraph = false;
             return true;
 
-        }else if(numberOfOddVertices === 2) {        // Semi Euclidean Graph
+        }else if(numberOfOddVertices === 2) {        // Semi Eulerian Graph
             validGraph = true;
             statusID = 3;
-            semiEuclideanGraph = true;
+            semiEulerianGraph = true;
             tourStartOddVertex = firstOddVertex;
             return true;
 
         }else{                                       // Invalid Graph
             statusID = 2;
             validGraph = false;
-            if(debugConsole) console.log("Invalid graph: Graph is not euclidean or semi euclidean");
+            if(debugConsole) console.log("Invalid graph: Graph is not eulerian or semi eulerian");
             return false;
         }
 
@@ -558,12 +554,12 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     // State wenn Graph invalid ist
     this.invalidGraph = function() {
-        $("#tf1_div_statusErklaerung").html('<h3 style="color: white;">2 Graph prüfen</h3>\
-            <p style="color: white;">Dein Graph erfüllt mindestens eine der folgenden Eigenschaften nicht:</p>\
+        $("#tf1_div_statusErklaerung").html('<h3 style="color: white;">2 '+LNG.K('algorithm_status2_head')+'</h3>\
+            <p style="color: white;">'+LNG.K('algorithm_status2_desc6')+'</p>\
             <ul style="color: white;">\
-            <li>mind. 2 Knoten</li>\
-            <li>zusammenhängend</li>\
-            <li>eulersch oder semi-eulersch</li>\
+            <li>'+LNG.K('algorithm_status2_desc2')+'</li>\
+            <li>'+LNG.K('algorithm_status2_desc3')+'</li>\
+            <li>'+LNG.K('algorithm_status2_desc4')+'</li>\
             </ul>').addClass("ui-state-error");
 
         if(fastForwardIntervalID != null) {
@@ -577,22 +573,22 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     };
 
-    // Selectiere Start Vertice, entweder #1 (Euclidisch) oder #1 mit ungeradem Grad (Semi Euclidisch)
+    // Selectiere Start Vertice, entweder #1 (Eulersch) oder #1 mit ungeradem Grad (Semi Eulersch)
     this.findStartingVertex = function() {
         this.markPseudoCodeLine(3);
-        $("#tf1_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
-            <h3>3.1a Ersten Startknoten finden</h3>\
-            <p>Damit der Algorithmus mit der ersten Subtour starten kann, benötigt er einen Startknoten. Hierfür unterscheidet man zwei Fälle:</p>\
-            <p><strong>Eulerscher Graph:</strong> Wähle beliebigen Knoten.</p>\
-            <p><strong>Semi-eulerscher Graph:</strong> Wähle einen der beiden Knoten mit ungeradem Grad.</p>\
-            <p>Der ausgewählte und damit aktive Knoten wurde <span style="font-weight: bold; color: green;">grün</span> markiert.</p>');
-        $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>Startknoten bzw. Knoten der mit dem Startknoten verglichen wird</span></td></tr><tr><td class="LegendeTabelle"><img src="img/pfad.png" alt="Kante" class="LegendeIcon"></td><td><span>Kante der Eulertour im aktuellen Durchgang</span></td></tr></table>');
+        $("#tf1_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
+            <h3>3.1a '+LNG.K('algorithm_status31A_head')+'</h3>\
+            <p>'+LNG.K('algorithm_status31A_desc1')+'</p>\
+            <p>'+LNG.K('algorithm_status31A_desc2')+'</p>\
+            <p>'+LNG.K('algorithm_status31A_desc3')+'</p>\
+            <p>'+LNG.K('algorithm_status31A_desc4')+'</p>');
+        $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start')+'</span></td></tr><tr><td class="LegendeTabelle"><img src="img/pfad.png" alt="Kante" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_edgecolor')+'</span></td></tr></table>');
 
         // Restore Naming
         this.addNamingLabels();
 
         // Set Starting & Current Vertex
-        if(semiEuclideanGraph) {
+        if(semiEulerianGraph) {
             tourStartVertex = tourStartOddVertex;
         }else{
             for (var knotenID in graph.nodes) {
@@ -604,9 +600,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
         tourCurrentVertex = tourStartVertex;
 
-        euclideanSubTour = new Array();
-        this.addVertexToTour(graph.nodes[tourCurrentVertex], euclideanSubTour);
-        if(debugConsole) console.log("Subtour: ", euclideanSubTour);
+        eulerianSubTour = new Array();
+        this.addVertexToTour(graph.nodes[tourCurrentVertex], eulerianSubTour);
+        if(debugConsole) console.log("Subtour: ", eulerianSubTour);
 
         this.needRedraw = true;
 
@@ -621,13 +617,11 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     // Wenn gefunden -> findNextVertexForTour()
     this.findNextVertexForTour = function() {
         this.markPseudoCodeLine(7);
-        $("#tf1_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
-            <h3>3.2 Unbesuchten Nachbarn finden</h3>\
-            <p>Um die nächste Kante in unserer Subtour zu bestimmen, betrachten wir zunächst alle Kanten des zuletzt aktiven Knotens.</p>\
-            <p>Aus dieser Kantenmenge wählen wir nun die Kanten aus, die wir noch nicht besucht haben. Aus dieser Restmenge bestimmen wir eine zufällige Kante (<span style="font-weight: bold; color: '+tourColors[tourColorIndex]+';">farblich markiert</span>).</p>\
-            <p>Wir fügen diese Kante zu unserer Subtour hinzu sowie zur Menge der besuchten Kanten hinzu. Wir folgen der Kante und erhalten unseren nächsten aktiven Knoten (<span style="font-weight: bold; color: green;">grün</span>).</p>\
-            <h3>3.2.1 Sonderfall</h3>\
-            <p>Bei semi-eulerschen Graphen kann es zu dem Sonderfall kommen, dass der aktive Knoten keine weiteren unbesuchten Kanten besitzt. In diesem Fall springen wir direkt zu <em>Schritt 4.1</em>.</p>');
+        $("#tf1_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
+            <h3>3.2 '+LNG.K('algorithm_status32_head')+'</h3>\
+            <p>'+LNG.K('algorithm_status32_desc1')+'</p>\
+            <p>'+LNG.K('algorithm_status32_desc2')+'(<span style="font-weight: bold; color: '+tourColors[tourColorIndex]+';">'+LNG.K('algorithm_status32_desc3')+'</span>)'+LNG.K('algorithm_status32_desc4')+'</p>\
+            <p>'+LNG.K('algorithm_status32_desc5')+'</p>');
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
 
@@ -671,8 +665,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             return false;
         }
 
-        this.addEdgeToTour(graph.edges[nextEdge], euclideanSubTour);
-        if(debugConsole) console.log("Subtour: ", euclideanSubTour);
+        this.addEdgeToTour(graph.edges[nextEdge], eulerianSubTour);
+        if(debugConsole) console.log("Subtour: ", eulerianSubTour);
 
         graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFilling);
 
@@ -683,8 +677,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             tourCurrentVertex = graph.edges[nextEdge].getSourceID();
         }
 
-        this.addVertexToTour(graph.nodes[tourCurrentVertex], euclideanSubTour);
-        if(debugConsole) console.log("Subtour: ", euclideanSubTour);
+        this.addVertexToTour(graph.nodes[tourCurrentVertex], eulerianSubTour);
+        if(debugConsole) console.log("Subtour: ", eulerianSubTour);
 
         graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
 
@@ -699,13 +693,13 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     // Wenn ungleich -> findNextVertexForTour()
     this.compareVertexWithStart = function() {
         this.markPseudoCodeLine(9);
-        $("#tf1_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
-            <h3>3.3 Kreis entdecken</h3>\
-            <p>Um zu prüfen, ob unsere Subtour abgeschlossen ist (d.h. sie bildet einen Kreis), vergleichen wir den aktiven Knoten mit dem ersten Knoten der Subtour. Beide sind <span style="font-weight: bold; color: green;">grün</span> markiert.</p>\
-            <h3>3.3.1 Abgeschlossen</h3>\
-            <p>Handelt es sich bei beiden um den selben Knoten, ist unsere Subtour abgeschlossen und wir fahren mit <em>Schritt 4</em> fort.</p>\
-            <h3>3.3.2 Nicht abgeschlossen</h3>\
-            <p>Handelt es sich um zwei verschiedene Knoten, ist unsere Subtour unvollständig und wir springen zurück zu <em>Schritt 3.2</em>.</p>');
+        $("#tf1_div_statusErklaerung").html('<h3>3 </h3>\
+            <h3>3.3 '+LNG.K('algorithm_status33_head')+'</h3>\
+            <p>'+LNG.K('algorithm_status33_desc1')+'</p>\
+            <h3>3.3.1 '+LNG.K('algorithm_status33_desc2')+'</h3>\
+            <p>'+LNG.K('algorithm_status33_desc3')+'</p>\
+            <h3>3.3.2 '+LNG.K('algorithm_status33_desc4')+'</h3>\
+            <p>'+LNG.K('algorithm_status33_desc5')+'</p>');
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
 
@@ -726,17 +720,15 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     // Bei vorhandener Tour, Replace Start mit Subtour
     this.mergeTour = function() {
         this.markPseudoCodeLine(10);
-        $("#tf1_div_statusErklaerung").html('<h3>4 Gesamttour bestimmen</h3>\
-            <h3>4.1 Integriere Subtour in Gesamttour</h3>\
-            <p>Damit der Hierholzer Algorithmus am Ende eine Eulertour bzw. einen Eulerkreis liefert, müssen wir sämtliche Subtouren passend aneinanderhängen. Wir unterscheiden hier drei Fälle:</p>\
-            <h3>4.1.1 Erste Subtour</h3>\
-            <p>Im einfachsten Fall integrieren wir die letzte Subtour einfach in die noch leere Gesamttour.</p>\
-            <h3>4.1.2 Zyklische Subtour</h3>\
-            <p>In diesem Fall bildet unsere Subtour einen Kreis. Zum Integrieren, suchen wir den Start- & Endknoten der Subtour in der Gesamttour und ersetzen diesen mit unserer Subtour.</p>\
-            <h3>4.1.3 Azyklische Subtour</h3>\
-            <p>Dieser Fall tritt nur einmal in einem semi-eulerschen Graph auf. Es handelt sich hierbei um die Subtour, die mit einem Knoten ungeraden Grads beginnt und bei dem zweiten Knoten mit ungeradem Grad endet. Diese Subtour muss so integriert werden, dass der ungerade Knoten, welcher nicht den Anfang der Gesamttour bildet, den Schluss der Gesamttour bildet.</p>');
+        $("#tf1_div_statusErklaerung").html('<h3>4 '+LNG.K('algorithm_status4_head')+'</h3>\
+            <h3>4.1 '+LNG.K('algorithm_status41_head')+'</h3>\
+            <p>'+LNG.K('algorithm_status41_desc1')+'</p>\
+            <h3>4.1.1 '+LNG.K('algorithm_status41_desc2')+'</h3>\
+            <p>'+LNG.K('algorithm_status41_desc3')+'</p>\
+            <h3>4.1.2 '+LNG.K('algorithm_status41_desc4')+'</h3>\
+            <p>'+LNG.K('algorithm_status41_desc5')+'</p>');
 
-        subtours.push({color: tourColorIndex, tour: euclideanSubTour});
+        subtours.push({color: tourColorIndex, tour: eulerianSubTour});
         if(debugConsole) console.log("Subtours", subtours);
 
         tourColorIndex++;
@@ -747,83 +739,83 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
         var replaced = false;
 
-        if(euclideanTour.length === 0) {
-            euclideanTour = euclideanSubTour;          
-        }else if(JSON.stringify(euclideanSubTour[0]) !== JSON.stringify(euclideanSubTour[(euclideanSubTour.length - 1)])) {
+        if(eulerianTour.length === 0) {
+            eulerianTour = eulerianSubTour;          
+        }else if(JSON.stringify(eulerianSubTour[0]) !== JSON.stringify(eulerianSubTour[(eulerianSubTour.length - 1)])) {
             if(debugConsole) console.log("Spezialfall mit 2 Odd Vertices");
 
-            var startOfSubTour = euclideanSubTour[0];
+            var startOfSubTour = eulerianSubTour[0];
             var newTour = new Array();
             var specialLast = null;
 
-            for(var i = 0; i < euclideanTour.length; i++) {
-                if(JSON.stringify(euclideanTour[i]) === JSON.stringify(startOfSubTour)) {
+            for(var i = 0; i < eulerianTour.length; i++) {
+                if(JSON.stringify(eulerianTour[i]) === JSON.stringify(startOfSubTour)) {
                     specialLast = i;
                 }
             }
 
-            for(var i = 0; i < euclideanTour.length; i++) {
+            for(var i = 0; i < eulerianTour.length; i++) {
                 if(specialLast == i) {
-                    for(var j = 0; j < euclideanSubTour.length; j++) {
-                        newTour.push(euclideanSubTour[j]);
+                    for(var j = 0; j < eulerianSubTour.length; j++) {
+                        newTour.push(eulerianSubTour[j]);
                     }
                     replaced = true;
                 }else{
-                    newTour.push(euclideanTour[i]);
+                    newTour.push(eulerianTour[i]);
                 }
             }
 
-            euclideanTour = newTour;
+            eulerianTour = newTour;
 
         }else{
-            var startOfSubTour = euclideanSubTour[0];
+            var startOfSubTour = eulerianSubTour[0];
             var newTour = new Array();
 
-            for(var i = 0; i < euclideanTour.length; i++) {
-                if(JSON.stringify(euclideanTour[i]) == JSON.stringify(startOfSubTour) && !replaced) {
-                    for(var j = 0; j < euclideanSubTour.length; j++) {
-                        /* if(euclideanSubTour[j].type == "edge") {
-                            graph.edges[euclideanSubTour[j].id].setLayout("lineColor", tourColors[0]);
+            for(var i = 0; i < eulerianTour.length; i++) {
+                if(JSON.stringify(eulerianTour[i]) == JSON.stringify(startOfSubTour) && !replaced) {
+                    for(var j = 0; j < eulerianSubTour.length; j++) {
+                        /* if(eulerianSubTour[j].type == "edge") {
+                            graph.edges[eulerianSubTour[j].id].setLayout("lineColor", tourColors[0]);
                         } */
-                        newTour.push(euclideanSubTour[j]);
+                        newTour.push(eulerianSubTour[j]);
                     }
                     replaced = true;
                 }else{
-                    newTour.push(euclideanTour[i]);
+                    newTour.push(eulerianTour[i]);
                 }
             }
 
-            euclideanTour = newTour;
+            eulerianTour = newTour;
 
         }
 
-        euclideanSubTour = new Array();
-        euclideanTourEmpty = false;
+        eulerianSubTour = new Array();
+        eulerianTourEmpty = false;
 
-        if(debugConsole) console.log("Current Complete Euclidean Tour: ", euclideanTour);
+        if(debugConsole) console.log("Current Complete eulerian Tour: ", eulerianTour);
 
         statusID = 7;
 
     };
 
-    // Check ob Tour ein Euclidischer Zug ist
+    // Check ob Tour eine Eulertour ist
     // Anzahl Kanten in Tour gleich Anzahl Kanten im Graph
     // Wenn ja -> returnTour()
     // Wenn nein -> findNewStartingVertex()
-    this.checkForEuclideanTour = function() {
+    this.checkForeulerianTour = function() {
         this.markPseudoCodeLine(12);
-        $("#tf1_div_statusErklaerung").html('<h3>4 Gesamttour bestimmen</h3>\
-            <h3>4.2 Auf Vollständigkeit prüfen</h3>\
-            <p>Nach jeder Integration einer Subtour in die Gesamttour müssen wir prüfen, ob unsere Gesamttour vollständig ist und der Algorithmus terminieren kann.</p>\
-            <p>Dazu vergleicht man bspw. die Anzahl der Kanten im Graph mit der Anzahl der Kanten in der Gesamttour.</p>\
-            <p>Bei Gleichheit terminiert der Algorithmus und gibt die Gesamttour in <em>Schritt 5</em> zurück.</p>\
-            <p>Bei Ungleichheit existiert eine weitere Subtour, die gefunden werden muss. Wir springen zurück zu <em>Schritt 3</em>.</p>');
+        $("#tf1_div_statusErklaerung").html('<h3>4 '+LNG.K('algorithm_status4_head')+'</h3>\
+            <h3>4.2 '+LNG.K('algorithm_status42_head')+'</h3>\
+            <p>'+LNG.K('algorithm_status42_desc1')+'</p>\
+            <p>'+LNG.K('algorithm_status42_desc2')+'</p>\
+            <p>'+LNG.K('algorithm_status42_desc3')+'</p>\
+            <p>'+LNG.K('algorithm_status42_desc4')+'</p>');
 
         var numberOfEdgesInGraph = Object.keys(graph.edges).length;
         var numberOfEdgesInTour = 0;
 
-        for(var i = 0; i < euclideanTour.length; i++) {
-            if(euclideanTour[i].type == "edge") {
+        for(var i = 0; i < eulerianTour.length; i++) {
+            if(eulerianTour[i].type == "edge") {
                 numberOfEdgesInTour++;
             }
         }
@@ -843,23 +835,26 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     // Zeige Tour
     this.returnTour = function() {
         this.markPseudoCodeLine(13);
-        $("#tf1_div_statusErklaerung").html('<h3>5 Ergebnis</h3>\
-            <p>Der Algorithmus konnte erfolgreich eine Eulertour bzw. einen Eulerkreis bestimmen.</p>');
+        if(semiEulerianGraph) {
+            $("#ta_div_statusErklaerung").html('<h3>5 '+LNG.K('algorithm_status5_head')+'</h3>\
+            <p>'+LNG.K('algorithm_status5_desc1a')+'</p>');
+        }else{
+           $("#ta_div_statusErklaerung").html('<h3>5 '+LNG.K('algorithm_status5_head')+'</h3>\
+            <p>'+LNG.K('algorithm_status5_desc1b')+'</p>'); 
+        }
 
         var output = "";
 
-        for(var i = 0; i < euclideanTour.length; i++) {
-            if(euclideanTour[i].type == "vertex") {
-                output += graph.nodes[euclideanTour[i].id].getLabel();
+        for(var i = 0; i < eulerianTour.length; i++) {
+            if(eulerianTour[i].type == "vertex") {
+                output += graph.nodes[eulerianTour[i].id].getLabel();
             }
-            if(euclideanTour[i].type == "edge") {
-                var layout = graph.edges[euclideanTour[i].id].getLayout();
-                //output += "<li>{"+graph.nodes[graph.edges[euclideanTour[i].id].getSourceID()].getLabel()+", "+graph.nodes[graph.edges[euclideanTour[i].id].getTargetID()].getLabel()+"}</li>";
+            if(eulerianTour[i].type == "edge") {
+                var layout = graph.edges[eulerianTour[i].id].getLayout();
+                //output += "<li>{"+graph.nodes[graph.edges[eulerianTour[i].id].getSourceID()].getLabel()+", "+graph.nodes[graph.edges[eulerianTour[i].id].getTargetID()].getLabel()+"}</li>";
                 output += ' <span style="color: '+layout.lineColor+';">&#8211;</span> ';
             }
         }
-
-        //output = output.slice(0,-3);
 
         var output_subtours = "";
 
@@ -876,20 +871,38 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             output_subtours += '</li>';
         }
 
-        if(semiEuclideanGraph) {
-            if(debugConsole) console.log("Complete Euclidean Trail: ", euclideanTour);
-        }else{
-            if(debugConsole) console.log("Complete Euclidean Circle: ", euclideanTour);
-        }  
+        if(semiEulerianGraph) {
+            if(debugConsole) console.log("Complete Eulerian Trail: ", eulerianTour);
 
-        $("#tf1_div_statusErklaerung").append('<h3>5.1 Eulertour:</h3>\
+            $("#ta_div_statusErklaerung").append('<h3>5.1 '+LNG.K('algorithm_status51a_head')+'</h3>\
             <p class="result_euleriantour">' + output + '</p>\
-            <p>Die Eulertour wird hier dargestellt als Folge der Knoten.</p>\
-            <p><button id="animateTour">Animiere Eulertour</button><button id="animateTourStop">Stop</button></p>\
-            <p>Klicke auf <strong>Animiere Eulertour</strong> um die komplette Eulertour abzulaufen und alle Knoten und Kanten auf dem Weg hervorzuheben.</p>\
-            <h3>5.2 Subtouren:</h3>\
+            <p>'+LNG.K('algorithm_status51a_desc1')+'</p>\
+            <p><button id="animateTour">'+LNG.K('algorithm_status51a_desc2')+'</button><button id="animateTourStop">'+LNG.K('algorithm_status51a_desc3')+'</button></p>\
+            <p>'+LNG.K('algorithm_status51a_desc4')+'</p>\
+            <h3>5.2 '+LNG.K('algorithm_status2_head')+'</h3>\
             <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
-            <p>Bewege deinen Mauszeiger über eine der Subtouren, um sie im Graph hervorzuheben.</p>');
+            <p>'+LNG.K('algorithm_status52_desc1')+'</p>\
+            <p></p><h3>'+LNG.K('algorithm_msg_finish')+'</h3>\
+            <button id="ta_button_gotoIdee">'+LNG.K('algorithm_btn_more')+'</button>\
+            <h3>'+LNG.K('algorithm_msg_test')+'</h3>\
+            <button id="ta_button_gotoFA2">'+LNG.K('algorithm_btn_exe2')+'</button>');
+
+        }else{
+            if(debugConsole) console.log("Complete Eulerian Circle: ", eulerianTour);
+
+            $("#ta_div_statusErklaerung").append('<h3>5.1 '+LNG.K('algorithm_status51b_head')+'</h3>\
+            <p class="result_euleriantour">' + output + '</p>\
+            <p>'+LNG.K('algorithm_status51b_desc1')+'</p>\
+            <p><button id="animateTour">'+LNG.K('algorithm_status51b_desc2')+'</button><button id="animateTourStop">'+LNG.K('algorithm_status51b_desc3')+'</button></p>\
+            <p>'+LNG.K('algorithm_status51b_desc4')+'</p>\
+            <h3>5.2 '+LNG.K('algorithm_status2_head')+'</h3>\
+            <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
+            <p>'+LNG.K('algorithm_status52_desc1')+'</p>\
+            <p></p><h3>'+LNG.K('algorithm_msg_finish')+'</h3>\
+            <button id="ta_button_gotoIdee">'+LNG.K('algorithm_btn_more')+'</button>\
+            <h3>'+LNG.K('algorithm_msg_test')+'</h3>\
+            <button id="ta_button_gotoFA2">'+LNG.K('algorithm_btn_exe2')+'</button>');
+        }  
 
         if(fastForwardIntervalID != null) {
             this.stopFastForward();
@@ -905,26 +918,25 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     // Erster Knoten, dessen Grad unbesuchter Kanten größer 0 ist -> findNextVertexForTour()
     this.findNewStartingVertex = function() {
         this.markPseudoCodeLine(11);
-        $("#tf1_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
-            <h3>3.1b Neuen Startknoten finden</h3>\
-            <p>Im Gegensatz zum Finden eines Startknotens für die erste Subtour, gibt es nun keine Fallunterscheidung mehr.</p>\
-            <p>Wir können einen beliebigen Knoten wählen, der an unbesuchte Kanten grenzt.</p>\
-            <p>Dieser Knoten bildet den Start der neuen Subtour und wurde <span style="font-weight: bold; color: green;">grün</span> markiert.</p>');
+        $("#tf1_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
+            <h3>3.1b '+LNG.K('algorithm_status31B_head')+'</h3>\
+            <p>'+LNG.K('algorithm_status31B_desc1')+'</p>\
+            <p>'+LNG.K('algorithm_status31B_desc2')+'</p>');
 
-        euclideanSubTour = new Array();
+        eulerianSubTour = new Array();
 
-        for(var i = 0; i < euclideanTour.length; i++) {
+        for(var i = 0; i < eulerianTour.length; i++) {
             
-            if(euclideanTour[i].type == "vertex") {
-                if(graph.nodes[euclideanTour[i].id].getUnvisitedDegree() > 0) {
-                    tourStartVertex = euclideanTour[i].id;
-                    graph.nodes[euclideanTour[i].id].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
-                    tourCurrentVertex = euclideanTour[i].id;
+            if(eulerianTour[i].type == "vertex") {
+                if(graph.nodes[eulerianTour[i].id].getUnvisitedDegree() > 0) {
+                    tourStartVertex = eulerianTour[i].id;
+                    graph.nodes[eulerianTour[i].id].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+                    tourCurrentVertex = eulerianTour[i].id;
 
-                    euclideanSubTour = new Array();
-                    this.addVertexToTour(graph.nodes[euclideanTour[i].id], euclideanSubTour);
+                    eulerianSubTour = new Array();
+                    this.addVertexToTour(graph.nodes[eulerianTour[i].id], eulerianSubTour);
 
-                    if(debugConsole) console.log("Subtour: ", euclideanSubTour);
+                    if(debugConsole) console.log("Subtour: ", eulerianSubTour);
 
                     this.needRedraw = true;
                     break;
@@ -1085,9 +1097,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             </p>');
 
         var result = "";
-        for(var i = 0; i < euclideanSubTour.length; i++) {
-            if(euclideanSubTour[i].type == "vertex") {
-                result = result+graph.nodes[euclideanSubTour[i].id].getLabel();
+        for(var i = 0; i < eulerianSubTour.length; i++) {
+            if(eulerianSubTour[i].type == "vertex") {
+                result = result+graph.nodes[eulerianSubTour[i].id].getLabel();
             }
         }
         result = result.replace(/(\s|\,)+/g,'');
@@ -1118,9 +1130,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         prevTour = prevTour.substr(1);
 
         var currentTour = "";
-        for(var i = 0; i < euclideanTour.length; i++) {
-            if(euclideanTour[i].type == "vertex") {
-                currentTour = currentTour+","+graph.nodes[euclideanTour[i].id].getLabel();
+        for(var i = 0; i < eulerianTour.length; i++) {
+            if(eulerianTour[i].type == "vertex") {
+                currentTour = currentTour+","+graph.nodes[eulerianTour[i].id].getLabel();
             }
         }
         currentTour = currentTour.substr(1);
@@ -1206,7 +1218,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         if(statusID == 1) {
             // Frage zum Grad (100%)
             return 4;
-        }else if(statusID == 6 && !euclideanTourEmpty) {
+        }else if(statusID == 6 && !eulerianTourEmpty) {
             // Frage zum Mergeergebnis (50%)
             if(randomVariable(0, 1) > 0.5) {
                 return 3;

@@ -86,7 +86,7 @@ function initializeSiteLayout() {
                 $("#tab_tg").data("algo", algo);
             }
             if(ui.newPanel[0].id == "tab_ta") {
-                algo = new BFAlgorithm($("body").data("graph"), $("#ta_canvas_graph"), $("#tab_ta"));
+                algo = new HAlgorithm($("body").data("graph"), $("#ta_canvas_graph"), $("#tab_ta"));
                 $("#tab_ta").data("algo", algo);
             }
             if(ui.newPanel[0].id == "tab_tf1") {
