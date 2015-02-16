@@ -64,16 +64,16 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     var currentQuestionType = 0;
     var questions = new Array();
 
-    var statusArray = [ {"key": 0, "answer": "1 Initialisierung"},
-                        {"key": 1, "answer": "2 Graph prüfen"},
-                        {"key": 2, "answer": "Graph ist ungültig"},
-                        {"key": 3, "answer": "3.1a Ersten Startknoten finden"},
-                        {"key": 4, "answer": "3.2 Unbesuchten Nachbarn finden"},
-                        {"key": 5, "answer": "3.3 Auf Kreis prüfen"},
-                        {"key": 6, "answer": "4.1 Integriere Subtour in Gesamttour"},
-                        {"key": 7, "answer": "4.2 Gesamttour auf Vollständigkeit prüfen"},
-                        {"key": 8, "answer": "5 Ergebnis anzeigen"},
-                        {"key": 9, "answer": "3.1b Neuen Startknoten finden"}];
+    var statusArray = [ {"key": 0, "answer": "1 "+LNG.K('algorithm_status1_head')},
+                        {"key": 1, "answer": "2 "+LNG.K('algorithm_status2_head')},
+                        {"key": 2, "answer": LNG.K('aufgabe1_graph_invalid')},
+                        {"key": 3, "answer": "3.1a "+LNG.K('algorithm_status31A_head')},
+                        {"key": 4, "answer": "3.2 "+LNG.K('algorithm_status32_head')},
+                        {"key": 5, "answer": "3.3 "+LNG.K('algorithm_status33_head')},
+                        {"key": 6, "answer": "4.1 "+LNG.K('algorithm_status41_head')},
+                        {"key": 7, "answer": "4.2 "+LNG.K('aufgabe1_check_euleriantour')},
+                        {"key": 8, "answer": "5 "+LNG.K('aufgabe1_showresults')},
+                        {"key": 9, "answer": "3.1b "+LNG.K('algorithm_status31B_head')}];
     
     /**
      * Startet die Ausführung des Algorithmus.
@@ -450,11 +450,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             nodeCounter++;
         };
 
-        /* for(var kantenID in graph.edges) {
-            graph.edges[kantenID].setAdditionalLabel("{"+graph.nodes[graph.edges[kantenID].getSourceID()].getLabel()+", "+graph.nodes[graph.edges[kantenID].getTargetID()].getLabel()+"}")
-            edgeCounter++;
-        }; */
-
     };
 
     // Edge visited = false
@@ -693,7 +688,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     // Wenn ungleich -> findNextVertexForTour()
     this.compareVertexWithStart = function() {
         this.markPseudoCodeLine(9);
-        $("#tf1_div_statusErklaerung").html('<h3>3 </h3>\
+        $("#tf1_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.3 '+LNG.K('algorithm_status33_head')+'</h3>\
             <p>'+LNG.K('algorithm_status33_desc1')+'</p>\
             <h3>3.3.1 '+LNG.K('algorithm_status33_desc2')+'</h3>\
@@ -774,9 +769,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             for(var i = 0; i < eulerianTour.length; i++) {
                 if(JSON.stringify(eulerianTour[i]) == JSON.stringify(startOfSubTour) && !replaced) {
                     for(var j = 0; j < eulerianSubTour.length; j++) {
-                        /* if(eulerianSubTour[j].type == "edge") {
-                            graph.edges[eulerianSubTour[j].id].setLayout("lineColor", tourColors[0]);
-                        } */
                         newTour.push(eulerianSubTour[j]);
                     }
                     replaced = true;
@@ -1028,12 +1020,12 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
         form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
 
-        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
-            <p>Welchen Grad hat der Knoten <strong>'+randomNode.getLabel()+'</strong>?</p>\
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_qst')+' #'+(currentQuestion+1)+'</div>\
+            <p>'+LNG.K('aufgabe1_qst_degree1')+'<strong>'+randomNode.getLabel()+'</strong>?</p>\
             <p>'+form+'</p>\
-            <button id="tf1_button_questionClose">Antworten</button>\
-            <p id="tf1_questionSolution">Die korrekte Antwort ist: <span class="answer"></span><br /><br />\
-            <button id="tf1_button_questionClose2">Weiter</button>\
+            <button id="tf1_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button>\
+            <p id="tf1_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />\
+            <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_qst_continue')+'</button>\
             </p>');
 
         $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
@@ -1069,12 +1061,12 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
         form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
 
-        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
-            <p>Welchen Schritt macht der Algorithmus als nächstes?</p>\
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_qst')+' #'+(currentQuestion+1)+'</div>\
+            <p>'+LNG.K('aufgabe1_qst_nextstep1')+'</p>\
             <p>'+form+'</p>\
-            <button id="tf1_button_questionClose">Antworten</button>\
-            <p id="tf1_questionSolution">Die korrekte Antwort ist: <span class="answer"></span><br /><br />\
-            <button id="tf1_button_questionClose2">Weiter</button>\
+            <button id="tf1_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button>\
+            <p id="tf1_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />\
+            <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_qst_continue')+'</button>\
             </p>');
 
         $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
@@ -1084,16 +1076,16 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     };
 
     this.generateSubtourQuestion = function() {
-        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
-            <p>Welche Knoten befinden sich der der aktuellen <strong style="color: '+tourColors[tourColorIndex]+';">Subtour</strong>?<br />\
-            Antworte in der Form <em>x,y,z</em> und beachte die Reihenfolge.</p>\
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_qst')+' #'+(currentQuestion+1)+'</div>\
+            <p>'+LNG.K('aufgabe1_qst_subtour1')+'<strong style="color: '+tourColors[tourColorIndex]+';">'+LNG.K('aufgabe1_qst_subtour2')+'</strong>?<br />\
+            '+LNG.K('aufgabe1_qst_subtour3')+'</p>\
             <p><form id="question'+currentQuestion+'_form">\
             <input type="text" name="question'+currentQuestion+'" value="" placeholder="x,y,z" />\
             </form>\
             </p>\
-            <button id="tf1_button_questionClose">Antworten</button>\
-            <p id="tf1_questionSolution">Die korrekte Antwort ist: <span class="answer"></span><br /><br />\
-            <button id="tf1_button_questionClose2">Weiter</button>\
+            <button id="tf1_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button>\
+            <p id="tf1_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />\
+            <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_qst_continue')+'</button>\
             </p>');
 
         var result = "";
@@ -1164,13 +1156,13 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
         questions[currentQuestion] = {type: currentQuestionType, rightAnswer: currentTour};
 
-        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
-            <p>In diesem Schritt wird die Subtour ('+prevSubtour+') in die Gesamttour ('+prevTour+') integriert. Wie sieht das Ergebnis aus?</p>\
-            <p><em>Hinweis: Es gibt u.U. mehrere Lösungsmöglichkeiten, es ist allerdings nur eine der gegebenen Antwortmöglichkeit korrekt.</em></p>\
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_qst')+' #'+(currentQuestion+1)+'</div>\
+            <p>'+LNG.K('aufgabe1_qst_tour1')+'('+prevSubtour+')'+LNG.K('aufgabe1_qst_tour2')+'('+prevTour+')'+LNG.K('aufgabe1_qst_tour3')+'</p>\
+            <p><em>'+LNG.K('aufgabe1_qst_tour4')+'</em></p>\
             <p>'+form+'</p>\
-            <button id="tf1_button_questionClose">Antworten</button>\
-            <p id="tf1_questionSolution">Die korrekte Antwort ist: <span class="answer"></span><br /><br />\
-            <button id="tf1_button_questionClose2">Weiter</button>\
+            <button id="tf1_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button>\
+            <p id="tf1_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />\
+            <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_qst_continue')+'</button>\
             </p>');
 
         $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
@@ -1188,20 +1180,20 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         for(var i = 0; i < questions.length; i++) {
             table = table + '<td style="text-align: center;">#'+(i+1)+'</td>';
             if(questions[i].rightAnswer == questions[i].givenAnswer) {
-                table = table + '<td><span class="ui-icon ui-icon-plusthick"></span> korrekt</td>';
+                table = table + '<td><span class="ui-icon ui-icon-plusthick"></span> '+LNG.K('aufgabe1_qst_correct')+'</td>';
                 correctAnswers++;
             }else{
-                table = table + '<td><span class="ui-icon ui-icon-minusthick"></span> falsch</td>';
+                table = table + '<td><span class="ui-icon ui-icon-minusthick"></span> '+LNG.K('aufgabe1_qst_wrong')+'</td>';
             }
             table = "<tr>"+table+"</tr>";
         }
-        table = '<table class="quizTable"><thead><tr><th>Frage</th><th>Lösung</th></tr></thead><tbody>'+table+'</tbody></table>';
+        table = '<table class="quizTable"><thead><tr><th>'+LNG.K('aufgabe1_qst')+'</th><th>'+LNG.K('aufgabe1_qst_solution')+'</th></tr></thead><tbody>'+table+'</tbody></table>';
 
         $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Ergebnisse</div>\
-            <p>Von insgesamt '+totalQuestions+' Fragen hast du '+correctAnswers+' richtig beantwortet!</p>\
+            <p>'+LNG.K('aufgabe1_qst_solution1')+''+totalQuestions+''+LNG.K('aufgabe1_qst_solution2')+''+correctAnswers+''+LNG.K('aufgabe1_qst_solution3')+'</p>\
             <p>'+table+'</p>\
             <p></p>\
-            <button id="tf1_button_questionClose">Schließen</button>');
+            <button id="tf1_button_questionClose">'+LNG.K('aufgabe1_qst_close')+'</button>');
 
         $("#tf1_button_questionClose").button().one("click", function() { algo.closeQuestionModal(); });
 

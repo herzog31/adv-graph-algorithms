@@ -86,7 +86,49 @@
     "algorithm_status51b_desc4": "Klicke auf <strong>Animiere Eulertour</strong> um die komplette Eulertour abzulaufen und alle Knoten und Kanten auf dem Weg hervorzuheben.",
 
     "algorithm_status52_head": "Subtouren",
-    "algorithm_status52_desc1": "Bewege deinen Mauszeiger über eine der Subtouren, um sie im Graph hervorzuheben."
+    "algorithm_status52_desc1": "Bewege deinen Mauszeiger über eine der Subtouren, um sie im Graph hervorzuheben.",
+
+    "aufgabe1_btn_next_question": "Zur nächsten Frage vorspulen",
+    "aufgabe1_graph_invalid": "Graph ungültig",
+    "aufgabe1_check_euleriantour": "Gesamttour auf Vollständigkeit prüfen",
+    "aufgabe1_showresults": "Ergebnis zeigen",
+
+    "aufgabe1_qst": "Frage",
+    "aufgabe1_qst_solution": "Lösung",
+    "aufgabe1_qst_answer": "Antworten",
+    "aufgabe1_qst_close": "Schließen",
+    "aufgabe1_qst_correct": "korrekt",
+    "aufgabe1_qst_wrong": "falsch",
+    "aufgabe1_qst_correctanswer": "Die korrekte Antwort ist: ",
+    "aufgabe1_qst_continue": "Weiter",
+    "aufgabe1_qst_degree1": "Welchen Grad hat der Knoten ",
+    "aufgabe1_qst_nextstep1": "Welchen Schritt macht der Algorithmus als nächstes?",
+    "aufgabe1_qst_subtour1": "Welche Knoten befinden sich der der aktuellen ",
+    "aufgabe1_qst_subtour2": "Subtour",
+    "aufgabe1_qst_subtour3": "Antworte in der Form <em>x,y,z</em> und beachte die Reihenfolge.",
+    "aufgabe1_qst_tour1": "In diesem Schritt wird die Subtour ",
+    "aufgabe1_qst_tour2": " in die Gesamttour ",
+    "aufgabe1_qst_tour3": " integriert. Wie sieht das Ergebnis aus?",
+    "aufgabe1_qst_tour4": "Hinweis: Es gibt u.U. mehrere Lösungsmöglichkeiten, es ist allerdings nur eine der gegebenen Antwortmöglichkeit korrekt.",
+    "aufgabe1_qst_solution1": "Von insgesamt ",
+    "aufgabe1_qst_solution2": " Fragen hast du ",
+    "aufgabe1_qst_solution3": " richtig beantwortet!"
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    
+    
+
+    
 
   }
 }
