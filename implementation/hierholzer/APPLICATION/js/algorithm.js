@@ -242,31 +242,6 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     };
     
     /**
-     * Zeigt Texte und Buttons zum Ende des Algorithmus
-     * @method
-     */
-    /* this.endAlgorithm = function() {
-        $("#ta_div_statusErklaerung").append("<p></p><h3>"+LNG.K('algorithm_msg_finish')+"</h3>");
-        $("#ta_div_statusErklaerung").append("<button id=ta_button_gotoIdee>"+LNG.K('algorithm_btn_more')+"</button>");
-        $("#ta_div_statusErklaerung").append("<h3>"+LNG.K('algorithm_msg_test')+"</h3>");
-        $("#ta_div_statusErklaerung").append("<button id=ta_button_gotoFA1>"+LNG.K('algorithm_btn_exe1')+"</button>");
-        $("#ta_div_statusErklaerung").append("<button id=ta_button_gotoFA2>"+LNG.K('algorithm_btn_exe2')+"</button>");
-        this.showVariableStatusField(null,null);
-        $("#ta_button_gotoIdee").button();
-        $("#ta_button_gotoFA1").button();
-        $("#ta_button_gotoFA2").button();
-        $("#ta_button_gotoIdee").click(function() {$("#tabs").tabs("option","active", 3);});
-        $("#ta_button_gotoFA1").click(function() {$("#tabs").tabs("option","active", 4);});
-        $("#ta_button_gotoFA2").click(function() {$("#tabs").tabs("option","active", 5);});
-        // Falls wir im "Vorspulen" Modus waren, daktiviere diesen
-        if(fastForwardIntervalID != null) {
-            this.stopFastForward();
-        }
-        $("#ta_button_1Schritt").button("option", "disabled", true);
-        $("#ta_button_vorspulen").button("option", "disabled", true);
-    }; */
-    
-    /**
      * Ermittelt basierend auf der StatusID und anderen den vorherigen Schritt aus
      * und ruft die entsprechende Funktion auf.
      * @method
@@ -563,8 +538,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         this.markPseudoCodeLine(1);
 
         $("#ta_div_statusErklaerung").html('<h3>1 Initialisierung</h3>\
-            <p>Um besser mit dem Graphen arbeiten können, haben wir seine Knoten mittels Buchstaben beschriftet.</p>\
-            <p>Der Algorithmus muss bei der Ausführung prüfen können, welche Kanten er schon besucht hat. Wir benutzen dafür die derzeitig noch leere Menge besuchter Kanten (vgl. Pseudocode).</p>');
+            <p>Der Algorithmus muss bei der Ausführung prüfen können, welche Kanten er schon besucht hat. Dazu markieren wir jede Kante als unbesucht.</p>');
 
         this.addNamingLabels();
 
@@ -587,15 +561,14 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     this.checkGraph = function() {
         this.markPseudoCodeLine(2);
         $("#ta_div_statusErklaerung").html('<h3>2 Graph prüfen</h3>\
-            <p>Nur wenn unser Graph die folgenden Eigenschaften aufweist, kann der Hierholzer Algorithmus funktionieren:</p>\
-            <h3>2.1 Anzahl der Knoten</h3>\
-            <p>Damit ein Kantenweg im Graph existieren kann, muss dieser mindestens <em>zwei</em> zusammenhängende Knoten besitzen.</p>\
-            <h3>2.2 Zusammenhängend</h3>\
-            <p>Um einen Kantenweg über alle Kanten im Graph zu ermitteln, muss man natürlich auch alle Kanten im Graph erreichen können. Dazu muss dieser zusammenhängend sein. Diese Eigenschaft prüft man bspw. mit einer Breitensuche.</p>\
-            <h3>2.3 Grad</h3>\
-            <p>Der Hierholzer Algorithmus stellt strenge Voraussetzungen an den Grad der Knoten. Der Grad eines Knoten beschreibt die Anzahl seiner Kanten. Zur Veranschaulichung haben wir jeden Knoten mit seinem Grad beschriftet. Ein <span style="font-weight: bold; color: green;">grüner</span> Rahmen bedeutet, dass der Grad gerade ist, während ein <span style="font-weight: bold; color: red;">roter</span> Rahmen auf einen ungeraden Grad hinweist.</p>\
-            <p>Ein Graph dessen Knoten alle einen geraden Grad aufweisen, nennt man <em>eulersch</em>. Trifft dies auf alle außer exakt zwei Knoten zu, so spricht man von einem <em>semi-eulerschen</em> Graph.</p>\
-            <p>Damit der Hierholzer Algorithmus funktioniert muss der Graph entweder eulersch oder semi-eulersch sein.</p>');
+            <p>Nur wenn unser Graph die folgenden Eigenschaften aufweist, kann der Hierholzer Algorithmus angewendet werden:</p>\
+            <ul>\
+            <li><strong>mind. eine Kante</strong></li>\
+            <li><strong>zusammenhängend</strong></li>\
+            <li><strong>eulersch oder semi-eulersch</strong><br />\
+            Alle Knoten haben einen geraden Grad oder<br />\
+            genau zwei Knoten haben einen ungeraden Grad.</li>\
+            </ul>');
         $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/knoten_even.png" alt="Knoten" class="LegendeIcon"></td><td><span>Knoten mit geradem Grad 2</span></td></tr><tr><td class="LegendeTabelle"><img src="img/knoten_odd.png" alt="Knoten" class="LegendeIcon"></td><td><span>Knoten mit ungeradem Grad 3</span></td></tr></table>');
 
         var numberOfOddVertices = 0;
@@ -661,7 +634,7 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_div_statusErklaerung").html('<h3 style="color: white;">2 Graph prüfen</h3>\
             <p style="color: white;">Dein Graph erfüllt mindestens eine der folgenden Eigenschaften nicht:</p>\
             <ul style="color: white;">\
-            <li>mind. 2 Knoten</li>\
+            <li>mind. 1 Kante</li>\
             <li>zusammenhängend</li>\
             <li>eulersch oder semi-eulersch</li>\
             </ul>').addClass("ui-state-error");
@@ -683,10 +656,10 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         this.markPseudoCodeLine(3);
         $("#ta_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
             <h3>3.1a Ersten Startknoten finden</h3>\
-            <p>Damit der Algorithmus mit der ersten Subtour starten kann, benötigt er einen Startknoten. Hierfür unterscheidet man zwei Fälle:</p>\
-            <p><strong>Eulerscher Graph:</strong> Wähle beliebigen Knoten.</p>\
-            <p><strong>Semi-eulerscher Graph:</strong> Wähle einen der beiden Knoten mit ungeradem Grad.</p>\
-            <p>Der ausgewählte und damit aktive Knoten wurde <span style="font-weight: bold; color: green;">grün</span> markiert.</p>');
+            <p>Für die erste Subtour benötigt der Algorithmus einen Startknoten:</p>\
+            <p>Für <strong>eulersche Graphen</strong> kann man einen beliebigen Knoten wählen.</p>\
+            <p>Für <strong>semi-eulersche Graphen</strong> wählt man einen der beiden Knoten mit ungeradem Grad.</p>\
+            <p>Der vom Algorithmus ausgewählte Knoten wurde <span style="font-weight: bold; color: green;">grün</span> markiert.</p>');
         $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>Startknoten bzw. Knoten der mit dem Startknoten verglichen wird</span></td></tr><tr><td class="LegendeTabelle"><img src="img/pfad.png" alt="Kante" class="LegendeIcon"></td><td><span>Kante der Eulertour im aktuellen Durchgang</span></td></tr></table>');
 
         // Restore Naming
@@ -724,11 +697,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         this.markPseudoCodeLine(7);
         $("#ta_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
             <h3>3.2 Unbesuchten Nachbarn finden</h3>\
-            <p>Um die nächste Kante in unserer Subtour zu bestimmen, betrachten wir zunächst alle Kanten des zuletzt aktiven Knotens.</p>\
-            <p>Aus dieser Kantenmenge wählen wir nun die Kanten aus, die wir noch nicht besucht haben. Aus dieser Restmenge bestimmen wir eine zufällige Kante (<span style="font-weight: bold; color: '+tourColors[tourColorIndex]+';">farblich markiert</span>).</p>\
-            <p>Wir fügen diese Kante zu unserer Subtour hinzu sowie zur Menge der besuchten Kanten hinzu. Wir folgen der Kante und erhalten unseren nächsten aktiven Knoten (<span style="font-weight: bold; color: green;">grün</span>).</p>\
-            <h3>3.2.1 Sonderfall</h3>\
-            <p>Bei semi-eulerschen Graphen kann es zu dem Sonderfall kommen, dass der aktive Knoten keine weiteren unbesuchten Kanten besitzt. In diesem Fall springen wir direkt zu <em>Schritt 4.1</em>.</p>');
+            <p>Für die nächste Kante unserer aktuellen Tour betrachtet der Algorithmus alle unbesuchten Kanten des aktiven Knotens (<span style="font-weight: bold; color: green;">grün</span>).</p>\
+            <p>Aus dieser Kantenmenge wählt der Algorithmus nun eine zufällige Kante (<span style="font-weight: bold; color: '+tourColors[tourColorIndex]+';">farblich markiert</span>) aus.</p>\
+            <p>Wir fügen diese Kante zu unserer Subtour hinzu und markieren sie als besucht. Der Knoten am anderen Ende der Kante wir nun der neue aktive Knoten.</p>');
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
 
@@ -802,11 +773,11 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         this.markPseudoCodeLine(9);
         $("#ta_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
             <h3>3.3 Auf Kreis prüfen</h3>\
-            <p>Um zu prüfen, ob unsere Subtour abgeschlossen ist (d.h. sie bildet einen Kreis), vergleichen wir den aktiven Knoten mit dem ersten Knoten der Subtour. Beide sind <span style="font-weight: bold; color: green;">grün</span> markiert.</p>\
+            <p>Um zu prüfen, ob unsere Subtour abgeschlossen ist, vergleichen wir den aktiven Knoten mit dem ersten Knoten der Subtour. Beide sind <span style="font-weight: bold; color: green;">grün</span> markiert.</p>\
             <h3>3.3.1 Abgeschlossen</h3>\
             <p>Handelt es sich bei beiden um den selben Knoten, ist unsere Subtour abgeschlossen und wir fahren mit <em>Schritt 4</em> fort.</p>\
             <h3>3.3.2 Nicht abgeschlossen</h3>\
-            <p>Handelt es sich um zwei verschiedene Knoten, ist unsere Subtour unvollständig und wir springen zurück zu <em>Schritt 3.2</em>.</p>');
+            <p>Handelt es sich um zwei verschiedene Knoten, ist unsere Subtour unvollständig und wir wiederholen <em>Schritt 3.2</em>.</p>');
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
 
@@ -829,13 +800,11 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         this.markPseudoCodeLine(10);
         $("#ta_div_statusErklaerung").html('<h3>4 Gesamttour bestimmen</h3>\
             <h3>4.1 Integriere Subtour in Gesamttour</h3>\
-            <p>Damit der Hierholzer Algorithmus am Ende eine Eulertour bzw. einen Eulerkreis liefert, müssen wir sämtliche Subtouren passend aneinanderhängen. Wir unterscheiden hier drei Fälle:</p>\
-            <h3>4.1.1 Erste Subtour</h3>\
-            <p>Im einfachsten Fall integrieren wir die letzte Subtour einfach in die noch leere Gesamttour.</p>\
-            <h3>4.1.2 Zyklische Subtour</h3>\
-            <p>In diesem Fall bildet unsere Subtour einen Kreis. Zum Integrieren, suchen wir den Start- & Endknoten der Subtour in der Gesamttour und ersetzen diesen mit unserer Subtour.</p>\
-            <h3>4.1.3 Azyklische Subtour</h3>\
-            <p>Dieser Fall tritt nur einmal in einem semi-eulerschen Graph auf. Es handelt sich hierbei um die Subtour, die mit einem Knoten ungeraden Grads beginnt und bei dem zweiten Knoten mit ungeradem Grad endet. Diese Subtour muss so integriert werden, dass der ungerade Knoten, welcher nicht den Anfang der Gesamttour bildet, den Schluss der Gesamttour bildet.</p>');
+            <p>Die Subtour ist abgeschlossen und muss in die Gesamttour integriert werden.</p>\
+            <h3>4.1.1 Zyklische Subtour</h3>\
+            <p>Der Algorithmus sucht in der Gesamttour den Start- & Endknoten der Subtour und ersetzt diesen mit der gesamten Subtour.</p>\
+            <h3>4.1.2 Azyklischer Subweg</h3>\
+            <p>Es handelt sich hierbei um den Subweg im semi-eulerschen Graph, der mit einem Knoten ungeraden Grads beginnt und bei dem zweiten Knoten mit ungeradem Grad endet. Der Weg muss so integriert werden, dass er am Anfang oder Ende der Gesamttour steht.</p>');
 
         subtours.push({color: tourColorIndex, tour: euclideanSubTour});
         if(debugConsole) console.log("Subtours", subtours);
@@ -914,10 +883,10 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         this.markPseudoCodeLine(12);
         $("#ta_div_statusErklaerung").html('<h3>4 Gesamttour bestimmen</h3>\
             <h3>4.2 Auf Vollständigkeit prüfen</h3>\
-            <p>Nach jeder Integration einer Subtour in die Gesamttour müssen wir prüfen, ob unsere Gesamttour vollständig ist und der Algorithmus terminieren kann.</p>\
-            <p>Dazu vergleicht man bspw. die Anzahl der Kanten im Graph mit der Anzahl der Kanten in der Gesamttour.</p>\
+            <p>Nach jeder Integration einer Subtour in die Gesamttour prüft der Algorithmus ob die Gesamttour eine Eulertour bzw. ein Eulerweg ist.</p>\
+            <p>Dazu vergleicht der Algorithmus die Anzahl der Kanten im Graph mit der Anzahl der Kanten in der Gesamttour.</p>\
             <p>Bei Gleichheit terminiert der Algorithmus und gibt die Gesamttour in <em>Schritt 5</em> zurück.</p>\
-            <p>Bei Ungleichheit existiert eine weitere Subtour, die gefunden werden muss. Wir springen zurück zu <em>Schritt 3</em>.</p>');
+            <p>Bei Ungleichheit existiert mindestens eine weitere Subtour, die gefunden werden muss. Wir springen zurück zu <em>Schritt 3</em>.</p>');
 
         var numberOfEdgesInGraph = Object.keys(graph.edges).length;
         var numberOfEdgesInTour = 0;
@@ -943,8 +912,14 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
     // Zeige Tour
     this.returnTour = function() {
         this.markPseudoCodeLine(13);
-        $("#ta_div_statusErklaerung").html('<h3>5 Ergebnis</h3>\
-            <p>Der Algorithmus konnte erfolgreich eine Eulertour bzw. einen Eulerkreis bestimmen.</p>');
+        if(semiEuclideanGraph) {
+            $("#ta_div_statusErklaerung").html('<h3>5 Ergebnis</h3>\
+            <p>Der Algorithmus konnte erfolgreich einen Eulerweg bestimmen.</p>');
+        }else{
+           $("#ta_div_statusErklaerung").html('<h3>5 Ergebnis</h3>\
+            <p>Der Algorithmus konnte erfolgreich eine Eulertour bestimmen.</p>'); 
+        }
+        
 
         var output = "";
 
@@ -954,12 +929,9 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
             }
             if(euclideanTour[i].type == "edge") {
                 var layout = graph.edges[euclideanTour[i].id].getLayout();
-                //output += "<li>{"+graph.nodes[graph.edges[euclideanTour[i].id].getSourceID()].getLabel()+", "+graph.nodes[graph.edges[euclideanTour[i].id].getTargetID()].getLabel()+"}</li>";
                 output += ' <span style="color: '+layout.lineColor+';">&#8211;</span> ';
             }
         }
-
-        //output = output.slice(0,-3);
 
         var output_subtours = "";
 
@@ -977,23 +949,50 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         }
 
         if(semiEuclideanGraph) {
-            if(debugConsole) console.log("Complete Euclidean Trail: ", euclideanTour);
-        }else{
-            if(debugConsole) console.log("Complete Euclidean Circle: ", euclideanTour);
-        }  
+            if(debugConsole) console.log("Complete Eulerian Trail: ", euclideanTour);
 
-        $("#ta_div_statusErklaerung").append('<h3>5.1 Eulertour:</h3>\
+            $("#ta_div_statusErklaerung").append('<h3>5.1 Eulerweg:</h3>\
             <p class="result_euleriantour">' + output + '</p>\
-            <p>Die Eulertour wird hier dargestellt als Folge der Knoten.</p>\
+            <p>Der Eulerweg wird hier als Folge von Knoten dargestellt.</p>\
+            <p><button id="animateTour">Animiere Eulerweg</button><button id="animateTourStop">Stop</button></p>\
+            <p>Klicke auf <strong>Animiere Eulerweg</strong> um den kompletten Eulerweg abzulaufen und alle Knoten und Kanten auf dem Weg hervorzuheben.</p>\
+            <h3>5.2 Subtouren:</h3>\
+            <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
+            <p>Bewege deinen Mauszeiger über eine der Subtouren, um sie im Graph hervorzuheben.</p>\
+            <p></p><h3>Was nun?</h3>\
+            <button id="ta_button_gotoIdee">Beschreibung des Algorithmus lesen</button>\
+            <h3>Forschungsaufgaben ausprobieren</h3>\
+            <button id="ta_button_gotoFA1">Wie würde der Algorithmus entscheiden?</button>\
+            <button id="ta_button_gotoFA2">Algorithmus am gerichteten Graphen</button>');
+
+        }else{
+            if(debugConsole) console.log("Complete Eulerian Circle: ", euclideanTour);
+
+            $("#ta_div_statusErklaerung").append('<h3>5.1 Eulertour:</h3>\
+            <p class="result_euleriantour">' + output + '</p>\
+            <p>Die Eulertour wird hier als Folge von Knoten dargestellt.</p>\
             <p><button id="animateTour">Animiere Eulertour</button><button id="animateTourStop">Stop</button></p>\
             <p>Klicke auf <strong>Animiere Eulertour</strong> um die komplette Eulertour abzulaufen und alle Knoten und Kanten auf dem Weg hervorzuheben.</p>\
             <h3>5.2 Subtouren:</h3>\
             <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
-            <p>Bewege deinen Mauszeiger über eine der Subtouren, um sie im Graph hervorzuheben.</p>');
+            <p>Bewege deinen Mauszeiger über eine der Subtouren, um sie im Graph hervorzuheben.</p>\
+            <p></p><h3>Was nun?</h3>\
+            <button id="ta_button_gotoIdee">Beschreibung des Algorithmus lesen</button>\
+            <h3>Forschungsaufgaben ausprobieren</h3>\
+            <button id="ta_button_gotoFA1">Wie würde der Algorithmus entscheiden?</button>\
+            <button id="ta_button_gotoFA2">Algorithmus am gerichteten Graphen</button>');
+        }  
+
 
         if(fastForwardIntervalID != null) {
             this.stopFastForward();
         }
+        $("#ta_button_gotoIdee").button();
+        $("#ta_button_gotoFA1").button();
+        $("#ta_button_gotoFA2").button();
+        $("#ta_button_gotoIdee").click(function() {$("#tabs").tabs("option", "active", 3);});
+        $("#ta_button_gotoFA1").click(function() {$("#tabs").tabs("option", "active", 4);});
+        $("#ta_button_gotoFA2").click(function() {$("#tabs").tabs("option", "active", 5);});
         $("#ta_button_1Schritt").button("option", "disabled", true);
         $("#ta_button_vorspulen").button("option", "disabled", true);
         $(".subtourList").on("mouseenter", "li.subtour_hover", {org: this}, this.hoverSubtour).on("mouseleave", "li.subtour_hover", {org: this}, this.dehoverSubtour);
@@ -1007,9 +1006,8 @@ function BFAlgorithm(p_graph,p_canvas,p_tab) {
         this.markPseudoCodeLine(11);
         $("#ta_div_statusErklaerung").html('<h3>3 Subtour bestimmen</h3>\
             <h3>3.1b Neuen Startknoten finden</h3>\
-            <p>Im Gegensatz zum Finden eines Startknotens für die erste Subtour, gibt es nun keine Fallunterscheidung mehr.</p>\
-            <p>Wir können einen beliebigen Knoten wählen, der an unbesuchte Kanten grenzt.</p>\
-            <p>Dieser Knoten bildet den Start der neuen Subtour und wurde <span style="font-weight: bold; color: green;">grün</span> markiert.</p>');
+            <p>Als Startknoten der nächsten Subtour wählt der Algorithmus einen beliebigen Knoten, der unbesuchte Kanten besitzt.</p>\
+            <p>Dieser Knoten wurde <span style="font-weight: bold; color: green;">grün</span> markiert.</p>');
 
         euclideanSubTour = new Array();
 

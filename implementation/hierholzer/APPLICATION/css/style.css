@@ -211,6 +211,9 @@ table.algoInformationen {
 #ta_div_statusErklaerung {
     text-align: left;
 }
+#ta_div_statusErklaerung ul li {
+    padding: 5px;
+}
 
 #te_div_Einfuehrungstext {
     padding-left: 15px;
