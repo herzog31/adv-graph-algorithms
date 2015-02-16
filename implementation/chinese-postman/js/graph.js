@@ -8,20 +8,21 @@
 /**
  * Die Farben, die im Projekt genutzt werden.
  * Aus dem TUM Styleguide.
- * @type Object 
+ * @type Object
  */
-var const_Colors = {NodeFilling:            "#98C6EA",  // Pantone 283, 100%
-                    NodeBorder:             "#0065BD",  // Pantone 300, 100%, "TUM-Blau"
-                    NodeBorderHighlight:    "#C4071B",  // Helles Rot 100% aus TUM Styleguide
-                    NodeFillingHighlight:   "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
-                    NodeFillingQuestion:    "#C4071B",  // Helles Rot 100% aus TUM Styleguide
-                    EdgeHighlight1:         "#C4071B",  // Helles Rot 100% aus TUM Styleguide
-                    EdgeHighlight2:         "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
-                    EdgeHighlight3:         "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
-                    EdgeHighlight4:         "#007C30",  // Dunkelgrün 100 % aus TUM Styleguide
-                    RedText:                "#C4071B",  // Helles Rot 100% aus TUM Styleguide
-                    GreenText:              "#007C30"   // Dunkelgrün 100 % aus TUM Styleguide
-                    };
+var const_Colors = {
+    NodeFilling: "#98C6EA",  // Pantone 283, 100%
+    NodeBorder: "#0065BD",  // Pantone 300, 100%, "TUM-Blau"
+    NodeBorderHighlight: "#C4071B",  // Helles Rot 100% aus TUM Styleguide
+    NodeFillingHighlight: "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
+    NodeFillingQuestion: "#C4071B",  // Helles Rot 100% aus TUM Styleguide
+    EdgeHighlight1: "#C4071B",  // Helles Rot 100% aus TUM Styleguide
+    EdgeHighlight2: "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
+    EdgeHighlight3: "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
+    EdgeHighlight4: "#007C30",  // Dunkelgrün 100 % aus TUM Styleguide
+    RedText: "#C4071B",  // Helles Rot 100% aus TUM Styleguide
+    GreenText: "#007C30"   // Dunkelgrün 100 % aus TUM Styleguide
+};
 
 /**
  * Standardgröße eines Knotens
@@ -32,27 +33,29 @@ var global_KnotenRadius = 15;                           // Radius der Knoten
  * Standardaussehen einer Kante.
  * @type Object
  */
-var global_Edgelayout = {'arrowAngle' : Math.PI/8,	// Winkel des Pfeilkopfs relativ zum Pfeilkörper
-			 'arrowHeadLength' : 15,        // Länge des Pfeilkopfs
-                         'lineColor' : "black",		// Farbe des Pfeils
-			 'lineWidth' : 2,		// Dicke des Pfeils
-                         'font'	: 'Arial',		// Schrifart 
-                         'fontSize' : 14,		// Schriftgrösse in Pixeln
-                         'isHighlighted': false         // Ob die Kante eine besondere Markierung haben soll
-			};
-                        
+var global_Edgelayout = {
+    'arrowAngle': Math.PI / 8,	// Winkel des Pfeilkopfs relativ zum Pfeilkörper
+    'arrowHeadLength': 15,        // Länge des Pfeilkopfs
+    'lineColor': "black",		// Farbe des Pfeils
+    'lineWidth': 2,		// Dicke des Pfeils
+    'font': 'Arial',		// Schrifart
+    'fontSize': 12,		// Schriftgrösse in Pixeln
+    'isHighlighted': false         // Ob die Kante eine besondere Markierung haben soll
+};
+
 /**
  * Standardaussehen eines Knotens.
  * @type Object
  */
-var global_NodeLayout = {'fillStyle' : const_Colors.NodeFilling,    // Farbe der Füllung
-                         'nodeRadius' : 15,                         // Radius der Kreises
-                         'borderColor' : const_Colors.NodeBorder,   // Farbe des Rands (ohne Markierung)
-                         'borderWidth' : 2,                         // Breite des Rands
-                         'fontColor' : 'black',                     // Farbe der Schrift
-                         'font' : 'bold',                           // Schriftart
-                         'fontSize' : 14                            // Schriftgrösse in Pixeln
-                        };
+var global_NodeLayout = {
+    'fillStyle': const_Colors.NodeFilling,    // Farbe der Füllung
+    'nodeRadius': 15,                         // Radius der Kreises
+    'borderColor': const_Colors.NodeBorder,   // Farbe des Rands (ohne Markierung)
+    'borderWidth': 2,                         // Breite des Rands
+    'fontColor': 'black',                     // Farbe der Schrift
+    'font': 'bold',                           // Schriftart
+    'fontSize': 14                            // Schriftgrösse in Pixeln
+};
 
 /**
  * Knoten des Graphs.
@@ -191,6 +194,10 @@ function GraphNode(coordinates,nodeID) {
      */
     this.setLayout = function(parameter,newValue) {
         layout[parameter] = newValue;
+    };
+
+    this.setLayoutObject = function(layoutObject) {
+        layout = layoutObject;
     };
 
     /**
@@ -455,6 +462,16 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
         return jQuery.extend(true, {},layout);
     };
 
+    this.setAdditionalLabel = function(label) {
+        additionalLabel = label;
+    };
+    this.getAdditionalLabel = function() {
+        return additionalLabel;
+    };
+
+    this.setLayoutObject = function(layoutObject) {
+        layout = layoutObject;
+    };
     /**
      * Verändert das Aussehen des Knotens
      * @param {String} parameter Parameter des Layouts, der verändert werden soll
@@ -463,6 +480,7 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
     this.setLayout = function(parameter,newValue) {
         layout[parameter] = newValue;
     };
+
 
     /**
      * Gibt den Status des Felds "isHighlighted" an, der z.B. für die 
@@ -1223,17 +1241,27 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
             case "Standardbeispiel":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
+                this.graph = new Graph("graphs/connected.txt");
+                break;
+            case "Nicht Zusammenhängend":
+                this.canvas.css("background","");
+                $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("graphs/graph1.txt");
                 break;
-            case "Negativer Kreis":
+            case "5Knoten":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
-                this.graph = new Graph("graphs/graph2.txt");
+                this.graph = new Graph("graphs/5Knoten.txt");
                 break;
-            case "Positiver Kreis":
+            case "Kreis":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
-                this.graph = new Graph("graphs/graph7.txt");
+                this.graph = new Graph("graphs/kreis.txt");
+                break;
+            case "Kreis2":
+                this.canvas.css("background","");
+                $("#tg_p_bildlizenz").remove();
+                this.graph = new Graph("graphs/kreis2.txt");
                 break;
             case "Großstädte Europas":
                 this.canvas.css("background","url(img/europa.png)");
