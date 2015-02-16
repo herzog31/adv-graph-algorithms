@@ -95,7 +95,7 @@ function initializeSiteLayout() {
             }
             if(ui.newPanel[0].id == "tab_tf2") {
                 // TODO New directed Graph...
-                var directedGraph = new Graph("graphs/graph1.txt", null, true);
+                var directedGraph = new Graph("graphs/gerichtet1.txt", null, true);
                 algo = new Forschungsaufgabe2(directedGraph, $("#tf2_canvas_graph"), $("#tab_tf2"));
                 $("#tab_tf2").data("algo", algo);
             }
@@ -104,7 +104,7 @@ function initializeSiteLayout() {
             }
         }
     });
-    $("body").data("graph", new Graph("graphs/graph1.txt", null, false));
+    $("body").data("graph", new Graph("graphs/eulerschEineTour.txt", null, false));
 }
 
 /**

@@ -1240,30 +1240,35 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
     this.setGraphHandler = function() {
         var selection = $("#tg_select_GraphSelector>option:selected").val();
         switch(selection) {
-            case "Standardbeispiel":
+            case "Viele Touren":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
-                this.graph = new Graph("graphs/graph1.txt", null, false);
+                this.graph = new Graph("graphs/vieleTouren.txt", null, false);
                 break;
-            case "Negativer Kreis":
+            case "Eine Tour":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
-                this.graph = new Graph("graphs/graph2.txt", null, false);
+                this.graph = new Graph("graphs/eulerschEineTour.txt", null, false);
                 break;
-            case "Positiver Kreis":
+            case "Semi Eulerscher Graph":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
-                this.graph = new Graph("graphs/graph7.txt", null, false);
+                this.graph = new Graph("graphs/semiEulersch.txt", null, false);
+                break;
+            case "Blume":
+                this.canvas.css("background","");
+                $("#tg_p_bildlizenz").remove();
+                this.graph = new Graph("graphs/gerichtet1.txt", null, false);
+                break;
+            case "Haus vom Nikolaus":
+                this.canvas.css("background","");
+                $("#tg_p_bildlizenz").remove();
+                this.graph = new Graph("graphs/nikolaus.txt", null, false);
                 break;
             case "Königsberger Brücken":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("graphs/koenigsberg.txt", null, false);
-                break;
-            case "Großstädte Europas":
-                this.canvas.css("background","url(img/europa.png)");
-                $("#tg_div_Legende").append("<p id=\"tg_p_bildlizenz\">Bild: <a href=\"https://www.cia.gov/library/publications/the-world-factbook/index.html\">CIA World Factbook</a></p>");
-                this.graph = new Graph("graphs/graph3.txt", null, false);
                 break;
             case "Zufallsgraph":
                 this.canvas.css("background","");

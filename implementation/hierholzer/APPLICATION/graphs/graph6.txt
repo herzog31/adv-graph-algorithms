@@ -1,5 +1,0 @@
-% Graph 6: Fotomodell für beispiel3.png
-n 250 250
-n 330 170
-n 410 250
-n 490 210
