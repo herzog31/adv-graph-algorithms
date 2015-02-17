@@ -616,7 +616,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         var cost = 0;
         for(var e in edges_on_path){
             edges_on_path[e].setLayout('lineColor','blue');//highlight path
-            cost += e.weight;
+            cost += edges_on_path[e].weight;
         }
         //unhighlight previous path
         if(new_edges.length > 0){
