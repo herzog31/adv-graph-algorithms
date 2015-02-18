@@ -906,9 +906,9 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
             <p>'+LNG.K('aufgabe2_status52_desc1')+'</p>\
             <p></p><h3>'+LNG.K('algorithm_msg_finish')+'</h3>\
-            <button id="ta_button_gotoIdee">'+LNG.K('algorithm_btn_more')+'</button>\
+            <button id="tf2_button_gotoIdee">'+LNG.K('algorithm_btn_more')+'</button>\
             <h3>'+LNG.K('algorithm_msg_test')+'</h3>\
-            <button id="ta_button_gotoFA1">'+LNG.K('algorithm_btn_exe1')+'</button>');
+            <button id="tf2_button_gotoFA1">'+LNG.K('algorithm_btn_exe1')+'</button>');
 
         }else{ */
             if(debugConsole) console.log("Complete Eulerian Circle: ", eulerianTour);
@@ -922,14 +922,19 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
             <p>'+LNG.K('aufgabe2_status52_desc1')+'</p>\
             <p></p><h3>'+LNG.K('algorithm_msg_finish')+'</h3>\
-            <button id="ta_button_gotoIdee">'+LNG.K('algorithm_btn_more')+'</button>\
+            <button id="tf2_button_gotoIdee">'+LNG.K('algorithm_btn_more')+'</button>\
             <h3>'+LNG.K('algorithm_msg_test')+'</h3>\
-            <button id="ta_button_gotoFA1">'+LNG.K('algorithm_btn_exe1')+'</button>');
+            <button id="tf2_button_gotoFA1">'+LNG.K('algorithm_btn_exe1')+'</button>');
         //}  
 
         if(fastForwardIntervalID != null) {
             this.stopFastForward();
         }
+
+        $("#tf2_button_gotoIdee").button();
+        $("#tf2_button_gotoFA1").button();
+        $("#tf2_button_gotoIdee").click(function() {$("#tabs").tabs("option", "active", 3);});
+        $("#tf2_button_gotoFA1").click(function() {$("#tabs").tabs("option", "active", 4);});
         $("#tf2_button_1Schritt").button("option", "disabled", true);
         $("#tf2_button_vorspulen").button("option", "disabled", true);
         $(".subtourList").on("mouseenter", "li.subtour_hover", {org: this}, this.hoverSubtour).on("mouseleave", "li.subtour_hover", {org: this}, this.dehoverSubtour);

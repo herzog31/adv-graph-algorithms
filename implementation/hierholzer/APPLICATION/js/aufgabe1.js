@@ -828,10 +828,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     this.returnTour = function() {
         this.markPseudoCodeLine(13);
         if(semiEulerianGraph) {
-            $("#ta_div_statusErklaerung").html('<h3>5 '+LNG.K('algorithm_status5_head')+'</h3>\
+            $("#tf1_div_statusErklaerung").html('<h3>5 '+LNG.K('algorithm_status5_head')+'</h3>\
             <p>'+LNG.K('algorithm_status5_desc1a')+'</p>');
         }else{
-           $("#ta_div_statusErklaerung").html('<h3>5 '+LNG.K('algorithm_status5_head')+'</h3>\
+           $("#tf1_div_statusErklaerung").html('<h3>5 '+LNG.K('algorithm_status5_head')+'</h3>\
             <p>'+LNG.K('algorithm_status5_desc1b')+'</p>'); 
         }
 
@@ -866,7 +866,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         if(semiEulerianGraph) {
             if(debugConsole) console.log("Complete Eulerian Trail: ", eulerianTour);
 
-            $("#ta_div_statusErklaerung").append('<h3>5.1 '+LNG.K('algorithm_status51a_head')+'</h3>\
+            $("#tf1_div_statusErklaerung").append('<h3>5.1 '+LNG.K('algorithm_status51a_head')+'</h3>\
             <p class="result_euleriantour">' + output + '</p>\
             <p>'+LNG.K('algorithm_status51a_desc1')+'</p>\
             <p><button id="animateTour">'+LNG.K('algorithm_status51a_desc2')+'</button><button id="animateTourStop">'+LNG.K('algorithm_status51a_desc3')+'</button></p>\
@@ -875,14 +875,14 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
             <p>'+LNG.K('algorithm_status52_desc1')+'</p>\
             <p></p><h3>'+LNG.K('algorithm_msg_finish')+'</h3>\
-            <button id="ta_button_gotoIdee">'+LNG.K('algorithm_btn_more')+'</button>\
+            <button id="tf1_button_gotoIdee">'+LNG.K('algorithm_btn_more')+'</button>\
             <h3>'+LNG.K('algorithm_msg_test')+'</h3>\
-            <button id="ta_button_gotoFA2">'+LNG.K('algorithm_btn_exe2')+'</button>');
+            <button id="tf1_button_gotoFA2">'+LNG.K('algorithm_btn_exe2')+'</button>');
 
         }else{
             if(debugConsole) console.log("Complete Eulerian Circle: ", eulerianTour);
 
-            $("#ta_div_statusErklaerung").append('<h3>5.1 '+LNG.K('algorithm_status51b_head')+'</h3>\
+            $("#tf1_div_statusErklaerung").append('<h3>5.1 '+LNG.K('algorithm_status51b_head')+'</h3>\
             <p class="result_euleriantour">' + output + '</p>\
             <p>'+LNG.K('algorithm_status51b_desc1')+'</p>\
             <p><button id="animateTour">'+LNG.K('algorithm_status51b_desc2')+'</button><button id="animateTourStop">'+LNG.K('algorithm_status51b_desc3')+'</button></p>\
@@ -891,14 +891,19 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
             <p>'+LNG.K('algorithm_status52_desc1')+'</p>\
             <p></p><h3>'+LNG.K('algorithm_msg_finish')+'</h3>\
-            <button id="ta_button_gotoIdee">'+LNG.K('algorithm_btn_more')+'</button>\
+            <button id="tf1_button_gotoIdee">'+LNG.K('algorithm_btn_more')+'</button>\
             <h3>'+LNG.K('algorithm_msg_test')+'</h3>\
-            <button id="ta_button_gotoFA2">'+LNG.K('algorithm_btn_exe2')+'</button>');
+            <button id="tf1_button_gotoFA2">'+LNG.K('algorithm_btn_exe2')+'</button>');
         }  
 
         if(fastForwardIntervalID != null) {
             this.stopFastForward();
         }
+
+        $("#tf1_button_gotoIdee").button();
+        $("#tf1_button_gotoFA2").button();
+        $("#tf1_button_gotoIdee").click(function() {$("#tabs").tabs("option", "active", 3);});
+        $("#tf1_button_gotoFA2").click(function() {$("#tabs").tabs("option", "active", 5);});
         $("#tf1_button_1Schritt").button("option", "disabled", true);
         $("#tf1_button_vorspulen").button("option", "disabled", true);
         $(".subtourList").on("mouseenter", "li.subtour_hover", {org: this}, this.hoverSubtour).on("mouseleave", "li.subtour_hover", {org: this}, this.dehoverSubtour);
