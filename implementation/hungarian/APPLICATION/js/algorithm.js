@@ -70,7 +70,9 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     const READY_FOR_SEARCHING = 5;
     const LABELS_UPDATED = 6;
     const MATCHING_INCREASED = 7;
-    const FINISHED = 8;
+    const READY_TO_BUILD_TREE = 8;
+    const READY_TO_BUILD_TREE_AFTER_RELABELING = 9;
+    const FINISHED = 10;
 
     var cost = new Array();
     this.cost = cost;
@@ -274,9 +276,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
      *  @method
      */
     this.nextStepChoice = function () {
-        console.log("ST");
-        console.log(S);
-        console.log(T);
         if(currentDisplayStep < history.length){
             currentDisplayStep++;
             this.replayStep(currentDisplayStep);
@@ -292,7 +291,10 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                 this.initLabels();
                 break;
             case READY_FOR_SEARCHING:
-                this.tryToFindAugmentingPath();
+                this.iterateX();
+                break;
+            case READY_TO_BUILD_TREE:
+                this.buildAlternatingTree();
                 break;
             case AUGMENTING_PATH_NOT_FOUND:
                 this.update_labels();
@@ -302,6 +304,9 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                 break;
             case MATCHING_INCREASED:
                 this.augment();
+                break;
+            case READY_TO_BUILD_TREE_AFTER_RELABELING:
+                this.buildTreeAfterRelabeling();
                 break;
             case READY_TO_START:
                 this.augment();
@@ -379,6 +384,140 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         return READY_FOR_SEARCHING;
     };
 
+    //this.tryToFindAugmentingPath = function(){
+    //    if(this.buildTree()){
+    //        showAugmentingPath(x, y, prev, xy, yx);
+    //        console.log("AUGMENTING_PATH_FOUND");
+    //        $("#ta_div_statusErklaerung").text("Augmentationsweg wurde gefunden.");
+    //        return AUGMENTING_PATH_FOUND;
+    //    }
+    //    statusID = AUGMENTING_PATH_NOT_FOUND;
+    //    console.log("AUGMENTING_PATH_NOT_FOUND");
+    //    $("#ta_div_statusErklaerung").text("Augmentationsweg wurde nicht gefunden.");
+    //    return AUGMENTING_PATH_NOT_FOUND;
+    //};
+
+    //this.buildTree = function(){
+    //    while (rd < wr) {
+    //        x = q[rd++];
+    //        for (y = 0; y < n; y++) {
+    //            if (cost[x][y] == lx[x] + ly[y] && !T[y]) {
+    //                if (yx[y] == -1) break;
+    //                T[y] = true;
+    //                q[wr++] = yx[y];
+    //                this.add_to_tree(yx[y], x);
+    //            }
+    //        }
+    //        if (y < n) {
+    //            return true;
+    //        } //augmenting path found
+    //    }
+    //    return false; //augmenting path not found
+    //};
+
+    this.iterateX = function(){
+        if(rd < wr){
+            x = q[rd++];
+            y = 0;
+            console.log("READY_TO_BUILD_TREE");
+            statusID = READY_TO_BUILD_TREE;
+            return READY_TO_BUILD_TREE;
+        }
+        console.log("AUGMENTING_PATH_NOT_FOUND");
+        $("#ta_div_statusErklaerung").text("Augmentationsweg wurde nicht gefunden.");
+        statusID = AUGMENTING_PATH_NOT_FOUND;
+        return AUGMENTING_PATH_NOT_FOUND;
+    };
+
+    this.buildAlternatingTree = function(){
+        if(y < n) {
+            if (cost[x][y] == lx[x] + ly[y] && !T[y]) {
+                if (yx[y] == -1) {
+                    showAugmentingPath(x, y, prev, xy, yx);
+                    console.log("AUGMENTING_PATH_FOUND");
+                    $("#ta_div_statusErklaerung").text("Augmentationsweg wurde gefunden.");
+                    statusID = AUGMENTING_PATH_FOUND;
+                    return AUGMENTING_PATH_FOUND;
+                }
+                T[y] = true;
+                q[wr++] = yx[y];
+                this.add_to_tree(yx[y], x);
+            }
+            y++;
+            console.log("READY_TO_BUILD_TREE");
+            statusID = READY_TO_BUILD_TREE;
+            return READY_TO_BUILD_TREE;
+        }
+        console.log("CONTINUE_ITERATING");
+        statusID = READY_FOR_SEARCHING;
+        return READY_FOR_SEARCHING;
+    };
+
+    //this.findAugmentPathAfterLabeling = function(){
+    //    wr = rd = 0;
+    //    for (y = 0; y < n; y++)
+    //        if (!T[y] && slack[y] == 0) {
+    //            if (yx[y] == -1) {
+    //                x = slackx[y];
+    //                break;
+    //            } else {
+    //                T[y] = true;
+    //                if (!S[yx[y]]) {
+    //                    q[wr++] = yx[y];
+    //                    this.add_to_tree(yx[y], slackx[y]);
+    //                }
+    //            }
+    //        }
+    //    if (y < n){
+    //        showAugmentingPath(x, y, prev, xy, yx);
+    //        statusID = AUGMENTING_PATH_FOUND;
+    //        console.log("AUGMENTING_PATH_FOUND");
+    //        $("#ta_div_statusErklaerung").text("Augmentationsweg wurde gefunden.");
+    //        return AUGMENTING_PATH_FOUND;
+    //    }
+    //
+    //    statusID = READY_FOR_SEARCHING;
+    //    console.log("READY_FOR_SEARCHING");
+    //    $("#ta_div_statusErklaerung").text("Augmentationsweg wurde nicht gefunden.");
+    //    return READY_FOR_SEARCHING;
+    //};
+    this.findAugmentPathAfterLabeling = function(){
+        wr = rd = 0;
+        y = 0;
+        console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
+        statusID = READY_TO_BUILD_TREE_AFTER_RELABELING;
+        return READY_TO_BUILD_TREE_AFTER_RELABELING;
+    };
+
+    this.buildTreeAfterRelabeling = function(){
+        if(y < n){
+            if (!T[y] && slack[y] == 0) {
+                if (yx[y] == -1) {
+                    x = slackx[y];
+                    showAugmentingPath(x, y, prev, xy, yx);
+                    statusID = AUGMENTING_PATH_FOUND;
+                    console.log("AUGMENTING_PATH_FOUND");
+                    $("#ta_div_statusErklaerung").text("Augmentationsweg wurde gefunden.");
+                    return AUGMENTING_PATH_FOUND;
+                } else {
+                    T[y] = true;
+                    if (!S[yx[y]]) {
+                        q[wr++] = yx[y];
+                        this.add_to_tree(yx[y], slackx[y]);
+                    }
+                }
+            }
+            y++;
+            console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
+            statusID = READY_TO_BUILD_TREE_AFTER_RELABELING;
+            return READY_TO_BUILD_TREE_AFTER_RELABELING;
+        }
+        statusID = READY_FOR_SEARCHING;
+        console.log("READY_FOR_SEARCHING");
+        $("#ta_div_statusErklaerung").text("Augmentationsweg wurde nicht gefunden.");
+        return READY_FOR_SEARCHING;
+    };
+
     this.increaseMatching = function(){
         resetNodeLayout();
         showEqualityGraph(lx, ly);
@@ -393,68 +532,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         statusID = MATCHING_INCREASED;
         console.log("MATCHING_INCREASED");
         $("#ta_div_statusErklaerung").text("Matching wurde vergrößert.");
-        return MATCHING_INCREASED;//this.augment();
-    };
-
-    this.tryToFindAugmentingPath = function(){
-        if(this.buildTree()){
-            statusID = AUGMENTING_PATH_FOUND;
-            showAugmentingPath(x, y, prev, xy, yx);
-            console.log("AUGMENTING_PATH_FOUND");
-            $("#ta_div_statusErklaerung").text("Augmentationsweg wurde gefunden.");
-            return AUGMENTING_PATH_FOUND;
-        }
-        statusID = AUGMENTING_PATH_NOT_FOUND;
-        console.log("AUGMENTING_PATH_NOT_FOUND");
-        $("#ta_div_statusErklaerung").text("Augmentationsweg wurde nicht gefunden.");
-        return AUGMENTING_PATH_NOT_FOUND;
-    };
-
-    this.buildTree = function(){
-        while (rd < wr) {
-            x = q[rd++];
-            for (y = 0; y < n; y++) {
-                if (cost[x][y] == lx[x] + ly[y] && !T[y]) {
-                    if (yx[y] == -1) break;
-                    T[y] = true;
-                    q[wr++] = yx[y];
-                    this.add_to_tree(yx[y], x);
-                }
-            }
-            if (y < n) {
-                return true;
-            } //augmenting path found
-        }
-        return false; //augmenting path not found
-    };
-
-    this.findAugmentPathAfterLabeling = function(){
-        wr = rd = 0;
-        for (y = 0; y < n; y++)
-            if (!T[y] && slack[y] == 0) {
-                if (yx[y] == -1) {
-                    x = slackx[y];
-                    break;
-                } else {
-                    T[y] = true;
-                    if (!S[yx[y]]) {
-                        q[wr++] = yx[y];
-                        this.add_to_tree(yx[y], slackx[y]);
-                    }
-                }
-            }
-        if (y < n){
-            showAugmentingPath(x, y, prev, xy, yx);
-            statusID = AUGMENTING_PATH_FOUND;
-            console.log("AUGMENTING_PATH_FOUND");
-            $("#ta_div_statusErklaerung").text("Augmentationsweg wurde gefunden.");
-            return AUGMENTING_PATH_FOUND;
-        }
-
-        statusID = READY_FOR_SEARCHING;
-        console.log("READY_FOR_SEARCHING");
-        $("#ta_div_statusErklaerung").text("Augmentationsweg wurde nicht gefunden.");
-        return READY_FOR_SEARCHING;
+        return MATCHING_INCREASED;
     };
 
     this.add_to_tree = function (x, prevx){
