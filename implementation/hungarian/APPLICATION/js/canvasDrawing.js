@@ -131,7 +131,6 @@ CanvasDrawMethods.drawTextOnLine = function(ctx,layout,source,target,label,even,
         ctx.rotate(Math.PI);				// Rotiere um 180 Grad
         ctx.fillText(label, 0, -3);		// Schreibe Text an Position
     }else {
-        console.log(label);
         ctx.fillText(label, -labelMeasure.width/2, -3);									// Verschriebung um 3, um nicht zu nah am Pfeil zu sein.
     }
     ctx.restore();							// Ursprünglichen Zustand wiederherstellen.

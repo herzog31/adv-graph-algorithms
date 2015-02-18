@@ -45,17 +45,17 @@ function showAugmentingPath(x, y, prev, xy, yx){
         ty = xyTemp[cx];
         yxTemp[cy] = cx;
         xyTemp[cx] = cy;
-        augmentingPath[augmentingPath.length] = cx;
         augmentingPath[augmentingPath.length] = cy;
+        augmentingPath[augmentingPath.length] = cx;
         console.log(cx);
         console.log(cy);
     }
     for(var i = 1; i < augmentingPath.length; i++){
         for(var edge in $("body").data("graph").edges){
-            if((($("body").data("graph").edges[edge].getSourceID() == augmentingPath[i-1]
-                && $("body").data("graph").edges[edge].getTargetID()-xy.length == augmentingPath[i]) && i%2==1) ||
-                (($("body").data("graph").edges[edge].getSourceID() == augmentingPath[i]
-                && $("body").data("graph").edges[edge].getTargetID()-xy.length == augmentingPath[i-1]) && i%2==0)){
+            if((($("body").data("graph").edges[edge].getSourceID() == augmentingPath[i]
+                && $("body").data("graph").edges[edge].getTargetID()-xy.length == augmentingPath[i-1]) && i%2==1) ||
+                (($("body").data("graph").edges[edge].getSourceID() == augmentingPath[i-1]
+                && $("body").data("graph").edges[edge].getTargetID()-xy.length == augmentingPath[i]) && i%2==0)){
 
                 $("body").data("graph").edges[edge].setLayout("lineColor", const_Colors.EdgeHighlight1);
                 $("body").data("graph").edges[edge].setLayout("lineWidth", 3);

@@ -274,6 +274,9 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
      *  @method
      */
     this.nextStepChoice = function () {
+        console.log("ST");
+        console.log(S);
+        console.log(T);
         if(currentDisplayStep < history.length){
             currentDisplayStep++;
             this.replayStep(currentDisplayStep);
@@ -487,6 +490,69 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         console.log("LABELS_UPDATED");
         $("#ta_div_statusErklaerung").text("Markierungen sowie Gleichheitsgraph wurden aktualisiert.");
         return LABELS_UPDATED;
+    };
+
+    //this.bfs = function(superNode){
+    //    var evenLayer = superNode;
+    //    var examined = {};
+    //    var freeFound = false;
+    //    var bfsEdges = {};
+    //    for (var knotenID in graph.nodes) {
+    //        examined[knotenID] = false;
+    //        bfsEdges[knotenID] = {};
+    //    }
+    //    while(!freeFound) {
+    //        for (var n in evenLayer) {
+    //            examined[evenLayer[n].getNodeID()] = true;
+    //            var edges = evenLayer[n].getOutEdges();
+    //            for (var e in edges) {
+    //                if (!"e.target is matched" && !examined[e.getSourceID()]) {
+    //                    freeFound = true;
+    //                    break;
+    //                }else if("e.target is matched"){
+    //                    evenLayer[yx[e.getTargetID()]] = graph.nodes[yx[e.getTargetID()]];
+    //                    bfsEdges[e.getTargetID()]
+    //                }
+    //            }
+    //        }
+    //        if(!freeFound){
+    //            for(var i in evenLayer){
+    //                if(examined[i]){
+    //                    evenLayer[i]
+    //                }
+    //            }
+    //        }
+    //    }
+    //};
+
+    this.bfs = function(startNode){
+        var queue = [];
+        queue.push([startNode]);
+        var examined = {};
+        while(queue.length > 0){
+            var path = queue.pop();
+            var node = path[path.length - 1];
+            examined[node] = true;
+            var neighborEdges = graph.nodes[node].getOutEdges();
+            for(var e in neighborEdges){
+                var neighborEdge = neighborEdges[e];
+                if(neighborEdge.weight != lx[neighborEdge.getSourceID()] + ly[neighborEdge.getTargetID() - lx.length]){
+                    continue;
+                }
+                if(yx[neighborEdge.getTargetID() - lx.length] == -1 && !examined[neighborEdge.getTargetID()]){
+                    var returnPath = jQuery.extend([], path);
+                    returnPath.push(neighborEdge.getTargetID());
+                    return returnPath;
+                }else if(yx[neighborEdge.getTargetID() - lx.length] != -1 && path.indexOf(neighborEdge.getTargetID()) == -1
+                    && path.indexOf(yx[neighborEdge.getTargetID() - lx.length]) == -1){
+                    var newPath = jQuery.extend([], path);
+                    newPath.push(neighborEdge.getTargetID());
+                    newPath.push(yx[neighborEdge.getTargetID() - lx.length]);
+                    queue.push(newPath);
+                }
+            }
+        }
+        return null;
     };
 
     this.setAll = function (arr, val) {
