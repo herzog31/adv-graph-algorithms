@@ -112,11 +112,69 @@
     "aufgabe1_qst_tour4": "Hinweis: Es gibt u.U. mehrere Lösungsmöglichkeiten, es ist allerdings nur eine der gegebenen Antwortmöglichkeit korrekt.",
     "aufgabe1_qst_solution1": "Von insgesamt ",
     "aufgabe1_qst_solution2": " Fragen hast du ",
-    "aufgabe1_qst_solution3": " richtig beantwortet!"
+    "aufgabe1_qst_solution3": " richtig beantwortet!",
+
+    "aufgabe2_status1_desc": "Der Algorithmus muss bei der Ausführung prüfen können, welche Kanten er schon besucht hat. Dazu markieren wir jede Kante als unbesucht.",
+
+    "aufgabe2_status2_desc1": "Damit der Hierholzer auf einem gerichteten Graphen funktioniert, muss dieser folgende Eigenschaften erfüllen:",
+    "aufgabe2_status2_desc2": "mind. eine Kante",
+    "aufgabe2_status2_desc3": "stark zusammenhängend",
+    "aufgabe2_status2_desc4": "Man muss von jedem Knoten aus zu jedem anderen Knoten gelangen können.",
+    "aufgabe2_status2_desc5": "eulersch oder semi-eulersch",
+    "aufgabe2_status2_desc6": "Diese Voraussetzungen ist <em>strenger</em> als im ungerichteten Fall. Der Grad der Knoten muss gerade sein, zusätzlich muss die Anzahl der eingehenden Kanten mit der Anzahl ausgender Kanten übereinstimmen.<br />Im Falle eine semi-eulerschen dürfen genau ein Knoten eine zusätzliche ausgehende Kante und genau ein anderer Knoten eine zusätzliche eingehende Kante besitzen.",
+    "aufgabe2_status2_desc7": "Dein Graph erfüllt mindestens eine der folgenden Eigenschaften nicht:",
+
+    "aufgabe2_status31A_desc1": "Für die erste Subtour benötigt der Algorithmus einen Startknoten:",
+    "aufgabe2_status31A_desc2": "Für <strong>eulersche Graphen</strong> kann man einen beliebigen Knoten wählen.",
+    "aufgabe2_status31A_desc3": "Für <strong>semi-eulersche Graphen</strong> wählt man <em>genau den Knoten, der mehr ausgehende Kanten besitzt als eingehende</em>.",
+    "aufgabe2_status31A_desc4": "Der vom Algorithmus ausgewählte Knoten wurde <span style=\"font-weight: bold; color: green;\">grün</span> markiert.",
+
+    "aufgabe2_status32_desc1": "Für die nächste Kante unserer aktuellen Tour betrachtet der Algorithmus alle unbesuchten <em>ausgehenden</em> Kanten des aktiven Knotens (<span style=\"font-weight: bold; color: green;\">grün</span>).",
+    "aufgabe2_status32_desc2": "Aus dieser Kantenmenge wählt der Algorithmus nun eine zufällige Kante ",
+    "aufgabe2_status32_desc3": "farblich markiert",
+    "aufgabe2_status32_desc4": " aus.",
+    "aufgabe2_status32_desc5": "Wir fügen diese Kante zu unserer Subtour hinzu und markieren sie als besucht. Der Knoten am anderen Ende der Kante wir nun der neue aktive Knoten.",
     
-    
-    
-    
+
+    "aufgabe2_status33_desc1": "Um zu prüfen, ob unsere Subtour abgeschlossen ist, vergleichen wir den aktiven Knoten mit dem ersten Knoten der Subtour. Beide sind <span style=\"font-weight: bold; color: green;\">grün</span> markiert.",
+    "aufgabe2_status33_desc2": "Abgeschlossen",
+    "aufgabe2_status33_desc3": "Handelt es sich bei beiden um den selben Knoten, ist unsere Subtour abgeschlossen und wir fahren mit <em>Schritt 4</em> fort.",
+    "aufgabe2_status33_desc4": "Nicht abgeschlossen",
+    "aufgabe2_status33_desc5": "Handelt es sich um zwei verschiedene Knoten, ist unsere Subtour unvollständig und wir wiederholen <em>Schritt 3.2</em>.",
+
+    "aufgabe2_status41_desc1": "Die Subtour ist abgeschlossen und muss in die Gesamttour integriert werden.",
+    "aufgabe2_status41_desc2": "Zyklische Subtour",
+    "aufgabe2_status41_desc3": "Der Algorithmus sucht in der Gesamttour den Start- & Endknoten der Subtour und ersetzt diesen mit der gesamten Subtour.",
+    "aufgabe2_status41_desc4": "Azyklischer Subweg",
+    "aufgabe2_status41_desc5": "Es handelt sich hierbei um den Subweg im semi-eulerschen Graph, der mit dem Knoten mit einer zusätzlichen ausgehenden Kante beginnt und in den Knoten mit zusätzlicher eingehenden Kante mündet. Der Weg muss so integriert werden, dass er am Anfang oder Ende der Gesamttour steht.",
+
+    "aufgabe2_status42_desc1": "Nach jeder Integration einer Subtour in die Gesamttour prüft der Algorithmus ob die Gesamttour eine Eulertour bzw. ein Eulerweg ist.",
+    "aufgabe2_status42_desc2": "Dazu vergleicht der Algorithmus die Anzahl der Kanten im Graph mit der Anzahl der Kanten in der Gesamttour.",
+    "aufgabe2_status42_desc3": "Bei Gleichheit terminiert der Algorithmus und gibt die Gesamttour in <em>Schritt 5</em> zurück.",
+    "aufgabe2_status42_desc4": "Bei Ungleichheit existiert mindestens eine weitere Subtour, die gefunden werden muss. Wir springen zurück zu <em>Schritt 3</em>.",
+
+    "aufgabe2_status5_desc1a": "Der Algorithmus konnte erfolgreich einen Eulerweg bestimmen.",
+    "aufgabe2_status5_desc1b": "Der Algorithmus konnte erfolgreich eine Eulertour bestimmen.",
+
+    "aufgabe2_status51a_desc1": "Der Eulerweg wird hier als Folge von Knoten dargestellt.",
+    "aufgabe2_status51a_desc2": "Animiere Eulerweg",
+    "aufgabe2_status51a_desc3": "Stop",
+    "aufgabe2_status51a_desc4": "Klicke auf <strong>Animiere Eulerweg</strong> um den kompletten Eulerweg abzulaufen und alle Knoten und Kanten auf dem Weg hervorzuheben.",
+   
+    "aufgabe2_status51b_desc1": "Die Eulertour wird hier als Folge von Knoten dargestellt.",
+    "aufgabe2_status51b_desc2": "Animiere Eulertour",
+    "aufgabe2_status51b_desc3": "Stop",
+    "aufgabe2_status51b_desc4": "Klicke auf <strong>Animiere Eulertour</strong> um die komplette Eulertour abzulaufen und alle Knoten und Kanten auf dem Weg hervorzuheben.",
+
+    "aufgabe2_status52_desc1": "Bewege deinen Mauszeiger über eine der Subtouren, um sie im Graph hervorzuheben.",
+
+    "aufgabe2_status31B_desc1": "Als Startknoten der nächsten Subtour wählt der Algorithmus einen beliebigen Knoten, der unbesuchte <em>ausgehende</em> Kanten besitzt.",
+    "aufgabe2_status31B_desc2": "Dieser Knoten wurde <span style=\"font-weight: bold; color: green;\">grün</span> markiert.",
+
+    "aufgabe2_legende_ingradausgrad": "Knoten mit Ingrad gleich Ausgrad",
+    "aufgabe2_legende_ingradgausgrad": "Knoten mit Ingrad größer Ausgrad"
+
+
     
     
     
