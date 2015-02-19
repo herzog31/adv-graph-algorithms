@@ -57,6 +57,25 @@
     "textdb_end_success": "Der kürzeste Rundgang wurde gefunden.",
     "textdb_end_failure": "Das Problem ist auf diesem Graphen nicht lösbar.",
 
+    "algorithm_status5_head": "Ergebnis",
+    "algorithm_status5_desc1a": "Der Algorithmus konnte erfolgreich einen Eulerweg bestimmen.",
+    "algorithm_status5_desc1b": "Der Algorithmus konnte erfolgreich eine Eulertour bestimmen.",
+
+    "algorithm_status51a_head": "Eulerweg",
+    "algorithm_status51a_desc1": "Der Eulerweg wird hier als Folge von Knoten dargestellt.",
+    "algorithm_status51a_desc2": "Animiere Eulerweg",
+    "algorithm_status51a_desc3": "Stop",
+    "algorithm_status51a_desc4": "Klicke auf <strong>Animiere Eulerweg</strong> um den kompletten Eulerweg abzulaufen und alle Knoten und Kanten auf dem Weg hervorzuheben.",
+
+    "algorithm_status51b_head": "Eulertour",
+    "algorithm_status51b_desc1": "Die Eulertour wird hier als Folge von Knoten dargestellt.",
+    "algorithm_status51b_desc2": "Animiere Eulertour",
+    "algorithm_status51b_desc3": "Stop",
+    "algorithm_status51b_desc4": "Klicke auf <strong>Animiere Eulertour</strong> um die komplette Eulertour abzulaufen und alle Knoten und Kanten auf dem Weg hervorzuheben.",
+
+    "algorithm_status52_head": "Subtouren",
+    "algorithm_status52_desc1": "Bewege deinen Mauszeiger über eine der Subtouren, um sie im Graph hervorzuheben.",
+
     "aufgabe1_btn_next_question": "Zur nächsten Frage vorspulen",
     "aufgabe1_btn_retry": "Nochmal versuchen",
     "aufgabe1_btn_exe2": "Probiere die zweite Forschungaufgabe:",

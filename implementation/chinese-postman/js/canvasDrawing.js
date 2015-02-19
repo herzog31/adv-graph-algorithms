@@ -71,8 +71,17 @@ CanvasDrawMethods.drawArrow = function(ctx,layout,source,target,control,label,ad
         }
     }
     if(additionalLabel) {
-        CanvasDrawMethods.drawAdditionalTextOnLine(ctx,layout,source,target,additionalLabel);
+        //finde zwei Punkte auf der Kante nahe dem Mittelpunkt
+        var p1 = getQuadraticCurvePoint(source.x,source.y,control.x,control.y,target.x,target.y,0.45);
+        var p2 = getQuadraticCurvePoint(source.x,source.y,control.x,control.y,target.x,target.y,0.55);
+        CanvasDrawMethods.drawAdditionalTextOnLine(ctx,layout,p1,p2,additionalLabel);
     }
+};
+
+CanvasDrawMethods.drawDashedArrow = function(ctx,layout,source,target,control,label,additionalLabel) {
+    ctx.setLineDash([10]);
+    this.drawArrow(ctx,layout,source,target,control,label,additionalLabel);
+    ctx.setLineDash([0]);
 };
 
 
@@ -106,6 +115,11 @@ CanvasDrawMethods.drawArrow = function(ctx,layout,source,target,control,label,ad
     CanvasDrawMethods.drawDashedLine = function(ctx,layout,source,target) {
         ctx.setLineDash([10]);
         this.drawLine(ctx,layout,source,target);
+        ctx.setLineDash([0]);
+    };
+    CanvasDrawMethods.drawDashedCurve = function(ctx,layout,source,target,control) {
+        ctx.setLineDash([10]);
+        this.drawCurve(ctx,layout,source,target,control);
         ctx.setLineDash([0]);
     };
 

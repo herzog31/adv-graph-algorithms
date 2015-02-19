@@ -5,8 +5,8 @@
     <meta name="description" content="Diese Seite demonstriert den Bellman-Ford-Algorithmus für kürzeste Wege in Graphen." />
     <meta http-equiv="X-UA-Compatible" content="IE=9">
     <meta name="author" content="Richard Stotz">
-    <link rel="stylesheet" type="text/css" href="css/tum-theme2/jquery-ui-1.10.1.custom.min.css" />
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="../library/css/tum-theme2/jquery-ui-1.10.1.custom.min.css" />
+    <link rel="stylesheet" type="text/css" href="../library/css/style.css" />
     <script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
     <script src="js/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
     <script src="js/lang.js" type="text/javascript"></script>
@@ -17,7 +17,6 @@
     <script src="js/algorithm.js" type="text/javascript"></script>
     <script src="js/aufgabe1.js" type="text/javascript"></script>
     <script src="js/aufgabe2.js" type="text/javascript"></script>
-    <script src="../library/js/BipartiteGraph.js" type="text/javascript"></script>
     <script src="../library/js/floydWarshall.js" type="text/javascript"></script>
     <script src="../library/js/maxMatching.js" type="text/javascript"></script>
 
@@ -29,7 +28,7 @@
             <div class="ui-state-error ui-corner-all" style="padding: .7em;">
                 <div class="ui-icon ui-icon-alert errorIcon"></div>
                 <strong>Bitte aktivieren Sie Javascript!</strong>
-                <ul style="margin: 0px;">
+                <ul style="margin: 0;">
                     <li>
                         Diese Seite benötigt Javascript, um ordnungsgemäß angezeigt zu werden.
                     </li>
@@ -45,7 +44,7 @@
         LNG.setLanguage('de');
     </script>
     <header>
-        <img src="img/titel.png" alt="Kürzeste Wege in Graphen: Der Bellman-Ford-Algorithmus">
+        <img src="img/titel.png" alt="Briefträgerproblem">
         <img style="position:absolute; right:0px" src="img/TUMLogo.png" alt="Technische Universität München">
     </header>
     <div id="tabs">
@@ -134,17 +133,17 @@
                     <canvas class="graphCanvas" id="ta_canvas_graph" width="700" height="500">
                         Ihr Browser unterstützt kein HTML5 Canvas. Bitte verwenden Sie einen modernen Browser, z.B.<a href="http://www.mozilla.org/de/firefox">Mozilla Firefox</a>
                     </canvas>
-                    <div class="Legende">
+                    <div class="Legende" id="ta_div_Legende">
                         <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
                         <div class="LegendeText">
                             <table>
                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>Startknoten, von dem aus die Entfernungen und günstigsten Wege berechnet werden.</span></td>
+                                    <td class="LegendeTabelle"><img src="img/knoten.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td><span>Knoten</span></td>
                                 </tr>
-                                <tr class="LegendeZeileClickable" id="ta_tr_LegendeClickable" title="Klicke zum Ein-/Ausblenden">
-                                    <td class="LegendeTabelle"><img src="img/markierteKante.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>"Vorgängerkante", die der günstigste Weg zum Knoten benutzt.</span></td>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/kante.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td><span>Kante mit Gewicht 50</span></td>
                                 </tr>
                             </table>
                         </div>

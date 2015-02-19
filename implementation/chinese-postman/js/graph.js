@@ -40,7 +40,8 @@ var global_Edgelayout = {
     'lineWidth': 2,		// Dicke des Pfeils
     'font': 'Arial',		// Schrifart
     'fontSize': 12,		// Schriftgrösse in Pixeln
-    'isHighlighted': false         // Ob die Kante eine besondere Markierung haben soll
+    'isHighlighted': false ,        // Ob die Kante eine besondere Markierung haben soll
+    'dashed': false
 };
 
 /**
@@ -463,10 +464,10 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
     };
 
     this.setAdditionalLabel = function(label) {
-        additionalLabel = label;
+        this.additionalLabel = label;
     };
     this.getAdditionalLabel = function() {
-        return additionalLabel;
+        return this.additionalLabel;
     };
 
     this.setLayoutObject = function(layoutObject) {
@@ -562,10 +563,12 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
         }
         //draw
         if(this.getDirected()) {
-            CanvasDrawMethods.drawArrow(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control,this.weight.toString(), this.additionalLabel);
+            if(this.getLayout().dashed) CanvasDrawMethods.drawDashedArrow(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control,this.weight/*.toString()*/, this.additionalLabel);
+            else CanvasDrawMethods.drawArrow(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control,this.weight/*.toString()*/, this.additionalLabel);
         }
         else {
-            CanvasDrawMethods.drawLine(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates());
+            if(this.getLayout().dashed) CanvasDrawMethods.drawDashedCurve(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control);
+            else CanvasDrawMethods.drawCurve(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control);
         }
     };
 }
