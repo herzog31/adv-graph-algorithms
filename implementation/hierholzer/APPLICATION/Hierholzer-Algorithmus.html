@@ -438,7 +438,7 @@ Ausgabe: Eulertour/-weg als Liste von Knoten</code></pre>
    UNTIL tour ist Eulerweg/-tour
 END</code></pre>
             </div>
-                <!-- <h3>Wie schnell ist der Algorithmus?</h3>
+                <h3>Wie schnell ist der Algorithmus?</h3>
                 <div>
                     <h2>Geschwindigkeit von Algorithmen</h2>
                     <p>Die Geschwindigkeit von Algorithmen wird üblicherweise in der <strong>Anzahl an Einzelschritten</strong> gemessen, die der Algorithmus bei der Ausführung benötigt.</p>
@@ -449,47 +449,15 @@ END</code></pre>
                       <li>Vergleich und Zuweisung  &ndash; Falls 20 größer als 15 ist, setze Variable <var>n</var> auf 20.</li>
                       <li>Einfache Arithmetische Operationen &ndash; Was ist 5 + 5 ?</li>
                     </ul>
-                    <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen. 
-                        Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus.
-                       Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
-                    <h2>Laufzeit des Bellman-Ford-Algorithmus</h2>
-                    <p>Nehmen wir an, dass der Bellman-Ford-Algorithmus auf einem Graph mit <var>n</var> Knoten und <var>m</var> Kanten ausgeführt wird.</p>
-                    <p>Am Anfang wird jedem Knoten der Wert &#8734; zugewiesen. Dafür benötigen wir <var>n</var> Einzelschritte.</p>
-                    <p>Danach kommen die <var>n-1</var> Phasen des Algorithmus &ndash; eine Phase weniger als es Knoten gibt. 
-                        In jeder Phase wird jede Kante des Graphen überprüft, und möglicherweise wird der Abstandswert ihres Zielknotens verändert.
-                        Wir können diese Überprüfung und Zuweisung als einen Schritt sehen und haben also in jeder Phase <var>m</var> Einzelschritte.
-                        Insgesamt benötigen die Phasen also <var>m &middot; (n-1)</var> Einzelschritte.</p>
-                    <p>Schließlich überprüft der Algorithmus noch, ob es negative Kreise gibt. Dafür betrachtet er jede Kante einmal.
-                        Insgesamt braucht er für die Überprüfung also <var>m</var> Einzelschritte.</p>
-                    <p><strong>Die Gesamtlaufzeit des Algorithmus</strong> ist von der Größenordnung <var>m &middot; n</var> Schritte, weil die <var>n</var> Schritte zu Beginn und die <var>m</var>
-                        Schritt am Schluss des Algorithmus vernachlässigbar gegenüber <var>m &middot; (n-1)</var> sind.</p>
+                    <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen. Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus. Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
+                    <h2>Laufzeit des Hierholzer Algorithmus</h2>
+                    <p>Wir gehen von einem Graphen G = (V, E) mit |V| = n und |E| = m aus. Der Algorithmus bestimmt im ersten Schritt eine erste Tour T. Um die nächste Subtour zu bestimmen, muss der Algorithmus einen Knoten aus T finden, der noch unbesuchte Kanten besitzt. Mit dem neuen Knoten und der daraus resultierenden Subtour wird die Tour erweitert. Ausgehend von einer leeren initialen Tour, kann die Tour maximal um n Knoten erweitert werden. In der  Tour müssen dann nur noch die Knoten auf unbesuchte Kanten geprüft werden, die vorher noch nicht geprüft werden. Das führt dazu, dass wir jeden Knoten im Graph nur einmal auf unbesuchte Kanten prüfen müssen. Damit besitzt der Algorithmus eine polynomielle Laufzeit von O(n * m).</p>
+                    <p>Der Algorithmus kann mittels einer separat gespeicherten Adjazenzliste so optimiert werden, dass man zur Überprüfung auf unbesuchte Kanten pro Knoten nicht alle Kanten betrachtet, sondern jede Kante nur ein einziges Mal. Damit ist eine lineare Laufzeit von O(n + m) möglich.</p>
                 </div>
                 <h3>Wie beweist man, dass der Algorithmus stets ein korrektes Ergebnis berechnet?</h3>
                 <div>
-                    <h2>Ein mathematischer Beweis</h2>
-                    <p>In diesem Abschnitt werden wir beweisen, dass der Bellman-Ford-Algorithmus immer ein korrektes Ergebnis liefert, falls der Graph keine vom Startknoten erreichbaren negativen Kreise hat.</p>
-                    <h3>Das Prinzip der Induktion</h3>
-                    <p>Der Beweis basiert auf dem Prinzip der Induktion. Wir beweisen zunächst, dass wir zu Beginn der ersten Phase bereits die Kosten für
-                    mindestens einen Knoten korrekt berechnet haben. Wir zeigen dann, dass wir in jeder Phase die bisherigen Schätzungen verbessern.
-                    Am Ende jeder Phase kennen wir also für mehr Knoten die korrekten Kosten als zu Beginn der Phase. Außerdem zerstören wir in der jeweiligen Phase keine
-                    Informationen &ndash; die Schätzungen können nur besser werden.</p>
-                    <p>Schließlich zeigen wir, dass uns weniger Phasen reichen, als es Knoten gibt, um für alle Knoten die korrekten Kosten zu berechnen.</p>
-                    <h3>Nach Phase <var>i</var> gilt:</h3>
-                    <p>Der Algorithmus hat jedem Knoten <var>u</var> als Kostenschätzung höchstens die Länge des kürzesten Weges vom Startknoten zu <var>u</var>, der maximal <var>i</var>
-                    Kanten benutzt, zugewiesen, falls ein solcher Weg existiert.</p>
-                    <p>Betrachten wir diese Aussage in ihren Einzelteilen für einen Knoten <var>u</var> am Ende von Phase <var>i</var>:</p>
-                    <p>Falls kein Weg vom Startknoten zu <var>u</var> existiert, der maximal <var>i</var> Kanten benutzt, so erfahren wir nichts.</p>
-                    <p>Falls ein Weg vom Startknoten zu <var>u</var> existiert, der maximal <var>i</var> Kanten benutzt, dann wissen wir, dass die Kostenschätzung für <var>u</var>
-                    höchstens so hoch ist wie die Kosten des Weges. Der Grund ist folgender: Wenn wir den Weg ohne seine letzte Kante betrachten, so sehen wir einen Weg, der <var>i</var>-1 Kanten benutzt.
-                    Die Kosten des letzten Knotens dieses Weges hatten wir also schon zu Beginn der Phase korrekt berechnet. Innerhalb der Phase haben wir alle Kanten, also auch das letzte Teilstück, betrachtet.
-                    Da wir beim Betrachten des letzten Teilstücks die Kosten korrekt aktualisiert haben, sind jetzt auch die Kosten für den letzten Knoten des Gesamtwegs, der <var>i</var> Kanten benutzt, korrekt.</p>
-                    <h3>Es reichen weniger Phasen, als es Knoten gibt.</h3>
-                    <p>Ein Weg, der mindestens so viele Kanten benutzt, wie es Knoten gibt, kann kein kürzester Weg sein, falls alle Kreise positives Gesamtgewicht haben. Mit jeder Kante, die ein Weg benutzt, sieht er nämlich einen weiteren Knoten (den Zielknoten der Kante).
-                    Dazu kommt noch der Startknoten, den er auch sieht, ohne Kanten benutzt zu haben. Falls er also so viele Kanten benutzt, wie es Knoten gibt, so hat er mindestens einen Knoten zweimal gesehen, ist also im Kreis gelaufen.
-                    Da wir angenommen haben, dass alle Kreise negatives Gesamtgewicht haben, wäre es kürzer gewesen, nicht im Kreis zu laufen.</p>
-                    <p>Falls es Kreise mit Gesamtgewicht 0 gibt, so ist es schlicht genauso teuer, diese zu durchlaufen, wie sie auszulassen. 
-                        Auch in diesem Fall reichen also die Wege, die weniger Kanten benutzen, als es Knoten gibt.</p>
-                </div> -->
+                    <p>TODO</p>
+                </div>
                 <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>
                 <div><p>Weitere Graphalgorithmen werden auf der <a href="http://www-m9.ma.tum.de/Allgemeines/GraphAlgorithmen">Webseite des Lehrstuhls M9</a> der TU München erklärt.</p>
                 <p>Außerdem es ein interessantes Buch zu kürzesten Wegen: <a href="http://www-m9.ma.tum.de/Ruth/WebHome">Das Geheimnis des kürzesten Weges</a></p>

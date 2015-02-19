@@ -118,8 +118,8 @@
 
     "aufgabe2_status2_desc1": "Damit der Hierholzer auf einem gerichteten Graphen funktioniert, muss dieser folgende Eigenschaften erfüllen:",
     "aufgabe2_status2_desc2": "mind. eine Kante",
-    "aufgabe2_status2_desc3": "stark zusammenhängend",
-    "aufgabe2_status2_desc4": "Man muss von jedem Knoten aus zu jedem anderen Knoten gelangen können.",
+    "aufgabe2_status2_desc3": "schwach zusammenhängend",
+    "aufgabe2_status2_desc4": "Man muss von jedem Knoten aus zu jedem anderen Knoten gelangen können, wobei man jede Kante als ungerichtet betrachtet. Wenn der Graph eulersch ist, schließt das diese Bedingung mit ein.",
     "aufgabe2_status2_desc5": "eulersch oder semi-eulersch",
     "aufgabe2_status2_desc6": "Diese Voraussetzungen ist <em>strenger</em> als im ungerichteten Fall. Der Grad der Knoten muss gerade sein, zusätzlich muss die Anzahl der eingehenden Kanten mit der Anzahl ausgender Kanten übereinstimmen.<br />Im Falle eine semi-eulerschen dürfen genau ein Knoten eine zusätzliche ausgehende Kante und genau ein anderer Knoten eine zusätzliche eingehende Kante besitzen.",
     "aufgabe2_status2_desc7": "Dein Graph erfüllt mindestens eine der folgenden Eigenschaften nicht:",
@@ -173,20 +173,5 @@
 
     "aufgabe2_legende_ingradausgrad": "Knoten mit Ingrad gleich Ausgrad",
     "aufgabe2_legende_ingradgausgrad": "Knoten mit Ingrad größer Ausgrad"
-
-
-    
-    
-    
-
-    
-    
-    
-
-    
-    
-
-    
-
   }
 }

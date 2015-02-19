@@ -351,35 +351,46 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
     this.performStrongBFS = function() {
 
-        // check from every node
-        for(var startNode in graph.nodes) {
-            var reachableVertices = [];
-            var visitedEdges = [];
-            var queue = [parseInt(startNode)];
+        var reachableVertices = new Array();
+        var visitedEdges = new Array();
+        var queue = new Array();
 
-            while(queue.length > 0) {
-                var currentNode = parseInt(queue.shift());
-                // add current node to reachable vertices if not yet in
-                if(reachableVertices.indexOf(currentNode) === -1) reachableVertices.push(currentNode);
+        for (var startNode in graph.nodes) break;
+        queue.push(startNode);
 
-                // check every neighbor
-                var outEdges = graph.nodes[currentNode].getOutEdges();
-                for(var kantenID in outEdges) {
-                    // skip already used edges
-                    if (visitedEdges.indexOf(kantenID) !== -1) continue;
-                    // add unvisited neighbors to queue
-                    if(reachableVertices.indexOf(graph.edges[kantenID].getTargetID()) === -1) queue.push(graph.edges[kantenID].getTargetID());
-                    // set edge to visited
-                    visitedEdges.push(kantenID);
+        while(queue.length > 0) {
+            var currentNode = queue.shift();
+
+            if(reachableVertices.indexOf(currentNode) === -1) reachableVertices.push(currentNode);
+
+            var outEdges = graph.nodes[currentNode].getOutEdges();
+            var inEdges = graph.nodes[currentNode].getInEdges();
+            var edges = new Array();
+
+            for(var kantenID in outEdges) {
+                if (visitedEdges.indexOf(kantenID) !== -1) continue;
+                edges.push(kantenID);
+                visitedEdges.push(kantenID);
+            }
+
+            for(var kantenID in inEdges) {
+                if (visitedEdges.indexOf(kantenID) !== -1) continue;
+                edges.push(kantenID);
+                visitedEdges.push(kantenID);
+            }
+
+            for (var i = 0; i < edges.length; i++) {
+                if(graph.edges[edges[i]].getSourceID() == currentNode) {
+                    queue.push(graph.edges[edges[i]].getTargetID());
+                }else{
+                    queue.push(graph.edges[edges[i]].getSourceID());
                 }
-
             }
 
-            // return false if not all nodes can be reached
-            if(Object.keys(graph.nodes).length !== reachableVertices.length) {
-                return false;
-            }
+        }
 
+        if(Object.keys(graph.nodes).length !== reachableVertices.length) {
+            return false;
         }
 
         return true;
