@@ -2,7 +2,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta charset="utf-8">
-    <meta name="description" content="Diese Seite demonstriert den Hierholzer Algorithmus zum Finden von Eulerwegen." />
+    <meta name="description" content="Diese Seite demonstriert den Hierholzer Algorithmus zum Finden von Eulertouren." />
     <meta http-equiv="X-UA-Compatible" content="IE=9">
     <meta name="author" content="Mark J. Becker">
     <link rel="stylesheet" type="text/css" href="css/tum-theme2/jquery-ui-1.10.1.custom.min.css" />
@@ -38,11 +38,14 @@
         </div>
     </noscript>
     <script>
-        $(document).ready(initializeSiteLayout);
         LNG.setLanguage('de');
+        $(function() {
+            initializeSiteLayout();
+            $("#year").html(new Date().getFullYear());
+        });
     </script>
     <header>
-        <img src="img/titel.png" alt="Kürzeste Wege in Graphen: Der Bellman-Ford-Algorithmus">
+        <img src="img/titel.png" alt="Algorithmus von Hierholzer">
         <img style="position:absolute; right:0px" src="img/TUMLogo.png" alt="Technische Universität München">
     </header>
     <div id="tabs">
@@ -451,12 +454,9 @@ END</code></pre>
                     </ul>
                     <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen. Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus. Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
                     <h2>Laufzeit des Hierholzer Algorithmus</h2>
-                    <p>Wir gehen von einem Graphen G = (V, E) mit |V| = n und |E| = m aus. Der Algorithmus bestimmt im ersten Schritt eine erste Tour T. Um die nächste Subtour zu bestimmen, muss der Algorithmus einen Knoten aus T finden, der noch unbesuchte Kanten besitzt. Mit dem neuen Knoten und der daraus resultierenden Subtour wird die Tour erweitert. Ausgehend von einer leeren initialen Tour, kann die Tour maximal um n Knoten erweitert werden. In der  Tour müssen dann nur noch die Knoten auf unbesuchte Kanten geprüft werden, die vorher noch nicht geprüft werden. Das führt dazu, dass wir jeden Knoten im Graph nur einmal auf unbesuchte Kanten prüfen müssen. Damit besitzt der Algorithmus eine polynomielle Laufzeit von O(n * m).</p>
-                    <p>Der Algorithmus kann mittels einer separat gespeicherten Adjazenzliste so optimiert werden, dass man zur Überprüfung auf unbesuchte Kanten pro Knoten nicht alle Kanten betrachtet, sondern jede Kante nur ein einziges Mal. Damit ist eine lineare Laufzeit von O(n + m) möglich.</p>
-                </div>
-                <h3>Wie beweist man, dass der Algorithmus stets ein korrektes Ergebnis berechnet?</h3>
-                <div>
-                    <p>TODO</p>
+                    <p>Wir gehen von einem Graphen G = (V, E) mit |V| = n und |E| = m aus. Der Algorithmus bestimmt im ersten Schritt eine erste Tour T. Um die nächsten Subtouren zu bestimmen, muss der Algorithmus einen Knoten aus T finden, der noch unbesuchte Kanten besitzt. Dieser Knoten dient als Start für die folgenden Subtouren mit denen die Tour erweitert wird. Ausgehend von einer leeren initialen Tour, kann die Tour maximal um n Knoten erweitert werden. In der Tour müssen nach jeder gefundenen Subtour dann nur noch die Knoten auf unbesuchte Kanten geprüft werden, die vorher noch nicht geprüft wurden. Das führt dazu, dass wir jeden Knoten im Graph nur einmal auf unbesuchte Kanten prüfen müssen. Damit besitzt der Algorithmus eine polynomielle Laufzeit von O(n * m).</p>
+                    <p>Der Algorithmus kann so optimiert werden, dass man eine separate Adjazenzliste speichert, aus der bereits genutzte Kanten gelöscht werden. So muss man zur Überprüfung auf unbesuchte Kanten pro Knoten nicht jedes Mal alle Kanten betrachtet, sondern insgesamt jede Kante nur ein einziges Mal. Damit ist eine lineare Laufzeit von O(n + m) möglich.</p>
+                    <p>Die gleiche Laufzeit wird außerdem benötigt, um zu prüfen, ob ein Graph eulersch ist und der Hierholzer Algorithmus überhaupt angewendet werden kann.</p>
                 </div>
                 <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>
                 <div><p>Weitere Graphalgorithmen werden auf der <a href="http://www-m9.ma.tum.de/Allgemeines/GraphAlgorithmen">Webseite des Lehrstuhls M9</a> der TU München erklärt.</p>
@@ -468,7 +468,7 @@ END</code></pre>
     </div>
     <footer>
         <p class="Disclaimer">
-            IDP Projekt von Mark J. Becker am Lehrstuhl M9 der Technischen Universität München. 2014 | <a href="http://www-m9.ma.tum.de/Allgemeines/Rechtliches">Disclaimer und Rechtshinweise</a> | <a href="http://www-m9.ma.tum.de/Allgemeines/Impressum">Impressum</a> | <a href="mailto&#58;m&#46;ritter&#64;ma&#46;tum&#46;de&#63;subject&#61;M9&#45;Web&#45;Feedback">Anregungen</a>
+            IDP Projekt von Mark J. Becker am Lehrstuhl M9 der Technischen Universität München. <span id="year">2015</span> | <a href="http://www-m9.ma.tum.de/Allgemeines/Rechtliches">Disclaimer und Rechtshinweise</a> | <a href="http://www-m9.ma.tum.de/Allgemeines/Impressum">Impressum</a> | <a href="mailto&#58;m&#46;ritter&#64;ma&#46;tum&#46;de&#63;subject&#61;M9&#45;Web&#45;Feedback">Anregungen</a>
         </p>
     </footer>
 </body>

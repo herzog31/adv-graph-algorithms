@@ -18,12 +18,12 @@ function initializeSiteLayout() {
         $("#tabs").tabs( "option", "active", 0 );
     }
     $("button").button();
-    $("#te_button_gotoDrawGraph").click(function() {$("#tabs").tabs( "option", "active", 1 );});
-    $("#te_button_gotoIdee").click(function() {$("#tabs").tabs( "option", "active", 3);});
-    $("#ti_button_gotoDrawGraph").click(function() {$("#tabs").tabs( "option", "active", 1);});
-    $("#ti_button_gotoAlgorithm").click(function() {$("#tabs").tabs( "option", "active", 2);});
-    $("#ti_button_gotoFA1").click(function() {$("#tabs").tabs( "option", "active", 4);});
-    $("#ti_button_gotoFA2").click(function() {$("#tabs").tabs( "option", "active", 5);});
+    $("#te_button_gotoDrawGraph").click(function() { $("#tabs").tabs("option", "active", 1);});
+    $("#te_button_gotoIdee").click(function() { $("#tabs").tabs("option", "active", 3);});
+    $("#ti_button_gotoDrawGraph").click(function() { $("#tabs").tabs("option", "active", 1);});
+    $("#ti_button_gotoAlgorithm").click(function() { $("#tabs").tabs("option", "active", 2);});
+    $("#ti_button_gotoFA1").click(function() { $("#tabs").tabs("option", "active", 4);});
+    $("#ti_button_gotoFA2").click(function() { $("#tabs").tabs("option", "active", 5);});
     $("#tw_Accordion").accordion({heightStyle: "content"});
     $("#tabs").tabs({
         beforeActivate: function(event, ui) {
@@ -34,31 +34,27 @@ function initializeSiteLayout() {
                 if($("#tab_ta").data("algo").getStatusID() != null && $("#tab_ta").data("algo").getStatusID() !== 8 && $("#tab_ta").data("algo").getStatusID() !== 2) {
                     if($("#tabs").data("tabChangeDialogOpen") == null) {
                         event.preventDefault();
-                        $("#tabs").data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);
-                        $("#tabs").data("tabChangeDialogOpen",true);
+                        $("#tabs").data("requestedTab", $("#"+ui.newPanel.attr("id")).index()-1);
+                        $("#tabs").data("tabChangeDialogOpen", true);
                         $("#ta_div_confirmTabChange").dialog("open");
-                    }
-                    else {
+                    }else{
                         $("#tab_ta").data("algo").destroy();
                     }
-                }
-                else {
+                }else{
                     $("#tab_ta").data("algo").destroy();
                 }
             }
             if(ui.oldPanel[0].id == "tab_tf1") {            // Tab Forschungsaufgabe 1
-                if($("#tab_tf1").data("algo").getStatusID() != null && $("#tab_tf1").data("algo").getStatusID() < 5) {  // TODO
+                if($("#tab_tf1").data("algo").getStatusID() != null && $("#tab_tf1").data("algo").getStatusID() !== 8 && $("#tab_tf1").data("algo").getStatusID() !== 2) {
                     if($("#tabs").data("tabChangeDialogOpen") == null) {
                         event.preventDefault();
-                        $( "#tabs" ).data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);
-                        $("#tabs").data("tabChangeDialogOpen",true);
-                        $( "#tf1_div_confirmTabChange" ).dialog("open");
-                    }
-                    else {
+                        $("#tabs").data("requestedTab", $("#"+ui.newPanel.attr("id")).index()-1);
+                        $("#tabs").data("tabChangeDialogOpen", true);
+                        $("#tf1_div_confirmTabChange").dialog("open");
+                    }else{
                         $("#tab_tf1").data("algo").destroy();
                     }
-                }
-                else {
+                }else{
                     $("#tab_tf1").data("algo").destroy();
                 }
             }
@@ -66,15 +62,13 @@ function initializeSiteLayout() {
                 if($("#tab_tf2").data("algo").getStatusID() != null && $("#tab_tf2").data("algo").getStatusID() !== 8 && $("#tab_tf2").data("algo").getStatusID() !== 2) {
                     if($("#tabs").data("tabChangeDialogOpen") == null) {
                         event.preventDefault();
-                        $("#tabs").data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);
-                        $("#tabs").data("tabChangeDialogOpen",true);
+                        $("#tabs").data("requestedTab",$("#"+ui.newPanel.attr("id")).index()-1);
+                        $("#tabs").data("tabChangeDialogOpen", true);
                         $("#tf2_div_confirmTabChange").dialog("open");
-                    }
-                    else {
+                    }else{
                         $("#tab_tf2").data("algo").destroy();
                     }
-                }
-                else {
+                }else{
                     $("#tab_tf2").data("algo").destroy();
                 }
             }
@@ -94,7 +88,6 @@ function initializeSiteLayout() {
                 $("#tab_tf1").data("algo", algo);
             }
             if(ui.newPanel[0].id == "tab_tf2") {
-                // TODO New directed Graph...
                 var directedGraph = new Graph("graphs/gerichtet1.txt", null, true);
                 algo = new Forschungsaufgabe2(directedGraph, $("#tf2_canvas_graph"), $("#tab_tf2"));
                 $("#tab_tf2").data("algo", algo);

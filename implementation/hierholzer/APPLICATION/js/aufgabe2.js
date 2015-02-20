@@ -107,7 +107,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     this.refresh = function() {
         this.destroy();
         // TODO
-        var directedGraph = new Graph("graphs/graph1.txt", null, true);
+        var directedGraph = new Graph("graphs/gerichtet1.txt", null, true);
         var algo = new Forschungsaufgabe2(directedGraph, $("#tf2_canvas_graph"), $("#tab_tf2"));
         $("#tab_tf2").data("algo",algo);
         algo.run();
