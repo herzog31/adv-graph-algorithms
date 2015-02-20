@@ -102,7 +102,15 @@ function GraphNode(coordinates,nodeID) {
 
 
     this.getDegree = function() {
-        return Object.keys(inEdges).length + Object.keys(outEdges).length;
+        return this.getInDegree() + this.getOutDegree();
+    };
+
+    this.getInDegree = function() {
+        return Object.keys(inEdges).length;
+    };
+
+    this.getOutDegree = function() {
+        return Object.keys(outEdges).length;
     };
 
     this.getUnvisitedDegree = function() {
@@ -552,10 +560,11 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
  */
 Edge.prototype.draw = function(ctx) {
     if(this.getDirected()) {
-         CanvasDrawMethods.drawArrow(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),this.weight.toString(), this.getAdditionalLabel());
-    }
-    else {
-        //CanvasDrawMethods.drawAdditionalTextOnLine(ctx, this.getLayout(), this.getSourceCoordinates(), this.getTargetCoordinates(), this.additionalLabel);
+        CanvasDrawMethods.drawArrow(ctx, this.getLayout(), this.getSourceCoordinates(), this.getTargetCoordinates());
+        if(this.getAdditionalLabel() !== false) {
+            CanvasDrawMethods.drawTextOnLine(ctx, this.getLayout(), this.getSourceCoordinates(), this.getTargetCoordinates(), this.getAdditionalLabel());
+        }
+    }else{
         CanvasDrawMethods.drawLine(ctx, this.getLayout(), this.getSourceCoordinates(), this.getTargetCoordinates());
         if(this.getAdditionalLabel() !== false) {
             CanvasDrawMethods.drawTextOnLine(ctx, this.getLayout(), this.getSourceCoordinates(), this.getTargetCoordinates(), this.getAdditionalLabel());
@@ -648,7 +657,7 @@ Edge.prototype.unshift = function() {
  * @argument {Object} [canvas] jQuery Handler zum Canvas in den gezeichnet werden soll, für Zufallsgraph.
  * @this {Graph}
  */
-function Graph(filename,canvas) {
+function Graph(filename, canvas, directed) {
     /** 
      * Zähler für die Knoten des Graphen 
      * @type Number
@@ -663,7 +672,7 @@ function Graph(filename,canvas) {
      * Für zukünftige Nutzung, gerichtete Graphen
      *  @type Boolean 
      */
-    var directed = false;
+    var directed = directed;
     /**
      *  Knoten des Graphen, assoziatives Array mit den KnotenIDs als Schlüssel
      *  und den Knoten als Wert.
@@ -743,7 +752,6 @@ function Graph(filename,canvas) {
                 this.edges[opposite].shift();
             }
         }
-        // TODO
         source.addOutEdge(edge);
         target.addInEdge(edge);
         return edge;
@@ -808,7 +816,7 @@ function Graph(filename,canvas) {
             url: file,
             async: false,
             dataType: "text"
-            });
+        });
             
         request.done(function(text) {
             var lines=text.split("\n");                     // Nach Zeilen aufteilen
@@ -841,25 +849,25 @@ function Graph(filename,canvas) {
      * @private
      */
     function generateRandomGraph(canvas) {
-	var NumberOfNodes = 7;
-	
-	// Knoten erstellen
-	for(var i = 0;i<NumberOfNodes;i++) {
-            var x = Math.random()*(canvas.width()-100) +50;     // Knoten nicht zu nah am Rand
-            var y = Math.random()*(canvas.height()-100) +50;
-            x = Math.round(x/10)*10;                            // Knoten ein bisschen gleichmäßiger verteilt.
-            y = Math.round(y/10)*10;
-            closure_graph.addNode(x,y);
-	}
-	
-	// Kanten erstellen, mit WSKeit 30 %
-	for(var i = 0;i<NumberOfNodes;i++) {
-            for(var j = 0;j<NumberOfNodes;j++) {
-                if(i != j && Math.random() < 0.3) {
-                    closure_graph.addEdge(closure_graph.nodes[i],closure_graph.nodes[j],null);
+    	var NumberOfNodes = 7;
+    	
+    	// Knoten erstellen
+    	for(var i = 0;i<NumberOfNodes;i++) {
+                var x = Math.random()*(canvas.width()-100) +50;     // Knoten nicht zu nah am Rand
+                var y = Math.random()*(canvas.height()-100) +50;
+                x = Math.round(x/10)*10;                            // Knoten ein bisschen gleichmäßiger verteilt.
+                y = Math.round(y/10)*10;
+                closure_graph.addNode(x,y);
+    	}
+    	
+    	// Kanten erstellen, mit WSKeit 30 %
+    	for(var i = 0;i<NumberOfNodes;i++) {
+                for(var j = 0;j<NumberOfNodes;j++) {
+                    if(i != j && Math.random() < 0.3) {
+                        closure_graph.addEdge(closure_graph.nodes[i],closure_graph.nodes[j],null);
+                    }
                 }
-            }
-	}
+    	}
     }
     
     /**
@@ -1232,30 +1240,40 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
     this.setGraphHandler = function() {
         var selection = $("#tg_select_GraphSelector>option:selected").val();
         switch(selection) {
-            case "Standardbeispiel":
+            case "Viele Touren":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
-                this.graph = new Graph("graphs/graph1.txt");
+                this.graph = new Graph("graphs/vieleTouren.txt", null, false);
                 break;
-            case "Negativer Kreis":
+            case "Eine Tour":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
-                this.graph = new Graph("graphs/graph2.txt");
+                this.graph = new Graph("graphs/eulerschEineTour.txt", null, false);
                 break;
-            case "Positiver Kreis":
+            case "Semi Eulerscher Graph":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
-                this.graph = new Graph("graphs/graph7.txt");
+                this.graph = new Graph("graphs/semiEulersch.txt", null, false);
                 break;
-            case "Großstädte Europas":
-                this.canvas.css("background","url(img/europa.png)");
-                $("#tg_div_Legende").append("<p id=\"tg_p_bildlizenz\">Bild: <a href=\"https://www.cia.gov/library/publications/the-world-factbook/index.html\">CIA World Factbook</a></p>");
-                this.graph = new Graph("graphs/graph3.txt");
+            case "Blume":
+                this.canvas.css("background","");
+                $("#tg_p_bildlizenz").remove();
+                this.graph = new Graph("graphs/gerichtet1.txt", null, false);
+                break;
+            case "Haus vom Nikolaus":
+                this.canvas.css("background","");
+                $("#tg_p_bildlizenz").remove();
+                this.graph = new Graph("graphs/nikolaus.txt", null, false);
+                break;
+            case "Königsberger Brücken":
+                this.canvas.css("background","");
+                $("#tg_p_bildlizenz").remove();
+                this.graph = new Graph("graphs/koenigsberg.txt", null, false);
                 break;
             case "Zufallsgraph":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
-                this.graph = new Graph("random",canvas);
+                this.graph = new Graph("random", canvas, false);
                 break;
             case "Selbsterstellter Graph":
                 break;
