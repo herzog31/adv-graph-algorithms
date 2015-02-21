@@ -5,7 +5,7 @@
 function shortestPaths(graph,distance,pred){
     var keys = Object.keys(graph.nodes);
     for(var k in keys){
-        i = keys[k];
+        var i = keys[k];
         distance[i] = {};
         pred[i]= {};
         for(var j in keys){
@@ -16,8 +16,10 @@ function shortestPaths(graph,distance,pred){
     }
     for (var e in graph.edges){
         var edge = graph.edges[e];
-        distance[edge.getSourceID()][edge.getTargetID()] = edge.weight;
-        pred[edge.getSourceID()][edge.getTargetID()] = edge;
+        if(distance[edge.getSourceID()][edge.getTargetID()] == "inf" || distance[edge.getSourceID()][edge.getTargetID()] > edge.weight ){
+            distance[edge.getSourceID()][edge.getTargetID()] = edge.weight;
+            pred[edge.getSourceID()][edge.getTargetID()] = edge;
+        }
     }
     for(var ind_k in keys){
         k = keys[ind_k];

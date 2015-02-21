@@ -283,7 +283,9 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
      * Pointer auf die Kante in entgegengesetzter Richtung
      * @type Number
      */
-    var oppositeEdge = null;
+    //var oppositeEdge = null;
+
+    var dashed = false;
 
     var source = sourceNode;
 
@@ -510,35 +512,30 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
         layout = jQuery.extend({}, global_Edgelayout);
     };
 
-    /**
-     * Zeichnet die Kante in den gegebenen Kontext.
-     * @param {Object} ctx				2dContext des Canvas.
-     * @this {Edge}
-     * @method
-     */
-    this.draw = function(ctx) {
+    this.getControlPoint = function(){
         //finde alle Kanten zwischen source und target
-        var s = $.extend({},source.getOutEdges());
-        var t = $.extend({},target.getOutEdges());
+        var edges = [];
+        var s = source.getOutEdges();
+        var t = target.getOutEdges();
         for(var i in s){
-            if(s[i].getTargetID() != this.getTargetID()) delete s[i];
+            if(s[i].getTargetID() == this.getTargetID()){
+                edges.push(s[i].getEdgeID());
+            }
         }
         for(var i in t){
-            if(t[i].getTargetID() != this.getSourceID()) delete t[i];
+            if(t[i].getTargetID() == this.getSourceID()) {
+                edges.push(t[i].getEdgeID());
+            }
         }
-        s = Object.keys(s);
-        t = Object.keys(t);
-        s.filter(function(n) {return t.indexOf(n) != -1});
-        var edges = s.concat(t);
         var card = edges.length;
         var control = null;
-        if(card > 1){
-            //berechne den Rang der Kante (id als referenz)
-            edges.sort();
-            var rank = edges.indexOf(id.toString()) + 1;
+        //berechne den Rang der Kante (id als referenz)
+        edges.sort();
+        var rank = edges.indexOf(id) + 1;
+        var median = parseInt((card+1)/2);
+        if(card > 1 && !(card%2 == 1 && rank == median)){
             //berechne den Kontrollpunkt fuer die canvas-Zeichenfunktion
             var INTERVAL = 50;
-            var half = parseInt(card/2);
             var a = this.getSourceCoordinates();
             var b = this.getTargetCoordinates();
             if(this.getSourceID() > this.getTargetID()){ //a ist immer kleiner b, vertausche falls notwendig
@@ -547,24 +544,33 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
                 b = tmp;
             }
             var c = {x: (a.x + b.x)/2 , y: (a.y + b.y)/2};
-            var b_c = {x: (b.x - c.x)/2 , y: (b.y - c.y)/2};
-            var norm = Math.sqrt(b_c.x*b_c.x+b_c.y*b_c.y);
-            var d = {x: -b_c.y/norm, y: b_c.x/norm};
-            if(rank <= card/2){
-                control = {x: c.x + (half-rank+1)*INTERVAL*d.x, y: c.y + (half-rank+1)*INTERVAL*d.y};
+            var ab = {x: (b.x - a.x) , y: (b.y - a.y)};
+            var norm = Math.sqrt(ab.x*ab.x+ab.y*ab.y);
+            var d = {x: -ab.y/norm, y: ab.x/norm};
+            if(rank <= median){
+                control = {x: c.x + (median-rank + 1- card%2)*INTERVAL*d.x, y: c.y + (median-rank +1 - card%2)*INTERVAL*d.y};
                 if(card%2 == 0) control = {x: control.x - INTERVAL/2*d.x, y: control.y - INTERVAL/2*d.y};
             }
-            else if(card%2 == 1 && rank == half) control = c;
             else{
-                rank = rank - half - card%2;
+                rank = rank - median;
                 control = {x: c.x - rank*INTERVAL*d.x, y: c.y - rank*INTERVAL*d.y};
                 if(card%2 == 0) control = {x: control.x + INTERVAL/2*d.x, y: control.y + INTERVAL/2*d.y};
             }
         }
+        return control;
+    };
+    /**
+     * Zeichnet die Kante in den gegebenen Kontext.
+     * @param {Object} ctx				2dContext des Canvas.
+     * @this {Edge}
+     * @method
+     */
+    this.draw = function(ctx) {
+        var control = this.getControlPoint();
         //draw
         if(this.getDirected()) {
-            if(this.getLayout().dashed) CanvasDrawMethods.drawDashedArrow(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control,this.weight/*.toString()*/, this.additionalLabel);
-            else CanvasDrawMethods.drawArrow(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control,this.weight/*.toString()*/, this.additionalLabel);
+            if(this.getLayout().dashed) CanvasDrawMethods.drawDashedArrow(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control,this.weight, this.additionalLabel);
+            else CanvasDrawMethods.drawArrow(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control,this.weight, this.additionalLabel);
         }
         else {
             if(this.getLayout().dashed) CanvasDrawMethods.drawDashedCurve(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control);
@@ -599,10 +605,22 @@ Edge.prototype.contains = function(mx,my,ctx) {
     var targetShift = {x:targetC.x-sourceC.x,y:targetC.y-sourceC.y};
     var targetShiftRot = {x:targetShift.x*Math.cos(-alpha) - targetShift.y*Math.sin(-alpha),
                 y:targetShift.x*Math.sin(-alpha) + targetShift.y*Math.cos(-alpha)};
-    if(MouseShiftRot.x>=0 && MouseShiftRot.x<=targetShiftRot.x && Math.abs(MouseShiftRot.y)<=toleranz) {
-        return true;
+    var control = this.getControlPoint();
+    if(control != null){
+        var controlShift = {x:control.x-sourceC.x,y:control.y-sourceC.y};
+        var controlShiftRot = {x: controlShift.x*Math.cos(-alpha) - controlShift.y*Math.sin(-alpha),
+            y: controlShift.x*Math.sin(-alpha) + controlShift.y*Math.cos(-alpha)};
+        var curvePoint = CanvasDrawMethods.getQuadraticCurvePoint(0,0,controlShiftRot.x,controlShiftRot.y,targetShiftRot.x,targetShiftRot.y,controlShiftRot.x/targetShiftRot.x);
+        if(MouseShiftRot.x>=0 && MouseShiftRot.x<=targetShiftRot.x && Math.abs(MouseShiftRot.y-curvePoint.y)<=toleranz) {
+            return true;
+        }
     }
-    
+    else{
+        if(MouseShiftRot.x>=0 && MouseShiftRot.x<=targetShiftRot.x && Math.abs(MouseShiftRot.y)<=toleranz) {
+            return true;
+        }
+    }
+
     // Ist der Mauszeiger auf dem Text?
     var center = {x: (targetC.x+sourceC.x)/2, y:(targetC.y+sourceC.y)/2};
     var labelWidth = ctx.measureText(this.weight.toString()).width;

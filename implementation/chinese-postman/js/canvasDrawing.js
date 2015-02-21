@@ -37,7 +37,7 @@ CanvasDrawMethods.drawArrow = function(ctx,layout,source,target,control,label,ad
     ctx.strokeStyle = arrowHeadColor;
     var center;
     if(control == null) center = {x: (target.x+source.x)/2, y:(target.y+source.y)/2};
-    else center = getQuadraticCurvePoint(source.x,source.y,control.x,control.y,target.x,target.y,0.5);
+    else center = this.getQuadraticCurvePoint(source.x,source.y,control.x,control.y,target.x,target.y,0.5);
     var edgeAngle = Math.atan2(target.y-source.y,target.x-source.x);
     var arrowStart = {x:center.x+ Math.cos(edgeAngle)* layout.arrowHeadLength/2,y:center.y+ Math.sin(edgeAngle)* layout.arrowHeadLength/2};
     var lineAngle1 = Math.atan2(target.y-source.y,target.x-source.x)
@@ -56,13 +56,18 @@ CanvasDrawMethods.drawArrow = function(ctx,layout,source,target,control,label,ad
         CanvasDrawMethods.drawLine(ctx,{lineColor:arrowHeadColor, lineWidth:layout.lineWidth},thirtyPercent,arrowStart);
     }
     if(label) {
-        if(control == null) CanvasDrawMethods.drawTextOnLine(ctx,layout,source,target,label);
+        if(control == null) {
+            if(source.x*target.y - target.x*source.y >= 0){
+                CanvasDrawMethods.drawTextOnLine(ctx,layout,target,source,label);
+            }
+            else CanvasDrawMethods.drawTextOnLine(ctx,layout,source,target,label);
+        }
         else {
             //finde zwei Punkte auf der Kante nahe dem Mittelpunkt
-            var p1 = getQuadraticCurvePoint(source.x,source.y,control.x,control.y,target.x,target.y,0.45);
-            var p2 = getQuadraticCurvePoint(source.x,source.y,control.x,control.y,target.x,target.y,0.55);
+            var p1 = this.getQuadraticCurvePoint(source.x,source.y,control.x,control.y,target.x,target.y,0.45);
+            var p2 = this.getQuadraticCurvePoint(source.x,source.y,control.x,control.y,target.x,target.y,0.55);
             //pruefe Orientierung, schreibe den Text nur ueber die Kante und nicht darunter
-            if(p1.x*p2.y - p2.x*p1.y >= 0){ //ausnutzung von Kreuzprodukt-Eigenschaften
+            if(source.x*target.y - target.x*source.y >= 0){ //ausnutzung von Kreuzprodukt-Eigenschaften
                 var tmp = p1;
                 p1 = p2;
                 p2 = tmp;
@@ -72,8 +77,8 @@ CanvasDrawMethods.drawArrow = function(ctx,layout,source,target,control,label,ad
     }
     if(additionalLabel) {
         //finde zwei Punkte auf der Kante nahe dem Mittelpunkt
-        var p1 = getQuadraticCurvePoint(source.x,source.y,control.x,control.y,target.x,target.y,0.45);
-        var p2 = getQuadraticCurvePoint(source.x,source.y,control.x,control.y,target.x,target.y,0.55);
+        var p1 = this.getQuadraticCurvePoint(source.x,source.y,control.x,control.y,target.x,target.y,0.45);
+        var p2 = this.getQuadraticCurvePoint(source.x,source.y,control.x,control.y,target.x,target.y,0.55);
         CanvasDrawMethods.drawAdditionalTextOnLine(ctx,layout,p1,p2,additionalLabel);
     }
 };
@@ -123,12 +128,12 @@ CanvasDrawMethods.drawDashedArrow = function(ctx,layout,source,target,control,la
         ctx.setLineDash([0]);
     };
 
-    function getQBezierValue(t, p1, p2, p3) {
+    function getQBezierValue (t, p1, p2, p3) {
         var iT = 1 - t;
         return iT * iT * p1 + 2 * iT * t * p2 + t * t * p3;
     }
 
-    function getQuadraticCurvePoint(startX, startY, cpX, cpY, endX, endY, position) {
+    CanvasDrawMethods.getQuadraticCurvePoint = function (startX, startY, cpX, cpY, endX, endY, position) {
         return {
             x:  getQBezierValue(position, startX, cpX, endX),
             y:  getQBezierValue(position, startY, cpY, endY)

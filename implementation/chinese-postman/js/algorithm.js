@@ -30,11 +30,6 @@ function algorithm(p_graph, p_canvas, p_tab) {
      */
     var fastForwardIntervalID = null;
     /**
-     * Knoten, von dem aus alle Entfernungen berechnet werden.
-     * @type GraphNode
-     */
-    var startNode = null;
-    /**
      * Der Algorithmus kann in verschiedenen Zuständen sein, diese Variable
      * speichert die ID des aktuellen Zustands.<br>
      * Siehe Dokumentation bei der Funktion nextStepChoice
@@ -47,14 +42,14 @@ function algorithm(p_graph, p_canvas, p_tab) {
      */
     var algo = this;
     /**
-     * Assoziatives Array mit den Abstandswerten aller Knoten<br>
+     * Assoziatives Array(2d) mit den Abstandswerten aller Knoten<br>
      * Keys: KnotenIDs Value: Abstandswert
      * @type Object
      */
     var distance = new Object();
     /**
-     * Assoziatives Array mit den Vorgängerkanten aller Knoten<br>
-     * Keys: KnotenIDs Value: KantenID
+     * Assoziatives Array(2d) mit den Vorgängerkanten aller Knoten<br>
+     * Keys: KnotenIDs Value: Kanten
      * @type Object
      */
     var predecessor = new Object();
@@ -64,7 +59,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
      */
     var phase = 0;
 
-    var start_node = null;
+    //var start_node = null;
 
     var delta = new Object();
 
@@ -88,11 +83,6 @@ function algorithm(p_graph, p_canvas, p_tab) {
     var tourColorIndex = 0;
     var tourAnimationIndex = 0;
     var tourAnimation = null;
-    /**
-     * Gibt an, ob der Algorithmus am Ende ist.
-     * @type Boolean
-     */
-    var end = false;
     /*
      * Alle benoetigten Information zur Wiederherstellung der vorangegangenen Schritte werden hier gespeichert.
      * @type Array
@@ -162,6 +152,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         this.stopFastForward();
         this.destroyCanvasDrawer();
         this.deregisterEventHandlers();
+
     };
 
     /**
@@ -359,7 +350,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         // As long as tour not eulerian
         while(numberOfEdgesInTour < numberOfEdgesInGraph) {
             // Add start to subtour
-            subtour.push({type: "vertex", id: start.getNodeID()});
+            subtour.push({type: "vertex", id: current.getNodeID()});
             // While start != current, except first iteration
             do {
                 // Get out edges
@@ -421,14 +412,15 @@ function algorithm(p_graph, p_canvas, p_tab) {
             }
             //find next start node
             for(var node in tour){
-                if(node.type == "vertex"){
+                if(tour[node].type == "vertex"){
                     // Get out edges
-                    var outEdges = graph.nodes[node.id].getOutEdges();
+                    var outEdges = graph.nodes[tour[node].id].getOutEdges();
                     var found = false;
                     // Find unvisited out edge
                     for(var kantenID in outEdges) {
                         if(visitedEdges.indexOf(kantenID) === -1) {
-                            start = graph.nodes[node.id];
+                            current = graph.nodes[tour[node].id];
+                            start = graph.nodes[tour[node].id];
                             found = true;
                             break;
                         }

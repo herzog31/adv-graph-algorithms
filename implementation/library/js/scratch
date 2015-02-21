@@ -121,3 +121,60 @@
                 return true;
 
             };
+
+
+                this.draw = function(ctx) {
+                    //finde alle Kanten zwischen source und target
+                    var edges = [];
+                    var s = source.getOutEdges();
+                    var t = target.getOutEdges();
+                    for(var i in s){
+                        if(s[i].getTargetID() == this.getTargetID()){
+                            edges.push[s[i].getEdgeID()];
+                        }
+                    }
+                    for(var i in t){
+                        if(t[i].getTargetID() == this.getSourceID()) {
+                            edges.push[t[i].getEdgeID()];
+                        }
+                    }
+                    var card = edges.length;
+                    var control = null;
+                    if(card > 1){
+                        //berechne den Rang der Kante (id als referenz)
+                        edges.sort();
+                        var rank = edges.indexOf(id.toString()) + 1;
+                        //berechne den Kontrollpunkt fuer die canvas-Zeichenfunktion
+                        var INTERVAL = 50;
+                        var half = parseInt(card/2);
+                        var a = this.getSourceCoordinates();
+                        var b = this.getTargetCoordinates();
+                        if(this.getSourceID() > this.getTargetID()){ //a ist immer kleiner b, vertausche falls notwendig
+                            var tmp = a;
+                            a = b;
+                            b = tmp;
+                        }
+                        var c = {x: (a.x + b.x)/2 , y: (a.y + b.y)/2};
+                        var ab = {x: (b.x - a.x) , y: (b.y - a.y)};
+                        var norm = Math.sqrt(ab.x*ab.x+ab.y*ab.y);
+                        var d = {x: -ab.y/norm, y: ab.x/norm};
+                        if(rank <= card/2){
+                            control = {x: c.x + (half-rank+1)*INTERVAL*d.x, y: c.y + (half-rank+1)*INTERVAL*d.y};
+                            if(card%2 == 0) control = {x: control.x - INTERVAL/2*d.x, y: control.y - INTERVAL/2*d.y};
+                        }
+                        else if(card%2 == 1 && rank == half) control = c;
+                        else{
+                            rank = rank - half - card%2;
+                            control = {x: c.x - rank*INTERVAL*d.x, y: c.y - rank*INTERVAL*d.y};
+                            if(card%2 == 0) control = {x: control.x + INTERVAL/2*d.x, y: control.y + INTERVAL/2*d.y};
+                        }
+                    }
+                    //draw
+                    if(this.getDirected()) {
+                        if(this.getLayout().dashed) CanvasDrawMethods.drawDashedArrow(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control,this.weight/*.toString()*/, this.additionalLabel);
+                        else CanvasDrawMethods.drawArrow(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control,this.weight/*.toString()*/, this.additionalLabel);
+                    }
+                    else {
+                        if(this.getLayout().dashed) CanvasDrawMethods.drawDashedCurve(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control);
+                        else CanvasDrawMethods.drawCurve(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control);
+                    }
