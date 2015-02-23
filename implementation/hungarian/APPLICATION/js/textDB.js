@@ -7,9 +7,7 @@ function showLabels(lx, ly){
         $("body").data("graph").nodes[lx.length + i].setLabel(ly[i]);
     }
 
-    //for(var i = 0; i < lx.length; i++) {
     showEqualityGraph(lx, ly);
-    //}
 }
 
 function showEqualityGraph(lx, ly){
@@ -47,8 +45,6 @@ function showAugmentingPath(x, y, prev, xy, yx){
         xyTemp[cx] = cy;
         augmentingPath[augmentingPath.length] = cy;
         augmentingPath[augmentingPath.length] = cx;
-        console.log(cx);
-        console.log(cy);
     }
     for(var i = 1; i < augmentingPath.length; i++){
         for(var edge in $("body").data("graph").edges){
@@ -66,14 +62,16 @@ function showAugmentingPath(x, y, prev, xy, yx){
 
 function resetEdgeLayout(){
     for(var edge in $("body").data("graph").edges){
-        $("body").data("graph").edges[edge].setLayout("lineColor", "black");
-        $("body").data("graph").edges[edge].setLayout("lineWidth", 2);
+        $("body").data("graph").edges[edge].setLayout("lineColor", $("body").data("graph").edges[edge].originalColor);
+        $("body").data("graph").edges[edge].setLayout("dashed", $("body").data("graph").edges[edge].originalDashed);
+        $("body").data("graph").edges[edge].setLayout("lineWidth", $("body").data("graph").edges[edge].originalWidth);
     }
 }
 
 function resetNodeLayout(){
     for(var i in $("body").data("graph").nodes){
-        $("body").data("graph").nodes[i].setLayout("fillStyle", const_Colors.NodeFilling);
+        $("body").data("graph").nodes[i].setLayout("fillStyle", $("body").data("graph").nodes[i].originalFill);
+        $("body").data("graph").nodes[i].setLayout("borderColor", $("body").data("graph").nodes[i].originalBorder);
     }
 }
 
@@ -87,4 +85,36 @@ function showCurrentMatching(xy){
             }
         }
     }
+}
+
+function displayST(S, T){
+    var text = "S=[";
+    var first = true;
+    for(var i in S){
+        if(S[i] == true) {
+            $("body").data("graph").nodes[i].setLayout("borderColor", const_Colors.NodeBorderHighlight);
+            if(first){
+                first = false;
+            }else{
+                text += ", ";
+            }
+            text += (parseInt(i)+1);
+        }
+    }
+    first = true;
+    text += "], T=[";
+    for(var i in T){
+        if(T[i] == true){
+            $("body").data("graph").nodes[S.length + parseInt(i)].setLayout("borderColor", const_Colors.NodeBorderHighlight);
+            if(first){
+                first = false;
+            }else{
+                text += ", ";
+            }
+            text += (parseInt(i)+1);
+        }
+    }
+    text += "]";
+    $("#ta_div_statusErklaerung").text(text);
+    //TODO node borders
 }

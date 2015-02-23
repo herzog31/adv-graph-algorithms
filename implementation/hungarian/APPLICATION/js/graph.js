@@ -195,6 +195,7 @@ function GraphNode(coordinates,nodeID) {
     };
 
     this.setLayoutObject = function(layoutObject) {
+        console.log(layoutObject);
         layout = layoutObject;
     };
 

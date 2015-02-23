@@ -39,8 +39,8 @@ function BipartiteGraph(filename,p_canvas){
             diffu = diffv = graph_constants.DIFF;
         }
         else{
-            diffu = Math.min((canvas.width()-50)/sizeu,graph_constants.DIFF);
-            diffv = Math.min((canvas.width()-50)/sizev,graph_constants.DIFF);
+            diffu = Math.min((canvas[0].width-50)/sizeu,graph_constants.DIFF);
+            diffv = Math.min((canvas[0].width-50)/sizev,graph_constants.DIFF);
         }
         var i = 0;
         for(var n in this.unodes){
@@ -90,8 +90,8 @@ function BipartiteGraph(filename,p_canvas){
             return null;
         }
         //Die Richtung der Kanten ist immer von U nach V
-        if(this.unodes[source.getNodeID()]) this.base_addEdge(source,target,weight);
-        else this.base_addEdge(target,source,weight);
+        if(this.unodes[source.getNodeID()]) return this.base_addEdge(source,target,weight);
+        else return this.base_addEdge(target,source,weight);
     };
 
     function parseGraphfromFile(file) {
@@ -134,7 +134,7 @@ function BipartiteGraph(filename,p_canvas){
 
     function generateRandomGraph(canvas) {
         var NumberOfNodes = 7;
-        var diff = (canvas.width()-100)/NumberOfNodes;
+        var diff = (canvas[0].width-100)/NumberOfNodes;
         // Knoten erstellen
         for(var i = 0;i<NumberOfNodes;i++) {
             closure_graph.addNode(true);
