@@ -16,7 +16,10 @@ function showEqualityGraph(lx, ly){
             ly[$("body").data("graph").edges[edge].getTargetID() - lx.length]
             == $("body").data("graph").edges[edge].weight) {
 
-            $("body").data("graph").edges[edge].setLayout("lineColor", "black");
+            if($("body").data("graph").edges[edge].originalColor != "green"){
+                $("body").data("graph").edges[edge].originalColor = "black";
+            }
+            $("body").data("graph").edges[edge].setLayout("lineColor", $("body").data("graph").edges[edge].originalColor);
             $("body").data("graph").edges[edge].setLayout("lineWidth", 3);
         }else{
             $("body").data("graph").edges[edge].setLayout("lineColor", "grey");
@@ -81,7 +84,13 @@ function showCurrentMatching(xy){
             if($("body").data("graph").edges[edge].getSourceID() == i
                 && $("body").data("graph").edges[edge].getTargetID()-xy.length == xy[i]) {
                 $("body").data("graph").edges[edge].setLayout("lineColor", "green");
+                $("body").data("graph").edges[edge].originalColor = "green";
                 $("body").data("graph").edges[edge].setLayout("lineWidth", 4);
+            }else if(($("body").data("graph").edges[edge].getSourceID() == i
+                || $("body").data("graph").edges[edge].getTargetID()-xy.length == xy[i])
+                && $("body").data("graph").edges[edge].originalColor == "green"){
+                $("body").data("graph").edges[edge].originalColor = "black";
+                $("body").data("graph").edges[edge].setLayout("lineColor", "black");
             }
         }
     }

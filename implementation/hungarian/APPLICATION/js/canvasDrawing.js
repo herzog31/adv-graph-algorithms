@@ -94,36 +94,28 @@ CanvasDrawMethods.drawDashedLine = function(ctx,layout,source,target) {
 CanvasDrawMethods.drawTextOnLine = function(ctx,layout,source,target,label,even,nodeCount,sourceNode) {
     ctx.save();								// Aktuellen Zustand speichern (vor den Transformationen)
     ctx.font = layout.fontSize.toString() +"px " +layout.font;
-    var arrowHeight = Math.sin(layout.arrowAngle)*layout.arrowHeadLength;
-    var arrowWidth = Math.cos(layout.arrowAngle)*layout.arrowHeadLength;
     var labelMeasure = ctx.measureText(label);
     var alpha = Math.atan2(target.y-source.y,target.x-source.x);
-    //var center = {x: (target.x+source.x)/2, y:(target.y+source.y)/2};
     var center;
-    if(source.x > target.x){
-        //if(even) {
-            center = {
-                x: Math.max(target.x, source.x) - Math.abs(target.x - source.x) / (nodeCount+1) - sourceNode*Math.abs(target.x - source.x)/(nodeCount+1),
-                y: Math.min(target.y, source.y) + Math.abs(target.y - source.y) / (nodeCount+1) + sourceNode*Math.abs(target.y - source.y)/(nodeCount+1)
-            };
-        //}else{
-        //    center = {
-        //        x: Math.min(target.x, source.x) + Math.abs(target.x - source.x) / (nodeCount+1) + sourceNode*Math.abs(target.x - source.x)/(nodeCount+1),
-        //        y: Math.max(target.y, source.y) - Math.abs(target.y - source.y) / (nodeCount+1) - sourceNode*Math.abs(target.y - source.y)/(nodeCount+1)
-        //    };
-        //}
+    var coefficient = sourceNode % 2 == 0 ? 0.5 : -0.5;
+    var offset;
+    if((graph_constants.V_POSITION - graph_constants.U_POSITION - global_NodeLayout.nodeRadius*2)/nodeCount > 32){
+        offset = 32;
     }else{
-        //if(even) {
-            center = {
-                x: Math.min(target.x, source.x) + Math.abs(target.x - source.x) / (nodeCount+1) + sourceNode*Math.abs(target.x - source.x)/(nodeCount+1),
-                y: Math.min(target.y, source.y) + Math.abs(target.y - source.y) / (nodeCount+1) + sourceNode*Math.abs(target.y - source.y)/(nodeCount+1)
-            };
-        //}else{
-        //    center = {
-        //        x: Math.max(target.x, source.x) - Math.abs(target.x - source.x) / (nodeCount+1) - sourceNode*Math.abs(target.x - source.x)/(nodeCount+1),
-        //        y: Math.max(target.y, source.y) - Math.abs(target.y - source.y) / (nodeCount+1) - sourceNode*Math.abs(target.y - source.y)/(nodeCount+1)
-        //    };
-        //}
+        offset = (graph_constants.V_POSITION - graph_constants.U_POSITION - global_NodeLayout.nodeRadius*2)/nodeCount;
+    }
+    if(source.x > target.x){
+        center ={
+            x: Math.max(target.x, source.x) - (0.5*Math.abs(target.x - source.x) + coefficient*sourceNode*offset/Math.abs(Math.tan(alpha))),
+            //y: Math.min(target.y, source.y) + (0.5*Math.abs(target.y - source.y) + coefficient*sourceNode*offset*Math.abs(Math.sin(alpha)))
+            y: Math.min(target.y, source.y) + (0.5*Math.abs(target.y - source.y) + coefficient*sourceNode*offset)
+        };
+    }else{
+        center ={
+            x: Math.min(target.x, source.x) + (0.5*Math.abs(target.x - source.x) + coefficient*sourceNode*offset/(Math.tan(alpha))),
+            //y: Math.min(target.y, source.y) + (0.5*Math.abs(target.y - source.y) + coefficient*sourceNode*offset*Math.sin(alpha))
+            y: Math.min(target.y, source.y) + (0.5*Math.abs(target.y - source.y) + coefficient*sourceNode*offset)
+        };
     }
     ctx.translate(center.x, center.y);
     ctx.rotate(alpha);

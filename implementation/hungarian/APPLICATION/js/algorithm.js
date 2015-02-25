@@ -645,11 +645,11 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     this.addReplayStep = function() {
         var nodeProperties = {};
         for(var key in graph.nodes) {
-            nodeProperties[graph.nodes[key].getNodeID()] = {edge: JSON.stringify(graph.nodes[key].getLayout()), label: graph.nodes[key].getLabel()};
+            nodeProperties[key] = {edge: JSON.stringify(graph.nodes[key].getLayout()), label: graph.nodes[key].getLabel()};
         }
         var edgeProperties = {}
         for(var key in graph.edges) {
-            edgeProperties[graph.edges[key].getEdgeID()] = {edge: JSON.stringify(graph.edges[key].getLayout())};
+            edgeProperties[key] = {edge: JSON.stringify(graph.edges[key].getLayout())};
         }
         history.push({
             "previousStatusId": statusID,
