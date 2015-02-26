@@ -97,7 +97,7 @@ function initializeSiteLayout() {
             }
         }
     });
-    $("body").data("graph",new Graph("graphs/shortest.txt"));
+    $("body").data("graph",new Graph("graphs/connected.txt"));
 }
 
 /**

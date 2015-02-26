@@ -72,15 +72,17 @@ function algorithm(p_graph, p_canvas, p_tab) {
     var paths = new Object();
 
     var current = 0;
-
+    /**
+     * Array mit den neu eingefuegten Pfaden<br>
+     * Enthaelt Arrays von neuen Kanten
+     * @type Array
+     */
     var new_edges = new Array();
 
     var tour = new Array();
 
-    var feasible = true;
     var subtours = new Array();
     var tourColors = new Array("#0000cc", "#006600", "#990000", "#999900", "#cc6600", "#660099", "#330000");
-    var tourColorIndex = 0;
     var tourAnimationIndex = 0;
     var tourAnimation = null;
     /*
@@ -99,9 +101,8 @@ function algorithm(p_graph, p_canvas, p_tab) {
     var SHOW_UNBALANCED_NODES = 3;
     var SHORTEST_PATHS = 7;
     var ADD_PATH = 11;
-    //var ADD_NEW_EDGES = 4;
-    var START_TOUR = 6;
-    var NEXT_EDGE = 5;
+    var MATCHING = 4;
+    var START_PATH = 6;
     var END_TOUR = 13;
     var SHOW_TOUR = 15;
     var END = 10;
@@ -149,6 +150,12 @@ function algorithm(p_graph, p_canvas, p_tab) {
      * @method
      */
     this.destroy = function () {
+        //delete all inserted edges
+        for(var p in new_edges){
+            for(var e in new_edges[p]){
+                graph.removeEdge(new_edges[p][e].getEdgeID());
+            }
+        }
         this.stopFastForward();
         this.destroyCanvasDrawer();
         this.deregisterEventHandlers();
@@ -269,6 +276,12 @@ function algorithm(p_graph, p_canvas, p_tab) {
             case SHORTEST_PATHS:
                 this.showShortestPaths();
                 break;
+            case MATCHING:
+                this.showMatching();
+                break;
+            case START_PATH:
+                this.startAddingPaths();
+                break;
             case ADD_PATH:
                 this.addPath();
                 break;
@@ -276,7 +289,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
                 this.endTour();
                 break;
             case SHOW_TOUR:
-                this.showEulerianCycle();
+                this.startTour();
                 break;
             case END:
                 this.endAlgorithm();
@@ -329,7 +342,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         // init
         tour = [];
         subtours = [];
-        tourColorIndex = 0;
+        var tourColorIndex = 0;
         // Starting node
         var start;
         for(var n in graph.nodes){
@@ -464,21 +477,22 @@ function algorithm(p_graph, p_canvas, p_tab) {
         for(var n in graph.nodes){
             if(distance[n][n] < 0) negative_cycle = true;
         }
-        feasible = strongly_connected && !negative_cycle;
-        $("#ta_div_statusErklaerung").html("<h3>1. " + LNG.K('textdb_feasibility') + "</h3>");
+        var feasible = strongly_connected && !negative_cycle;
+        $("#ta_div_statusErklaerung").html("<h3>1. " + LNG.K('algorithm_feasibility') + "</h3>"
+                                            + "<p>" + LNG.K('algorithm_feasible_0') + "</p>");
         if (feasible) {
             statusID = SHOW_UNBALANCED_NODES;
             $("#ta_div_statusErklaerung").append(
-                "<p>" + LNG.K('textdb_feasible_1') + "</p>"
-                + "<p>" + LNG.K('textdb_feasible_2') + "</p>"
-                + "<p>" + LNG.K('textdb_feasible') + "</p>");
+                "<p>" + LNG.K('algorithm_feasible_1') + "</p>"
+                + "<p>" + LNG.K('algorithm_feasible_2') + "</p>"
+                + "<p>" + LNG.K('algorithm_feasible') + "</p>");
             //$(".marked").removeClass("marked");
         }
         else{
             statusID = END;
-            if(!strongly_connected) $("#ta_div_statusErklaerung").append("<p>" + LNG.K('textdb_infeasible_1') + "</p>");
-            if(negative_cycle) $("#ta_div_statusErklaerung").append("<p>" + LNG.K('textdb_infeasible_2') + "</p>");
-            $("#ta_div_statusErklaerung").append("<p>" + LNG.K('textdb_infeasible') + "</p>");
+            if(!strongly_connected) $("#ta_div_statusErklaerung").append("<p>" + LNG.K('algorithm_infeasible_1') + "</p>");
+            if(negative_cycle) $("#ta_div_statusErklaerung").append("<p>" + LNG.K('algorithm_infeasible_2') + "</p>");
+            $("#ta_div_statusErklaerung").append("<p>" + LNG.K('algorithm_infeasible') + "</p>");
             //$(".marked").removeClass("marked");
         }
     };
@@ -504,21 +518,21 @@ function algorithm(p_graph, p_canvas, p_tab) {
             }
             node.setLabel(d);
         }
+        $("#ta_div_statusErklaerung").html("<h3>2. " + LNG.K('algorithm_find_balanced_nodes') + "</h3>" +
+        "<p>" + LNG.K('algorithm_find_balanced_nodes_1') + "</p>");
         //fall es alle Knoten balanciert sind, kann gleich mit Eulertour begonnen werden
         if(excess == 0){
             statusID = SHOW_TOUR;
             // Erklärung im Statusfenster
-            $("#ta_div_statusErklaerung").html("<h3>2. " + LNG.K('textdb_find_balanced_nodes') + "</h3>"
-            + "<p>" + LNG.K('textdb_balanced_1') + "</p>"
-            + "<p>" + LNG.K('textdb_balanced_2') + "</p>");
+            $("#ta_div_statusErklaerung").append("<p>" + LNG.K('algorithm_balanced_1') + "</p>"
+            + "<p>" + LNG.K('algorithm_balanced_2') + "</p>");
         }
         else{
             statusID = SHORTEST_PATHS;
             // Erklärung im Statusfenster
-            $("#ta_div_statusErklaerung").html("<h3>2. " + LNG.K('textdb_find_balanced_nodes') + "</h3>"
-            + "<p>" + LNG.K('textdb_unbalanced_1') + "</p>"
-            + "<p>" + LNG.K('textdb_unbalanced_2') + "</p>"
-            + "<p>" + LNG.K('textdb_unbalanced_3') + "</p>");
+            $("#ta_div_statusErklaerung").append("<p>" + LNG.K('algorithm_unbalanced_1') + "</p>"
+            /*+ "<p>" + LNG.K('algorithm_unbalanced_2') + "</p>"
+            + "<p>" + LNG.K('algorithm_unbalanced_3') + "</p>"*/);
         }
     };
 
@@ -538,25 +552,87 @@ function algorithm(p_graph, p_canvas, p_tab) {
         node.setLayout('borderColor',"Gray");
     };
 
+    var tmp_edges = [];
+
+    var tmp = {};
+
     this.showShortestPaths = function () {
         this.findMatching();
-/*        for (var e in graph.edges) {
-            hideEdge(graph.edges[e]);
-        }*/
-        for (var i in paths) {
-            var s = paths[i].s;
-            var last = paths[i].d;
-            while (last != s) {
-                var e = predecessor[s][last];
-                e.restoreLayout();
-                last = e.getSourceID();
+        //construct new graph
+        var new_graph = new Graph();
+        var map_supply = {};
+        var map_demand = {};
+        for(var n in supplyNodes){
+            var node = supplyNodes[n];
+            var coord = node.getCoordinates();
+            var newn= new_graph.addNode(coord.x,coord.y);
+            newn.setLayoutObject(node.getLayout());
+            newn.setLabel(node.getLabel());
+            map_supply[node.getNodeID()] = newn.getNodeID();
+        }
+        for(var n in demandNodes){
+            var node = demandNodes[n];
+            var coord = node.getCoordinates();
+            var newn= new_graph.addNode(coord.x,coord.y);
+            newn.setLayoutObject(node.getLayout());
+            newn.setLabel(node.getLabel());
+            map_demand[node.getNodeID()] = newn.getNodeID();
+        }
+        this.graph = new_graph;
+        tmp_edges = [];
+        for(var s in supplyNodes){
+            for(var d in demandNodes){
+                var id1 = map_supply[supplyNodes[s].getNodeID()];
+                var id2 = map_demand[demandNodes[d].getNodeID()];
+                var e = new_graph.addEdge(new_graph.nodes[id1],new_graph.nodes[id2],distance[supplyNodes[s].getNodeID()][demandNodes[d].getNodeID()]);
+                tmp_edges.push(e);
             }
         }
+        var U_POSITION = 75; //standard 75
+        var V_POSITION = 325;//standard 325
+        var DIFF = 80;
+        var i =0;
+        for(var s in map_supply){
+            this.animateMove(this.graph.nodes[map_supply[s]],{x: 50 + i*DIFF, y: V_POSITION});
+            i++;
+        }
+        var i =0;
+        for(var d in map_demand){
+            this.animateMove(this.graph.nodes[map_demand[d]],{x: 50 + i*DIFF, y: U_POSITION});
+            i++;
+        }
+        tmp = {map_supply: map_supply, map_demand: map_demand};
+        statusID = MATCHING;
+        // Erklärung im Statusfenster
+        $("#ta_div_statusErklaerung").html("<h3>3. " + LNG.K('algorithm_paths') + "</h3>"
+        + "<p>" + LNG.K('algorithm_paths_1') + "</p>"
+        + "<p>" + LNG.K('algorithm_paths_2') + "</p>");
+    };
+
+    this.showMatching = function(){
+        for(var e in this.graph.edges){
+            this.graph.removeEdge(e);
+        }
+        for(var p in paths){
+            var id1 = tmp.map_supply[paths[p].s];
+            var id2 = tmp.map_demand[paths[p].d]
+            var e = this.graph.addEdge(this.graph.nodes[id1],this.graph.nodes[id2],distance[paths[p].s][paths[p].d]);
+            e.setLayout('lineColor','blue');
+        }
+        statusID = START_PATH;
+        // Erklärung im Statusfenster
+        $("#ta_div_statusErklaerung").html("<h3>3. " + LNG.K('algorithm_paths') + "</h3>"
+        + "<p>" + LNG.K('algorithm_matching_1') + "</p>"
+        + "<p>" + LNG.K('algorithm_matching_2') + "</p>");
+    };
+
+    this.startAddingPaths = function(){
+        this.graph = graph;
         statusID = ADD_PATH;
         // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3>3. " + LNG.K('textdb_paths') + "</h3>"
-        + "<p>" + LNG.K('textdb_paths_1') + "</p>"
-        + "<p>" + LNG.K('textdb_paths_2') + "</p>");
+        $("#ta_div_statusErklaerung").html("<h3>4. " + LNG.K('algorithm_new_paths') + "</h3>"
+        + "<p>" + LNG.K('algorithm_new_paths_1') + "</p>"
+        + "<p>" + LNG.K('algorithm_new_paths_2') + "</p>");
     };
 
     this.addPath = function(){
@@ -595,92 +671,27 @@ function algorithm(p_graph, p_canvas, p_tab) {
         current++;
         statusID = ADD_PATH;
         // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3>3. " + LNG.K('textdb_paths') + "</h3>"
-        + "<p>" + LNG.K('textdb_add_path') + "</p>"
-        + "<p>" + LNG.K('textdb_add_path_1') + "</p>"
-        + "<p>" + LNG.K('textdb_add_path_2') + "</p>"
-        + "<p>" + LNG.K('textdb_add_path_cost') + cost + "</p>");
+        $("#ta_div_statusErklaerung").html("<h3>4. " + LNG.K('algorithm_new_paths') + "</h3>"
+        + "<p>" + LNG.K('algorithm_add_path_1') + "</p>"
+        + "<p>" + LNG.K('algorithm_add_path_2') + "</p>"
+        + "<p>" + LNG.K('algorithm_add_path_cost') + cost + "</p>");
         if(current >= paths.length){
             statusID = SHOW_TOUR;
             // Erklärung im Statusfenster
             $("#ta_div_statusErklaerung").append(
-            //+ "<p>" + LNG.K('textdb_add_path_3') + "</p>" +
-            "<p>" + LNG.K('textdb_balanced_1') + "</p>");
+            //+ "<p>" + LNG.K('algorithm_add_path_3') + "</p>" +
+            "<p>" + LNG.K('algorithm_balanced_1') + "</p>");
         }
     };
 
-/*    this.showTour = function () {
-        //compute the euler tour
+    this.startTour = function(){
         this.computeEulerTour();
-        for (var e in graph.edges) {
-            graph.edges[e].restoreLayout();
-        }
         for (var n in graph.nodes) {
             graph.nodes[n].restoreLayout();
         }
-    };*/
-
-/*    this.nextEdge = function(){
-        var edge = graph.edges[eulerianTour[current]];
-*//*        if(current > 0){
-            var prev = graph.edges[euler_tour[current-1]];
-            prev.restoreLayout();
-        }*//*
-        //edge.setLayout('isHighlighted',true);
-        edge.setLayout('lineColor','blue');
-        current++;
-        statusID = NEXT_EDGE;
-        // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3>4. " + LNG.K('textdb_tour') + "</h3>"
-        + "<p>" + LNG.K('textdb_next_edge') + "</p>");
-        if(current >= eulerianTour.length){
-            statusID = END_TOUR;
-            // Erklärung im Statusfenster
-            $("#ta_div_statusErklaerung").append(
-                "<p>" + LNG.K('textdb_end_tour_1') + "</p>"
-                + "<p>" + LNG.K('textdb_end_tour_2') + "</p>");
-        }
-    };*/
-
-    this.endTour = function(){
         var cost = 0;
         for (var e in graph.edges) {
-            graph.edges[e].restoreLayout();
             cost += graph.edges[e].weight;
-        }
-        statusID = END;
-        // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3>4. " + LNG.K('textdb_tour') + "</h3>"
-            + "<p>" + LNG.K('textdb_end_success') + "</p>"
-            + "<p>" + LNG.K('textdb_cost') + cost + "</p>");
-    };
-
-
-
-    this.addNamingLabels = function() {
-
-        var edgeCounter = 1;
-        var nodeCounter = 1;
-
-        for(var knotenID in graph.nodes) {
-            graph.nodes[knotenID].setLabel(String.fromCharCode("a".charCodeAt(0)+nodeCounter-1));
-            nodeCounter++;
-        };
-
-        /* for(var kantenID in graph.edges) {
-         graph.edges[kantenID].setAdditionalLabel("{"+graph.nodes[graph.edges[kantenID].getSourceID()].getLabel()+", "+graph.nodes[graph.edges[kantenID].getTargetID()].getLabel()+"}")
-         edgeCounter++;
-         }; */
-
-    };
-
-    this.showEulerianCycle = function(){
-        this.computeEulerTour();
-/*        for (var e in graph.edges) {
-            graph.edges[e].restoreLayout();
-        }*/
-        for (var n in graph.nodes) {
-            graph.nodes[n].restoreLayout();
         }
         this.addNamingLabels();
         //color edges
@@ -718,8 +729,58 @@ function algorithm(p_graph, p_canvas, p_tab) {
             }
             output_subtours += '</li>';
         }
+        // Erklärung im Statusfenster
+        $("#ta_div_statusErklaerung").html('<h3>5. '+LNG.K('algorithm_euler')+'</h3>'
+        /*+ "<p>" + LNG.K('algorithm_end_success') + "</p>"*/
+        + "<p>" + LNG.K('algorithm_cost') + cost + "</p>");
+        $("#ta_div_statusErklaerung").append('<p class="result_euleriantour">' + output + '</p>\
+            <p>'+LNG.K('algorithm_status51b_desc1')+'</p>\
+            <p><button id="animateTour">'+LNG.K('algorithm_status51b_desc2')+'</button><button id="animateTourStop">'+LNG.K('algorithm_status51b_desc3')+'</button></p>\
+            <p>'+LNG.K('algorithm_status51b_desc4')+'</p>\
+            <h3>'+LNG.K('algorithm_euler_subtours')+'</h3>\
+            <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
+            <p>'+LNG.K('algorithm_status52_desc1')+'</p>');
+        $(".subtourList").on("mouseenter", "li.subtour_hover", {org: this}, this.hoverSubtour).on("mouseleave", "li.subtour_hover", {org: this}, this.dehoverSubtour);
+        $("#animateTour").button({icons:{primary: "ui-icon-play"}}).click({org: this}, this.animateTour);
+        $("#animateTourStop").button({icons:{primary: "ui-icon-stop"}, disabled: true}).click({org: this}, this.animateTourStop);
+        statusID = END;
+    };
+
+    this.addNamingLabels = function() {
+        var nodeCounter = 1;
+        for(var knotenID in graph.nodes) {
+            graph.nodes[knotenID].setLabel(String.fromCharCode("a".charCodeAt(0)+nodeCounter-1));
+            nodeCounter++;
+        };
+    };
+
+    this.showEulerianCycle = function(){
+        //create output path and subpaths
+        var output = "";
+        for(var i = 0; i < tour.length; i++) {
+            if(tour[i].type == "vertex") {
+                output += graph.nodes[tour[i].id].getLabel();
+            }
+            if(tour[i].type == "edge") {
+                var layout = graph.edges[tour[i].id].getLayout();
+                output += ' <span style="color: '+layout.lineColor+';">&rarr;</span> ';
+            }
+        }
+        var output_subtours = "";
+        for(var i = 0; i < subtours.length; i++) {
+            var cur = subtours[i];
+            output_subtours += '<li class="subtour_hover" data-tour-id="'+i+'" style="color: '+tourColors[cur['color']]+';">';
+            for(var j = 0; j < cur['tour'].length; j++) {
+                if(cur['tour'][j].type == "vertex" && j == 0) {
+                    output_subtours += graph.nodes[cur['tour'][j].id].getLabel();
+                }else if(cur['tour'][j].type == "vertex") {
+                    output_subtours += "&rarr;"+graph.nodes[cur['tour'][j].id].getLabel();
+                }
+            }
+            output_subtours += '</li>';
+        }
         //print
-        $("#ta_div_statusErklaerung").html('<h3>5.1 '+LNG.K('algorithm_status51b_head')+'</h3>\
+        $("#ta_div_statusErklaerung").html('<h3>5. '+LNG.K('algorithm_euler')+'</h3>\
             <p class="result_euleriantour">' + output + '</p>\
             <p>'+LNG.K('algorithm_status51b_desc1')+'</p>\
             <p><button id="animateTour">'+LNG.K('algorithm_status51b_desc2')+'</button><button id="animateTourStop">'+LNG.K('algorithm_status51b_desc3')+'</button></p>\
@@ -807,7 +868,9 @@ function algorithm(p_graph, p_canvas, p_tab) {
             "edgeProperties": edgeProperties,
             "phase": phase,
             "current": current,
-            //"graph": $.extend(true,{},graph),
+            "graph": this.graph,
+            "animationId": animationId,
+            //"tmp_edges": tmp_edges,
             "htmlSidebar": $(statusErklaerung).html()
         });
         //console.log("Current History Step: ", history[history.length-1]);
@@ -819,13 +882,14 @@ function algorithm(p_graph, p_canvas, p_tab) {
             statusID = oldState.previousStatusId;
             phase = oldState.phase;
             current = oldState.current;
+            animationId = oldState.animationId;
+            //tmp_edges = oldState.tmp_edges;
+            this.graph = oldState.graph;
             $(statusErklaerung).html(oldState.htmlSidebar);
-            //graph = oldState.graph;
             for(var key in oldState.nodeProperties) {
                 graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].layout));
                 graph.nodes[key].setLabel(oldState.nodeProperties[key].label);
             }
-
             for(var key in oldState.edgeProperties) {
                 graph.edges[key].setLayoutObject(JSON.parse(oldState.edgeProperties[key].layout));
                 graph.edges[key].setAdditionalLabel(oldState.edgeProperties[key].label);
@@ -835,6 +899,16 @@ function algorithm(p_graph, p_canvas, p_tab) {
                 var edges = new_edges.pop();
                 for(var e in edges){
                     graph.removeEdge(edges[e].getEdgeID());
+                }
+            }
+            if(statusID == MATCHING){
+                for(var e in this.graph.edges){
+                    this.graph.removeEdge(e);
+                }
+                for(var e in tmp_edges){
+                    var sid = tmp_edges[e].getSourceID();
+                    var tid = tmp_edges[e].getTargetID()
+                    this.graph.addEdge(this.graph.nodes[sid],this.graph.nodes[tid], tmp_edges[e].weight);
                 }
             }
         }
@@ -927,23 +1001,22 @@ function algorithm(p_graph, p_canvas, p_tab) {
         return;
     };
 
-    this.animateMoveStep = function(node,newc){
-        var STEPS = 2048;
+    var animationId = [];
+
+    this.animateMoveStep = function(node,newc,step, aid){
+        var STEPS = 200;
         var coord = node.getCoordinates();
         var dir = {x: newc.x-coord.x, y: newc.y-coord.y};
-        node.setCoordinates({x: coord.x + (tourAnimationIndex/STEPS*dir.x), y: coord.y + (tourAnimationIndex/STEPS*dir.y)});
+        node.setCoordinates({x: coord.x + (step/STEPS*dir.x), y: coord.y + (step/STEPS*dir.y)});
         algo.needRedraw = true;
-        tourAnimationIndex++;
-        if(tourAnimationIndex > STEPS){
-            tourAnimationIndex = 0;
-            window.clearInterval(tourAnimation);
-            tourAnimation = null;
+        if(step > STEPS){
+            window.clearInterval(aid);
         }
     };
     this.animateMove = function(node,newc) {
-        tourAnimationIndex = 0;
-        //var self = event.data.org;
-        tourAnimation = window.setInterval(function() {algo.animateMoveStep(node, newc); }, 1);
+        var step = 0;
+        var an = window.setInterval(function() {algo.animateMoveStep(node, newc, step++, animationId.length); }, 20);
+        animationId.push(an);
     };
 }
 

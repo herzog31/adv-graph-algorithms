@@ -4,11 +4,12 @@
 
 function shortestPaths(graph,distance,pred){
     var keys = Object.keys(graph.nodes);
-    for(var k in keys){
-        var i = keys[k];
+    for(var k1 in keys){
+        var i = keys[k1];
         distance[i] = {};
         pred[i]= {};
-        for(var j in keys){
+        for(var k2 in keys){
+            var j = keys[k2];
             distance[i][j] = "inf";
             pred[i][j] = null;
         }
@@ -22,7 +23,7 @@ function shortestPaths(graph,distance,pred){
         }
     }
     for(var ind_k in keys){
-        k = keys[ind_k];
+        var k = keys[ind_k];
         for(var ind_i in keys){
             i = keys[ind_i];
             for(var ind_j in keys){

@@ -178,3 +178,104 @@
                         if(this.getLayout().dashed) CanvasDrawMethods.drawDashedCurve(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control);
                         else CanvasDrawMethods.drawCurve(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control);
                     }
+
+                           this.findMatching();
+                                  //construct new graph
+                                  var new_graph = new Graph();
+                                  var map_supply = {};
+                                  var map_demand = {};
+                                  for(var n in supplyNodes){
+                                      var node = supplyNodes[n];
+                                      var coord = node.getCoordinates();
+                                      var newn= new_graph.addNode(coord.x,coord.y);
+                                      newn.setLayoutObject(node.getLayout());
+                                      newn.setLabel(node.getLabel());
+                                      map_supply[newn.getNodeID()] = node.getNodeID();
+                                  }
+                                  for(var n in demandNodes){
+                                      var node = demandNodes[n];
+                                      var coord = node.getCoordinates();
+                                      var newn= new_graph.addNode(coord.x,coord.y);
+                                      newn.setLayoutObject(node.getLayout());
+                                      newn.setLabel(node.getLabel());
+                                      map_demand[newn.getNodeID()] = node.getNodeID();
+                                  }
+                                  this.backup_graph = this.graph;
+                                  this.graph = new_graph;
+                                  for(var s in map_supply){
+                                      for(var d in map_demand){
+                                          new_graph.addEdge(new_graph.nodes[s],new_graph.nodes[d],distance[map_supply[s]][map_demand[d]]);
+                                      }
+                                  }
+                                  var U_POSITION = 75; //standard 75
+                                  var V_POSITION = 325;//standard 325
+                                  var DIFF = 80;
+                                  var i =0;
+                                  for(var s in map_supply){
+                                      this.animateMove(this.graph.nodes[s],{x: 50 + i*DIFF, y: V_POSITION});
+                                      i++;
+                                  }
+                                  var i =0;
+                                  for(var d in map_demand){
+                                      this.animateMove(this.graph.nodes[d],{x: 50 + i*DIFF, y: U_POSITION});
+                                      i++;
+                                  }
+
+                                    var oldCoord = {};
+                                    for(var n in graph.nodes){
+                                        graph.nodes[n].setLayout('hidden',true);
+                                    }
+                                    for(var e in graph.edges){
+                                        graph.edges[e].setLayout('hidden',true);
+                                    }
+                                    for(var n in supplyNodes){
+                                        var node = supplyNodes[n];
+                                        node.setLayout('hidden',true);
+                                        oldCoord[node.getNodeID()] = node.getCoordinates();
+                                    }
+                                    for(var n in demandNodes){
+                                        var node = demandNodes[n];
+                                        node.setLayout('hidden',true);
+                                        oldCoord[node.getNodeID()] = node.getCoordinates();
+                                    }
+
+
+                                            this.findMatching();
+                                            //construct new graph
+                                            var new_graph = new Graph();
+                                            for(var n in supplyNodes){
+                                                var node = supplyNodes[n];
+                                                var newn = jQuery.extend(true,{},node);
+                                                new_graph.nodes[node.getNodeID()] = newn;
+                                                newn
+                                            }
+                                            for(var n in demandNodes){
+                                                var node = demandNodes[n];
+                                                var newn = jQuery.extend(true,{},node);
+                                                new_graph.nodes[node.getNodeID()] = newn;
+                                            }
+                                            for(var s in supplyNodes){
+                                                for(var d in supplyNodes){
+                                                    var ids = supplyNodes[s].getNodeID();
+                                                    var idd = demandNodes[d].getNodeID();
+                                                    new_graph.addEdge(new_graph.nodes[ids],new_graph.nodes[idd],distance[ids][idd]);
+                                                }
+                                            }
+                                            this.backup_graph = this.graph;
+                                            this.graph = new_graph;
+                                            //animation
+                                            var U_POSITION = 75; //standard 75
+                                            var V_POSITION = 325;//standard 325
+                                            var DIFF = 80;
+                                            var i =0;
+                                            for(var s in supplyNodes){
+                                                var id = supplyNodes[s].getNodeID();
+                                                this.animateMove(this.graph.nodes[id],{x: 50 + i*DIFF, y: V_POSITION});
+                                                i++;
+                                            }
+                                            i =0;
+                                            for(var d in demandNodes){
+                                                var id = demandNodes[d].getNodeID();
+                                                this.animateMove(this.graph.nodes[id],{x: 50 + i*DIFF, y: U_POSITION});
+                                                i++;
+                                            }

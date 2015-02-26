@@ -1,4 +1,3 @@
-
 function maxMatching(cost){
     function setAll(arr, val) {
         var i, n = arr.length;

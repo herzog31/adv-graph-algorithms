@@ -41,7 +41,8 @@ var global_Edgelayout = {
     'font': 'Arial',		// Schrifart
     'fontSize': 12,		// Schriftgrösse in Pixeln
     'isHighlighted': false ,        // Ob die Kante eine besondere Markierung haben soll
-    'dashed': false
+    'dashed': false,
+    'hidden': false
 };
 
 /**
@@ -55,7 +56,8 @@ var global_NodeLayout = {
     'borderWidth': 2,                         // Breite des Rands
     'fontColor': 'black',                     // Farbe der Schrift
     'font': 'bold',                           // Schriftart
-    'fontSize': 14                            // Schriftgrösse in Pixeln
+    'fontSize': 14,                           // Schriftgrösse in Pixeln
+    'hidden': false
 };
 
 /**
@@ -561,20 +563,18 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
     };
     /**
      * Zeichnet die Kante in den gegebenen Kontext.
-     * @param {Object} ctx				2dContext des Canvas.
+     * @param {Object} ctx                2dContext des Canvas.
      * @this {Edge}
      * @method
      */
-    this.draw = function(ctx) {
+    this.draw = function (ctx) {
         var control = this.getControlPoint();
         //draw
-        if(this.getDirected()) {
-            if(this.getLayout().dashed) CanvasDrawMethods.drawDashedArrow(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control,this.weight, this.additionalLabel);
-            else CanvasDrawMethods.drawArrow(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control,this.weight, this.additionalLabel);
+        if (this.getDirected()) {
+            CanvasDrawMethods.drawArrow(ctx, this.getLayout(), this.getSourceCoordinates(), this.getTargetCoordinates(), control, this.weight, this.additionalLabel, this.getLayout().dashed);
         }
         else {
-            if(this.getLayout().dashed) CanvasDrawMethods.drawDashedCurve(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control);
-            else CanvasDrawMethods.drawCurve(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),control);
+            CanvasDrawMethods.drawCurve(ctx, this.getLayout(), this.getSourceCoordinates(), this.getTargetCoordinates(), control, this.getLayout().dashed);
         }
     };
 }
@@ -598,15 +598,15 @@ Edge.prototype.contains = function(mx,my,ctx) {
     var targetC = this.getTargetCoordinates();
     var alpha = Math.atan2(targetC.y-sourceC.y,targetC.x-sourceC.x);
     // Ist der Mauszeiger auf der Kante?
-
     var MouseShift = {x:mx-sourceC.x,y:my-sourceC.y};
     var MouseShiftRot = {x: MouseShift.x*Math.cos(-alpha) - MouseShift.y*Math.sin(-alpha),
                 y: MouseShift.x*Math.sin(-alpha) + MouseShift.y*Math.cos(-alpha)};
     var targetShift = {x:targetC.x-sourceC.x,y:targetC.y-sourceC.y};
     var targetShiftRot = {x:targetShift.x*Math.cos(-alpha) - targetShift.y*Math.sin(-alpha),
                 y:targetShift.x*Math.sin(-alpha) + targetShift.y*Math.cos(-alpha)};
+    //ist das eine kurve oder eine linie?
     var control = this.getControlPoint();
-    if(control != null){
+    if(control != null){//kurve
         var controlShift = {x:control.x-sourceC.x,y:control.y-sourceC.y};
         var controlShiftRot = {x: controlShift.x*Math.cos(-alpha) - controlShift.y*Math.sin(-alpha),
             y: controlShift.x*Math.sin(-alpha) + controlShift.y*Math.cos(-alpha)};
@@ -615,31 +615,30 @@ Edge.prototype.contains = function(mx,my,ctx) {
             return true;
         }
     }
-    else{
+    else{//linie
         if(MouseShiftRot.x>=0 && MouseShiftRot.x<=targetShiftRot.x && Math.abs(MouseShiftRot.y)<=toleranz) {
             return true;
         }
-    }
+        // Ist der Mauszeiger auf dem Text?
+        var center = {x: (targetC.x+sourceC.x)/2, y:(targetC.y+sourceC.y)/2};
+        var labelWidth = ctx.measureText(this.weight.toString()).width;
+        var arrowHeight = Math.sin(this.getLayout().arrowAngle)*this.getLayout().arrowHeadLength;
+        var c0 = {x:center.x+Math.cos(alpha)*labelWidth/2,
+            y:center.y+Math.sin(alpha)*labelWidth/2};
+        var c1 = {x:center.x-Math.cos(alpha)*labelWidth/2,
+            y:center.y-Math.sin(alpha)*labelWidth/2};
+        var c11 = {x:c1.x + Math.cos(alpha + Math.PI/2)*(-3-arrowHeight-this.getLayout().fontSize),
+            y:c1.y + Math.sin(alpha + Math.PI/2)*(-3-arrowHeight-this.getLayout().fontSize)};
+        var upperCornerOld = {x:c11.x-c0.x,y:c11.y-c0.y};
+        var upperCorner = {x:upperCornerOld.x*Math.cos(-alpha) - upperCornerOld.y*Math.sin(-alpha),
+            y:upperCornerOld.x*Math.sin(-alpha) + upperCornerOld.y*Math.cos(-alpha)};
 
-    // Ist der Mauszeiger auf dem Text?
-    var center = {x: (targetC.x+sourceC.x)/2, y:(targetC.y+sourceC.y)/2};
-    var labelWidth = ctx.measureText(this.weight.toString()).width;
-    var arrowHeight = Math.sin(this.getLayout().arrowAngle)*this.getLayout().arrowHeadLength;
-    var c0 = {x:center.x+Math.cos(alpha)*labelWidth/2,
-        y:center.y+Math.sin(alpha)*labelWidth/2};
-    var c1 = {x:center.x-Math.cos(alpha)*labelWidth/2,
-        y:center.y-Math.sin(alpha)*labelWidth/2};
-    var c11 = {x:c1.x + Math.cos(alpha + Math.PI/2)*(-3-arrowHeight-this.getLayout().fontSize),
-                y:c1.y + Math.sin(alpha + Math.PI/2)*(-3-arrowHeight-this.getLayout().fontSize)};
-    var upperCornerOld = {x:c11.x-c0.x,y:c11.y-c0.y};
-    var upperCorner = {x:upperCornerOld.x*Math.cos(-alpha) - upperCornerOld.y*Math.sin(-alpha),
-                y:upperCornerOld.x*Math.sin(-alpha) + upperCornerOld.y*Math.cos(-alpha)};
-
-    var rotatedMouseOld = {x:mx-c0.x,y:my-c0.y};
-    var rotatedMouse = {x: rotatedMouseOld.x*Math.cos(-alpha) - rotatedMouseOld.y*Math.sin(-alpha),
-                y: rotatedMouseOld.x*Math.sin(-alpha) + rotatedMouseOld.y*Math.cos(-alpha)};
-    if(rotatedMouse.x<=0 && rotatedMouse.x>= upperCorner.x && rotatedMouse.y<=0 && rotatedMouse.y>= upperCorner.y) {
-        return true;
+        var rotatedMouseOld = {x:mx-c0.x,y:my-c0.y};
+        var rotatedMouse = {x: rotatedMouseOld.x*Math.cos(-alpha) - rotatedMouseOld.y*Math.sin(-alpha),
+            y: rotatedMouseOld.x*Math.sin(-alpha) + rotatedMouseOld.y*Math.cos(-alpha)};
+        if(rotatedMouse.x<=0 && rotatedMouse.x>= upperCorner.x && rotatedMouse.y<=0 && rotatedMouse.y>= upperCorner.y) {
+            return true;
+        }
     }
     return false;
 };
