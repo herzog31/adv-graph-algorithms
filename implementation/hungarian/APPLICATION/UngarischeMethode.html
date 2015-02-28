@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="description" content="Diese Seite demonstriert den Bellman-Ford-Algorithmus für kürzeste Wege in Graphen." />
     <meta http-equiv="X-UA-Compatible" content="IE=9">
-    <meta name="author" content="Richard Stotz">
+    <meta name="author" content="Mark J. Becker, Aleksejs Voroncovs">
     <link rel="stylesheet" type="text/css" href="css/tum-theme2/jquery-ui-1.10.1.custom.min.css" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
@@ -38,12 +38,14 @@
     </div>
 </noscript>
 <script>
-    $(document).ready(initializeSiteLayout);
     LNG.setLanguage('de');
+    $(function() {
+        initializeSiteLayout();
+        $("#year").html(new Date().getFullYear());
+    });
 </script>
 <header>
-    <img src="img/logo1.png" alt="Matching in bipartiten Graphen: Der Hopcroft-Karp-Algorithmus">
-    <img src="img/hk.png" alt="Matching in bipartiten Graphen: Der Hopcroft-Karp-Algorithmus">
+    <img src="img/titel.png" alt="Ungarische Methode">
     <img style="position:absolute; right:0px" src="img/TUMLogo.png" alt="Technische Universität München">
 </header>
 <div id="tabs">
@@ -58,17 +60,18 @@
     </ul>
     <div id="tab_te">
         <div id="te_div_Einfuehrungstext">
-            <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="img/bipartite_graph.png" alt="Bipartiter Graph"><p>Wie groß ist das maximale Matching?</p></div>
-            <h1>Bipartites Matching</h1>
-            <p>In vielen Anwendungen müssen häufig Elemente aus verschiedenen Klassen kombiniert werden.
-                Wenn nur bestimmte  Zuordnungen möglich sind, so nennt man dieses Problem &ndash; <strong>Bipartites Matching</strong>.
-            </p>
-            <h2>Hier wird der Hopcroft-Karp-Algorithmus veranschaulicht, der das Problem des Matchings auf bipartiten Graphen löst.</h2>
+            <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="img/beispiel1.png" alt="Bipartiter Graph mit Kantengewichten"><p>Wie sieht das optimale Matching aus?</p></div>
+            <h1>Matchings optimalen Gewichts</h1>
+            <p>Das Finden von Kombinationen bzw. Matchings von Elementen unterschiedlicher Klassen ist ein häufig auftretendes Problem. Meistens reicht es jedoch nicht aus, einfach nur ein Matching zu finden, sondern man möchte das Matching mit dem höchsten Nutzen oder den niedrigsten Kosten finden.</p>
+            <p>Als Beispiel ist hierfür die Arbeit einer Jobvermittlung zu nennen. Diese muss Arbeitssuchende anhand ihrer Eignung optimal auf die verfügbaren Arbeitsplätze verteilen. Dieses Problem lässt sich als bipartiter Graph darstellen.</p>
+            <h2>Die hier vorgestellte Ungarische Methode findet dann optimale Matchings in bipartiten Graphen.</h2>
             <div id ="te_div_Entscheidung">
                 <h2>Was möchtest du zuerst tun?</h2>
-                <button id="te_button_gotoDrawGraph">Den Algorithmus testen!</button> <button id="te_button_gotoIdee">Genauere Beschreibung des Algorithmus lesen</button>
+                <button id="te_button_gotoDrawGraph">Den Algorithmus testen!</button>
+                <button id="te_button_gotoIdee">Genauere Beschreibung des Algorithmus lesen</button>
             </div>
             <p></p>
+            <br style="clear: both;" />
         </div>
     </div>
     <div id="tab_tg">
@@ -197,7 +200,8 @@
         </div>
     </div>
     <div id="tab_ti">
-        <div id="ti_div_Einfuehrungstext">
+        <p>TODO</p>
+        <!-- <div id="ti_div_Einfuehrungstext">
             <h1>Matching auf bipartiten Graphen</h1>
             <h1>Idee des Algorithmus</h1>
             <h1>Finden der Länge des kürzesten Augmentationsweges</h1>
@@ -212,7 +216,7 @@
                 <button id="ti_button_gotoFA1">Forschungsaufgabe 1: </button><br>
                 <button id="ti_button_gotoFA2">Forschungsaufgabe 2: </button>
             </div>
-        </div>
+        </div> -->
     </div>
     <div id="tab_tf1">
         <div>
@@ -366,7 +370,8 @@
         </div>
     </div>
     <div id="tab_tw">
-        <div id="tw_Accordion">
+        <p>TODO</p>
+        <!-- <div id="tw_Accordion">
             <h3>Wie sieht der (Pseudo-)Code des Algorithmus aus?</h3>
             <div><pre><code>
                 Eingabe: Bipartiter ungewichteter Graph G=(U &cup; V, E).
@@ -407,12 +412,12 @@
                 <p>Außerdem es ein interessantes Buch zu kürzesten Wegen:  <a href="http://www-m9.ma.tum.de/Ruth/WebHome">Das Geheimnis des kürzesten Weges</a></p>
                 <p>Ein <a href="http://www.ma.tum.de/Studium/Studieninteressierte">Mathematikstudium an der TU München</a> beantwortet alle Fragen zur Graphentheorie (falls eine Lösung bekannt ist).</p>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 <footer>
     <p class="Disclaimer">
-        IDP Projekt von am Lehrstuhl M9 der Technischen Universität München. 2014 | <a href="http://www-m9.ma.tum.de/Allgemeines/Rechtliches">Disclaimer und Rechtshinweise</a> | <a href="http://www-m9.ma.tum.de/Allgemeines/Impressum">Impressum</a>
+        IDP Projekt von Mark J. Becker und Aleksejs Voroncovs am Lehrstuhl M9 der Technischen Universität München. <span id="year">2015</span> | <a href="http://www-m9.ma.tum.de/Allgemeines/Rechtliches">Disclaimer und Rechtshinweise</a> | <a href="http://www-m9.ma.tum.de/Allgemeines/Impressum">Impressum</a> | <a href="mailto&#58;m&#46;ritter&#64;ma&#46;tum&#46;de&#63;subject&#61;M9&#45;Web&#45;Feedback">Anregungen</a>
     </p>
 </footer>
 </body>
