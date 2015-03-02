@@ -110,18 +110,18 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         if(uNodes > vNodes){
             for(var i = 0; i < uNodes - vNodes; i++){
                 var node = graph.addNode(false);
-                node.setLayout("fillStyle", "grey");
-                node.setLayout("borderColor", "grey");
-                node.originalFill = "grey";
-                node.originalBorder = "grey";
+                node.setLayout("fillStyle", const_Colors.grey);
+                node.setLayout("borderColor", const_Colors.grey);
+                node.originalFill = const_Colors.grey;
+                node.originalBorder = const_Colors.grey;
             }
         }else if (vNodes > uNodes){
             for(var i = 0; i < vNodes - uNodes; i++){
                 var node = graph.addNode(true);
-                node.setLayout("fillStyle", "grey");
-                node.setLayout("borderColor", "grey");
-                node.originalFill = "grey";
-                node.originalBorder = "grey";
+                node.setLayout("fillStyle", const_Colors.grey);
+                node.setLayout("borderColor", const_Colors.grey);
+                node.originalFill = const_Colors.grey;
+                node.originalBorder = const_Colors.grey;
             }
         }
         maxKey = maxKey + Math.abs(vNodes - uNodes);
@@ -136,8 +136,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                         var e = graph.addEdge(graph.nodes[i], graph.nodes[j], 0);
                         e.setLayout("dashed", true);
                         e.setLayout("lineWidth", 1);
-                        e.setLayout("lineColor", "grey");
-                        e.originalColor = "grey";
+                        e.setLayout("lineColor", const_Colors.grey);
+                        e.originalColor = const_Colors.grey;
                         e.originalDashed = true;
                         e.originalWidth = 1;
                     }
@@ -434,9 +434,11 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         if (maxMatch == cost.length) {
             statusID = FINISHED;
             console.log("FINISHED");
+            this.end();
             $("#ta_div_statusErklaerung").text("Der Algorithmus ist fertig.");
             $("#ta_button_1Schritt").button("option", "disabled", true);
-            this.end();
+            showCurrentMatching(xy, false);
+            //TODO show answer
             return FINISHED;
         }
         showEqualityGraph(lx, ly);
@@ -565,7 +567,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             yx[cy] = cx;
             xy[cx] = cy;
         }
-        showCurrentMatching(xy);
+        showCurrentMatching(xy, true);
         statusID = MATCHING_INCREASED;
         console.log("MATCHING_INCREASED");
         $("#ta_div_statusErklaerung").text("Matching wurde vergrößert.");
@@ -625,7 +627,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         for (var x = 0; x < n; x++) {
             ret += cost[x][xy[x]];
         }
-        console.log("otvet: "  + ret);
     };
 
     /**
@@ -649,7 +650,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         }
         var edgeProperties = {}
         for(var key in graph.edges) {
-            edgeProperties[key] = {edge: JSON.stringify(graph.edges[key].getLayout())};
+            edgeProperties[key] = {edge: JSON.stringify(graph.edges[key].getLayout()), hidden: graph.edges[key].hidden};
         }
         history.push({
             "previousStatusId": statusID,
@@ -669,7 +670,9 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                 graph.nodes[key].setLabel(oldState.nodeProperties[key].label);
             }
             for(var key in oldState.edgeProperties) {
-                graph.edges[key].setLayoutObject(JSON.parse(oldState.edgeProperties[key].edge));
+                var obj = JSON.parse(oldState.edgeProperties[key].edge);
+                graph.edges[key].setLayoutObject(obj);
+                graph.edges[key].hidden = oldState.edgeProperties[key].hidden;
                 //graph.edges[key].setAdditionalLabel(oldState.edgeProperties[key].label);
             }
             if(fastForwardIntervalID == null){

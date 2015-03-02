@@ -20,7 +20,8 @@ var const_Colors = {NodeFilling:            "#98C6EA",  // Pantone 283, 100%
                     EdgeHighlight3:         "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
                     EdgeHighlight4:         "#007C30",  // Dunkelgrün 100 % aus TUM Styleguide
                     RedText:                "#C4071B",  // Helles Rot 100% aus TUM Styleguide
-                    GreenText:              "#007C30"   // Dunkelgrün 100 % aus TUM Styleguide
+                    GreenText:              "#007C30",  // Dunkelgrün 100 % aus TUM Styleguide
+                    grey:                   "grey"
                     };
 
 /**
@@ -527,6 +528,9 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
  * @method
  */
 Edge.prototype.draw = function(ctx, nodeCount, sourceNode) {
+    if(this.hidden == true){
+        return;
+    }
     if(this.getDirected()) {
          CanvasDrawMethods.drawArrow(ctx,this.getLayout(),this.getSourceCoordinates(),this.getTargetCoordinates(),this.weight.toString(), this.additionalLabel);
     }

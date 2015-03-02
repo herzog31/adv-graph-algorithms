@@ -22,7 +22,7 @@ function showEqualityGraph(lx, ly){
             $("body").data("graph").edges[edge].setLayout("lineColor", $("body").data("graph").edges[edge].originalColor);
             $("body").data("graph").edges[edge].setLayout("lineWidth", 3);
         }else{
-            $("body").data("graph").edges[edge].setLayout("lineColor", "grey");
+            $("body").data("graph").edges[edge].setLayout("lineColor", const_Colors.grey);
             $("body").data("graph").edges[edge].setLayout("lineWidth", 1);
         }
     }
@@ -78,7 +78,12 @@ function resetNodeLayout(){
     }
 }
 
-function showCurrentMatching(xy){
+function showCurrentMatching(xy, otherEdges){
+    if(!otherEdges) {
+        for (var edge in $("body").data("graph").edges) {
+            $("body").data("graph").edges[edge].hidden = true;
+        }
+    }
     for(var i in xy){
         for(var edge in $("body").data("graph").edges){
             if($("body").data("graph").edges[edge].getSourceID() == i
@@ -86,6 +91,8 @@ function showCurrentMatching(xy){
                 $("body").data("graph").edges[edge].setLayout("lineColor", "green");
                 $("body").data("graph").edges[edge].originalColor = "green";
                 $("body").data("graph").edges[edge].setLayout("lineWidth", 4);
+                $("body").data("graph").edges[edge].hidden = false;
+                console.log("green");
             }else if(($("body").data("graph").edges[edge].getSourceID() == i
                 || $("body").data("graph").edges[edge].getTargetID()-xy.length == xy[i])
                 && $("body").data("graph").edges[edge].originalColor == "green"){
@@ -101,7 +108,9 @@ function displayST(S, T){
     var first = true;
     for(var i in S){
         if(S[i] == true) {
-            $("body").data("graph").nodes[i].setLayout("borderColor", const_Colors.NodeBorderHighlight);
+            if($("body").data("graph").nodes[i].getLayout().fillStyle != const_Colors.NodeFillingHighlight) {
+                $("body").data("graph").nodes[i].setLayout("fillStyle", "green");
+            }
             if(first){
                 first = false;
             }else{
@@ -114,7 +123,7 @@ function displayST(S, T){
     text += "], T=[";
     for(var i in T){
         if(T[i] == true){
-            $("body").data("graph").nodes[S.length + parseInt(i)].setLayout("borderColor", const_Colors.NodeBorderHighlight);
+            $("body").data("graph").nodes[S.length + parseInt(i)].setLayout("fillStyle", "green");
             if(first){
                 first = false;
             }else{
