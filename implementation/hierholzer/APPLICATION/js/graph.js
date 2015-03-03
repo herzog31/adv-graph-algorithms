@@ -39,7 +39,11 @@ var global_Edgelayout = {'arrowAngle' : Math.PI/8,	         // Winkel des Pfeilk
 			             'lineWidth' : 2,		             // Dicke des Pfeils
                          'font'	: 'Arial',		             // Schrifart 
                          'fontSize' : 14,		             // Schriftgrösse in Pixeln
-                         'isHighlighted': false              // Ob die Kante eine besondere Markierung haben soll
+                         'isHighlighted': false,             // Ob die Kante eine besondere Markierung haben soll
+                         'progressArrow': false,             // Zusätzlicher Animationspfeil 
+                         'progressArrowPosition': 0.0,       // Position des Animationspfeils
+                         'progressArrowSource': null,        // Animationspfeil Source Knoten
+                         'progressArrowTarget': null         // Animationspfeil Target Knoten
 			};
                         
 /**
@@ -570,6 +574,9 @@ Edge.prototype.draw = function(ctx) {
         if(this.getAdditionalLabel() !== false) {
             CanvasDrawMethods.drawTextOnLine(ctx, this.getLayout(), this.getSourceCoordinates(), this.getTargetCoordinates(), this.getAdditionalLabel());
         }
+    }
+    if(this.getLayout()['progressArrow']) {
+        CanvasDrawMethods.drawArrowAtPosition(ctx, this.getLayout(), this.getLayout()['progressArrowSource'], this.getLayout()['progressArrowTarget']);
     }
 };
 
