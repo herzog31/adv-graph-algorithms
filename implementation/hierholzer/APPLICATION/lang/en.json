@@ -36,7 +36,8 @@
     "algorithm_status31A_desc1": "EN - Für die erste Subtour benötigt der Algorithmus einen Startknoten:",
     "algorithm_status31A_desc2": "EN - Für <strong>eulersche Graphen</strong> kann man einen beliebigen Knoten wählen.",
     "algorithm_status31A_desc3": "EN - Für <strong>semi-eulersche Graphen</strong> wählt man einen der beiden Knoten mit ungeradem Grad.",
-    "algorithm_status31A_desc4": "EN - Der vom Algorithmus ausgewählte Knoten wurde <span style=\"font-weight: bold; color: green;\">grün</span> markiert.",
+    "algorithm_status31A_desc4": "EN - Der der Algorithmus hat bereits einen zufälligen Knoten ausgewählt und <span style=\"font-weight: bold; color: #00c532;\">hellgrün</span> markiert. <strong>Alternativ kannst du selbst einen Startknoten durch Klick auf einen beliebigen Knoten aussuchen.</strong>",
+    "algorithm_status31A_desc5": "EN - Der vom Algorithmus ausgewählte Knoten wurde <span style=\"font-weight: bold; color: #00c532;\">hellgrün</span> markiert.",
 
     "algorithm_status31B_head": "EN - Neuen Startknoten finden",
     "algorithm_status31B_desc1": "EN - Als Startknoten der nächsten Subtour wählt der Algorithmus einen beliebigen Knoten, der unbesuchte Kanten besitzt.",

@@ -36,7 +36,8 @@
     "algorithm_status31A_desc1": "Für die erste Subtour benötigt der Algorithmus einen Startknoten:",
     "algorithm_status31A_desc2": "Für <strong>eulersche Graphen</strong> kann man einen beliebigen Knoten wählen.",
     "algorithm_status31A_desc3": "Für <strong>semi-eulersche Graphen</strong> wählt man einen der beiden Knoten mit ungeradem Grad.",
-    "algorithm_status31A_desc4": "Der vom Algorithmus ausgewählte Knoten wurde <span style=\"font-weight: bold; color: green;\">grün</span> markiert.",
+    "algorithm_status31A_desc4": "Der der Algorithmus hat bereits einen zufälligen Knoten ausgewählt und <span style=\"font-weight: bold; color: #00c532;\">hellgrün</span> markiert. <strong>Alternativ kannst du selbst einen Startknoten durch Klick auf einen beliebigen Knoten aussuchen.</strong>",
+    "algorithm_status31A_desc5": "Der vom Algorithmus ausgewählte Knoten wurde <span style=\"font-weight: bold; color: #00c532;\">hellgrün</span> markiert.",
 
     "algorithm_status31B_head": "Neuen Startknoten finden",
     "algorithm_status31B_desc1": "Als Startknoten der nächsten Subtour wählt der Algorithmus einen beliebigen Knoten, der unbesuchte Kanten besitzt.",
@@ -128,7 +129,7 @@
     "aufgabe2_status31A_desc1": "Für die erste Subtour benötigt der Algorithmus einen Startknoten:",
     "aufgabe2_status31A_desc2": "Für <strong>eulersche Graphen</strong> kann man einen beliebigen Knoten wählen.",
     "aufgabe2_status31A_desc3": "Für <strong>semi-eulersche Graphen</strong> wählt man <em>genau den Knoten, der mehr ausgehende Kanten besitzt als eingehende</em>.",
-    "aufgabe2_status31A_desc4": "Der vom Algorithmus ausgewählte Knoten wurde <span style=\"font-weight: bold; color: green;\">grün</span> markiert.",
+    "aufgabe2_status31A_desc4": "Der der Algorithmus hat bereits einen zufälligen Knoten ausgewählt und <span style=\"font-weight: bold; color: #00c532;\">hellgrün</span> markiert. <strong>Alternativ kannst du selbst einen Startknoten durch Klick auf einen beliebigen Knoten aussuchen.</strong>",
 
     "aufgabe2_status32_desc1": "Für die nächste Kante unserer aktuellen Tour betrachtet der Algorithmus alle unbesuchten <em>ausgehenden</em> Kanten des aktiven Knotens (<span style=\"font-weight: bold; color: green;\">grün</span>).",
     "aufgabe2_status32_desc2": "Aus dieser Kantenmenge wählt der Algorithmus nun eine zufällige Kante ",

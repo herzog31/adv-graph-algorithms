@@ -570,15 +570,54 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     };
 
+    this.canvasClickHandler = function(e) {
+        if(semiEulerianGraph) {
+            return;
+        }
+        var mx = e.pageX - canvas.offset().left;
+        var my = e.pageY - canvas.offset().top;
+        for(var knotenID in graph.nodes) {
+            if (graph.nodes[knotenID].contains(mx, my)) {
+                if(tourStartVertex != null) {
+                    graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
+                }
+                this.selectStartVertex(knotenID);
+                break;
+            }
+        }
+    };
+
+    this.selectStartVertex = function(knotenID) {
+        tourStartVertex = knotenID;
+        graph.nodes[knotenID].setLayout("fillStyle", const_Colors.NodeFillingLight);
+        tourCurrentVertex = tourStartVertex;
+
+        eulerianSubTour = new Array();
+        this.addVertexToTour(graph.nodes[tourCurrentVertex], eulerianSubTour);
+        if(debugConsole) console.log("Subtour: ", eulerianSubTour);
+
+        this.needRedraw = true;
+    };
+
     // Selectiere Start Vertice, entweder #1 (Eulersch) oder #1 mit ungeradem Grad (Semi Eulersch)
     this.findStartingVertex = function() {
         this.markPseudoCodeLine(3);
-        $("#tf1_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
+        if(!semiEulerianGraph) {
+            $("#tf1_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.1a '+LNG.K('algorithm_status31A_head')+'</h3>\
             <p>'+LNG.K('algorithm_status31A_desc1')+'</p>\
             <p>'+LNG.K('algorithm_status31A_desc2')+'</p>\
-            <p>'+LNG.K('algorithm_status31A_desc3')+'</p>\
             <p>'+LNG.K('algorithm_status31A_desc4')+'</p>');
+
+            canvas.on("click.Forschungsaufgabe1", function(e) { algo.canvasClickHandler(e); });
+        }else{
+            $("#tf1_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
+            <h3>3.1a '+LNG.K('algorithm_status31A_head')+'</h3>\
+            <p>'+LNG.K('algorithm_status31A_desc1')+'</p>\
+            <p>'+LNG.K('algorithm_status31A_desc3')+'</p>\
+            <p>'+LNG.K('algorithm_status31A_desc5')+'</p>');  
+        }
+
         $("#tab_tf1").find(".LegendeText").html('<table>\
             <tr><td class="LegendeTabelle"><img src="img/startknoten2.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start2')+'</span></td></tr>\
             <tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start')+'</span></td></tr>\
@@ -593,21 +632,13 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         // Set Starting & Current Vertex
         if(semiEulerianGraph) {
             tourStartVertex = tourStartOddVertex;
+            this.selectStartVertex(tourStartOddVertex);
         }else{
             for (var knotenID in graph.nodes) {
-                tourStartVertex = knotenID;
+                this.selectStartVertex(knotenID);
                 break;
             };
         }
-
-        graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingLight);
-        tourCurrentVertex = tourStartVertex;
-
-        eulerianSubTour = new Array();
-        this.addVertexToTour(graph.nodes[tourCurrentVertex], eulerianSubTour);
-        if(debugConsole) console.log("Subtour: ", eulerianSubTour);
-
-        this.needRedraw = true;
 
         statusID = 4;
 
@@ -620,6 +651,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     // Wenn gefunden -> findNextVertexForTour()
     this.findNextVertexForTour = function() {
         this.markPseudoCodeLine(7);
+        canvas.off(".Forschungsaufgabe1");
+
         $("#tf1_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.2 '+LNG.K('algorithm_status32_head')+'</h3>\
             <p>'+LNG.K('algorithm_status32_desc1')+'</p>\
@@ -732,14 +765,21 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     // Bei vorhandener Tour, Replace Start mit Subtour
     this.mergeTour = function() {
         this.markPseudoCodeLine(10);
-        $("#tf1_div_statusErklaerung").html('<h3>4 '+LNG.K('algorithm_status4_head')+'</h3>\
+
+        if(JSON.stringify(eulerianSubTour[0]) !== JSON.stringify(eulerianSubTour[(eulerianSubTour.length - 1)])) {
+            $("#tf1_div_statusErklaerung").html('<h3>4 '+LNG.K('algorithm_status4_head')+'</h3>\
+            <h3>4.1 '+LNG.K('algorithm_status41_head')+'</h3>\
+            <p>'+LNG.K('algorithm_status41_desc1')+'</p>\
+            <h3>4.1.2 '+LNG.K('algorithm_status41_desc4')+'</h3>\
+            <p>'+LNG.K('algorithm_status41_desc5')+'</p>');
+        }else{
+            $("#tf1_div_statusErklaerung").html('<h3>4 '+LNG.K('algorithm_status4_head')+'</h3>\
             <h3>4.1 '+LNG.K('algorithm_status41_head')+'</h3>\
             <p>'+LNG.K('algorithm_status41_desc1')+'</p>\
             <h3>4.1.1 '+LNG.K('algorithm_status41_desc2')+'</h3>\
-            <p>'+LNG.K('algorithm_status41_desc3')+'</p>\
-            <h3>4.1.2 '+LNG.K('algorithm_status41_desc4')+'</h3>\
-            <p>'+LNG.K('algorithm_status41_desc5')+'</p>');
-
+            <p>'+LNG.K('algorithm_status41_desc3')+'</p>');
+        }
+        
         subtours.push({color: tourColorIndex, tour: eulerianSubTour});
         if(debugConsole) console.log("Subtours", subtours);
 
