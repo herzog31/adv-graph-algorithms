@@ -59,6 +59,11 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
      */
     var statusErklaerung = "#ta_div_statusErklaerung";
 
+    /**
+     * Gibt das Pseudocodefenster an.
+     */
+    var pseudocode = "#ta_div_statusPseudocode";
+
     var currentDisplayStep = 0;
     /**
      * Hier werden die Statuskonstanten definiert
@@ -235,6 +240,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         $(".marked").removeClass("marked");
         //$("#ta_p_l1").addClass("marked");
         $("#ta_tr_LegendeClickable").removeClass("greyedOutBackground");
+        $(".marked").removeClass("marked");
+        $("#ta_p_l2").addClass("marked");
         this.registerEventHandlers();
         this.needRedraw = true;
     };
@@ -427,6 +434,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         statusID = READY_TO_START;
         console.log("READY_TO_START");
         $("#ta_div_statusErklaerung").text("Ursprungliche Markierungen sowie Gleichheitsgraph wurden bestimmt.");
+        $(".marked").removeClass("marked");
+        $("#ta_p_l4").addClass("marked");
         return READY_TO_START;
     };
 
@@ -439,6 +448,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             $("#ta_button_1Schritt").button("option", "disabled", true);
             showCurrentMatching(xy, false);
             //TODO show answer
+            $(".marked").removeClass("marked");
+            $("#ta_p_l13").addClass("marked");
             return FINISHED;
         }
         showEqualityGraph(lx, ly);
@@ -465,6 +476,9 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         statusID = READY_FOR_SEARCHING;
         console.log("READY_FOR_SEARCHING");
         $("#ta_div_statusErklaerung").text("Die Wurzel des alternierenden Baums wurde bestimmt.");
+        $(".marked").removeClass("marked");
+        $("#ta_p_l6").addClass("marked");
+        $("#ta_p_l7").addClass("marked");
         return READY_FOR_SEARCHING;
     };
 
@@ -480,11 +494,17 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                 displayST(S, T);
             }
             statusID = READY_TO_BUILD_TREE;
+            $(".marked").removeClass("marked");
+            $("#ta_p_l6").addClass("marked");
+            $("#ta_p_l7").addClass("marked");
             return READY_TO_BUILD_TREE;
         }
         console.log("AUGMENTING_PATH_NOT_FOUND");
         $("#ta_div_statusErklaerung").text("Augmentationsweg wurde nicht gefunden.");
         statusID = AUGMENTING_PATH_NOT_FOUND;
+        $(".marked").removeClass("marked");
+        $("#ta_p_l8").addClass("marked");
+        $("#ta_p_l9").addClass("marked");
         return AUGMENTING_PATH_NOT_FOUND;
     };
 
@@ -496,6 +516,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                     console.log("AUGMENTING_PATH_FOUND");
                     $("#ta_div_statusErklaerung").text("Augmentationsweg wurde gefunden.");
                     statusID = AUGMENTING_PATH_FOUND;
+                    $(".marked").removeClass("marked");
+                    $("#ta_p_l11").addClass("marked");
                     return AUGMENTING_PATH_FOUND;
                 }
                 T[y] = true;
@@ -509,11 +531,17 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             y++;
             console.log("buildAlternatingTree: READY_TO_BUILD_TREE");
             statusID = READY_TO_BUILD_TREE;
+            $(".marked").removeClass("marked");
+            $("#ta_p_l6").addClass("marked");
+            $("#ta_p_l7").addClass("marked");
             return READY_TO_BUILD_TREE;
         }
         goOn = true;
         console.log("READY_FOR_SEARCHING");
         statusID = READY_FOR_SEARCHING;
+        $(".marked").removeClass("marked");
+        $("#ta_p_l6").addClass("marked");
+        $("#ta_p_l7").addClass("marked");
         return READY_FOR_SEARCHING;
     };
 
@@ -523,6 +551,9 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
         displayST(S, T);
         statusID = READY_TO_BUILD_TREE_AFTER_RELABELING;
+        $(".marked").removeClass("marked");
+        $("#ta_p_l6").addClass("marked");
+        $("#ta_p_l7").addClass("marked");
         return READY_TO_BUILD_TREE_AFTER_RELABELING;
     };
 
@@ -535,6 +566,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                     statusID = AUGMENTING_PATH_FOUND;
                     console.log("AUGMENTING_PATH_FOUND");
                     $("#ta_div_statusErklaerung").text("Augmentationsweg wurde gefunden.");
+                    $(".marked").removeClass("marked");
+                    $("#ta_p_l11").addClass("marked");
                     return AUGMENTING_PATH_FOUND;
                 } else {
                     T[y] = true;
@@ -550,11 +583,17 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             y++;
             console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
             statusID = READY_TO_BUILD_TREE_AFTER_RELABELING;
+            $(".marked").removeClass("marked");
+            $("#ta_p_l6").addClass("marked");
+            $("#ta_p_l7").addClass("marked");
             return READY_TO_BUILD_TREE_AFTER_RELABELING;
         }
         statusID = READY_FOR_SEARCHING;
         console.log("READY_FOR_SEARCHING");
         goOn = true;
+        $(".marked").removeClass("marked");
+        $("#ta_p_l6").addClass("marked");
+        $("#ta_p_l7").addClass("marked");
         return READY_FOR_SEARCHING;
     };
 
@@ -571,6 +610,12 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         statusID = MATCHING_INCREASED;
         console.log("MATCHING_INCREASED");
         $("#ta_div_statusErklaerung").text("Matching wurde vergrößert.");
+        $(".marked").removeClass("marked");
+        if(maxMatch == cost.length){
+            $("#ta_p_l12").addClass("marked");
+        }else {
+            $("#ta_p_l4").addClass("marked");
+        }
         return MATCHING_INCREASED;
     };
 
@@ -606,6 +651,9 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         showLabels(lx, ly);
         console.log("LABELS_UPDATED");
         $("#ta_div_statusErklaerung").text("Markierungen sowie Gleichheitsgraph wurden aktualisiert.");
+        $(".marked").removeClass("marked");
+        $("#ta_p_l6").addClass("marked");
+        $("#ta_p_l7").addClass("marked");
         return LABELS_UPDATED;
     };
 
@@ -656,7 +704,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             "previousStatusId": statusID,
             "nodeProperties": nodeProperties,
             "edgeProperties": edgeProperties,
-            "htmlSidebar": $(statusErklaerung).html()
+            "htmlSidebar": $(statusErklaerung).html(),
+            "pseudocode": $(pseudocode).html()
         });
     };
 
@@ -664,7 +713,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         if(current > 0){
             var oldState = history[current - 1];
             statusID = oldState.previousStatusId;
-            $("#ta_div_statusErklaerung").html(oldState.htmlSidebar);
+            $(statusErklaerung).html(oldState.htmlSidebar);
+            $(pseudocode).html(oldState.pseudocode);
             for(var key in oldState.nodeProperties) {
                 graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].edge));
                 graph.nodes[key].setLabel(oldState.nodeProperties[key].label);
@@ -694,6 +744,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                 + "<p>In jeder Iteration suchen wir eine maximale Menge an kürzesten knotendisjunkten Augmentationswegen.</p>"
                 + "<p>Maximal heißt hier, dass es zusätzlich zu den gefundenen Pfaden keinen anderen kürzesten knotendisjunkten Augmentationsweg gibt.</p>"
                 + "<p>Ein Augmentationsweg ist ein Weg, der mit einem freien Knoten anfängt, mit einem freien Knoten endet und alternierend Matching-Kanten und Nicht-Matching-Kanten benutzt.</p>");
+            $(".marked").removeClass("marked");
+            $("#ta_p_l2").addClass("marked");
         }
         if(end && current == history.length){
             //end = false;

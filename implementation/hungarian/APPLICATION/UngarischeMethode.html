@@ -176,15 +176,18 @@
                     </div>
                     <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
                         <p class="pseudocode" id="ta_p_l1">BEGIN</p>
-                        <p class="pseudocode" id="ta_p_l2">  M &larr; &empty;</p>
-                        <p class="pseudocode" id="ta_p_l3">  REPEAT </p>
-                        <p class="pseudocode" id="ta_p_l4">    let &Rho; = {P1,P2,...,Pk} be a maximal</p>
-                        <p class="pseudocode" id="ta_p_l5">    set of vertex-disjoint shortest </p>
-                        <p class="pseudocode" id="ta_p_l6">    augmenting paths with respect to M</p>
-                        <p class="pseudocode" id="ta_p_l7">    M &larr; M &oplus; (P1 &cup; P2 &cup; ... &cup; Pk)</p>
-                        <p class="pseudocode" id="ta_p_l8">  UNTIL &Rho; == &empty;</p>
-                        <p class="pseudocode" id="ta_p_l9">RETURN M</p>
-                        <p class="pseudocode" id="ta_p_l10">END</p>
+                        <p class="pseudocode" id="ta_p_l2">  initialize labels</p>
+                        <p class="pseudocode" id="ta_p_l3">  WHILE matching is not complete DO</p>
+                        <p class="pseudocode" id="ta_p_l4">    find a root of an alternating path</p>
+                        <p class="pseudocode" id="ta_p_l5">    WHILE alternating path not found DO</p>
+                        <p class="pseudocode" id="ta_p_l6">      try to find alternating path</p>
+                        <p class="pseudocode" id="ta_p_l7">      in equality graph</p>
+                        <p class="pseudocode" id="ta_p_l8">      IF alt. path not found</p>
+                        <p class="pseudocode" id="ta_p_l9">      THEN update labels</p>
+                        <p class="pseudocode" id="ta_p_l10">    END</p>
+                        <p class="pseudocode" id="ta_p_l11">    increase matching</p>
+                        <p class="pseudocode" id="ta_p_l12">  END</p>
+                        <p class="pseudocode" id="ta_p_l13">END</p>
                     </div>
                 </div>
             </div>

@@ -83,6 +83,8 @@ function showCurrentMatching(xy, otherEdges){
         for (var edge in $("body").data("graph").edges) {
             $("body").data("graph").edges[edge].hidden = true;
         }
+        $(".marked").removeClass("marked");
+        $("#ta_p_l13").addClass("marked");
     }
     for(var i in xy){
         for(var edge in $("body").data("graph").edges){
