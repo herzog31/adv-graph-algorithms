@@ -16,7 +16,8 @@
     "algorithm_legende_undirectededge": "Ungerichtete Kante",
     "algorithm_legende_degree2": "Knoten mit geradem Grad 2",
     "algorithm_legende_degree3": "Knoten mit ungeradem Grad 3",
-    "algorithm_legende_start": "Startknoten bzw. Knoten der mit dem Startknoten verglichen wird",
+    "algorithm_legende_start": "Aktueller Knoten",
+    "algorithm_legende_start2": "Startknoten",
     "algorithm_legende_edgecolor": "Kante der Eulertour im aktuellen Durchgang",
 
     "algorithm_status1_head": "Initialisierung",
@@ -51,21 +52,21 @@
     "algorithm_status33_head": "Auf Kreis prüfen",
     "algorithm_status33_desc1": "Um zu prüfen, ob unsere Subtour abgeschlossen ist, vergleichen wir den aktiven Knoten mit dem ersten Knoten der Subtour. Beide sind <span style=\"font-weight: bold; color: green;\">grün</span> markiert.",
     "algorithm_status33_desc2": "Abgeschlossen",
-    "algorithm_status33_desc3": "Handelt es sich bei beiden um den selben Knoten, ist unsere Subtour abgeschlossen und wir fahren mit <em>Schritt 4</em> fort.",
+    "algorithm_status33_desc3": "Die Subtour ist abgeschlossen und wir fahren mit <em>Schritt 4</em> fort.",
     "algorithm_status33_desc4": "Nicht abgeschlossen",
-    "algorithm_status33_desc5": "Handelt es sich um zwei verschiedene Knoten, ist unsere Subtour unvollständig und wir wiederholen <em>Schritt 3.2</em>.",
+    "algorithm_status33_desc5": "Die Subtour ist unvollständig und wir wiederholen <em>Schritt 3.2</em>.",
 
     "algorithm_status4_head": "Gesamttour bestimmen",
     "algorithm_status41_head": "Integriere Subtour in Gesamttour",
     "algorithm_status41_desc1": "Die Subtour ist abgeschlossen und muss in die Gesamttour integriert werden.",
     "algorithm_status41_desc2": "Zyklische Subtour",
-    "algorithm_status41_desc3": "Der Algorithmus sucht in der Gesamttour den Start- & Endknoten der Subtour und ersetzt diesen mit der gesamten Subtour.",
+    "algorithm_status41_desc3": "Der Algorithmus ersetzt Start- & Endknoten der Subtour in der Gesamttour mit der gesamten Subtour.",
     "algorithm_status41_desc4": "Azyklischer Subweg",
     "algorithm_status41_desc5": "Es handelt sich hierbei um den Subweg im semi-eulerschen Graph, der mit einem Knoten ungeraden Grads beginnt und bei dem zweiten Knoten mit ungeradem Grad endet. Der Weg muss so integriert werden, dass er am Anfang oder Ende der Gesamttour steht.",
     
     "algorithm_status42_head": "Auf Vollständigkeit prüfen",
     "algorithm_status42_desc1": "Nach jeder Integration einer Subtour in die Gesamttour prüft der Algorithmus ob die Gesamttour eine Eulertour bzw. ein Eulerweg ist.",
-    "algorithm_status42_desc2": "Dazu vergleicht der Algorithmus die Anzahl der Kanten im Graph mit der Anzahl der Kanten in der Gesamttour.",
+    "algorithm_status42_desc2": "",
     "algorithm_status42_desc3": "Bei Gleichheit terminiert der Algorithmus und gibt die Gesamttour in <em>Schritt 5</em> zurück.",
     "algorithm_status42_desc4": "Bei Ungleichheit existiert mindestens eine weitere Subtour, die gefunden werden muss. Wir springen zurück zu <em>Schritt 3</em>.",
 
@@ -144,12 +145,12 @@
 
     "aufgabe2_status41_desc1": "Die Subtour ist abgeschlossen und muss in die Gesamttour integriert werden.",
     "aufgabe2_status41_desc2": "Zyklische Subtour",
-    "aufgabe2_status41_desc3": "Der Algorithmus sucht in der Gesamttour den Start- & Endknoten der Subtour und ersetzt diesen mit der gesamten Subtour.",
+    "aufgabe2_status41_desc3": "Der Algorithmus ersetzt Start- & Endknoten der Subtour in der Gesamttour mit der gesamten Subtour.",
     "aufgabe2_status41_desc4": "Azyklischer Subweg",
     "aufgabe2_status41_desc5": "Es handelt sich hierbei um den Subweg im semi-eulerschen Graph, der mit dem Knoten mit einer zusätzlichen ausgehenden Kante beginnt und in den Knoten mit zusätzlicher eingehenden Kante mündet. Der Weg muss so integriert werden, dass er am Anfang oder Ende der Gesamttour steht.",
 
     "aufgabe2_status42_desc1": "Nach jeder Integration einer Subtour in die Gesamttour prüft der Algorithmus ob die Gesamttour eine Eulertour bzw. ein Eulerweg ist.",
-    "aufgabe2_status42_desc2": "Dazu vergleicht der Algorithmus die Anzahl der Kanten im Graph mit der Anzahl der Kanten in der Gesamttour.",
+    "aufgabe2_status42_desc2": "",
     "aufgabe2_status42_desc3": "Bei Gleichheit terminiert der Algorithmus und gibt die Gesamttour in <em>Schritt 5</em> zurück.",
     "aufgabe2_status42_desc4": "Bei Ungleichheit existiert mindestens eine weitere Subtour, die gefunden werden muss. Wir springen zurück zu <em>Schritt 3</em>.",
 

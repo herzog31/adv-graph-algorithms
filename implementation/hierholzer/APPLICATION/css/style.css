@@ -357,9 +357,17 @@ html {
     display: none;
 }
 #tf1_div_questionModal {
+    text-align: left;
     margin-top: 20px;
     display: block;
     padding-bottom: 10px;
+}
+#tf1_div_questionModal p {
+    padding: 0 1em 0 1em;
+}
+
+#tf1_div_questionModal form {
+    margin-left: 1em;
 }
 .quizTable {
     width: 80%;
@@ -381,7 +389,6 @@ html {
 }
 #tf1_questionSolution {
     font-weight: normal;
-    color: green;
 }
 #tf1_questionSolution .answer {
     font-weight: bold;
@@ -395,4 +402,12 @@ html {
     -ms-hyphens: auto;
     hyphens: auto;
     overflow-wrap: break-word;
+}
+.legendePath {
+    display: block;
+    float: left;
+    width: 62px;
+    height: 3px;
+    margin: 9px 0px 9px 0px;
+    background-color: #0000cc;
 }

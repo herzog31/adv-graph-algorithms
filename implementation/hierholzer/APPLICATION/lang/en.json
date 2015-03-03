@@ -16,7 +16,8 @@
     "algorithm_legende_undirectededge": "EN - Ungerichtete Kante",
     "algorithm_legende_degree2": "EN - Knoten mit geradem Grad 2",
     "algorithm_legende_degree3": "EN - Knoten mit ungeradem Grad 3",
-    "algorithm_legende_start": "EN - Startknoten bzw. Knoten der mit dem Startknoten verglichen wird",
+    "algorithm_legende_start": "EN - Aktueller Knoten",
+    "algorithm_legende_start2": "EN - Startknoten",
     "algorithm_legende_edgecolor": "EN - Kante der Eulertour im aktuellen Durchgang",
 
     "algorithm_status1_head": "EN - Initialisierung",
@@ -65,7 +66,7 @@
     
     "algorithm_status42_head": "EN - Auf Vollständigkeit prüfen",
     "algorithm_status42_desc1": "EN - Nach jeder Integration einer Subtour in die Gesamttour prüft der Algorithmus ob die Gesamttour eine Eulertour bzw. ein Eulerweg ist.",
-    "algorithm_status42_desc2": "EN - Dazu vergleicht der Algorithmus die Anzahl der Kanten im Graph mit der Anzahl der Kanten in der Gesamttour.",
+    "algorithm_status42_desc2": "",
     "algorithm_status42_desc3": "EN - Bei Gleichheit terminiert der Algorithmus und gibt die Gesamttour in <em>Schritt 5</em> zurück.",
     "algorithm_status42_desc4": "EN - Bei Ungleichheit existiert mindestens eine weitere Subtour, die gefunden werden muss. Wir springen zurück zu <em>Schritt 3</em>.",
 

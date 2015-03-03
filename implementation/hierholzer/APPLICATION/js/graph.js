@@ -14,6 +14,7 @@ var const_Colors = {NodeFilling:            "#98C6EA",  // Pantone 283, 100%
                     NodeBorder:             "#0065BD",  // Pantone 300, 100%, "TUM-Blau"
                     NodeBorderHighlight:    "#C4071B",  // Helles Rot 100% aus TUM Styleguide
                     NodeFillingHighlight:   "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
+                    NodeFillingLight:       "#00c532",  // Dunkelgrün 55 % aus TUM Styleguide
                     NodeFillingQuestion:    "#C4071B",  // Helles Rot 100% aus TUM Styleguide
                     EdgeHighlight1:         "#C4071B",  // Helles Rot 100% aus TUM Styleguide
                     EdgeHighlight2:         "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide

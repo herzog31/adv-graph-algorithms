@@ -53,7 +53,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     var eulerianSubTour = new Array();
     var subtours = new Array();
     var currentPseudoCodeLine = 1;
-    var tourColors = new Array("#0000cc", "#006600", "#990000", "#999900", "#cc6600", "#660099", "#330000");
+    var tourColors = new Array("#0000cc", "#990000", "#999900", "#cc6600", "#660099", "#330000");
     var tourColorIndex = 0;
     var tourAnimationIndex = 0; 
     var tourAnimation = null;
@@ -82,7 +82,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
 
         this.registerEventHandlers();
         this.needRedraw = true;
-        this.minimizeLegend();
+        this.maximizeLegend();
 
     };
     
@@ -485,6 +485,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
         eulerianTour = JSON.parse(oldState.eulerianTour);
         eulerianSubTour = JSON.parse(oldState.eulerianSubTour);
         $("#tab_ta").find(".LegendeText").html(oldState.legende);
+        this.maximizeLegend();
         currentPseudoCodeLine = oldState.pseudoCodeLine;
         this.markPseudoCodeLine(currentPseudoCodeLine);
         $("#ta_td_tourStartVertex").html(oldState.pseudo_start);
@@ -568,6 +569,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
             <li><strong>'+LNG.K('algorithm_status2_desc4')+'</strong><br />'+LNG.K('algorithm_status2_desc5')+'</li>\
             </ul>');
         $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/knoten_even.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_degree2')+'</span></td></tr><tr><td class="LegendeTabelle"><img src="img/knoten_odd.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_degree3')+'</span></td></tr></table>');
+        this.maximizeLegend();
 
         var numberOfOddVertices = 0;
         var firstOddVertex = null;
@@ -658,7 +660,12 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
             <p>'+LNG.K('algorithm_status31A_desc2')+'</p>\
             <p>'+LNG.K('algorithm_status31A_desc3')+'</p>\
             <p>'+LNG.K('algorithm_status31A_desc4')+'</p>');
-        $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start')+'</span></td></tr><tr><td class="LegendeTabelle"><img src="img/pfad.png" alt="Kante" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_edgecolor')+'</span></td></tr></table>');
+        $("#tab_ta").find(".LegendeText").html('<table>\
+            <tr><td class="LegendeTabelle"><img src="img/startknoten2.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start2')+'</span></td></tr>\
+            <tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start')+'</span></td></tr>\
+            <tr><td class="LegendeTabelle"><div class="legendePath" style="background-color:'+tourColors[tourColorIndex]+'"></div></td><td><span>'+LNG.K('algorithm_legende_edgecolor')+'</span></td></tr>\
+        </table>');
+        this.maximizeLegend();
 
         // Restore Naming
         this.addNamingLabels();
@@ -673,7 +680,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
             };
         }
 
-        graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+        graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingLight);
         tourCurrentVertex = tourStartVertex;
 
         eulerianSubTour = new Array();
@@ -699,7 +706,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
             <p>'+LNG.K('algorithm_status32_desc2')+'(<span style="font-weight: bold; color: '+tourColors[tourColorIndex]+';">'+LNG.K('algorithm_status32_desc3')+'</span>)'+LNG.K('algorithm_status32_desc4')+'</p>\
             <p>'+LNG.K('algorithm_status32_desc5')+'</p>');
 
-        graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
+        //graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
 
         var outEdges = graph.nodes[tourCurrentVertex].getOutEdges();
         var inEdges = graph.nodes[tourCurrentVertex].getInEdges();
@@ -744,7 +751,9 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
         this.addEdgeToTour(graph.edges[nextEdge], eulerianSubTour);
         if(debugConsole) console.log("Subtour: ", eulerianSubTour);
 
-        graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFilling);
+        if(tourCurrentVertex !== tourStartVertex) {
+            graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFilling);
+        }
 
         // Get other Vertex
         if(graph.edges[nextEdge].getSourceID() == tourCurrentVertex) {
@@ -769,15 +778,22 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn ungleich -> findNextVertexForTour()
     this.compareVertexWithStart = function() {
         this.markPseudoCodeLine(9);
-        $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
+        
+        if(tourStartVertex == tourCurrentVertex) {
+            $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.3 '+LNG.K('algorithm_status33_head')+'</h3>\
             <p>'+LNG.K('algorithm_status33_desc1')+'</p>\
             <h3>3.3.1 '+LNG.K('algorithm_status33_desc2')+'</h3>\
-            <p>'+LNG.K('algorithm_status33_desc3')+'</p>\
+            <p>'+LNG.K('algorithm_status33_desc3')+'</p>');
+        }else{
+            $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
+            <h3>3.3 '+LNG.K('algorithm_status33_head')+'</h3>\
+            <p>'+LNG.K('algorithm_status33_desc1')+'</p>\
             <h3>3.3.2 '+LNG.K('algorithm_status33_desc4')+'</h3>\
             <p>'+LNG.K('algorithm_status33_desc5')+'</p>');
+        }
 
-        graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+        //graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
 
         if(debugConsole) console.log("Start: " + tourStartVertex + ", Current: "+ tourCurrentVertex);
 
@@ -885,6 +901,12 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
             <p>'+LNG.K('algorithm_status42_desc2')+'</p>\
             <p>'+LNG.K('algorithm_status42_desc3')+'</p>\
             <p>'+LNG.K('algorithm_status42_desc4')+'</p>');
+        $("#tab_ta").find(".LegendeText").html('<table>\
+            <tr><td class="LegendeTabelle"><img src="img/startknoten2.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start2')+'</span></td></tr>\
+            <tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start')+'</span></td></tr>\
+            <tr><td class="LegendeTabelle"><div class="legendePath" style="background-color:'+tourColors[tourColorIndex]+'"></div></td><td><span>'+LNG.K('algorithm_legende_edgecolor')+'</span></td></tr>\
+        </table>');
+        this.maximizeLegend();
 
         var numberOfEdgesInGraph = Object.keys(graph.edges).length;
         var numberOfEdgesInTour = 0;
@@ -1013,7 +1035,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
             if(eulerianTour[i].type == "vertex") {
                 if(graph.nodes[eulerianTour[i].id].getUnvisitedDegree() > 0) {
                     tourStartVertex = eulerianTour[i].id;
-                    graph.nodes[eulerianTour[i].id].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+                    graph.nodes[eulerianTour[i].id].setLayout("fillStyle", const_Colors.NodeFillingLight);
                     tourCurrentVertex = eulerianTour[i].id;
 
                     eulerianSubTour = new Array();
