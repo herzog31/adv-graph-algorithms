@@ -64,16 +64,27 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     var currentQuestionType = 0;
     var questions = new Array();
 
-    var statusArray = [ {"key": 0, "answer": "1 "+LNG.K('algorithm_status1_head')},
-                        {"key": 1, "answer": "2 "+LNG.K('algorithm_status2_head')},
-                        {"key": 2, "answer": LNG.K('aufgabe1_graph_invalid')},
-                        {"key": 3, "answer": "3.1a "+LNG.K('algorithm_status31A_head')},
-                        {"key": 4, "answer": "3.2 "+LNG.K('algorithm_status32_head')},
-                        {"key": 5, "answer": "3.3 "+LNG.K('algorithm_status33_head')},
-                        {"key": 6, "answer": "4.1 "+LNG.K('algorithm_status41_head')},
-                        {"key": 7, "answer": "4.2 "+LNG.K('aufgabe1_check_euleriantour')},
-                        {"key": 8, "answer": "5 "+LNG.K('aufgabe1_showresults')},
-                        {"key": 9, "answer": "3.1b "+LNG.K('algorithm_status31B_head')}];
+    var statusArray = [ {"key": 0, "answer": "Graph initialisieren."},
+                        {"key": 1, "answer": "Prüfen ob der Graph gültig ist."},
+                        {"key": 2, "answer": "Den Graph als ungültig markieren und abbrechen."},
+                        {"key": 3, "answer": "Den ersten Startknoten bestimmen."},
+                        {"key": 4, "answer": "Einen unbesuchten Nachbar für die Subtour finden."},
+                        {"key": 5, "answer": "Prüfen ob die Subtour abgeschlossen ist."},
+                        {"key": 6, "answer": "Subtour in die Gesamttour integrieren."},
+                        {"key": 7, "answer": "Prüfen ob Gesamttour eine Eulertour ist."},
+                        {"key": 8, "answer": "Fertige Eulertour anzeigen."},
+                        {"key": 9, "answer": "Startknoten für die nächste Subtour bestimmen."}];
+
+    var statusArrayPast = [ {"key": 0, "answer": "Der Graph wurde initialisiert."},
+                            {"key": 1, "answer": "Der Graph wurde geprüft und für gültig befunden."},
+                            {"key": 2, "answer": "Der Graph wurde als ungültig markiert."},
+                            {"key": 3, "answer": "Der erste Startknoten wurde bestimmt."},
+                            {"key": 4, "answer": "Es wurde ein unbesuchter Nachbar für die Subtour gefunden."},
+                            {"key": 5, "answer": "Es wurde geprüft ob die Subtour abgeschlossen ist."},
+                            {"key": 6, "answer": "Die Subtour wurde in die Gesamttour integriert."},
+                            {"key": 7, "answer": "Es wurde geprüft ob die Gesamttour eine Eulertour ist."},
+                            {"key": 8, "answer": "Es wurde die fertige Eulertour angezeigt."},
+                            {"key": 9, "answer": "Es wurde ein neuer Startknoten für eine weitere Subtour bestimmt."}];
     
     /**
      * Startet die Ausführung des Algorithmus.
@@ -1124,6 +1135,14 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             }
         };
 
+        var previousStep = "";
+        for (var i = 0; i < statusArrayPast.length; i++) {
+            if(statusArrayPast[i].key == previousStatusId) {
+                previousStep = statusArrayPast[i].answer;
+                statusArrayCopy.splice(i, 1);
+            }
+        };
+
         statusArrayCopy = Utilities.shuffleArray(statusArrayCopy);
         statusArrayCopy = statusArrayCopy.slice(1, 4);
         answers = answers.concat(statusArrayCopy);
@@ -1138,10 +1157,11 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
 
         $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_qst')+' #'+(currentQuestion+1)+'</div>\
+            <p><em>Im aktuellen Schritt: '+previousStep+'</em></p>\
             <p>'+LNG.K('aufgabe1_qst_nextstep1')+'</p>\
             <p>'+form+'</p>\
             <p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button></p>\
-            <p id="tf1_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />\
+            <p id="tf1_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<br /><span class="answer"></span><br /><br />\
             <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_qst_continue')+'</button>\
             </p>');
 
@@ -1270,7 +1290,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             <p>'+LNG.K('aufgabe1_qst_solution1')+''+totalQuestions+''+LNG.K('aufgabe1_qst_solution2')+''+correctAnswers+''+LNG.K('aufgabe1_qst_solution3')+'</p>\
             <p>'+table+'</p>\
             <p></p>\
-            <button id="tf1_button_questionClose">'+LNG.K('aufgabe1_qst_close')+'</button>');
+            <p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_qst_close')+'</button></p>');
 
         $("#tf1_button_questionClose").button().one("click", function() { algo.closeQuestionModal(); });
 
