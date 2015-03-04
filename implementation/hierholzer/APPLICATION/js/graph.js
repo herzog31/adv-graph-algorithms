@@ -14,6 +14,7 @@ var const_Colors = {NodeFilling:            "#98C6EA",  // Pantone 283, 100%
                     NodeBorder:             "#0065BD",  // Pantone 300, 100%, "TUM-Blau"
                     NodeBorderHighlight:    "#C4071B",  // Helles Rot 100% aus TUM Styleguide
                     NodeFillingHighlight:   "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
+                    NodeFillingLight:       "#00c532",  // Dunkelgrün 55 % aus TUM Styleguide
                     NodeFillingQuestion:    "#C4071B",  // Helles Rot 100% aus TUM Styleguide
                     EdgeHighlight1:         "#C4071B",  // Helles Rot 100% aus TUM Styleguide
                     EdgeHighlight2:         "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
@@ -38,7 +39,11 @@ var global_Edgelayout = {'arrowAngle' : Math.PI/8,	         // Winkel des Pfeilk
 			             'lineWidth' : 2,		             // Dicke des Pfeils
                          'font'	: 'Arial',		             // Schrifart 
                          'fontSize' : 14,		             // Schriftgrösse in Pixeln
-                         'isHighlighted': false              // Ob die Kante eine besondere Markierung haben soll
+                         'isHighlighted': false,             // Ob die Kante eine besondere Markierung haben soll
+                         'progressArrow': false,             // Zusätzlicher Animationspfeil 
+                         'progressArrowPosition': 0.0,       // Position des Animationspfeils
+                         'progressArrowSource': null,        // Animationspfeil Source Knoten
+                         'progressArrowTarget': null         // Animationspfeil Target Knoten
 			};
                         
 /**
@@ -569,6 +574,9 @@ Edge.prototype.draw = function(ctx) {
         if(this.getAdditionalLabel() !== false) {
             CanvasDrawMethods.drawTextOnLine(ctx, this.getLayout(), this.getSourceCoordinates(), this.getTargetCoordinates(), this.getAdditionalLabel());
         }
+    }
+    if(this.getLayout()['progressArrow']) {
+        CanvasDrawMethods.drawArrowAtPosition(ctx, this.getLayout(), this.getLayout()['progressArrowSource'], this.getLayout()['progressArrowTarget']);
     }
 };
 

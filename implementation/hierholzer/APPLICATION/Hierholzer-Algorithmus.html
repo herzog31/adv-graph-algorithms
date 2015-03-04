@@ -175,7 +175,7 @@
                             <p class="pseudocode" id="ta_p_l7">      {akt, u} &larr; Suche unbesuchte Kante</p>
                             <p class="pseudocode" id="ta_p_l8">      subtour &larr; subtour &#8746; {u}<br />      akt &larr; u</p>
                             <p class="pseudocode" id="ta_p_l9">    WHILE start &#8800; akt</p>
-                            <p class="pseudocode" id="ta_p_l10">    tour = tour &#8746;<sub>merge</sub> subtour<br />    subtour &larr; &empty;</p>
+                            <p class="pseudocode" id="ta_p_l10">    Integriere subtour in tour<br />    subtour &larr; &empty;</p>
                             <p class="pseudocode" id="ta_p_l11">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten</p>
                             <p class="pseudocode" id="ta_p_l12">  UNTIL tour ist Eulerweg/-tour</p>
                             <p class="pseudocode" id="ta_p_l13">END</p> 
@@ -208,7 +208,7 @@
         <div id="tab_ti" style="display: none;">
             <div id="ti_div_Einfuehrungstext">
                 <div class="BeispielbildContainer">
-                    <img id="ti_img_beispiel1" src="img/koenigsberg.png" alt="Königsberger Brücken" /><p>Königsberger Brücken</p><br />
+                    <img id="ti_img_beispiel1" src="img/koenigsberg.png" alt="Königsberger Brücken" /><p>Königsberger Brücken <sup>1</sup></p><br />
                     <img id="ti_img_beispiel1" src="img/koenigsberg_degree.png" alt="Gerade (grün) und ungerade (rot) Grade" /><p>Gerade (grün) und ungerade Grade (rot)</p><br />
                     <img id="ti_img_beispiel1" src="img/graph1.png" alt="Eulerscher Graph" /><p>Eulerscher Graph</p><br />
                     <img id="ti_img_beispiel1" src="img/graph2.png" alt="Der erste gefundene Kreis (blau)" /><p>Der erste gefundene Kreis (blau)</p><br />
@@ -248,6 +248,7 @@
                     <button id="ti_button_gotoFA2">Forschungsaufgabe: Algorithmus am gerichteten Graphen</button>
                 </div>
                 <br style="clear: both;" />
+                <p style="font-size: 10px; text-align: right;"><a name="bridge_copyright"></a><sup>1</sup> Von Bogdan Giuşcă unter GNU Free Documentation License 1.2, vgl. <a href="http://http://commons.wikimedia.org/wiki/File:Konigsberg_bridges.png">Wikimedia</a>.</p>
             </div>
         </div>
 
@@ -283,7 +284,6 @@
                     <div id="tf1_div_abspielbuttons">
                     </div>
                     <div id="tf1_div_questionModal" class="ui-widget ui-widget-content ui-corner-all" style="display: none;">
-                    Test
                     </div>
                     <div id="tf1_div_statusTabs">
                         <ul>
@@ -306,7 +306,7 @@
                             <p class="pseudocode" id="tf1_p_l7">      {akt, u} &larr; Suche unbesuchte Kante</p>
                             <p class="pseudocode" id="tf1_p_l8">      subtour &larr; subtour &#8746; {u}<br />      akt &larr; u</p>
                             <p class="pseudocode" id="tf1_p_l9">    WHILE start &#8800; akt</p>
-                            <p class="pseudocode" id="tf1_p_l10">    tour = tour &#8746;<sub>merge</sub> subtour<br />    subtour &larr; &empty;</p>
+                            <p class="pseudocode" id="tf1_p_l10">    Integriere subtour in tour<br />    subtour &larr; &empty;</p>
                             <p class="pseudocode" id="tf1_p_l11">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten</p>
                             <p class="pseudocode" id="tf1_p_l12">  UNTIL tour ist Eulerweg/-tour</p>
                             <p class="pseudocode" id="tf1_p_l13">END</p> 
@@ -366,6 +366,8 @@
                     <h2 class="">Status des Algorithmus</h2>
                     <div id="tf2_div_abspielbuttons">
                     </div>
+                    <div id="tf2_div_questionModal" class="ui-widget ui-widget-content ui-corner-all" style="display: none;">
+                    </div>
                     <div id="tf2_div_statusTabs">
                          <ul>
                             <li><a href="#tf2_div_statusErklaerung">Erklärung</a></li>
@@ -387,7 +389,7 @@
                             <p class="pseudocode" id="tf2_p_l7">      (akt, u) &larr; Suche unbesuchte Kante</p>
                             <p class="pseudocode" id="tf2_p_l8">      subtour &larr; subtour &#8746; {u}<br />      akt &larr; u</p>
                             <p class="pseudocode" id="tf2_p_l9">    WHILE start &#8800; akt</p>
-                            <p class="pseudocode" id="tf2_p_l10">    tour = tour &#8746;<sub>merge</sub> subtour<br />    subtour &larr; &empty;</p>
+                            <p class="pseudocode" id="tf2_p_l10">    Integriere subtour in tour<br />    subtour &larr; &empty;</p>
                             <p class="pseudocode" id="tf2_p_l11">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten</p>
                             <p class="pseudocode" id="tf2_p_l12">  UNTIL tour ist Eulertour</p>
                             <p class="pseudocode" id="tf2_p_l13">END</p> 
@@ -435,7 +437,7 @@ Ausgabe: Eulertour/-weg als Liste von Knoten</code></pre>
          subtour &larr; subtour &#8746; {u}
          akt &larr; u
       WHILE start &#8800; akt
-      tour = tour &#8746;<sub>merge</sub> subtour
+      Integriere subtour in tour
       subtour &larr; &empty;
       akt = start &larr; Knoten aus tour mit unbesuchten Kanten
    UNTIL tour ist Eulerweg/-tour

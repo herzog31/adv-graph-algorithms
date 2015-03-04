@@ -47,7 +47,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      */
     var algo = this;
     
-    var replayHistory = new Array();
     var debugConsole = true;
     var tourStartVertex = null;
     var tourStartOddVertex = null;
@@ -58,10 +57,23 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     var eulerianSubTour = new Array();
     var subtours = new Array();
     var currentPseudoCodeLine = 1;
-    var tourColors = new Array("#0000cc", "#006600", "#990000", "#999900", "#cc6600", "#660099", "#330000");
+    var tourColors = new Array("#0000cc", "#990000", "#999900", "#cc6600", "#660099", "#330000");
     var tourColorIndex = 0;
     var tourAnimationIndex = 0; 
     var tourAnimation = null;
+
+    var currentQuestion = 0;
+    var currentQuestionType = 0;
+    var questions = new Array();
+
+    var reqCorrect = [  "schwach zusammenhängend",
+                        "Ingrad gleich Ausgrad",
+                        "Graph besitzt mindestens einen Kreis",
+                        "Knotengrade sind gerade"];
+    var reqWrong = [    "Graph ist kreisfrei",
+                        "Keine negativen Kantengewichte",
+                        "Ingrad größer Ausgrad",
+                        "Ingrad kleiner Ausgrad"];
     
     /**
      * Startet die Ausführung des Algorithmus.
@@ -71,12 +83,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         this.initCanvasDrawer();
 
         // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
-        $("#tf2_div_abspielbuttons").append("<button id=\"tf2_button_Zurueck\">"+LNG.K('algorithm_btn_prev')+"</button>"
-                        +"<button id=\"tf2_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button>"
-                        +"<button id=\"tf2_button_vorspulen\">"+LNG.K('algorithm_btn_frwd')+"</button>"
+        $("#tf2_div_abspielbuttons").append("<button id=\"tf2_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button><br>"
+                        +"<button id=\"tf2_button_vorspulen\">"+LNG.K('aufgabe1_btn_next_question')+"</button>"
                         +"<button id=\"tf2_button_stoppVorspulen\">"+LNG.K('algorithm_btn_paus')+"</button>");
         $("#tf2_button_stoppVorspulen").hide();
-        $("#tf2_button_Zurueck").button({icons:{primary: "ui-icon-seek-start"}, disabled: true});
         $("#tf2_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: false});
         $("#tf2_button_vorspulen").button({icons:{primary: "ui-icon-seek-next"}, disabled: false});
         $("#tf2_button_stoppVorspulen").button({icons:{primary: "ui-icon-pause"}});
@@ -106,7 +116,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      */
     this.refresh = function() {
         this.destroy();
-        // TODO
         var directedGraph = new Graph("graphs/gerichtet1.txt", null, true);
         var algo = new Forschungsaufgabe2(directedGraph, $("#tf2_canvas_graph"), $("#tab_tf2"));
         $("#tab_tf2").data("algo",algo);
@@ -130,7 +139,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_button_1Schritt").on("click.Forschungsaufgabe2",function() {algo.singleStepHandler();});
         $("#tf2_button_vorspulen").on("click.Forschungsaufgabe2",function() {algo.fastForwardAlgorithm();});
         $("#tf2_button_stoppVorspulen").on("click.Forschungsaufgabe2",function() {algo.stopFastForward();});
-        $("#tf2_button_Zurueck").on("click.Forschungsaufgabe2",function() {algo.previousStepChoice();});
     };
     
     /**
@@ -144,7 +152,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_button_vorspulen").off(".Forschungsaufgabe2");
         $("#tf2_button_stoppVorspulen").off(".Forschungsaufgabe2");
         $("#tf2_tr_LegendeClickable").off(".Forschungsaufgabe2");
-        $("#tf2_button_Zurueck").off(".Forschungsaufgabe2");
     };
 
     /**
@@ -163,7 +170,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_button_vorspulen").hide();
         $("#tf2_button_stoppVorspulen").show();
         $("#tf2_button_1Schritt").button("option", "disabled", true);
-        $("#tf2_button_Zurueck").button("option", "disabled", true);
         var geschwindigkeit = 200;  // Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
 
         fastForwardIntervalID = window.setInterval(function(){algo.nextStepChoice();},geschwindigkeit);
@@ -177,7 +183,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_button_vorspulen").show();
         $("#tf2_button_stoppVorspulen").hide();
         $("#tf2_button_1Schritt").button("option", "disabled", false);
-        $("#tf2_button_Zurueck").button("option", "disabled", false);
         window.clearInterval(fastForwardIntervalID);
         fastForwardIntervalID = null;
     };
@@ -202,19 +207,17 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
         if(debugConsole) console.log("Current State: " + statusID);
 
-        this.addReplayStep();
+        var previousStatusId = statusID;
+        currentQuestionType = this.askQuestion();
 
         switch(statusID) {
         case 0:
-            $("#tf2_button_Zurueck").button("option", "disabled", false);
             this.initializeGraph();
             break;
         case 1:
-            $("#tf2_button_Zurueck").button("option", "disabled", false);
             this.checkGraph();
             break;
         case 2:
-            $("#tf2_button_Zurueck").button("option", "disabled", true);
             this.invalidGraph();
             break;
         case 3:
@@ -234,6 +237,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             break;
         case 8:
             this.returnTour();
+            this.showQuestionResults();
             break;
         case 9:
             this.findNewStartingVertex();
@@ -243,30 +247,22 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             break;
         }
 
+        if(currentQuestionType !== false) {
+            if(currentQuestionType === 5) {
+                this.generateGraphReqQuestion();
+            }else if(currentQuestionType === 6) {
+                this.generateNeighborQuestion();
+            }
+            this.showQuestionModal();
+            this.stopFastForward();
+            $("#tf2_button_1Schritt").button("option", "disabled", true);
+            $("#tf2_button_vorspulen").button("option", "disabled", true);
+            
+        }
+
         this.updatePseudoCodeValues();
 
         this.needRedraw = true;
-    };
-    
-    /**
-     * Ermittelt basierend auf der StatusID und anderen den vorherigen Schritt aus
-     * und ruft die entsprechende Funktion auf.
-     * @method
-     */
-    this.previousStepChoice = function() {
-
-        this.replayStep();
-
-        if(statusID == 0) {
-            $("#tf2_button_Zurueck").button("option", "disabled", true);
-        }
-
-        if(statusID == 8) {
-            $("#tf2_button_1Schritt").button("option", "disabled", false);
-            $("#tf2_button_vorspulen").button("option", "disabled", false);
-        }
-
-       this.needRedraw = true;
     };
 
     this.hoverSubtour = function(event) {
@@ -301,24 +297,28 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
     this.animateTourStep = function(event) {
 
-        if(tourAnimationIndex > 0 && eulerianTour[(tourAnimationIndex - 1)].type == "vertex") {
-            graph.nodes[eulerianTour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
-        }
-        if(tourAnimationIndex > 0 && eulerianTour[(tourAnimationIndex - 1)].type == "edge") {
-            graph.edges[eulerianTour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
-        }
-        this.needRedraw = true;
+        var currentEdge = Math.floor(tourAnimationIndex/30);
+        var previousEdge = Math.floor((tourAnimationIndex - 1)/30);
+        var currentArrowPosition = (tourAnimationIndex % 30) / 29;
 
-        if(tourAnimationIndex >= eulerianTour.length) {
+        if(tourAnimationIndex >= (eulerianTour.length*30)) {
             this.animateTourStop(event);
             return;
         }
 
-        if(eulerianTour[tourAnimationIndex].type == "vertex") {
-            graph.nodes[eulerianTour[tourAnimationIndex].id].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+        if(tourAnimationIndex > 0 && eulerianTour[previousEdge].type === "edge") {
+            graph.edges[eulerianTour[previousEdge].id].setLayout("progressArrow", false);
         }
-        if(eulerianTour[tourAnimationIndex].type == "edge") {
-            graph.edges[eulerianTour[tourAnimationIndex].id].setLayout("lineWidth", 6);
+        this.needRedraw = true;
+
+        
+        if(eulerianTour[currentEdge].type === "vertex") {
+            tourAnimationIndex = tourAnimationIndex + 29;
+        }
+
+        if(eulerianTour[currentEdge].type === "edge") {
+            graph.edges[eulerianTour[currentEdge].id].setLayout("progressArrow", true);
+            graph.edges[eulerianTour[currentEdge].id].setLayout("progressArrowPosition", currentArrowPosition);
         }
 
         this.needRedraw = true;
@@ -328,17 +328,29 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     this.animateTour = function(event) {
         $("#animateTour").button("option", "disabled", true);
         $("#animateTourStop").button("option", "disabled", false);
+        for(var i = 0; i < eulerianTour.length; i++) {
+            if(eulerianTour[i].type === "edge") {
+                var sourceNode = null;
+                var targetNode = null;
+                if(eulerianTour[(i - 1) % eulerianTour.length].type === "vertex") {
+                    sourceNode = graph.nodes[eulerianTour[(i - 1) % eulerianTour.length].id].getCoordinates();
+                }
+                if(eulerianTour[(i + 1) % eulerianTour.length].type === "vertex") {
+                    targetNode = graph.nodes[eulerianTour[(i + 1) % eulerianTour.length].id].getCoordinates();
+                } 
+                graph.edges[eulerianTour[i].id].setLayout("progressArrowSource", sourceNode);
+                graph.edges[eulerianTour[i].id].setLayout("progressArrowTarget", targetNode);
+            }
+        }
         tourAnimationIndex = 0;
         var self = event.data.org;
-        tourAnimation = window.setInterval(function() {self.animateTourStep(event); }, 250);
+        tourAnimation = window.setInterval(function() {self.animateTourStep(event); }, 1500.0/30);
     };
 
     this.animateTourStop = function(event) {
-        if(tourAnimationIndex > 0 && eulerianTour[(tourAnimationIndex - 1)].type == "vertex") {
-            graph.nodes[eulerianTour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
-        }
-        if(tourAnimationIndex > 0 && eulerianTour[(tourAnimationIndex - 1)].type == "edge") {
-            graph.edges[eulerianTour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
+        var previousEdge = Math.floor((tourAnimationIndex - 1)/30);
+        if(tourAnimationIndex > 0 && eulerianTour[previousEdge].type === "edge") {
+            graph.edges[eulerianTour[previousEdge].id].setLayout("progressArrow", false);
         }
         event.data.org.needRedraw = true;
         tourAnimationIndex = 0;
@@ -440,84 +452,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
     };
 
-    this.addReplayStep = function() {
-
-        var nodeProperties = {};
-        for(var key in graph.nodes) {
-            nodeProperties[graph.nodes[key].getNodeID()] = {layout: JSON.stringify(graph.nodes[key].getLayout()), label: graph.nodes[key].getLabel()};
-        }
-
-        var edgeProperties = {}
-        for(var key in graph.edges) {
-            edgeProperties[graph.edges[key].getEdgeID()] = {layout: JSON.stringify(graph.edges[key].getLayout()), label: graph.edges[key].getAdditionalLabel(), visited: graph.edges[key].getVisited()};
-        }
-
-        replayHistory.push({
-            "previousStatusId": statusID,
-            "nodeProperties": nodeProperties,
-            "edgeProperties": edgeProperties,
-            "tourStartVertex": tourStartVertex,
-            "tourStartOddVertex": tourStartOddVertex,
-            "tourCurrentVertex": tourCurrentVertex,
-            "semiEulerianGraph": semiEulerianGraph,
-            "validGraph": validGraph,
-            "tourColorIndex": tourColorIndex,
-            "htmlSidebar": $("#tf2_div_statusErklaerung").html(),
-            "eulerianTour": JSON.stringify(eulerianTour),
-            "eulerianSubTour": JSON.stringify(eulerianSubTour),
-            "legende": $("#tab_tf2").find(".LegendeText").html(),
-            "pseudoCodeLine" : currentPseudoCodeLine,
-            "pseudo_start" : $("#tf2_td_tourStartVertex").html(),
-            "pseudo_cur" : $("#tf2_td_tourCurrentVertex").html(),
-            "pseudo_subtour" : $("#tf2_td_eulerianSubTour").html(),
-            "pseudo_tour" : $("#tf2_td_eulerianTour").html(),
-            "subtours" : JSON.stringify(subtours)
-        });
-
-        if(debugConsole) console.log("Current History Step: ", replayHistory[replayHistory.length-1]);
-
-    };
-
-    this.replayStep = function() {
-
-        var oldState = replayHistory.pop();
-
-        if(debugConsole) console.log("Replay Step", oldState);
-
-        statusID = oldState.previousStatusId;
-        tourStartVertex = oldState.tourStartVertex;
-        tourStartOddVertex = oldState.tourStartOddVertex;
-        tourCurrentVertex = oldState.tourCurrentVertex;
-        semiEulerianGraph = oldState.semiEulerianGraph;
-        validGraph = oldState.validGraph;
-        tourColorIndex = oldState.tourColorIndex;
-        subtours = JSON.parse(oldState.subtours);
-        $("#tf2_div_statusErklaerung").html(oldState.htmlSidebar);
-        eulerianTour = JSON.parse(oldState.eulerianTour);
-        eulerianSubTour = JSON.parse(oldState.eulerianSubTour);
-        $("#tab_tf2").find(".LegendeText").html(oldState.legende);
-        currentPseudoCodeLine = oldState.pseudoCodeLine;
-        this.markPseudoCodeLine(currentPseudoCodeLine);
-        $("#tf2_td_tourStartVertex").html(oldState.pseudo_start);
-        $("#tf2_td_tourCurrentVertex").html(oldState.pseudo_cur);
-        $("#tf2_td_eulerianSubTour").html(oldState.pseudo_subtour);
-        $("#tf2_td_eulerianTour").html(oldState.pseudo_tour);
-
-        for(var key in oldState.nodeProperties) {
-            graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].layout));
-            graph.nodes[key].setLabel(oldState.nodeProperties[key].label);
-        }
-
-        for(var key in oldState.edgeProperties) {
-            graph.edges[key].setLayoutObject(JSON.parse(oldState.edgeProperties[key].layout));
-            graph.edges[key].setAdditionalLabel(oldState.edgeProperties[key].label);
-            graph.edges[key].setVisited(oldState.edgeProperties[key].visited);
-        }
-
-        this.needRedraw = true;
-
-    };
-
     this.addVertexToTour = function(vertex, tour) {
         tour.push({type: "vertex", id: vertex.getNodeID()});
     };
@@ -574,6 +508,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             <li><strong>'+LNG.K('aufgabe2_status2_desc5')+'</strong><br />'+LNG.K('aufgabe2_status2_desc6')+'</li>\
             </ul>');
         $("#tab_tf2").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/knoten_even_gerichtet.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('aufgabe2_legende_ingradausgrad')+'</span></td></tr><tr><td class="LegendeTabelle"><img src="img/knoten_odd_gerichtet.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('aufgabe2_legende_ingradgausgrad')+'</span></td></tr></table>');
+        this.minimizeLegend();
+        this.maximizeLegend();
 
         var numberOfOddVertices = 0;
         var firstOddVertex = null;
@@ -654,33 +590,31 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
         $("#tf2_button_1Schritt").button("option", "disabled", true);
         $("#tf2_button_vorspulen").button("option", "disabled", true);
-        $("#tf2_button_Zurueck").button("option", "disabled", true);
 
         return true;
 
     };
 
-    // Selectiere Start Vertice, entweder #1 (Eulerisch) oder #1 mit ungeradem Grad (Semi Eulerisch)
-    this.findStartingVertex = function() {
-        this.markPseudoCodeLine(3);
-        $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
-            <h3>3.1a '+LNG.K('algorithm_status31A_head')+'</h3>\
-            <p>'+LNG.K('aufgabe2_status31A_desc1')+'</p>\
-            <p>'+LNG.K('aufgabe2_status31A_desc2')+'</p>\
-            <p>'+LNG.K('aufgabe2_status31A_desc3')+'</p>\
-            <p>'+LNG.K('aufgabe2_status31A_desc4')+'</p>');
-        $("#tab_tf2").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start')+'</span></td></tr><tr><td class="LegendeTabelle"><img src="img/pfad_gerichtet.png" alt="Kante" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_edgecolor')+'</span></td></tr></table>');
+    this.canvasClickHandler = function(e) {
+        if(semiEulerianGraph) {
+            return;
+        }
+        var mx = e.pageX - canvas.offset().left;
+        var my = e.pageY - canvas.offset().top;
+        for(var knotenID in graph.nodes) {
+            if (graph.nodes[knotenID].contains(mx, my)) {
+                if(tourStartVertex != null) {
+                    graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
+                }
+                this.selectStartVertex(knotenID);
+                break;
+            }
+        }
+    };
 
-        // Restore Naming
-        this.addNamingLabels();
-
-        // Set Starting & Current Vertex
-        for (var knotenID in graph.nodes) {
-            tourStartVertex = knotenID;
-            break;
-        };
-
-        graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+    this.selectStartVertex = function(knotenID) {
+        tourStartVertex = knotenID;
+        graph.nodes[knotenID].setLayout("fillStyle", const_Colors.NodeFillingLight);
         tourCurrentVertex = tourStartVertex;
 
         eulerianSubTour = new Array();
@@ -688,6 +622,43 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         if(debugConsole) console.log("Subtour: ", eulerianSubTour);
 
         this.needRedraw = true;
+    };
+
+    // Selectiere Start Vertice, entweder #1 (Eulerisch) oder #1 mit ungeradem Grad (Semi Eulerisch)
+    this.findStartingVertex = function() {
+        this.markPseudoCodeLine(3);
+
+        if(!semiEulerianGraph) {
+            $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
+            <h3>3.1a '+LNG.K('algorithm_status31A_head')+'</h3>\
+            <p>'+LNG.K('aufgabe2_status31A_desc1')+'</p>\
+            <p>'+LNG.K('aufgabe2_status31A_desc2')+'</p>\
+            <p>'+LNG.K('aufgabe2_status31A_desc4')+'</p>');
+            canvas.on("click.Forschungsaufgabe2", function(e) { algo.canvasClickHandler(e); });
+        }else{
+            $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
+            <h3>3.1a '+LNG.K('algorithm_status31A_head')+'</h3>\
+            <p>'+LNG.K('aufgabe2_status31A_desc1')+'</p>\
+            <p>'+LNG.K('aufgabe2_status31A_desc3')+'</p>\
+            <p>'+LNG.K('aufgabe2_status31A_desc4')+'</p>');  
+        }
+        
+        $("#tab_tf2").find(".LegendeText").html('<table>\
+            <tr><td class="LegendeTabelle"><img src="img/startknoten2.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start2')+'</span></td></tr>\
+            <tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start')+'</span></td></tr>\
+            <tr><td class="LegendeTabelle"><div class="legendePath" style="background-color:'+tourColors[tourColorIndex]+'"></div></td><td><span>'+LNG.K('algorithm_legende_edgecolor')+'</span></td></tr>\
+        </table>');
+        this.minimizeLegend();
+        this.maximizeLegend();
+
+        // Restore Naming
+        this.addNamingLabels();
+
+        // Set Starting & Current Vertex
+        for (var knotenID in graph.nodes) {
+            this.selectStartVertex(knotenID);
+            break;
+        };
 
         statusID = 4;
 
@@ -700,13 +671,15 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     // Wenn gefunden -> findNextVertexForTour()
     this.findNextVertexForTour = function() {
         this.markPseudoCodeLine(7);
+        canvas.off(".Forschungsaufgabe2");
+
         $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.2 '+LNG.K('algorithm_status32_head')+'</h3>\
             <p>'+LNG.K('aufgabe2_status32_desc1')+'</p>\
             <p>'+LNG.K('aufgabe2_status32_desc2')+'(<span style="font-weight: bold; color: '+tourColors[tourColorIndex]+';">'+LNG.K('aufgabe2_status32_desc3')+'</span>)'+LNG.K('aufgabe2_status32_desc4')+'</p>\
             <p>'+LNG.K('aufgabe2_status32_desc5')+'</p>');
 
-        graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
+        //graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
 
         var outEdges = graph.nodes[tourCurrentVertex].getOutEdges();
         var nextEdge = null;
@@ -736,7 +709,9 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         this.addEdgeToTour(graph.edges[nextEdge], eulerianSubTour);
         if(debugConsole) console.log("Subtour: ", eulerianSubTour);
 
-        graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFilling);
+        if(tourCurrentVertex !== tourStartVertex) {
+            graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFilling);
+        }
 
         // Get other Vertex
         tourCurrentVertex = graph.edges[nextEdge].getTargetID();
@@ -757,15 +732,22 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     // Wenn ungleich -> findNextVertexForTour()
     this.compareVertexWithStart = function() {
         this.markPseudoCodeLine(9);
-        $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
+
+        if(tourStartVertex == tourCurrentVertex) {
+            $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.3 '+LNG.K('algorithm_status33_head')+'</h3>\
             <p>'+LNG.K('aufgabe2_status33_desc1')+'</p>\
             <h3>3.3.1 '+LNG.K('aufgabe2_status33_desc2')+'</h3>\
-            <p>'+LNG.K('aufgabe2_status33_desc3')+'</p>\
+            <p>'+LNG.K('aufgabe2_status33_desc3')+'</p>');
+        }else{
+            $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
+            <h3>3.3 '+LNG.K('algorithm_status33_head')+'</h3>\
+            <p>'+LNG.K('aufgabe2_status33_desc1')+'</p>\
             <h3>3.3.2 '+LNG.K('aufgabe2_status33_desc4')+'</h3>\
             <p>'+LNG.K('aufgabe2_status33_desc5')+'</p>');
+        } 
 
-        graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+        //graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
 
         if(debugConsole) console.log("Start: " + tourStartVertex + ", Current: "+ tourCurrentVertex);
 
@@ -788,9 +770,9 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             <h3>4.1 '+LNG.K('algorithm_status41_head')+'</h3>\
             <p>'+LNG.K('aufgabe2_status41_desc1')+'</p>\
             <h3>4.1.1 '+LNG.K('aufgabe2_status41_desc2')+'</h3>\
-            <p>'+LNG.K('aufgabe2_status41_desc3')+'</p>\
-            <h3>4.1.2 '+LNG.K('aufgabe2_status41_desc4')+'</h3>\
-            <p>'+LNG.K('aufgabe2_status41_desc5')+'</p>');
+            <p>'+LNG.K('aufgabe2_status41_desc3')+'</p>');
+        /* <h3>4.1.2 '+LNG.K('aufgabe2_status41_desc4')+'</h3>\
+            <p>'+LNG.K('aufgabe2_status41_desc5')+'</p> */
 
         subtours.push({color: tourColorIndex, tour: eulerianSubTour});
         if(debugConsole) console.log("Subtours", subtours);
@@ -844,6 +826,13 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             <p>'+LNG.K('aufgabe2_status42_desc2')+'</p>\
             <p>'+LNG.K('aufgabe2_status42_desc3')+'</p>\
             <p>'+LNG.K('aufgabe2_status42_desc4')+'</p>');
+        $("#tab_tf2").find(".LegendeText").html('<table>\
+            <tr><td class="LegendeTabelle"><img src="img/startknoten2.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start2')+'</span></td></tr>\
+            <tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start')+'</span></td></tr>\
+            <tr><td class="LegendeTabelle"><div class="legendePath" style="background-color:'+tourColors[tourColorIndex]+'"></div></td><td><span>'+LNG.K('algorithm_legende_edgecolor')+'</span></td></tr>\
+        </table>');
+        this.minimizeLegend();
+        this.maximizeLegend();
 
         var numberOfEdgesInGraph = Object.keys(graph.edges).length;
         var numberOfEdgesInTour = 0;
@@ -929,7 +918,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             <p>'+LNG.K('aufgabe2_status51b_desc1')+'</p>\
             <p><button id="animateTour">'+LNG.K('aufgabe2_status51b_desc2')+'</button><button id="animateTourStop">'+LNG.K('aufgabe2_status51b_desc3')+'</button></p>\
             <p>'+LNG.K('aufgabe2_status51b_desc4')+'</p>\
-            <h3>5.2 '+LNG.K('algorithm_status2_head')+'</h3>\
+            <h3>5.2 '+LNG.K('algorithm_status52_head')+'</h3>\
             <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
             <p>'+LNG.K('aufgabe2_status52_desc1')+'</p>\
             <p></p><h3>'+LNG.K('algorithm_msg_finish')+'</h3>\
@@ -969,7 +958,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             if(eulerianTour[i].type == "vertex") {
                 if(graph.nodes[eulerianTour[i].id].getUnvisitedDegree() > 0) {
                     tourStartVertex = eulerianTour[i].id;
-                    graph.nodes[eulerianTour[i].id].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+                    graph.nodes[eulerianTour[i].id].setLayout("fillStyle", const_Colors.NodeFillingLight);
                     tourCurrentVertex = eulerianTour[i].id;
 
                     eulerianSubTour = new Array();
@@ -984,6 +973,239 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
 
         statusID = 4;
+
+    };
+
+    this.showQuestionModal = function() {
+        $("#tf2_div_statusTabs").hide();
+        $("#tf2_div_questionModal").show();
+        $("#tf2_questionSolution").hide();
+    };
+
+    this.closeQuestionModal = function() {
+        $("#tf2_div_statusTabs").show();
+        $("#tf2_div_questionModal").hide();
+        $("#tf2_button_questionClose").off();
+        $("#tf2_button_1Schritt").button("option", "disabled", false);
+        $("#tf2_button_vorspulen").button("option", "disabled", false);
+    };
+
+    this.saveAnswer = function() {
+
+        if(currentQuestionType === 5) {
+            // Graph Req Question
+
+            var givenAnswer = [];
+            var questionSolution = [];
+            $('#question'+currentQuestion+'_form').find("input[type='checkbox']").each(function() {
+                $(this).attr("disabled", true);
+                var isChecked = $(this).prop('checked');
+                var answerId = parseInt($(this).data("answerId"));
+                givenAnswer.push(isChecked);
+                if(questions[currentQuestion].rightAnswer[answerId]) {
+                    questionSolution.push("Korrekt");
+                }else{
+                    questionSolution.push("Falsch");
+                }
+            });
+
+            givenAnswer = givenAnswer.join("");
+            questions[currentQuestion].rightAnswer = questions[currentQuestion].rightAnswer.join("");
+
+            $("#tf2_questionSolution").find(".answer").html(questionSolution.join(", "));
+
+        }else if(currentQuestionType === 6) {
+            // Neighbor Question
+
+            var givenAnswer = [];
+            var questionSolution = [];
+            $('#question'+currentQuestion+'_form').find("input[type='checkbox']").each(function() {
+                $(this).attr("disabled", true);
+                var isChecked = $(this).prop('checked');
+                var answerId = parseInt($(this).data("answerId"));
+                givenAnswer.push(isChecked);
+            });
+
+            givenAnswer = givenAnswer.join("");
+            questions[currentQuestion].rightAnswer = questions[currentQuestion].rightAnswer.join("");
+
+            if(questions[currentQuestion].rightAnswerShow.length > 1) {
+                $("#tf2_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswerShow.join(", ")+" müssen betrachtet werden.");
+            }else{
+                $("#tf2_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswerShow.join(", ")+" muss betrachtet werden.");
+            }
+
+        }
+
+        questions[currentQuestion].givenAnswer = givenAnswer;
+
+        if(questions[currentQuestion].givenAnswer === questions[currentQuestion].rightAnswer) {
+            $("#tf2_questionSolution").css("color", "green");
+            if(debugConsole) console.log("Answer given ", givenAnswer, " was right!");
+        }else{
+            $("#tf2_questionSolution").css("color", "red");
+            if(debugConsole) console.log("Answer given ", givenAnswer, " was wrong! Right answer was ", questions[currentQuestion].rightAnswer);
+        }
+        currentQuestion++;
+
+        $("#tf2_questionSolution").show();
+        $("#tf2_button_questionClose").hide();
+        $("#tf2_button_questionClose2").button("option", "disabled", false);
+    };
+
+    this.activateAnswerButton = function() {
+        $("#tf2_button_questionClose").button("option", "disabled", false);
+    };
+
+    this.setNodeColorToNormal = function(algo, node) {
+        node.setLayout("fillStyle", const_Colors.NodeFilling);
+        algo.needRedraw = true;
+    };
+
+    this.showQuestionResults = function() {
+
+        var correctAnswers = 0;
+        var totalQuestions = questions.length;
+        var table = "";
+
+        for(var i = 0; i < questions.length; i++) {
+            table = table + '<td style="text-align: center;">#'+(i+1)+'</td>';
+            if(questions[i].rightAnswer == questions[i].givenAnswer) {
+                table = table + '<td><span class="ui-icon ui-icon-plusthick"></span> '+LNG.K('aufgabe1_qst_correct')+'</td>';
+                correctAnswers++;
+            }else{
+                table = table + '<td><span class="ui-icon ui-icon-minusthick"></span> '+LNG.K('aufgabe1_qst_wrong')+'</td>';
+            }
+            table = "<tr>"+table+"</tr>";
+        }
+        table = '<table class="quizTable"><thead><tr><th>'+LNG.K('aufgabe1_qst')+'</th><th>'+LNG.K('aufgabe1_qst_solution')+'</th></tr></thead><tbody>'+table+'</tbody></table>';
+
+        $("#tf2_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Ergebnisse</div>\
+            <p>'+LNG.K('aufgabe1_qst_solution1')+''+totalQuestions+''+LNG.K('aufgabe1_qst_solution2')+''+correctAnswers+''+LNG.K('aufgabe1_qst_solution3')+'</p>\
+            <p>'+table+'</p>\
+            <p></p>\
+            <p><button id="tf2_button_questionClose">'+LNG.K('aufgabe1_qst_close')+'</button></p>');
+
+        $("#tf2_button_questionClose").button().one("click", function() { algo.closeQuestionModal(); });
+
+        this.showQuestionModal();
+
+    };
+
+    this.generateGraphReqQuestion = function() {
+
+        reqCorrectCopy = Utilities.shuffleArray(reqCorrect.slice());
+        reqWrongCopy = Utilities.shuffleArray(reqWrong.slice());
+        var reqChoosen = [];
+
+        for(var i = 0; i < 2 && i < reqCorrectCopy.length; i++) {
+            reqChoosen.push(reqCorrectCopy[i]);
+        }
+        for(var i = 0; i < 2 && i < reqWrongCopy.length; i++) {
+            reqChoosen.push(reqWrongCopy[i]);
+        }
+
+        reqChoosen = Utilities.shuffleArray(reqChoosen);
+
+        var inputs = "";
+        for(var i = 0; i < reqChoosen.length; i++) {
+            inputs += '<input type="checkbox" id="tf2_input_question'+currentQuestion+'_'+i+'" data-answer-id="'+i+'" name="question'+currentQuestion+'_'+i+'" value="'+i+'" />\
+            <label for="tf2_input_question'+currentQuestion+'_'+i+'">'+reqChoosen[i]+'</label><br />';
+        }
+
+        $("#tf2_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_qst')+' #'+(currentQuestion+1)+'</div>\
+            <p>Welche Voraussetzungen muss dieser gerichtete Graph erfüllen, damit der Algorithmus eine Eulertour finden kann?</p>\
+            <p><em>Die Antworten schließen auch implizierte Voraussetzungen ein!</em></p>\
+            <p><form id="question'+currentQuestion+'_form">'+inputs+'</form></p>\
+            <p><button id="tf2_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button></p>\
+            <p id="tf2_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />\
+            <button id="tf2_button_questionClose2">'+LNG.K('aufgabe1_qst_continue')+'</button>\
+        </p>');
+
+        var result = [];
+        for(var i = 0; i < reqChoosen.length; i++) {
+            if(reqCorrect.indexOf(reqChoosen[i]) !== -1) {
+                result.push(true);
+            }else{
+                result.push(false);
+            }
+        }
+
+        questions[currentQuestion] = {type: currentQuestionType, rightAnswer: result};
+
+        $("#tf2_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
+        $("#tf2_button_questionClose").button({disabled: false}).on("click", function() { algo.saveAnswer(); });
+
+    };
+
+    this.generateNeighborQuestion = function() {
+
+        var allNodes = [];
+
+        for(var knotenID in graph.nodes) {
+            if(knotenID === tourCurrentVertex) {
+                continue;
+            }
+            allNodes.push(graph.nodes[knotenID].getLabel());
+        }
+
+        var neighbors = [];
+        for(var outEdge in graph.nodes[tourCurrentVertex].getOutEdges()) {
+            if(graph.edges[outEdge].getVisited()) {
+                continue;
+            }
+            neighbors.push(graph.nodes[graph.edges[outEdge].getTargetID()].getLabel());
+        }
+
+        var inputs = "";
+        for(var i = 0; i < allNodes.length; i++) {
+            inputs += '<input type="checkbox" id="tf2_input_question'+currentQuestion+'_'+i+'" data-answer-id="'+i+'" name="question'+currentQuestion+'_'+i+'" value="'+i+'" />\
+            <label for="tf2_input_question'+currentQuestion+'_'+i+'">'+allNodes[i]+'</label><br />';
+        }
+
+        $("#tf2_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_qst')+' #'+(currentQuestion+1)+'</div>\
+            <p>Welche(n) Nachbarn von <strong>'+graph.nodes[tourCurrentVertex].getLabel()+'</strong> kommen für den Algorithmus im nächsten Schritt potentiell in Frage?</p>\
+            <p><form id="question'+currentQuestion+'_form">'+inputs+'</form></p>\
+            <p><button id="tf2_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button></p>\
+            <p id="tf2_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />\
+            <button id="tf2_button_questionClose2">'+LNG.K('aufgabe1_qst_continue')+'</button>\
+        </p>');
+
+        var result = [];
+        for(var i = 0; i < allNodes.length; i++) {
+            if(neighbors.indexOf(allNodes[i]) !== -1) {
+                result.push(true);
+            }else{
+                result.push(false);
+            }
+        }
+
+        console.log("Result: "+result);
+
+        questions[currentQuestion] = {type: currentQuestionType, rightAnswer: result, rightAnswerShow: neighbors};
+
+        $("#tf2_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
+        $("#tf2_button_questionClose").button({disabled: false}).on("click", function() { algo.saveAnswer(); });
+
+    };
+
+    this.askQuestion = function() {
+
+        var randomVariable = function(min, max) {
+            return Math.random() * (max - min) + min;
+        };
+
+        if(statusID === 1) {
+            // Frage zu Voraussetzungen (100%)
+            return 5;
+        }else if(statusID === 3 || statusID === 9 || (statusID === 5 && tourStartVertex != tourCurrentVertex)) {
+            // Frage zu möglichen Nachbarn (50%)
+            if(randomVariable(0, 1) > 0.5) {
+                return 6;
+            }
+        }
+
+        return false;
 
     };
     

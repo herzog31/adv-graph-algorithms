@@ -41,7 +41,16 @@ Utilities.objectSize = function(obj) {
 };
 
 Utilities.shuffleArray = function(array) {
-    for(var j, x, i = array.length; i; j = Math.floor(Math.random() * i), x = array[--i], array[i] = array[j], array[j] = x);
+    var counter = array.length, temp, index;
+
+    while (counter > 0) {
+        index = Math.floor(Math.random() * counter);
+        counter--;
+        temp = array[counter];
+        array[counter] = array[index];
+        array[index] = temp;
+    }
+
     return array;
 };
     

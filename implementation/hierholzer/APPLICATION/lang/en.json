@@ -16,7 +16,8 @@
     "algorithm_legende_undirectededge": "EN - Ungerichtete Kante",
     "algorithm_legende_degree2": "EN - Knoten mit geradem Grad 2",
     "algorithm_legende_degree3": "EN - Knoten mit ungeradem Grad 3",
-    "algorithm_legende_start": "EN - Startknoten bzw. Knoten der mit dem Startknoten verglichen wird",
+    "algorithm_legende_start": "EN - Aktueller Knoten",
+    "algorithm_legende_start2": "EN - Startknoten",
     "algorithm_legende_edgecolor": "EN - Kante der Eulertour im aktuellen Durchgang",
 
     "algorithm_status1_head": "EN - Initialisierung",
@@ -35,7 +36,8 @@
     "algorithm_status31A_desc1": "EN - Für die erste Subtour benötigt der Algorithmus einen Startknoten:",
     "algorithm_status31A_desc2": "EN - Für <strong>eulersche Graphen</strong> kann man einen beliebigen Knoten wählen.",
     "algorithm_status31A_desc3": "EN - Für <strong>semi-eulersche Graphen</strong> wählt man einen der beiden Knoten mit ungeradem Grad.",
-    "algorithm_status31A_desc4": "EN - Der vom Algorithmus ausgewählte Knoten wurde <span style=\"font-weight: bold; color: green;\">grün</span> markiert.",
+    "algorithm_status31A_desc4": "EN - Der der Algorithmus hat bereits einen zufälligen Knoten ausgewählt und <span style=\"font-weight: bold; color: #00c532;\">hellgrün</span> markiert. <strong>Alternativ kannst du selbst einen Startknoten durch Klick auf einen beliebigen Knoten aussuchen.</strong>",
+    "algorithm_status31A_desc5": "EN - Der vom Algorithmus ausgewählte Knoten wurde <span style=\"font-weight: bold; color: #00c532;\">hellgrün</span> markiert.",
 
     "algorithm_status31B_head": "EN - Neuen Startknoten finden",
     "algorithm_status31B_desc1": "EN - Als Startknoten der nächsten Subtour wählt der Algorithmus einen beliebigen Knoten, der unbesuchte Kanten besitzt.",
@@ -65,7 +67,7 @@
     
     "algorithm_status42_head": "EN - Auf Vollständigkeit prüfen",
     "algorithm_status42_desc1": "EN - Nach jeder Integration einer Subtour in die Gesamttour prüft der Algorithmus ob die Gesamttour eine Eulertour bzw. ein Eulerweg ist.",
-    "algorithm_status42_desc2": "EN - Dazu vergleicht der Algorithmus die Anzahl der Kanten im Graph mit der Anzahl der Kanten in der Gesamttour.",
+    "algorithm_status42_desc2": "",
     "algorithm_status42_desc3": "EN - Bei Gleichheit terminiert der Algorithmus und gibt die Gesamttour in <em>Schritt 5</em> zurück.",
     "algorithm_status42_desc4": "EN - Bei Ungleichheit existiert mindestens eine weitere Subtour, die gefunden werden muss. Wir springen zurück zu <em>Schritt 3</em>.",
 
