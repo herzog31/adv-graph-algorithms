@@ -356,17 +356,17 @@ html {
 .no-close .ui-dialog-titlebar-close {
     display: none;
 }
-#tf1_div_questionModal {
+#tf1_div_questionModal, #tf2_div_questionModal {
     text-align: left;
     margin-top: 20px;
     display: block;
     padding-bottom: 10px;
 }
-#tf1_div_questionModal p {
+#tf1_div_questionModal p, #tf2_div_questionModal p {
     padding: 0 1em 0 1em;
 }
 
-#tf1_div_questionModal form {
+#tf1_div_questionModal form, #tf2_div_questionModal form {
     margin-left: 1em;
 }
 .quizTable {

@@ -1035,7 +1035,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
             <p>'+LNG.K('algorithm_status51a_desc1')+'</p>\
             <p><button id="animateTour">'+LNG.K('algorithm_status51a_desc2')+'</button><button id="animateTourStop">'+LNG.K('algorithm_status51a_desc3')+'</button></p>\
             <p>'+LNG.K('algorithm_status51a_desc4')+'</p>\
-            <h3>5.2 '+LNG.K('algorithm_status2_head')+'</h3>\
+            <h3>5.2 '+LNG.K('algorithm_status52_head')+'</h3>\
             <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
             <p>'+LNG.K('algorithm_status52_desc1')+'</p>\
             <p></p><h3>'+LNG.K('algorithm_msg_finish')+'</h3>\
@@ -1052,7 +1052,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
             <p>'+LNG.K('algorithm_status51b_desc1')+'</p>\
             <p><button id="animateTour">'+LNG.K('algorithm_status51b_desc2')+'</button><button id="animateTourStop">'+LNG.K('algorithm_status51b_desc3')+'</button></p>\
             <p>'+LNG.K('algorithm_status51b_desc4')+'</p>\
-            <h3>5.2 '+LNG.K('algorithm_status2_head')+'</h3>\
+            <h3>5.2 '+LNG.K('algorithm_status52_head')+'</h3>\
             <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
             <p>'+LNG.K('algorithm_status52_desc1')+'</p>\
             <p></p><h3>'+LNG.K('algorithm_msg_finish')+'</h3>\
