@@ -169,9 +169,9 @@
                     </ul>
                     <div id="ta_div_statusErklaerung">
                         <h3>Initialisierung des Algorithmus.</h3>
-                        <p>Am Anfang des Algorithmus besitzt kein Knoten einen Matching-Partner. Die Menge des Kanten im Matching M ist dementsprechend leer.</p>
-                        <p>In jeder Iteration suchen wir eine maximale Menge an kürzesten knotendisjunkten Augmentationswegen.</p>
-                        <p>Maximal heißt hier, dass es zusätzlich zu den gefundenen Pfaden keinen anderen kürzesten knotendisjunkten Augmentationsweg gibt.</p>
+                        <p>Am Anfang des Algorithmus besitzt kein Knoten einen Matching-Partner. Zuerst werden die maximale Markierungen bzw. Gleichheitsgraph bestimmt.</p>
+                        <p>Maximal heißt hier, dass nur die Kanten dem Gleichheitsgraph hinzugefügt werden, die das maximale Gewicht von allen ausgehenden Kanten aus dem entsprechenden Knoten in U haben. Alle Knoten in U werden mit dem entsprechenden Kantengewicht markiert, alle Knoten in V werden mit 0 markiert.</p>
+                        <p>In jeder Iteration suchen wir einen Augmentationsweg im aktuellen Gleichheitsgraph und vergrößern damit das Matching.</p>
                         <p>Ein Augmentationsweg ist ein Weg, der mit einem freien Knoten anfängt, mit einem freien Knoten endet und alternierend Matching-Kanten und Nicht-Matching-Kanten benutzt.</p>
                     </div>
                     <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
@@ -193,7 +193,7 @@
             </div>
         </div>
         <div title="Algorithmus ausführen" class="tabIntroDialog">
-            <h2>Den Hopcroft-Karp-Algorithmus ausführen</h2>
+            <h2>Die Ungarische Methode ausführen</h2>
             <p>In diesem Schritt sehen wir, wie der Algorithmus arbeitet.</p>
             <p>Rechts vom Graph kannst du die Ausführung kontrollieren.</p>
         </div>

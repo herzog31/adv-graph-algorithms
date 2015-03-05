@@ -130,6 +130,11 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             }
         }
         maxKey = maxKey + Math.abs(vNodes - uNodes);
+        for(var edge in graph.edges) {
+            graph.edges[edge].originalColor = "black";
+            graph.edges[edge].originalDashed = false;
+            graph.edges[edge].originalWidth = 2;
+        }
         for(var i in graph.nodes) {
             if (graph.nodes[i].getCoordinates().y == graph_constants.U_POSITION) {
                 var nodeArray = new Object();
@@ -143,8 +148,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                         e.setLayout("lineWidth", 1);
                         e.setLayout("lineColor", const_Colors.grey);
                         e.originalColor = const_Colors.grey;
-                        e.originalDashed = true;
                         e.originalWidth = 1;
+                        e.originalDashed = true;
                     }
                 }
             }
@@ -155,11 +160,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                 graph.nodes[cnt] = graph.nodes[i];
                 delete graph.nodes[i];
                 for(var edge in graph.edges){
-                    if(!graph.edges[edge].originalColor) {
-                        graph.edges[edge].originalColor = "black";
-                        graph.edges[edge].originalDashed = false;
-                        graph.edges[edge].originalWidth = 2;
-                    }
                     if(graph.edges[edge].getSourceID() == i){
                         graph.edges[edge].setSourceID(cnt);
                     }
@@ -254,17 +254,19 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         this.stopFastForward();
         this.destroyCanvasDrawer();
         this.deregisterEventHandlers();
+        $("body").data("graph",new BipartiteGraph("graphs/graph1.txt"));
+        this.graph = new BipartiteGraph("graphs/graph1.txt");
+        this.drawCanvas();
     };
 
     /**
-     * Beendet den Tab und startet ihn neu
+     * Startet den Algorithmus von Anfang an
      * @method
      */
     this.refresh = function() {
-        this.destroy();
-        var algo = new HungarianMethod($("body").data("graph"),$("#ta_canvas_graph"),$("#tab_ta"));
-        $("#tab_ta").data("algo",algo);
-        algo.run();
+        currentDisplayStep = 0;
+        this.replayStep(currentDisplayStep);
+        this.needRedraw = true;
     };
 
     /**
@@ -433,7 +435,12 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         showLabels(lx, ly);
         statusID = READY_TO_START;
         console.log("READY_TO_START");
-        $("#ta_div_statusErklaerung").text("Ursprungliche Markierungen sowie Gleichheitsgraph wurden bestimmt.");
+        $("#ta_div_statusErklaerung").html("<h3>Der Algorithmus ist bereit, den Augmentationsweg zu suchen.</h3>"
+            + "<p>Ursprungliche Markierungen sowie Gleichheitsgraph wurden bestimmt.</p>"
+            + "<p>Der Gleichheitsgraph ist durch den dicken schwarzen Kanten bezeichnet. Alle Knoten haben eine Markierung bekommen.</p>"
+            + "<p>Ungarische Methode läuft durch allen Knoten in U und versucht einen Augmentationsweg mit der Wurzel in diesem Knoten zu finden. Wird ein Augmentationsweg gefunden, hört der Algorithmus mit der Iteration auf. Wird der nicht gefunden, passt der Algorithmus die Markierungen bzw. Gleichheitsgraph an.</p>"
+        );
+        //$("#ta_div_statusErklaerung").text("Ursprungliche Markierungen sowie Gleichheitsgraph wurden bestimmt.");
         $(".marked").removeClass("marked");
         $("#ta_p_l4").addClass("marked");
         return READY_TO_START;
@@ -444,7 +451,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             statusID = FINISHED;
             console.log("FINISHED");
             this.end();
-            $("#ta_div_statusErklaerung").text("Der Algorithmus ist fertig.");
             $("#ta_button_1Schritt").button("option", "disabled", true);
             showCurrentMatching(xy, false);
             //TODO show answer
@@ -475,7 +481,10 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         showTreeRoot(S);
         statusID = READY_FOR_SEARCHING;
         console.log("READY_FOR_SEARCHING");
-        $("#ta_div_statusErklaerung").text("Die Wurzel des alternierenden Baums wurde bestimmt.");
+        $("#ta_div_statusErklaerung").html("<h3>Die Wurzel des Augmentationsweges wurde bestimmt.</h3>" +
+            "<p>Ungarische Methode hat einen Knoten gefunden, der noch keinen Matching-Partner hat. Dieser Knoten wird <span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span> gekennzechnet.</p>" +
+            "<p>Jetzt wird der Algorithmus versuchen einen Augmentationsweg mit der Wurzel in diesem Knoten zu finden.</p>"
+        );
         $(".marked").removeClass("marked");
         $("#ta_p_l6").addClass("marked");
         $("#ta_p_l7").addClass("marked");
@@ -500,7 +509,12 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             return READY_TO_BUILD_TREE;
         }
         console.log("AUGMENTING_PATH_NOT_FOUND");
-        $("#ta_div_statusErklaerung").text("Augmentationsweg wurde nicht gefunden.");
+        $("#ta_div_statusErklaerung").html(
+            "<h3>Augmentationsweg wurde nicht gefunden.</h3>" +
+            "<p>Es gibt keinen Augmentationsweg mit der Wurzel im <span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span> gekennzeichneten Knoten im aktuellen Gleichheitsgraph.</p>" +
+            "<p>Deswegen müssen die Knotenmarkierungen bzw. Gleichheitsgraph angepasst werden.</p>"
+            //TODO the algorithm howto anpassen
+        );
         statusID = AUGMENTING_PATH_NOT_FOUND;
         $(".marked").removeClass("marked");
         $("#ta_p_l8").addClass("marked");
@@ -514,7 +528,11 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                 if (yx[y] == -1) {
                     showAugmentingPath(x, y, prev, xy, yx);
                     console.log("AUGMENTING_PATH_FOUND");
-                    $("#ta_div_statusErklaerung").text("Augmentationsweg wurde gefunden.");
+                    $("#ta_div_statusErklaerung").html(
+                        "<h3>Augmentationsweg wurde gefunden.</h3>" +
+                        "<p>Der Augmentationsweg ist <span style='font-weight: bold; color: red;'>rot</span> gekennzeichnet.</p>" +
+                        "<p>Jetzt kann das Matching durch den entgegengesetzten Augmentationsweg (die Kanten, die noch nicht im Matching waren, kommen ins Matching rein und die, die da waren, kommen aus dem Matching raus) vergrößert werden.</p>"
+                    );
                     statusID = AUGMENTING_PATH_FOUND;
                     $(".marked").removeClass("marked");
                     $("#ta_p_l11").addClass("marked");
@@ -565,7 +583,11 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                     showAugmentingPath(x, y, prev, xy, yx);
                     statusID = AUGMENTING_PATH_FOUND;
                     console.log("AUGMENTING_PATH_FOUND");
-                    $("#ta_div_statusErklaerung").text("Augmentationsweg wurde gefunden.");
+                    $("#ta_div_statusErklaerung").html(
+                        "<h3>Augmentationsweg wurde gefunden.</h3>" +
+                        "<p>Der Augmentationsweg ist <span style='font-weight: bold; color: red;'>rot</span> gekennzeichnet.</p>" +
+                        "<p>Jetzt kann das Matching durch den entgegengesetzten Augmentationsweg (die Kanten, die noch nicht im Matching waren, kommen ins Matching rein und die, die da waren, kommen aus dem Matching raus) vergrößert werden.</p>"
+                    );
                     $(".marked").removeClass("marked");
                     $("#ta_p_l11").addClass("marked");
                     return AUGMENTING_PATH_FOUND;
@@ -609,7 +631,10 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         showCurrentMatching(xy, true);
         statusID = MATCHING_INCREASED;
         console.log("MATCHING_INCREASED");
-        $("#ta_div_statusErklaerung").text("Matching wurde vergrößert.");
+        $("#ta_div_statusErklaerung").html(
+            "<h3>Matching wurde vergrößert.</h3>" +
+            "<p>Das neue Matching ist <span style='font-weight: bold; color: green;'>grün</span> gekennzeichnet.</p>"
+        );
         $(".marked").removeClass("marked");
         if(maxMatch == cost.length){
             $("#ta_p_l12").addClass("marked");
@@ -650,7 +675,15 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         statusID = LABELS_UPDATED;
         showLabels(lx, ly);
         console.log("LABELS_UPDATED");
-        $("#ta_div_statusErklaerung").text("Markierungen sowie Gleichheitsgraph wurden aktualisiert.");
+        $("#ta_div_statusErklaerung").html(
+            "<h3>Markierungen sowie Gleichheitsgraph wurden aktualisiert.</h3>" +
+            "<p>Neuer Gleichheitsgraph wurde durch den folgenden Algorithmus bestimmt.</p>" +
+            "<p>Sei l(x), l(y) die aktuellen Markierungen von Knoten x und y, w(x,y) - das Kantengewicht zwichen Knoten x und y, dann</p>" +
+            "<p><b>Δ = min{l(x) + l(y) - w(x,y) : x∈S, y∈V\\T}</b> und die neuen Markierungen wurden wie folgend gerechnet:<br/>" +
+            "<b>l'(v) = l(v) - Δ</b>, falls v∈S<br/>" +
+            "<b>l'(v) = l(v) + Δ</b>, falls v∈T<br/>" +
+            "<b>l'(v) = l(v)</b>, andernfalls<br/></p>"
+        );
         $(".marked").removeClass("marked");
         $("#ta_p_l6").addClass("marked");
         $("#ta_p_l7").addClass("marked");
@@ -669,12 +702,38 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.end = function() {
-        this.stopFastForward();
+        if (fastForwardIntervalID != null) {
+            this.stopFastForward();
+        }
         end = true;
         var ret = 0;
         for (var x = 0; x < n; x++) {
             ret += cost[x][xy[x]];
         }
+        //answer = 0;
+        //for (var x = 0; x < n; x++) {
+        //    answer += cost[x][xy[x]];
+        //}
+        $("#ta_div_statusErklaerung").html(
+            "<h3>Der Algorithmus ist fertig.</h3>" +
+            "<p>Ungarische Methode hat erfolgreich das maximale Matching bestimmt.</p>" +
+            "<p>Das maximale Matching in diesem Graph hat das Gesamtgewicht <b>" + ret + ".</b></p>" +
+            "<h3>Was nun?</h3>" +
+            "<button id='ta_button_gotoIdee' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>Beschreibung des Algorithmus lesen</span></button>" +
+            "<h3>Forschungsaufgaben ausprobieren:</h3>" +
+            "<button id='ta_button_gotoFA1' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>FA1</span></button>" +
+            "<button id='ta_button_gotoFA2' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>FA2</span></button>"
+        );
+
+        $("#ta_button_gotoIdee").click(function() {
+            $("#tabs").tabs("option", "active", 3);
+        });
+        $("#ta_button_gotoFA1").click(function() {
+            $("#tabs").tabs("option", "active", 4);
+        });
+        $("#ta_button_gotoFA2").click(function() {
+            $("#tabs").tabs("option", "active", 5);
+        });
     };
 
     /**
@@ -732,17 +791,27 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         }else{
             $("#ta_button_Zurueck").button("option", "disabled", true);
             for(var key in graph.nodes) {
-                graph.nodes[key].setLayout("fillStyle", const_Colors.NodeFilling);
+                graph.nodes[key].setLayout("fillStyle", graph.nodes[key].originalFill);
+                graph.nodes[key].setLayout("borderColor", graph.nodes[key].originalBorder);
                 graph.nodes[key].setLabel("");
             }
             for(var key in graph.edges) {
-                graph.edges[key].setLayout("lineColor", "black");
-                graph.edges[key].setLayout("lineWidth", 2);
+                if(graph.edges[key].originalDashed){
+                    graph.edges[key].setLayout("lineColor", const_Colors.grey);
+                    graph.edges[key].setLayout("lineWidth", 1);
+                    graph.edges[key].setLayout("dashed", true);
+                }else {
+                    graph.edges[key].originalColor = "black";
+                    graph.edges[key].originalWidth = 2;
+                    graph.edges[key].setLayout("lineColor", graph.edges[key].originalColor);
+                    graph.edges[key].setLayout("lineWidth", graph.edges[key].originalWidth);
+                    graph.edges[key].setLayout("dashed", graph.edges[key].originalDashed);
+                }
             }
             $("#ta_div_statusErklaerung").html("<h3>Initialisierung des Algorithmus.</h3>"
-                + "<p>Am Anfang des Algorithmus besitzt kein Knoten einen Matching-Partner. Die Menge des Kanten im Matching M ist dementsprechend leer.</p>"
-                + "<p>In jeder Iteration suchen wir eine maximale Menge an kürzesten knotendisjunkten Augmentationswegen.</p>"
-                + "<p>Maximal heißt hier, dass es zusätzlich zu den gefundenen Pfaden keinen anderen kürzesten knotendisjunkten Augmentationsweg gibt.</p>"
+                + "<p>Am Anfang des Algorithmus besitzt kein Knoten einen Matching-Partner. Zuerst werden die maximale Markierungen bzw. Gleichheitsgraph bestimmt.</p>"
+                + "<p>Maximal heißt hier, dass nur die Kanten dem Gleichheitsgraph hinzugefügt werden, die das maximale Gewicht von allen ausgehenden Kanten aus dem entsprechenden Knoten in U haben. Alle Knoten in U werden mit dem entsprechenden Kantengewicht markiert, alle Knoten in V werden mit 0 markiert.</p>"
+                + "<p>In jeder Iteration suchen wir einen Augmentationsweg im aktuellen Gleichheitsgraph und vergrößern damit das Matching.</p>"
                 + "<p>Ein Augmentationsweg ist ein Weg, der mit einem freien Knoten anfängt, mit einem freien Knoten endet und alternierend Matching-Kanten und Nicht-Matching-Kanten benutzt.</p>");
             $(".marked").removeClass("marked");
             $("#ta_p_l2").addClass("marked");

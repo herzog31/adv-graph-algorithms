@@ -106,7 +106,7 @@ function showCurrentMatching(xy, otherEdges){
 }
 
 function displayST(S, T){
-    var text = "S=[";
+    var sText = "S=[";
     var first = true;
     for(var i in S){
         if(S[i] == true) {
@@ -116,25 +116,31 @@ function displayST(S, T){
             if(first){
                 first = false;
             }else{
-                text += ", ";
+                sText += ", ";
             }
-            text += (parseInt(i)+1);
+            sText += (parseInt(i)+1);
         }
     }
     first = true;
-    text += "], T=[";
+    sText += "]";
+    var tText = "T=[";
     for(var i in T){
         if(T[i] == true){
             $("body").data("graph").nodes[S.length + parseInt(i)].setLayout("fillStyle", "green");
             if(first){
                 first = false;
             }else{
-                text += ", ";
+                tText += ", ";
             }
-            text += (parseInt(i)+1);
+            tText += (parseInt(i)+1);
         }
     }
-    text += "]";
-    $("#ta_div_statusErklaerung").text(text);
+    tText += "]";
+    $("#ta_div_statusErklaerung").html(
+        "<h3>Der Augmentationsweg wird gesucht.</h3>" +
+        "<p>Für die Suche des Augmentationsweges werden zwei Knotenmengen (<b>S</b> und <b>T</b>) genutzt. <b>S</b> enthält schon besuchten Knoten (während dieser Iteration) von U. <b>T</b> enthält schon besuchten Knoten von V.</p>" +
+        "<p>Aktuelle Stände der S und T Mengen:</p>" +
+        "<p><b>" + sText + "</b> <b>" + tText + "</b></p>"
+    );
     //TODO node borders
 }
