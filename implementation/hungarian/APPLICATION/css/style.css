@@ -53,11 +53,11 @@ div.statusWindow {
     text-align: center;
     margin-left: 715px;
     width: 350px;
-    height: 500px;
+    min-height: 500px;
     padding-left: 15px;
     padding-right: 15px;
     border: 2px groove #78C8FF;
-    overflow: hidden; 
+    overflow: scroll;
 }
 
 div.canvasWrapper {
@@ -207,7 +207,7 @@ table.algoInformationen {
 #te_div_Einfuehrungstext {
     padding-left: 15px;
     padding-right: 15px;
-    width: 1040px;
+    text-align: justify;
 }
 
 #te_div_beispiel1Container {
@@ -251,7 +251,7 @@ table.algoInformationen {
 #ti_div_Einfuehrungstext {
     padding-left: 15px;
     padding-right: 15px;
-    width: 1000px;
+    text-align: justify;
 }
 
 #ta_div_statusTabs .ui-widget-header {

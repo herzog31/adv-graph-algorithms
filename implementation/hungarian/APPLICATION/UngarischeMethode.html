@@ -17,6 +17,13 @@
     <script src="js/algorithm.js" type="text/javascript"></script>
     <script src="js/textDB.js" type="text/javascript"></script>
     <script src="js/BipartiteGraph.js" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            showMathMenu: false,
+            showMathMenuMSIE: false
+        });
+    </script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG.js&locale=de"></script>
 
     <title>Die Ungarische Methode</title>
 </head>
@@ -203,12 +210,76 @@
         </div>
     </div>
     <div id="tab_ti">
-        <p>TODO</p>
-        <!-- <div id="ti_div_Einfuehrungstext">
-            <h1>Matching auf bipartiten Graphen</h1>
-            <h1>Idee des Algorithmus</h1>
-            <h1>Finden der Länge des kürzesten Augmentationsweges</h1>
+        <div id="ti_div_Einfuehrungstext">
+            <div class="BeispielbildContainer">
+                <img id="ti_img_beispiel1" src="img/beispiel1.png" alt="Optimales Matching" /><p>Bild 1: Ein optimales Matching</p><br />
+                <img id="ti_img_beispiel1" src="img/beispiel1.png" alt="Markierungen" /><p>Bild 2: Knotenmarkierungen</p><br />
+                <img id="ti_img_beispiel1" src="img/beispiel1.png" alt="Gleichheitsgraph" /><p>Bild 3: Gleichheitsgraph</p><br />
+                <img id="ti_img_beispiel1" src="img/beispiel1.png" alt="Matched / Frei" /><p>Bild 4: Freie und Matched Knoten</p><br />
+                <img id="ti_img_beispiel1" src="img/beispiel1.png" alt="Alternierender Pfad" /><p>Bild 5: Ein alternierender Pfad</p><br />
+                <img id="ti_img_beispiel1" src="img/beispiel1.png" alt="Augmentierender Pfad" /><p>Bild 6: Ein augmentierender Pfad</p>
+            </div>
+            <h1>Das Finden von optimalen Matchings</h1>
+
+            <p>Im Alltag kann man viele Zuordnungsprobleme finden, die mittels Matchings auf bipartiten Graphen modelliert werden könnnen. Hier möchten wir uns speziell mit gewichteten Zuordnungsproblemen beschäftigen.</p>
+            <p>Als Beispiel betrachten wir folgende Problemstellung: Ein Unternehmer hat in seinem Betrieb eine Menge von Aufgaben, die bearbeitet werden müssen. Seine Mitarbeiter sind aufgrund verschiedener Qualifikationen aber nicht alle gleichermaßen für jede Aufgabe geeignet. Das bedeutet, dass jeder Mitarbeiter eine andere Anzahl von Stunden zur Bearbeitung einer Aufgabe benötigt. Weil der Unternehmer effizient wirtschaften möchte, muss er die Aufgaben so verteilen, dass die Gesamtanzahl der Arbeitsstunden möglichst gering ist.</p>
+            <p>Wir können dieses Problem als bipartiten Graphen mit Knotenmengen \(X\) für die Mitarbeiter und \(Y\) für die Aufgaben darstellen. Die gewichteten Kanten zwischen den Mengen definieren dann die Anzahl der Stunden, die ein Mitarbeiter \(x\) für Aufgabe \(y\) benötigt. Jetzt gilt es ein perfektes Matching zu finden, bei dem die Summe aller Kantengewichte minimal ist.</p>
+            <p>&nbsp;</p>
+            
+            <h1>Die Ungarische Methode</h1>
+            <p>Das Problem kann mittels der Ungarischen Methode gelöst werden, die 1955 von Harold W. Kuhn auf Grundlage der Ideen zweier ungarische Mathematiker entwickelt wurde. Der Algorithmus wurde später von James Munkres verbessert und basiert auf einem zentralen Theorem für dessen Verständnis wir aber ein paar Begriffe benötigen:</p>
+
+            <p><strong>Markierung</strong><br />
+            Wir führen eine einfache Hilfsfunktion oder Markierung \(l\) ein, die jedem Knoten im Graph eine reelle Zahl so zuordnet, dass die Summe der Markierungen zweier Knoten mindestens so groß ist, wie das Kantengewicht \(w\) der Kante, die diese Knoten verbindet (vgl. Bild 2).</p>
+            <p style="text-align: center;">\(l(x) + l(y) \ge w(x, y)\)</p>
+
+            <p><strong>Gleichheitsgraph</strong><br />
+            Mittels der Markierungen können wir einen Gleichheitsgraph \(G_l\) definieren der alle Knoten aus unserem Ausgangsgraph besitzt. Die Kantenmenge enthält jedoch nur die Kanten, deren Gewicht genau der Summe der Markierungen ihrer Knoten entspricht (vgl. Bild 3).</p>
+            <p style="text-align: center;">\(E_l = \{(x,y) \in E\ |\ l(x) + l(y) = w(x, y)\}\)</p>
+
+            <p>Nun zu dem oben angesprochenem Theorem. Das Kuhn-Munkres-Theorem besagt, dass wenn man ein perfektes Matching im Gleichheitsgraph \(G_l\) findet, dieses im Ausgangsgraph maximal ist. Das Problem des optimalen Matchings kann man damit also auf das Finden eines perfekten Matchings im Gleichheitsgraph reduzieren.</p>
+
+            <p>Bevor wir nun zum eigentlichen Algorithmus kommen, hier noch ein paar Hinweise:</p>
+
+            <p>Die Ungarische Methode in der hier beschriebenen Form findet maximale Matchings. Das bedeutet, dass wir das zu Beginn geschilderte Problem umformen müssen. Dazu "spiegeln" wir die Kantengewichte: \(w(x,y) \leftarrow -w(x,y)\).</p>
+
+            <p>Außerdem muss der bipartite Graph, auf den wir den Algorithmus anwenden vollständig sein. Das heißt, es müssen von jedem Knoten aus \(X\) Kanten zu jedem Knoten aus \(Y\) führen. In unserem Beispiel wäre dies nicht der Fall, wenn ein Mitarbeiter eine Aufgabe gar nicht bearbeiten kann. In diesem Fall fügt man neutrale Kanten mit Kantengewicht \(0\) ein, sodass der Graph vollständig wird.</p>
+            <p>&nbsp;</p>
+
+            <h1>Der Ablauf des Algorithmus</h1>
+
+            <p>Das Finden eines perfekten Matchings im Gleichheitsgraph geschieht schrittweise. Der Algorithmus beginnt mit einem leeren Matching und versucht dieses in jedem Schritt zu verbessern, bis es perfekt ist.</p>
+
+            <p>Zu Beginn bestimmt der Algorithmus für alle Knoten eine Markierung. Die Markierung eines Knoten aus \(X\) entspricht dem Gewicht seiner größten Kante und \(0\) für einen Knoten aus \(Y\). Mittels der Markierungen bestimmt der Algorithmus dann einen Gleichheitsgraph \(G_l\). Für den weiteren Ablauf definieren wir zunächst weitere Begriffe:</p>
+
+            <p><strong>Alternierende und augmentierende Pfade</strong><br />
+            Wir sagen, ein Knoten wurde gematcht, wenn er eine Kante besitzt, die im aktuellen Matching enthalten ist. Ansonsten nennen wir ihn frei (vgl. Bild 4).<br />
+            Ein alternierender Pfad ist eine Abfolge von Kanten, bei dem die Kanten abwechselnd im Matching \(M\) enthalten und nicht enthalten \(E \setminus M\) sind (vgl. Bild 5).<br />Ein alternierender Pfad ist zusätzlich augmentierend, wenn Anfangs- und Endknoten beide frei sind (vgl. Bild 6).</p>
+
+            <p>Um das bestehende noch leere Matching zu verbessern, sucht sich der Algorithmus einen Knoten aus \(X\), der noch keinen Matchingpartner besitzt. Ausgehend von diesem, versucht der Algorithmus einen augmentierenden Pfad zu finden. Dazu baut der Algorithmus schrittweise einen alternierenden Pfad, solange bis dieser augmentierend wird oder es keine weitere Kante mehr gibt. Die dabei besuchten Knoten teilen wir in die Mengen \(S\) für besuchte Knoten aus \(X\) und die Menge \(T\) für besuchte Knoten aus \(Y\) ein.</p>
+
+            <p>Es lässt sich nicht immer ein augmentierender Pfad finden. Dann muss der Algorithmus die Markierungen verbessern, indem er zunächst ein \(\Delta\) bestimmt. Der Algorithmus betrachtet alle Paare aus besuchten Knoten \(s \in S\) und unbesuchten Knoten \(y \in Y \setminus T\) und bildet das Minimum aus der Summe ihrer Markierungen abzüglich des Gewichts der Kante zwischen beiden Knoten.</p>
+
+            <p style="text-align: center;">\(\Delta = \min\limits_{s \in S\ \wedge\ y \in Y \setminus T}\{l(s) + l(y) - w(s,y)\}\)</p>
+
+            <p>Mittels \(\Delta\) kann man nun die Markierungen aller Knoten anpassen. Danach bestimmt der Algorithmus einen neuen Gleichheitsgraph und sucht erneut nach einem augmentierenden Pfad.</p>
+
+            <p style="text-align: center;">
+            \(\begin{equation}
+               l^\prime(v) =
+               \begin{cases}
+                 l(v) - \Delta & v \in S\\
+                 l(v) + \Delta & v \in T \\
+                 l(v) & sonst
+               \end{cases}
+            \end{equation}\)
+            </p>
+
+            <p>Wenn der Algorithmus einen augmentierenden Pfad findet, verbessert er das Matching, indem er die Kanten des Pfades, die nicht in dem Matching enthalten sind, dem Matching hinzufügt und die Kanten des Pfades, die im Matching enthalten sind, entfernt. Dieses Vorgehen wird wiederholt, bis jeder Knoten einen Matchingpartner hat und das Matching so perfekt ist. Nach dem o.g. Theorem ist das bestimmte Matching dann bezüglich der Kantengewichte ein maximales Matching.</p>
+            <p>&nbsp;</p>
+
             <h1>Was nun?</h1>
+            <br style="clear: both;" />
             <div class="Entscheidungsweg" id="ti_div_EntscheidungLeft">
                 <h3>Einen Graph erstellen und den Algorithmus durchspielen</h3>
                 <button id="ti_button_gotoDrawGraph">Graph erstellen und daran den Algorithmus testen</button>
@@ -216,10 +287,11 @@
             </div>
             <div class="Entscheidungsweg" id="ti_div_EntscheidungRight">
                 <h3>Sein Wissen an den Forschungsaufgaben testen</h3>
-                <button id="ti_button_gotoFA1">Forschungsaufgabe 1: </button><br>
-                <button id="ti_button_gotoFA2">Forschungsaufgabe 2: </button>
+                <button id="ti_button_gotoFA1">Forschungsaufgabe: Wie würde der Algorithmus entscheiden?</button>
+                <button id="ti_button_gotoFA2">Forschungsaufgabe: TODO</button>
             </div>
-        </div> -->
+            <br style="clear: both;" />
+        </div>
     </div>
     <div id="tab_tf1">
         <div>
