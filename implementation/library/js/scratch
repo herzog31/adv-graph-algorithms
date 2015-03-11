@@ -279,3 +279,49 @@
                                                 this.animateMove(this.graph.nodes[id],{x: 50 + i*DIFF, y: U_POSITION});
                                                 i++;
                                             }
+
+        this.addPath = function(){
+               var s = paths[current].s;
+               var d = paths[current].d;
+               var last = d;
+               var edges_on_path = [];
+               while(last != s){
+                   var e = predecessor[s][last];
+                   var node1 = graph.nodes[e.getSourceID()];
+                   var node2 = graph.nodes[last];
+                   var ne = graph.addEdge(node1,node2, e.weight);
+                   ne.setLayout('dashed',true);
+                   edges_on_path.push(ne);
+                   last = e.getSourceID();
+               }
+               graph.nodes[s].setLabel(graph.nodes[s].getLabel() + 1);
+               graph.nodes[d].setLabel(graph.nodes[d].getLabel() - 1);
+               //highlight the path
+               var cost = 0;
+               for(var e in edges_on_path){
+                   edges_on_path[e].setLayout('lineColor','blue');//highlight path
+                   cost += edges_on_path[e].weight;
+               }
+               //unhighlight previous path
+               if(new_edges.length > 0){
+                   for(var i in new_edges[new_edges.length-1]){
+                       var edge = new_edges[new_edges.length-1][i];
+                       edge.setLayout('lineColor','black');
+                   }
+               }
+               new_edges.push(edges_on_path);
+               current++;
+               statusID = ADD_PATH;
+               // Erklärung im Statusfenster
+               $("#ta_div_statusErklaerung").html("<h3>4. " + LNG.K('algorithm_new_paths') + "</h3>"
+               + "<p>" + LNG.K('algorithm_add_path_1') + "</p>"
+               + "<p>" + LNG.K('algorithm_add_path_2') + "</p>"
+               + "<p>" + LNG.K('algorithm_add_path_cost') + cost + "</p>");
+               if(current >= paths.length){
+                   statusID = SHOW_TOUR;
+                   // Erklärung im Statusfenster
+                   $("#ta_div_statusErklaerung").append(
+                   //+ "<p>" + LNG.K('algorithm_add_path_3') + "</p>" +
+                   "<p>" + LNG.K('algorithm_balanced_1') + "</p>");
+               }
+           };

@@ -302,7 +302,9 @@ function algorithm(p_graph, p_canvas, p_tab) {
         //console.log(tour);
         //console.log(new_edges);
     };
-
+    /*
+    *
+    * */
     this.findMatching = function(){
         //construct cost matrix
         var uid_map = {};
@@ -337,7 +339,9 @@ function algorithm(p_graph, p_canvas, p_tab) {
             paths.push({s:uid_map[i],d:vid_map[match[i]]});
         }
     };
-
+    /*
+    *
+    * */
     this.computeEulerTour = function() {
         // init
         tour = [];
@@ -496,7 +500,10 @@ function algorithm(p_graph, p_canvas, p_tab) {
             //$(".marked").removeClass("marked");
         }
     };
-
+    /*
+    * Findet nicht balancierten Knoten
+    * @method
+    * */
     this.showUnbalancedNodes = function () {
         //findUnbalancedNodes
         excess = 0;
@@ -537,10 +544,10 @@ function algorithm(p_graph, p_canvas, p_tab) {
     };
 
     var highlightSupply = function(node){
-        node.setLayout('fillStyle', 'SlateBlue');
+        node.setLayout('fillStyle', '#CCFFFF');//slateBlue
     };
     var highlightDemand = function(node){
-      node.setLayout('fillStyle', 'CornflowerBlue');
+      node.setLayout('fillStyle', '#4E6AC1');//CornflowerBlue
     };
 
     var hideEdge = function(edge) {
@@ -562,6 +569,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         var new_graph = new Graph();
         var map_supply = {};
         var map_demand = {};
+        var old_coord = {};
         for(var n in supplyNodes){
             var node = supplyNodes[n];
             var coord = node.getCoordinates();
@@ -569,6 +577,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             newn.setLayoutObject(node.getLayout());
             newn.setLabel(node.getLabel());
             map_supply[node.getNodeID()] = newn.getNodeID();
+            old_coord[newn.getNodeID()] = coord;
         }
         for(var n in demandNodes){
             var node = demandNodes[n];
@@ -577,6 +586,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             newn.setLayoutObject(node.getLayout());
             newn.setLabel(node.getLabel());
             map_demand[node.getNodeID()] = newn.getNodeID();
+            old_coord[newn.getNodeID()] = coord;
         }
         this.graph = new_graph;
         tmp_edges = [];
@@ -601,7 +611,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             this.animateMove(this.graph.nodes[map_demand[d]],{x: 50 + i*DIFF, y: U_POSITION});
             i++;
         }
-        tmp = {map_supply: map_supply, map_demand: map_demand};
+        tmp = {map_supply: map_supply, map_demand: map_demand, old_coord: old_coord};
         statusID = MATCHING;
         // Erklärung im Statusfenster
         $("#ta_div_statusErklaerung").html("<h3>3. " + LNG.K('algorithm_paths') + "</h3>"
@@ -627,7 +637,17 @@ function algorithm(p_graph, p_canvas, p_tab) {
     };
 
     this.startAddingPaths = function(){
-        this.graph = graph;
+        for(var n in this.graph.nodes){
+            //var node = this.graph.nodes[n];
+            this.animateMove(this.graph.nodes[n],tmp.old_coord[n]);
+        }
+        for(var n in graph.nodes){
+            if(!supplyNodes[n] && !demandNodes[n]){
+                var coord = graph.nodes[n].getCoordinates();
+                this.graph.addNode(coord.x,coord.y);
+            }
+        }
+        //this.graph = graph;
         statusID = ADD_PATH;
         // Erklärung im Statusfenster
         $("#ta_div_statusErklaerung").html("<h3>4. " + LNG.K('algorithm_new_paths') + "</h3>"
@@ -640,26 +660,27 @@ function algorithm(p_graph, p_canvas, p_tab) {
         var d = paths[current].d;
         var last = d;
         var edges_on_path = [];
-        while(last != s){
-            var e = predecessor[s][last];
-            var node1 = graph.nodes[e.getSourceID()];
-            var node2 = graph.nodes[last];
-            var ne = graph.addEdge(node1,node2, e.weight);
-            ne.setLayout('dashed',true);
-            edges_on_path.push(ne);
-            last = e.getSourceID();
-        }
-        //adjust labels
-/*        delta[s] = delta[s] + 1;
-        delta[d] = delta[d] - 1;*/
-        graph.nodes[s].setLabel(graph.nodes[s].getLabel() + 1);
-        graph.nodes[d].setLabel(graph.nodes[d].getLabel() - 1);
-        //highlight the path
         var cost = 0;
-        for(var e in edges_on_path){
-            edges_on_path[e].setLayout('lineColor','blue');//highlight path
-            cost += edges_on_path[e].weight;
-        }
+        var timerId = 0;
+        timerId = setInterval(function () {
+            if(last != s){
+                var e = predecessor[s][last];
+                var node1 = graph.nodes[e.getSourceID()];
+                var node2 = graph.nodes[last];
+                var ne = graph.addEdge(node1,node2, e.weight);
+                ne.setLayout('dashed',true);
+                ne.setLayout('lineColor','blue');//highlight path
+                edges_on_path.push(ne);
+                last = e.getSourceID();
+                cost += ne.weight;
+            }
+            else{
+                clearInterval(timerId);
+                graph.nodes[s].setLabel(graph.nodes[s].getLabel() + 1);
+                graph.nodes[d].setLabel(graph.nodes[d].getLabel() - 1);
+            }
+            this.needRedraw = true;
+        }, 500);
         //unhighlight previous path
         if(new_edges.length > 0){
             for(var i in new_edges[new_edges.length-1]){
@@ -684,6 +705,32 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
     };
 
+    this.addPathStep = function(event) {
+        if(tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "vertex") {
+            graph.nodes[tour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
+        }
+        if(tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "edge") {
+            graph.edges[tour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
+        }
+        this.needRedraw = true;
+        if(tourAnimationIndex >= tour.length) {
+            this.animateTourStop(event);
+            return;
+        }
+
+        if(tour[tourAnimationIndex].type == "vertex") {
+            graph.nodes[tour[tourAnimationIndex].id].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+        }
+        if(tour[tourAnimationIndex].type == "edge") {
+            graph.edges[tour[tourAnimationIndex].id].setLayout("lineWidth", 6);
+        }
+        this.needRedraw = true;
+        tourAnimationIndex++;
+    };
+
+    /*
+    * Methoden fuer die Visualisierung der Eulertour
+    * */
     this.startTour = function(){
         this.computeEulerTour();
         for (var n in graph.nodes) {
@@ -869,7 +916,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             "phase": phase,
             "current": current,
             "graph": this.graph,
-            "animationId": animationId,
+            //"animationId": animationId,
             //"tmp_edges": tmp_edges,
             "htmlSidebar": $(statusErklaerung).html()
         });
@@ -882,7 +929,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             statusID = oldState.previousStatusId;
             phase = oldState.phase;
             current = oldState.current;
-            animationId = oldState.animationId;
+            //animationId = oldState.animationId;
             //tmp_edges = oldState.tmp_edges;
             this.graph = oldState.graph;
             $(statusErklaerung).html(oldState.htmlSidebar);
@@ -1001,22 +1048,21 @@ function algorithm(p_graph, p_canvas, p_tab) {
         return;
     };
 
-    var animationId = [];
-
-    this.animateMoveStep = function(node,newc,step, aid){
-        var STEPS = 200;
-        var coord = node.getCoordinates();
+    this.animateMoveStep = function(node,c,newc,step, aid){
+        var STEPS = 100;
+        var coord = c;
         var dir = {x: newc.x-coord.x, y: newc.y-coord.y};
         node.setCoordinates({x: coord.x + (step/STEPS*dir.x), y: coord.y + (step/STEPS*dir.y)});
         algo.needRedraw = true;
-        if(step > STEPS){
+        if(step >= STEPS){
             window.clearInterval(aid);
         }
     };
     this.animateMove = function(node,newc) {
         var step = 0;
-        var an = window.setInterval(function() {algo.animateMoveStep(node, newc, step++, animationId.length); }, 20);
-        animationId.push(an);
+        var an = 0;
+        var c = node.getCoordinates();
+        an = window.setInterval(function() {algo.animateMoveStep(node, c, newc, step++, an); }, 5);
     };
 }
 
