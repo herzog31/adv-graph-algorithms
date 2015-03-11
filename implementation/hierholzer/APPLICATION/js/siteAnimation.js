@@ -18,15 +18,15 @@ function initializeSiteLayout() {
         $("#tabs").tabs( "option", "active", 0 );
     }
     $("button").button();
-    $("#te_button_gotoDrawGraph").click(function() {$("#tabs").tabs( "option", "active", 1 );});
-    $("#te_button_gotoIdee").click(function() {$("#tabs").tabs( "option", "active", 3);});
-    $("#ti_button_gotoDrawGraph").click(function() {$("#tabs").tabs( "option", "active", 1);});
-    $("#ti_button_gotoAlgorithm").click(function() {$("#tabs").tabs( "option", "active", 2);});
-    $("#ti_button_gotoFA1").click(function() {$("#tabs").tabs( "option", "active", 4);});
-    $("#ti_button_gotoFA2").click(function() {$("#tabs").tabs( "option", "active", 5);});
+    $("#te_button_gotoDrawGraph").click(function() { $("#tabs").tabs("option", "active", 1);});
+    $("#te_button_gotoIdee").click(function() { $("#tabs").tabs("option", "active", 3);});
+    $("#ti_button_gotoDrawGraph").click(function() { $("#tabs").tabs("option", "active", 1);});
+    $("#ti_button_gotoAlgorithm").click(function() { $("#tabs").tabs("option", "active", 2);});
+    $("#ti_button_gotoFA1").click(function() { $("#tabs").tabs("option", "active", 4);});
+    $("#ti_button_gotoFA2").click(function() { $("#tabs").tabs("option", "active", 5);});
     $("#tw_Accordion").accordion({heightStyle: "content"});
-    $( "#tabs" ).tabs({
-        beforeActivate: function( event, ui ) {
+    $("#tabs").tabs({
+        beforeActivate: function(event, ui) {
             if(ui.oldPanel[0].id == "tab_tg") {             // Tab Graph erstellen
                 $("#tab_tg").data("algo").destroy();
             }
@@ -34,70 +34,70 @@ function initializeSiteLayout() {
                 if($("#tab_ta").data("algo").getStatusID() != null && $("#tab_ta").data("algo").getStatusID() !== 8 && $("#tab_ta").data("algo").getStatusID() !== 2) {
                     if($("#tabs").data("tabChangeDialogOpen") == null) {
                         event.preventDefault();
-                        $( "#tabs" ).data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);
-                        $("#tabs").data("tabChangeDialogOpen",true);
-                        $( "#ta_div_confirmTabChange" ).dialog("open");
-                    }
-                    else {
+                        $("#tabs").data("requestedTab", $("#"+ui.newPanel.attr("id")).index()-1);
+                        $("#tabs").data("tabChangeDialogOpen", true);
+                        $("#ta_div_confirmTabChange").dialog("open");
+                    }else{
                         $("#tab_ta").data("algo").destroy();
                     }
-                }
-                else {
+                }else{
                     $("#tab_ta").data("algo").destroy();
                 }
             }
             if(ui.oldPanel[0].id == "tab_tf1") {            // Tab Forschungsaufgabe 1
-                if($("#tab_tf1").data("algo").getStatusID() != null && $("#tab_tf1").data("algo").getStatusID() < 5) {  // TODO
+                if($("#tab_tf1").data("algo").getStatusID() != null && $("#tab_tf1").data("algo").getStatusID() !== 8 && $("#tab_tf1").data("algo").getStatusID() !== 2) {
                     if($("#tabs").data("tabChangeDialogOpen") == null) {
                         event.preventDefault();
-                        $( "#tabs" ).data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);
-                        $("#tabs").data("tabChangeDialogOpen",true);
-                        $( "#tf1_div_confirmTabChange" ).dialog("open");
-                    }
-                    else {
+                        $("#tabs").data("requestedTab", $("#"+ui.newPanel.attr("id")).index()-1);
+                        $("#tabs").data("tabChangeDialogOpen", true);
+                        $("#tf1_div_confirmTabChange").dialog("open");
+                    }else{
                         $("#tab_tf1").data("algo").destroy();
                     }
-                }
-                else {
+                }else{
                     $("#tab_tf1").data("algo").destroy();
                 }
             }
-            /* if(ui.oldPanel[0].id == "tab_tf2") {            // Tab Forschungsaufgabe 2
-                if($("#tabs").data("tabChangeDialogOpen") == null && $("#tab_tf2").data("algo").getWarnBeforeLeave()) { // TODO
-                    event.preventDefault();
-                    $( "#tabs" ).data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);
-                    $("#tabs").data("tabChangeDialogOpen",true);
-                    $( "#tf2_div_confirmTabChange" ).dialog("open");
-                }
-                else {
+            if(ui.oldPanel[0].id == "tab_tf2") {            // Tab Forschungsaufgabe 2
+                if($("#tab_tf2").data("algo").getStatusID() != null && $("#tab_tf2").data("algo").getStatusID() !== 8 && $("#tab_tf2").data("algo").getStatusID() !== 2) {
+                    if($("#tabs").data("tabChangeDialogOpen") == null) {
+                        event.preventDefault();
+                        $("#tabs").data("requestedTab",$("#"+ui.newPanel.attr("id")).index()-1);
+                        $("#tabs").data("tabChangeDialogOpen", true);
+                        $("#tf2_div_confirmTabChange").dialog("open");
+                    }else{
+                        $("#tab_tf2").data("algo").destroy();
+                    }
+                }else{
                     $("#tab_tf2").data("algo").destroy();
                 }
-            } */
+            }
         },
         activate: function(event, ui) {
             var algo;
             if(ui.newPanel[0].id == "tab_tg") {
-                algo = new GraphDrawer($("body").data("graph"),$("#tg_canvas_graph"),$("#tab_tg"));
-                $("#tab_tg").data("algo",algo);
+                algo = new GraphDrawer($("body").data("graph"), $("#tg_canvas_graph"), $("#tab_tg"));
+                $("#tab_tg").data("algo", algo);
             }
             if(ui.newPanel[0].id == "tab_ta") {
-                algo = new BFAlgorithm($("body").data("graph"),$("#ta_canvas_graph"),$("#tab_ta"));
-                $("#tab_ta").data("algo",algo);
+                algo = new HAlgorithm($("body").data("graph"), $("#ta_canvas_graph"), $("#tab_ta"));
+                $("#tab_ta").data("algo", algo);
             }
             if(ui.newPanel[0].id == "tab_tf1") {
-                algo = new Forschungsaufgabe1($("body").data("graph"),$("#tf1_canvas_graph"),$("#tab_tf1"));
-                $("#tab_tf1").data("algo",algo);
+                algo = new Forschungsaufgabe1($("body").data("graph"), $("#tf1_canvas_graph"), $("#tab_tf1"));
+                $("#tab_tf1").data("algo", algo);
             }
-            /* if(ui.newPanel[0].id == "tab_tf2") {
-                algo = new Forschungsaufgabe2($("body").data("graph"),$("#tf2_canvas_graph"),$("#tab_tf2"));
-                $("#tab_tf2").data("algo",algo);
-            } */
+            if(ui.newPanel[0].id == "tab_tf2") {
+                var directedGraph = new Graph("graphs/gerichtet1.txt", null, true);
+                algo = new Forschungsaufgabe2(directedGraph, $("#tf2_canvas_graph"), $("#tab_tf2"));
+                $("#tab_tf2").data("algo", algo);
+            }
             if(algo) {
                 algo.run();
             }
         }
     });
-    $("body").data("graph",new Graph("graphs/graph1.txt"));
+    $("body").data("graph", new Graph("graphs/eulerschEineTour.txt", null, false));
 }
 
 /**

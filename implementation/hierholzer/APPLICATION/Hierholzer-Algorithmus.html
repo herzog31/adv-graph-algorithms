@@ -2,7 +2,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta charset="utf-8">
-    <meta name="description" content="Diese Seite demonstriert den Hierholzer Algorithmus zum Finden von Eulerwegen." />
+    <meta name="description" content="Diese Seite demonstriert den Hierholzer Algorithmus zum Finden von Eulertouren." />
     <meta http-equiv="X-UA-Compatible" content="IE=9">
     <meta name="author" content="Mark J. Becker">
     <link rel="stylesheet" type="text/css" href="css/tum-theme2/jquery-ui-1.10.1.custom.min.css" />
@@ -38,11 +38,14 @@
         </div>
     </noscript>
     <script>
-        $(document).ready(initializeSiteLayout);
         LNG.setLanguage('de');
+        $(function() {
+            initializeSiteLayout();
+            $("#year").html(new Date().getFullYear());
+        });
     </script>
     <header>
-        <img src="img/titel.png" alt="Kürzeste Wege in Graphen: Der Bellman-Ford-Algorithmus">
+        <img src="img/titel.png" alt="Algorithmus von Hierholzer">
         <img style="position:absolute; right:0px" src="img/TUMLogo.png" alt="Technische Universität München">
     </header>
     <div id="tabs">
@@ -52,26 +55,24 @@
             <li><a href="#tab_ta"><span>Algorithmus ausführen</span></a></li>
             <li><a href="#tab_ti"><span>Beschreibung des Algorithmus</span></a></li>
             <li><a href="#tab_tf1"><span>Forschungsaufgabe 1</span></a></li>
-            <!-- <li><a href="#tab_tf2"><span>Forschungsaufgabe 2</span></a></li>
-            <li><a href="#tab_tw"><span>Weiteres</span></a></li> -->
+            <li><a href="#tab_tf2"><span>Forschungsaufgabe 2</span></a></li>
+            <li><a href="#tab_tw"><span>Weiteres</span></a></li>
         </ul>
 
         <!-- TAB Einführung -->
         <div id="tab_te">
             <div id="te_div_Einfuehrungstext">
-                <p style="color: red;">
-                    TODO
-                </p>
-                <!-- <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="img/beispiel1.png" alt="Einfacher Graph mit 4 Knoten."><p>Wie komme ich am günstigsten von links nach rechts?</p></div>
-                <h1>Kürzeste Wege und günstigste Wege</h1>
-                <p>In vielen Anwendungen kann es nützlich sein, den kürzesten Weg von a nach b zu berechnen.
-                Dabei muss die Länge eines Weges nicht unbedingt die Länge in Metern sein: Genauso gut kann man die Kosten eines Weges betrachten &ndash; man sucht also den <strong>günstigsten Weg</strong>.</p>
-                <h2>Hier wird der Bellman-Ford-Algorithmus vorgestellt, der günstigste Wege auch bei negativen Kosten berechnet.</h2>
+
+                <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="img/beispiel1.png" alt="Einfacher Graph mit 4 Knoten."><p>Kantenzüge ohne doppelte Kanten</p></div>
+                <h1>Das Eulertour Problem</h1>
+                <p>Nicht immer ist die Länge eines Weges entscheidend, oft reicht es schon aus, einen passenden Weg zu kennen. Du möchtest beim Zeitungsaustragen den optimalen Weg wissen, sodass du keine Straße doppelt abgehen musst. Analog dazu nennt man das Finden eines Kantenzugs im Graphen ohne doppelte Kanten das Eulertour Problem.</p>
+                <h2>Der hier vorgestellte Hierholzer Algorithmus löst das Eulertour Problem für passenden Graphen.</h2>
                 <div id ="te_div_Entscheidung">
                     <h2>Was möchtest du zuerst tun?</h2>
                     <button id="te_button_gotoDrawGraph">Den Algorithmus testen!</button> <button id="te_button_gotoIdee">Genauere Beschreibung des Algorithmus lesen</button>
                 </div>
-                <p></p> -->
+                <p></p>
+                <br style="clear: both;" />
             </div>
         </div>
 
@@ -113,10 +114,12 @@
                     <select id="tg_select_GraphSelector" name="Wähle einen Graphen">
                         <option selected id="tg_selectoption_empty">Selbsterstellter Graph</option>
                         <option>Zufallsgraph</option>
-                        <option>Standardbeispiel</option>
-                        <option>Negativer Kreis</option>
-                        <option>Positiver Kreis</option>
-                        <option>Großstädte Europas</option>
+                        <option>Viele Touren</option>
+                        <option>Eine Tour</option>
+                        <option>Semi Eulerscher Graph</option>
+                        <option>Blume</option>
+                        <option>Königsberger Brücken</option>
+                        <option>Haus vom Nikolaus</option>
                     </select>
                     <p><button id="tg_button_gotoAlgorithmTab">Fertig &ndash; weiter zum Algorithmus!</button></p>
                 </div>
@@ -130,7 +133,7 @@
                     <canvas class="graphCanvas" id="ta_canvas_graph" width="700" height="500">
                         Ihr Browser unterstützt kein HTML5 Canvas. Bitte verwenden Sie einen modernen Browser, z.B.<a href="http://www.mozilla.org/de/firefox">Mozilla Firefox</a>
                     </canvas>
-                    <div class="Legende">
+                    <div class="Legende" style="height: auto;">
                         <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
                         <div class="LegendeText">
                             <table>
@@ -160,32 +163,35 @@
                         </ul>
                         <div id="ta_div_statusErklaerung">
                             <h3>Hierholzer Algorithmus</h3>
-                            <p>Klicke auf <strong>Nächster Schritt</strong> um den Algorithmus zu starten.</p>
+                            <p>Klicke auf <strong>Nächster Schritt</strong>, um den Algorithmus zu starten.</p>
                         </div>
                         <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
                             <p class="pseudocode" id="ta_p_l1">BEGIN</p>
-                            <p class="pseudocode" id="ta_p_l2">  E<sub>visited</sub> = &empty;</p>
-                            <p class="pseudocode" id="ta_p_l3">  IF invalid(G) &rarr; END</p>
-                            <p class="pseudocode" id="ta_p_l4">  WHILE |E| > |{tour &#8745; E}|</p>
-                            <p class="pseudocode" id="ta_p_l5">    s = c<sub>prev</sub> &#8712; V : &#8707;{u,s} &#8712; E \ E<sub>visited</sub><br />    subtour &larr; s<br />    E<sub>visited</sub> &larr; {u,s}</p>
-                            <p class="pseudocode" id="ta_p_l6">    DO</p>
-                            <p class="pseudocode" id="ta_p_l7">      c &#8712; V : &#8707;{c,c<sub>prev</sub>} &#8712; E \ E<sub>visited</sub><br />      subtour &larr; c<br />      E<sub>visited</sub> &larr; {c,c<sub>prev</sub>}<br />      c<sub>prev</sub> = c</p>
-                            <p class="pseudocode" id="ta_p_l8">    WHILE start &#8800; cur</p>
-                            <p class="pseudocode" id="ta_p_l9">    tour = tour &#8746;<sub>merge</sub> subtour<br />    subtour = &empty;</p>
-                            <p class="pseudocode" id="ta_p_l10">END</p>
+                            <p class="pseudocode" id="ta_p_l2">  IF Graph ungültig THEN END</p>
+                            <p class="pseudocode" id="ta_p_l3">  IF Graph semi-eulersch THEN<br />    start &larr; Knoten mit ungeradem Grad</p>
+                            <p class="pseudocode" id="ta_p_l4">  ELSE<br />    start &larr; beliebiger Knoten</p>
+                            <p class="pseudocode" id="ta_p_l5">  subtour &larr; &empty;, tour &larr; {start}</p>
+                            <p class="pseudocode" id="ta_p_l6">  REPEAT</p>
+                            <p class="pseudocode" id="ta_p_l7">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten<br />    subtour &larr; {start}</p>
+                            <p class="pseudocode" id="ta_p_l8">    DO</p>
+                            <p class="pseudocode" id="ta_p_l9">      {akt, u} &larr; Suche unbesuchte Kante<br />      subtour &larr; subtour &#8746; {u}<br />      akt &larr; u</p>
+                            <p class="pseudocode" id="ta_p_l10">    WHILE start &#8800; akt</p>
+                            <p class="pseudocode" id="ta_p_l11">    Integriere subtour in tour<br />    subtour &larr; &empty;</p>
+                            <p class="pseudocode" id="ta_p_l12">  UNTIL tour ist Eulerweg/-tour</p>
+                            <p class="pseudocode" id="ta_p_l13">END</p> 
                             <h3>Status der Variablen:</h3>
                             <table class="algoInformationen">
                                 <tr>
                                     <th class="algoInfoTH"><span>start</span></th>
-                                    <th class="algoInfoTH"><span>cur</span></th>
+                                    <th class="algoInfoTH"><span>akt</span></th>
                                     <th class="algoInfoTH"><span>subtour</span></th>
                                     <th class="algoInfoTH"><span>tour</span></th>
                                 </tr>
                                 <tr>
                                     <td id="ta_td_tourStartVertex" class="algoInfoTD">-</td>
                                     <td id="ta_td_tourCurrentVertex" class="algoInfoTD">-</td>
-                                    <td id="ta_td_euclideanSubtour" class="algoInfoTD">&#8709;</td>
-                                    <td id="ta_td_euclideanTour" class="algoInfoTD">&#8709;</td>
+                                    <td id="ta_td_eulerianSubTour" class="algoInfoTD">&#8709;</td>
+                                    <td id="ta_td_eulerianTour" class="algoInfoTD">&#8709;</td>
                                 </tr>
                             </table>
                         </div>
@@ -201,58 +207,36 @@
         <!-- TAB Beschreibung des Algorithmus -->
         <div id="tab_ti" style="display: none;">
             <div id="ti_div_Einfuehrungstext">
-                <p style="color: red;">
-                    TODO
-                </p>
-
-                <!-- <div class="BeispielbildContainer"><img id="ti_img_beispiel1" src="img/beispiel1.png" alt="Einfacher Graph mit 4 Knoten."><p>Wie komme ich am günstigsten von links nach rechts?</p></div>
-                <h1>Kürzeste Wege</h1>
-                <p>In vielen Anwendungen kann es nützlich sein, den kürzesten Weg von a nach b zu berechnen.
-                Dabei muss die Länge eines Weges nicht unbedingt die Länge in Metern sein: Genauso gut kann man die Fahrzeit eines Weges betrachten oder, ob wir für dessen Benutzung Geld zahlen müssen &ndash; oder Geld erhalten.</p>
-                <p><strong>Im Allgemeinen sprechen wir von Kosten</strong>.
-                Dementsprechend weist man jedem Teilstück des Weges &ndash; auch "Kante" genannt &ndash; Kosten zu.</p>
-                <p>Der Algorithmus von Dijkstra berechnet kürzeste &ndash; oder eben kostengünstigste Wege, wenn alle Kosten positive Zahlen sind.
-                Wenn man allerdings auch negative Zahlen zulässt, scheitert der Algorithmus.</p>
-                <p>Der Bellman-Ford-Algorithmus dagegen kann auch mit negativen Kosten arbeiten.</p>
-                <p>Diese können beispielsweise für einen Taxifahrer entstehen, wenn er einen Fahrgast transportiert und für die Fahrt mehr Geld einnimmt, als ihn Benzin und Fahrzeug für die Fahrt kosten. Fährt er ohne Fahrgast, sind seine Kosten positiv.</p>
-                <h1>Idee des Algorithmus</h1>
                 <div class="BeispielbildContainer">
-                    <img id="ti_img_beispiel4_1" src="img/beispiel4_1.png" alt="Kante vor Update"><p>Die Kante ist eine Abkürzung:<br> Wir wissen, dass es uns 20 kostet, um vom Startknoten zum linken Knoten zu gelangen. Der Weg vom linken zum rechten Knoten kostet 1.<br> Also kommt man vom Startknoten zum rechten Knoten mit Kosten 21.</p>
-                    <img id="ti_img_beispiel4_2" src="img/beispiel4_2.png" alt="Kante vor Update">
+                    <img id="ti_img_beispiel1" src="img/koenigsberg.png" alt="Königsberger Brücken" /><p>Königsberger Brücken <sup>1</sup></p><br />
+                    <img id="ti_img_beispiel1" src="img/koenigsberg_degree.png" alt="Gerade (grün) und ungerade (rot) Grade" /><p>Gerade (grün) und ungerade Grade (rot)</p><br />
+                    <img id="ti_img_beispiel1" src="img/graph1.png" alt="Eulerscher Graph" /><p>Eulerscher Graph</p><br />
+                    <img id="ti_img_beispiel1" src="img/graph2.png" alt="Der erste gefundene Kreis (blau)" /><p>Der erste gefundene Kreis (blau)</p><br />
+                    <img id="ti_img_beispiel1" src="img/graph3.png" alt="Zweiter Kreis (grün) und komplette Eulertour (a - c - e - f - c - d - b - a)" /><p>Zweiter Kreis (grün) und komplette Eulertour<br />(a - c - e - f - c - d - b - a)</p>
                 </div>
-                <p>Der Bellman-Ford-Algorithmus berechnet die <strong>Kosten</strong> der günstigsten Wege von einem Startknoten aus zu allen anderen Knoten im Graph. Er kann dadurch die günstigsten Wege selbst konstruieren.</p>
-                <p>Der Algorithmus geht dabei iterativ vor, er geht also zunächst von einer sehr schlechten Schätzung der Kosten aus, und verbessert diese so lange, bis die korrekten Werte gefunden sind.</p>
-                <p>Die erste Schätzung ist:</p>
-                <ul>
-                    <li> <strong>Der Startknoten hat Kosten 0</strong>, denn seine Entfernung zu sich selbst ist natürlich 0.
-                    <li> <strong>Alle anderen Knoten haben Kosten unendlich</strong>, also die schlechtestmögliche Schätzung.
-                </ul>
-                <p>Danach prüft er alle Kanten auf folgende Bedingung: <strong>Sind die Kosten des Anfangsknotens der Kante plus die Kosten für die Benutzung der Kante niedriger als die Kosten des Zielknotens der Kante?</strong></p>
-                <p>Falls dies der Fall ist, so haben wir eine <strong>Abkürzung</strong> gefunden: Es ist besser, die eben geprüfte Kante zu nutzen, als den bisherigen Weg. 
-                    Deshalb werden die Kosten des Zielknotens der Kante aktualisiert: Sie entsprechen jetzt genau den Kosten des Anfangsknotens der Kante plus den Kosten für die Benutzung der Kante (siehe Beispiel rechts).</p>
-                <p>Alle Kanten des Graphen zu betrachten und die Kosten der Knoten zu aktualisieren, nennen wir <strong>Phase</strong>. Leider reicht es nicht aus, alle Kanten nur einmal zu betrachten. 
-                    Nach der ersten Phase haben wir die Kosten für alle Knoten korrekt berechnet, für die der günstigste Weg nur eine Kante benutzt. Nach 2 Phasen haben wir schon die Wege,
-                    die maximal 2 Kanten benutzen, korrekt berechnet und so weiter.</p>
-                <div class="BeispielbildContainer"><img id="ti_img_beispiel3" src="img/beispiel3.png" alt="Graph mit eingezeichneten Abstandswerten">
-                    <p>Der grüne Weg vom Startknoten ist der günstigste Weg. Er benutzt 3 Kanten.</p>
-                </div>
-                <p>Wie viele Phasen brauchen wir also? Hier hilft uns die Beobachtung, dass <strong>ein kürzester Weg weniger Kanten benutzen muss, als es Knoten im Graph gibt.</strong>
-                    Wir brauchen also eine Phase weniger, als es Knoten im Graph gibt. Ein kürzester Weg, der mehr Kanten benutzte, als es Knoten gibt, würde einen Knoten zweimal besuchen und somit im Kreis laufen.</p>
-                <h1>Konstruktion des günstigsten Weges</h1>
-                <p>Bei jeder Aktualisierung der Kosten speichert der Algorithmus die Kante, mit deren Hilfe er aktualisiert wurde, als <strong>Vorgängerkante</strong> des Knotens.</p>
-                <p>Am Ende des Algorithmus kann dann der günstigste Weg für jeden Knoten konstruiert werden, indem man so lange über Vorgängerkanten läuft, bis man am Startknoten angekommen ist.</p>
-                <h1>Kreise mit negativem Gewicht</h1>
-                <div class="BeispielbildContainer"><img id="ti_img_beispiel2" src="img/beispiel2.png" alt="Graph mit negativem Kreis."><p>Hier müsste ein günstigster Weg unendlich oft im Kreis laufen. Der Weg würde bei jedem Durchlauf kürzer werden.</p></div>
-                <p>Falls im Graph ein Kreis existiert, bei dem die Summe der Kantengewichte negativ ist &ndash; ein <strong>negativer Kreis</strong>, wird der Algorithmus möglicherweise keinen günstigsten Weg finden.</p>
-                <p>Wie man an dem Beispiel rechts schon sehen kann, sind Wege in diesem Fall nämlich möglicherweise unendlich günstig &ndash; man läuft einfach immer weiter durch den Kreis.</p>
-                <p>Dieses Problem tritt auf, falls der negative Kreis vom Startknoten aus erreichbar ist.
-                    Erfreulicherweise kann der Algorithmus aber entdecken, ob ein solcher negativer Kreis existiert.
-                    Dies wird im letzten Teil des Algorithmus überprüft.</p>
-                <p>Ein erreichbarer negativer Kreis existiert genau dann, wenn nach dem Durchlaufen aller Phasen immer noch Abkürzungen möglich sind. 
-                    <strong>Der Algorithmus überprüft also am Ende nochmals bei allen Kanten</strong>, ob die Kosten des Anfangsknotens der Kante plus die Kosten für die Benutzung der Kante niedriger sind als die Kosten des Zielknotens der Kante.
-                    Falls dies bei einer Kante der Fall ist, so wird die Meldung "negativer Kreis gefunden" ausgegeben.</p>
-                <p>Mithilfe der Vorgängerkanten kann man den negativen Kreis sogar finden: Man läuft so lange zurück, bis man im Kreis gelaufen ist (und das Gewicht des Kreises negativ ist).</p>
+                <h1>Das Eulertour Problem</h1>
+                <p>Das Eulertour Problem kam das erste mal im 18. Jahrhundert auf. In der Stadt Königsberg (heute Kaliningrad) gab es zu der Zeit genau sieben Brücken und es stellte sich die Frage, ob man einen Weg oder sogar einen Rundweg finden kann, sodass man alle Brücken genau einmal überquert. Das gleiche Problem ergibt sich auch beim "Haus vom Nikolaus", bei dem man ein Haus in einem Zug, ohne Absetzen des Stiftes zeichnen muss.</p>
+                <p>In Graphen nennt man diese Fragestellung das Eulertour Problem, benannt nach Leonard Euler. Man versucht eine Folge von Kanten (Kantenzug) so zu finden, dass alle Kanten des Graphen in der Folge genau einmal vorkommen. Wenn man dabei wieder bei dem Knoten ankommt, bei dem man gestartet ist, nennt man diesen Kantenzug Eulertour, andernfalls Eulerweg.</p>
+                <p>&nbsp;</p>
+                
+                <h1>Eulersche Graphen</h1>
+                <p>Leonard Euler fand heraus, welche Voraussetzungen ein Graph erfüllen muss, sodass dieser einen Eulerweg oder eine Eulertour enthält. Hierbei unterscheiden wir von gerichteten und ungerichteten Graphen:</p>
+                <p><strong>Ungerichtete Graphen</strong><br />
+                Ein ungerichteter Graph besitzt mind. eine Eulertour, wenn alle seine Knoten einen geraden Grad haben. Das bedeutet, dass alle Knoten genau durch zwei, vier, sechs, ... Kanten mit anderen Knoten verbunden sein müssen. Klar wird dies, wenn man sich Folgendes überlegt: Für jeden Knoten benötigt man genau zwei Kanten, eine um ihn zu erreichen und eine um ihn wieder zu verlassen, bzw. ein Vielfaches davon, je nach dem, wie oft wir den Knoten besucht. Einen Graph der diese Bedingung für alle Knoten erfüllt, nennt man eulerschen Graph.</p>
+                <p>Für einen Eulerweg kann man diese Bedingung etwas lockern. Und zwar für genau zwei Knoten, deren Grad dann ungerade sein muss. Bei diesen Knoten bleibt dann jeweils eine Kante übrig, sodass man sich ein zusätzliches Mal von dem Knoten entfernen muss bzw. den Knoten besuchen muss. Diese beiden Knoten sind dann genau die Start- und Endknoten des Eulerwegs. Einen solchen Graph nennt man semi-eulersch.</p>
+                <p><strong>Gerichtete Graphen</strong><br />
+                Für gerichtete Graphen gelten die die o.g. Regeln weiterhin, man muss nur zusätzlich zwischen eingehenden und ausgehenden Kanten unterscheiden. Hierfür teilt man den Grad eines Knotens in Ingrad und Ausgrad auf. Der Ingrad beschreibt die Anzahl der eingehenden Kanten und der Ausgrad die Anzahl der ausgehenden Kanten. Für einen gerichteten eulerschen Graph muss dann neben dem geraden Grad auch Ingrad gleich Ausgrad für jeden Knoten gelten.</p>
+                <p>Bei semi-eulerschen Graphen benötigt man weiterhin einen Startknoten mit einer zusätzlichen ausgehenden Kante und einen Zielknoten mit einer zusätzlichen eingehenden Kante.</p>
+                <p>Betrachtet man nun das Königsberger Brückenproblem unter den von Euler gefunden Voraussetzungen, stellt man fest, dass es dort weder eine Eulertour noch einen Eulerweg gibt. Hat man aber einen geeigneten Graphen vorliegen, kann man seine Eulertouren bzw. -wege schließlich mittels des Algorithmus von Hierholzer finden.</p>
+                <p>&nbsp;</p>
+
+                <h1>Idee des Algorithmus</h1>
+                <p>Die Grundidee des Hierholzer Algorithmus ist die schrittweise Konstruktion der Eulertour aus mehreren disjunkten Kreisen. Man beginnt mit einem zufällig ausgewähltem Knoten und folgt dann einer beliebigen bisher unbesuchten Kante des Knotens zu einem weiteren Knoten. Dies wiederholt man, bis man wieder am Startknoten angekommen ist. Durch dieses Verfahren erhält man einen ersten Kreis, genannt Tour. Deckt diese Tour bereits alle Kanten des Graphen ab, ist sie eine Eulertour und der Algorithmus terminiert. Andernfalls sucht man sich einen weiteren Startknoten aus der Menge der Knoten der Tour und bildet einen weiteren Kreis, genannt Subtour. Der neue Kreis enthält nun offensichtlich keine Kanten des ersten Kreises, sie sind also disjunkt. Da sich beide Kreise durch die Wahl des Startknotens aus dem ersten Kreis aber in mindestens einem Knoten schneiden, kann man beide zu einem neuen Kreis zusammenfassen. Dazu betrachtet man die Knotenfolge der Tour und ersetzt den Startknoten der Subtour mit der kompletten Knotenfolge des Kreises. Man erweitert also die ursprüngliche Tour um weitere gefundene Kreise. Schließt die erweiterte Tour nun alle Kanten des Graphen ein, terminiert der Algorithmus, andernfalls kann die Tour noch um eine weitere Subtour erweitert werden.</p>
+                <p>Im Falle eines ungerichteten semi-eulerschen Graphen startet der Algorithmus mit einem der beiden Knoten mit ungeradem Grad. Im gerichteten Fall genau mit dem Knoten, mit einer zusätzlichen ausgehenden Kante. Eine der gefundenen Subtouren enthält dann keinen Kreis, ist also ein Weg. Wenn die Tour nun um diesen "Subweg" erweitert wird, muss die Erweiterung so erfolgen, dass Anfangs- und Endknoten des Subweges auch Anfangs- und Endknoten der Gesamttour sind.</p>
+                <p>&nbsp;</p>
+
                 <h1>Was nun?</h1>
+                <br style="clear: both;" />
                 <div class="Entscheidungsweg" id="ti_div_EntscheidungLeft">
                     <h3>Einen Graph erstellen und den Algorithmus durchspielen</h3>
                     <button id="ti_button_gotoDrawGraph">Graph erstellen und daran den Algorithmus testen</button>
@@ -260,9 +244,11 @@
                 </div>
                 <div class="Entscheidungsweg" id="ti_div_EntscheidungRight">
                     <h3>Sein Wissen an den Forschungsaufgaben testen</h3>
-                    <button id="ti_button_gotoFA1">Forschungsaufgabe: Wie würde der Algorithmus entscheiden?</button><br>
-                    <button id="ti_button_gotoFA2">Forschungsaufgabe: Wie ist die optimale Sortierung der Knoten?</button>
-                </div> -->
+                    <button id="ti_button_gotoFA1">Forschungsaufgabe: Wie würde der Algorithmus entscheiden?</button>
+                    <button id="ti_button_gotoFA2">Forschungsaufgabe: Algorithmus am gerichteten Graphen</button>
+                </div>
+                <br style="clear: both;" />
+                <p style="font-size: 10px; text-align: right;"><a name="bridge_copyright"></a><sup>1</sup> Von Bogdan Giuşcă unter GNU Free Documentation License 1.2, vgl. <a href="http://http://commons.wikimedia.org/wiki/File:Konigsberg_bridges.png">Wikimedia</a>.</p>
             </div>
         </div>
 
@@ -273,7 +259,7 @@
                     <canvas class="graphCanvas" id="tf1_canvas_graph" width="700" height="500">
                         Ihr Browser unterstützt kein HTML5 Canvas. Bitte verwenden Sie einen modernen Browser, z.B.<a href="http://www.mozilla.org/de/firefox">Mozilla Firefox</a>
                     </canvas>
-                    <div class="Legende">
+                    <div class="Legende" style="height: auto;">
                         <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
                         <div class="LegendeText">
                             <table>
@@ -298,7 +284,6 @@
                     <div id="tf1_div_abspielbuttons">
                     </div>
                     <div id="tf1_div_questionModal" class="ui-widget ui-widget-content ui-corner-all" style="display: none;">
-                    Test
                     </div>
                     <div id="tf1_div_statusTabs">
                         <ul>
@@ -313,28 +298,32 @@
                         </div>
                         <div class="PseudocodeWrapper" id="tf1_div_statusPseudocode">
                             <p class="pseudocode" id="tf1_p_l1">BEGIN</p>
-                            <p class="pseudocode" id="tf1_p_l2">  E<sub>visited</sub> = &empty;</p>
-                            <p class="pseudocode" id="tf1_p_l3">  IF invalid(G) &rarr; END</p>
-                            <p class="pseudocode" id="tf1_p_l4">  WHILE |E| > |{tour &#8745; E}|</p>
-                            <p class="pseudocode" id="tf1_p_l5">    s = c<sub>prev</sub> &#8712; V : &#8707;{u,s} &#8712; E \ E<sub>visited</sub><br />    subtour &larr; s<br />    E<sub>visited</sub> &larr; {u,s}</p>
-                            <p class="pseudocode" id="tf1_p_l6">    DO</p>
-                            <p class="pseudocode" id="tf1_p_l7">      c &#8712; V : &#8707;{c,c<sub>prev</sub>} &#8712; E \ E<sub>visited</sub><br />      subtour &larr; c<br />      E<sub>visited</sub> &larr; {c,c<sub>prev</sub>}<br />      c<sub>prev</sub> = c</p>
-                            <p class="pseudocode" id="tf1_p_l8">    WHILE start &#8800; cur</p>
-                            <p class="pseudocode" id="tf1_p_l9">    tour = tour &#8746;<sub>merge</sub> subtour<br />    subtour = &empty;</p>
-                            <p class="pseudocode" id="tf1_p_l10">END</p>
+                            <p class="pseudocode" id="tf1_p_l2">  IF Graph ungültig THEN END</p>
+                            <p class="pseudocode" id="tf1_p_l3">  IF Graph semi-eulersch THEN<br />    start &larr; Knoten mit ungeradem Grad</p>
+                            <p class="pseudocode" id="tf1_p_l4">  ELSE<br />    start &larr; beliebiger Knoten</p>
+                            <p class="pseudocode" id="tf1_p_l5">  subtour &larr; &empty;, tour &larr; {start}</p>
+                            <p class="pseudocode" id="tf1_p_l6">  REPEAT</p>
+                            <p class="pseudocode" id="tf1_p_l7">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten<br />    subtour &larr; {start}</p>
+                            <p class="pseudocode" id="tf1_p_l8">    DO</p>
+                            <p class="pseudocode" id="tf1_p_l9">      {akt, u} &larr; Suche unbesuchte Kante<br />      subtour &larr; subtour &#8746; {u}<br />      akt &larr; u</p>
+                            <p class="pseudocode" id="tf1_p_l10">    WHILE start &#8800; akt</p>
+                            <p class="pseudocode" id="tf1_p_l11">    Integriere subtour in tour<br />    subtour &larr; &empty;</p>
+                            <p class="pseudocode" id="tf1_p_l12">  UNTIL tour ist Eulerweg/-tour</p>
+                            <p class="pseudocode" id="tf1_p_l13">END</p> 
+
                             <h3>Status der Variablen:</h3>
                             <table class="algoInformationen">
                                 <tr>
                                     <th class="algoInfoTH"><span>start</span></th>
-                                    <th class="algoInfoTH"><span>cur</span></th>
+                                    <th class="algoInfoTH"><span>akt</span></th>
                                     <th class="algoInfoTH"><span>subtour</span></th>
                                     <th class="algoInfoTH"><span>tour</span></th>
                                 </tr>
                                 <tr>
                                     <td id="tf1_td_tourStartVertex" class="algoInfoTD">-</td>
                                     <td id="tf1_td_tourCurrentVertex" class="algoInfoTD">-</td>
-                                    <td id="tf1_td_euclideanSubtour" class="algoInfoTD">&#8709;</td>
-                                    <td id="tf1_td_euclideanTour" class="algoInfoTD">&#8709;</td>
+                                    <td id="tf1_td_eulerianSubTour" class="algoInfoTD">&#8709;</td>
+                                    <td id="tf1_td_eulerianTour" class="algoInfoTD">&#8709;</td>
                                 </tr>
                             </table>
                         </div>
@@ -354,17 +343,17 @@
                     <canvas class="graphCanvas" id="tf2_canvas_graph" width="700" height="500">
                         Ihr Browser unterstützt kein HTML5 Canvas. Bitte verwenden Sie einen modernen Browser, z.B.<a href="http://www.mozilla.org/de/firefox">Mozilla Firefox</a>
                     </canvas>
-                    <div class="Legende">
+                    <div class="Legende" style="height: auto;">
                         <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
                         <div class="LegendeText">
                             <table>
                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>Startknoten, von dem aus die Entfernungen und günstigsten Wege berechnet werden.</span></td>
+                                    <td class="LegendeTabelle"><img src="img/knoten.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td><span>Knoten</span></td>
                                 </tr>
-                                <tr class="LegendeZeileClickable" id="tf2_tr_LegendeClickable" title="Klicke zum Ein-/Ausblenden">
-                                    <td class="LegendeTabelle"><img src="img/markierteKante.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>"Vorgängerkante", die der günstigste Weg zum Knoten benutzt.</span></td>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/kante_gerichtet.png" alt="Kante" class="LegendeIcon"></td>
+                                    <td><span>Gerichtete Kante</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -374,36 +363,54 @@
                     </div>
                 </div>
                 <div id="tf2_div_statusWindow" class="statusWindow">
-                    <h2>Wie ist die optimale Sortierung der Kanten?</h2>
-                    <div id="tf2_div_Abspielbuttons"></div>
-                    <select id="tf2_select_aufgabeGraph" name="Wähle einen Graphen">
-                        <option selected>Selbsterstellter Graph</option>
-                        <option>Standardbeispiel</option>
-                        <option>Negativer Kreis</option>
-                        <option>Positiver Kreis</option>
-                    </select>
-                    <div id="tf2_div_statusErklaerung">
-                        <h3>Wähle zuerst den Graphen, mit dem du arbeiten möchtest.</h3>
-                        <h3>Klicke danach auf den Startknoten, um die Aufgabe zu beginnen.</h3>
-                        <p>Klicke danach in der Reihenfolge auf die Kanten, in der Sie der Algorithmus betrachten soll.</p>
+                    <h2 class="">Status des Algorithmus</h2>
+                    <div id="tf2_div_abspielbuttons">
                     </div>
-                    <div id="tf2_div_Frage">
+                    <div id="tf2_div_questionModal" class="ui-widget ui-widget-content ui-corner-all" style="display: none;">
                     </div>
-                    <div id="tf2_div_Antworten">
+                    <div id="tf2_div_statusTabs">
+                         <ul>
+                            <li><a href="#tf2_div_statusErklaerung">Erklärung</a></li>
+                            <li><a href="#tf2_div_statusPseudocode">Pseudocode</a></li>
+                        </ul>
+                        <div id="tf2_div_statusErklaerung">
+                            <h3>Hierholzer Algorithmus</h3>
+                            <p>Bei dieser Forschungsaufgabe gehen wir auf die Besonderheiten des Algorithmus bei Anwendung auf einen gerichteten Graphen ein.</p>
+                            <p>Die Besonderheiten sind <em>kursiv</em> markiert.</p>
+                            <p>Klicke auf <strong>Nächster Schritt</strong> um den Algorithmus zu starten.</p>
+                        </div>
+                        <div class="PseudocodeWrapper" id="tf2_div_statusPseudocode">
+                            <p class="pseudocode" id="tf2_p_l1">BEGIN</p>
+                            <p class="pseudocode" id="tf2_p_l2">  IF Graph ungültig THEN END</p>
+                            <p class="pseudocode" id="tf2_p_l3">  IF Graph semi-eulersch THEN<br />    start &larr; Knoten mit ungeradem Grad</p>
+                            <p class="pseudocode" id="tf2_p_l4">  ELSE<br />    start &larr; beliebiger Knoten</p>
+                            <p class="pseudocode" id="tf2_p_l5">  subtour &larr; &empty;, tour &larr; {start}</p>
+                            <p class="pseudocode" id="tf2_p_l6">  REPEAT</p>
+                            <p class="pseudocode" id="tf2_p_l7">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten<br />    subtour &larr; {start}</p>
+                            <p class="pseudocode" id="tf2_p_l8">    DO</p>
+                            <p class="pseudocode" id="tf2_p_l9">      (akt, u) &larr; Suche unbesuchte Kante<br />      subtour &larr; subtour &#8746; {u}<br />      akt &larr; u</p>
+                            <p class="pseudocode" id="tf2_p_l10">    WHILE start &#8800; akt</p>
+                            <p class="pseudocode" id="tf2_p_l11">    Integriere subtour in tour<br />    subtour &larr; &empty;</p>
+                            <p class="pseudocode" id="tf2_p_l12">  UNTIL tour ist Eulerweg/-tour</p>
+                            <p class="pseudocode" id="tf2_p_l13">END</p> 
+                            <h3>Status der Variablen:</h3>
+                            <table class="algoInformationen">
+                                <tr>
+                                    <th class="algoInfoTH"><span>start</span></th>
+                                    <th class="algoInfoTH"><span>akt</span></th>
+                                    <th class="algoInfoTH"><span>subtour</span></th>
+                                    <th class="algoInfoTH"><span>tour</span></th>
+                                </tr>
+                                <tr>
+                                    <td id="tf2_td_tourStartVertex" class="algoInfoTD">-</td>
+                                    <td id="tf2_td_tourCurrentVertex" class="algoInfoTD">-</td>
+                                    <td id="tf2_td_eulerianSubTour" class="algoInfoTD">&#8709;</td>
+                                    <td id="tf2_td_eulerianTour" class="algoInfoTD">&#8709;</td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div title="Forschungsaufgabe 2" class="tabIntroDialog">
-                <h2>
-                    Wie ist die optimale Sortierung der Kanten?
-                </h2>
-                <p>Der Bellman-Ford-Algorithmus kann schon nach einer einzigen Phase alle Entfernungen korrekt berechnet haben.</p>
-                <p>Dafür müssen die Kanten allerdings in der <strong>optimalen Reihenfolge</strong> betrachtet werden.
-                    <strong>Diese Reihenfolge ist aber nicht leicht zu finden</strong> &ndash; das dauert genauso lange wie der Bellman-Ford-Algorithmus selbst.</p>
-                <img src="img/FA2BeispielGut.png" alt="Diese Reihenfolge ist sinnvoll">
-                <img src="img/FA2BeispielSchlecht.png" id="tf2_img_beispielSchlecht" alt="Diese Reihenfolge ist weniger sinnvoll">
-                <p>Im Beispiel sieht man: Links ist die Reihenfolge sinnvoll, der Algorithmus kann schon nach einer Runde alle Kosten korrekt berechnet haben. Rechts ist das nicht der Fall.</p>
-                <p>In dieser Aufgabe kannst du experimentieren, wie viele Phasen der Bellman-Ford-Algorithmus bei verschiedenen Sortierungen benötigt.</p>
             </div>
             <div id="tf2_div_confirmTabChange" title="Aufgabe abbrechen?" class="tabChangeWarningDialog">
                 <h2>Beim Wechsel des Tabs wird die Aufgabe abgebrochen.</h2>
@@ -415,22 +422,32 @@
         <div id="tab_tw" style="display: none;">
             <div id="tw_Accordion">
                 <h3>Wie sieht der (Pseudo-)Code des Algorithmus aus?</h3>
-                <div><pre><code>Eingabe: Gewichteter, ungerichteter Graph G=(V,E) mit Gewichtsfunktion l.
-Ausgabe: Eine Liste {d(v[j]) : j = 1,..,n}, die die Distanzen dist(v[1],v[j]) = d(v[j]) enthält,
-         falls von v[1] aus keine Kreise negativer Länge erreichbar sind. 
-         Die Meldung "Kreis negativer Länge", falls von v[1] ein solcher Kreis erreichbar ist.</code></pre>
-<hr><pre><code>
-BEGIN
-   d(v[1]) &larr; 0
-   FOR j = 2,..,n DO
-      d(v[j]) &larr; &#8734;
-   FOR i = 1,..,(|V|-1) DO
-      FOR ALL (u,v) aus E DO
-         d(v) &larr; min(d(v), d(u) + l(u,v))
-   FOR ALL (u,v) aus E DO
-      IF d(v) > d(u) + l(u,v) DO
-         Meldung: "Kreis negativer Länge"
-END</code></pre></div>
+                <div>
+                    <pre><code>Eingabe: Ungerichteter Graph G=(V,E), keine oder genau zwei Knoten besitzen einen ungeraden Grad
+Ausgabe: Eulertour/-weg als Liste von Knoten</code></pre>
+<hr>
+<pre>
+<code>BEGIN
+    IF Graph ungültig THEN END
+    IF Graph semi-eulersch THEN
+        start &larr; Knoten mit ungeradem Grad
+    ELSE
+        start &larr; beliebiger Knoten
+    subtour &larr; &empty;
+    tour &larr; {start}
+    REPEAT
+        akt = start &larr;  Knoten aus tour mit unbesuchten Kanten
+        subtour &larr; {start}
+        DO
+            {akt, u} &larr; Suche unbesuchte Kante
+            subtour &larr; subtour &#8746; {u}
+            akt &larr; u
+        WHILE start &#8800; akt
+        Integriere subtour in tour
+        subtour &larr; &empty;
+    UNTIL tour ist Eulerweg/-tour
+END</code></pre>
+            </div>
                 <h3>Wie schnell ist der Algorithmus?</h3>
                 <div>
                     <h2>Geschwindigkeit von Algorithmen</h2>
@@ -442,50 +459,15 @@ END</code></pre></div>
                       <li>Vergleich und Zuweisung  &ndash; Falls 20 größer als 15 ist, setze Variable <var>n</var> auf 20.</li>
                       <li>Einfache Arithmetische Operationen &ndash; Was ist 5 + 5 ?</li>
                     </ul>
-                    <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen. 
-                        Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus.
-                       Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
-                    <h2>Laufzeit des Bellman-Ford-Algorithmus</h2>
-                    <p>Nehmen wir an, dass der Bellman-Ford-Algorithmus auf einem Graph mit <var>n</var> Knoten und <var>m</var> Kanten ausgeführt wird.</p>
-                    <p>Am Anfang wird jedem Knoten der Wert &#8734; zugewiesen. Dafür benötigen wir <var>n</var> Einzelschritte.</p>
-                    <p>Danach kommen die <var>n-1</var> Phasen des Algorithmus &ndash; eine Phase weniger als es Knoten gibt. 
-                        In jeder Phase wird jede Kante des Graphen überprüft, und möglicherweise wird der Abstandswert ihres Zielknotens verändert.
-                        Wir können diese Überprüfung und Zuweisung als einen Schritt sehen und haben also in jeder Phase <var>m</var> Einzelschritte.
-                        Insgesamt benötigen die Phasen also <var>m &middot; (n-1)</var> Einzelschritte.</p>
-                    <p>Schließlich überprüft der Algorithmus noch, ob es negative Kreise gibt. Dafür betrachtet er jede Kante einmal.
-                        Insgesamt braucht er für die Überprüfung also <var>m</var> Einzelschritte.</p>
-                    <p><strong>Die Gesamtlaufzeit des Algorithmus</strong> ist von der Größenordnung <var>m &middot; n</var> Schritte, weil die <var>n</var> Schritte zu Beginn und die <var>m</var>
-                        Schritt am Schluss des Algorithmus vernachlässigbar gegenüber <var>m &middot; (n-1)</var> sind.</p>
-                </div>
-                <h3>Wie beweist man, dass der Algorithmus stets ein korrektes Ergebnis berechnet?</h3>
-                <div>
-                    <h2>Ein mathematischer Beweis</h2>
-                    <p>In diesem Abschnitt werden wir beweisen, dass der Bellman-Ford-Algorithmus immer ein korrektes Ergebnis liefert, falls der Graph keine vom Startknoten erreichbaren negativen Kreise hat.</p>
-                    <h3>Das Prinzip der Induktion</h3>
-                    <p>Der Beweis basiert auf dem Prinzip der Induktion. Wir beweisen zunächst, dass wir zu Beginn der ersten Phase bereits die Kosten für
-                    mindestens einen Knoten korrekt berechnet haben. Wir zeigen dann, dass wir in jeder Phase die bisherigen Schätzungen verbessern.
-                    Am Ende jeder Phase kennen wir also für mehr Knoten die korrekten Kosten als zu Beginn der Phase. Außerdem zerstören wir in der jeweiligen Phase keine
-                    Informationen &ndash; die Schätzungen können nur besser werden.</p>
-                    <p>Schließlich zeigen wir, dass uns weniger Phasen reichen, als es Knoten gibt, um für alle Knoten die korrekten Kosten zu berechnen.</p>
-                    <h3>Nach Phase <var>i</var> gilt:</h3>
-                    <p>Der Algorithmus hat jedem Knoten <var>u</var> als Kostenschätzung höchstens die Länge des kürzesten Weges vom Startknoten zu <var>u</var>, der maximal <var>i</var>
-                    Kanten benutzt, zugewiesen, falls ein solcher Weg existiert.</p>
-                    <p>Betrachten wir diese Aussage in ihren Einzelteilen für einen Knoten <var>u</var> am Ende von Phase <var>i</var>:</p>
-                    <p>Falls kein Weg vom Startknoten zu <var>u</var> existiert, der maximal <var>i</var> Kanten benutzt, so erfahren wir nichts.</p>
-                    <p>Falls ein Weg vom Startknoten zu <var>u</var> existiert, der maximal <var>i</var> Kanten benutzt, dann wissen wir, dass die Kostenschätzung für <var>u</var>
-                    höchstens so hoch ist wie die Kosten des Weges. Der Grund ist folgender: Wenn wir den Weg ohne seine letzte Kante betrachten, so sehen wir einen Weg, der <var>i</var>-1 Kanten benutzt.
-                    Die Kosten des letzten Knotens dieses Weges hatten wir also schon zu Beginn der Phase korrekt berechnet. Innerhalb der Phase haben wir alle Kanten, also auch das letzte Teilstück, betrachtet.
-                    Da wir beim Betrachten des letzten Teilstücks die Kosten korrekt aktualisiert haben, sind jetzt auch die Kosten für den letzten Knoten des Gesamtwegs, der <var>i</var> Kanten benutzt, korrekt.</p>
-                    <h3>Es reichen weniger Phasen, als es Knoten gibt.</h3>
-                    <p>Ein Weg, der mindestens so viele Kanten benutzt, wie es Knoten gibt, kann kein kürzester Weg sein, falls alle Kreise positives Gesamtgewicht haben. Mit jeder Kante, die ein Weg benutzt, sieht er nämlich einen weiteren Knoten (den Zielknoten der Kante).
-                    Dazu kommt noch der Startknoten, den er auch sieht, ohne Kanten benutzt zu haben. Falls er also so viele Kanten benutzt, wie es Knoten gibt, so hat er mindestens einen Knoten zweimal gesehen, ist also im Kreis gelaufen.
-                    Da wir angenommen haben, dass alle Kreise negatives Gesamtgewicht haben, wäre es kürzer gewesen, nicht im Kreis zu laufen.</p>
-                    <p>Falls es Kreise mit Gesamtgewicht 0 gibt, so ist es schlicht genauso teuer, diese zu durchlaufen, wie sie auszulassen. 
-                        Auch in diesem Fall reichen also die Wege, die weniger Kanten benutzen, als es Knoten gibt.</p>
+                    <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen. Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus. Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
+                    <h2>Laufzeit des Hierholzer Algorithmus</h2>
+                    <p>Wir gehen von einem Graphen G = (V, E) mit |V| = n und |E| = m aus. Der Algorithmus bestimmt im ersten Schritt eine erste Tour T. Um die nächsten Subtouren zu bestimmen, muss der Algorithmus einen Knoten aus T finden, der noch unbesuchte Kanten besitzt. Dieser Knoten dient als Start für die folgenden Subtouren mit denen die Tour erweitert wird. Ausgehend von einer leeren initialen Tour, kann die Tour maximal um n Knoten erweitert werden. In der Tour müssen nach jeder gefundenen Subtour dann nur noch die Knoten auf unbesuchte Kanten geprüft werden, die vorher noch nicht geprüft wurden. Das führt dazu, dass wir jeden Knoten im Graph nur einmal auf unbesuchte Kanten prüfen müssen. Damit besitzt der Algorithmus eine polynomielle Laufzeit von O(n * m).</p>
+                    <p>Der Algorithmus kann so optimiert werden, dass man eine separate Adjazenzliste speichert, aus der bereits genutzte Kanten gelöscht werden. So muss man zur Überprüfung auf unbesuchte Kanten pro Knoten nicht jedes Mal alle Kanten betrachtet, sondern insgesamt jede Kante nur ein einziges Mal. Damit ist eine lineare Laufzeit von O(n + m) möglich.</p>
+                    <p>Die gleiche Laufzeit wird außerdem benötigt, um zu prüfen, ob ein Graph eulersch ist und der Hierholzer Algorithmus überhaupt angewendet werden kann.</p>
                 </div>
                 <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>
-                <div><p>Weitere Graphalgorithmen werden auf der <a href="http://www-m9.ma.tum.de/Allgemeines/Routenplanung">Webseite des Lehrstuhls M9</a> der TU München erklärt.</p>
-                <p>Außerdem es ein interessantes Buch zu kürzesten Wegen:  <a href="http://www-m9.ma.tum.de/Ruth/WebHome">Das Geheimnis des kürzesten Weges</a></p>
+                <div><p>Weitere Graphalgorithmen werden auf der <a href="http://www-m9.ma.tum.de/Allgemeines/GraphAlgorithmen">Webseite des Lehrstuhls M9</a> der TU München erklärt.</p>
+                <p>Außerdem es ein interessantes Buch zu kürzesten Wegen: <a href="http://www-m9.ma.tum.de/Ruth/WebHome">Das Geheimnis des kürzesten Weges</a></p>
                 <p>Ein <a href="http://www.ma.tum.de/Studium/Studieninteressierte">Mathematikstudium an der TU München</a> beantwortet alle Fragen zur Graphentheorie (falls eine Lösung bekannt ist).</p>
                 </div>
             </div>
@@ -493,7 +475,7 @@ END</code></pre></div>
     </div>
     <footer>
         <p class="Disclaimer">
-            IDP Projekt von Mark J. Becker am Lehrstuhl M9 der Technischen Universität München. 2014 | <a href="http://www-m9.ma.tum.de/Allgemeines/Rechtliches">Disclaimer und Rechtshinweise</a> | <a href="http://www-m9.ma.tum.de/Allgemeines/Impressum">Impressum</a> | <a href="mailto&#58;m&#46;ritter&#64;ma&#46;tum&#46;de&#63;subject&#61;M9&#45;Web&#45;Feedback">Anregungen</a>
+            IDP Projekt von Mark J. Becker am Lehrstuhl M9 der Technischen Universität München. <span id="year">2015</span> | <a href="http://www-m9.ma.tum.de/Allgemeines/Rechtliches">Disclaimer und Rechtshinweise</a> | <a href="http://www-m9.ma.tum.de/Allgemeines/Impressum">Impressum</a> | <a href="mailto&#58;m&#46;ritter&#64;ma&#46;tum&#46;de&#63;subject&#61;M9&#45;Web&#45;Feedback">Anregungen</a>
         </p>
     </footer>
 </body>
