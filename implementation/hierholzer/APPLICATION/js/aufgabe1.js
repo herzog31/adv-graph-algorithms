@@ -577,6 +577,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     // State wenn Graph invalid ist
     this.invalidGraph = function() {
+        this.markPseudoCodeLine(13);
         $("#tf1_div_statusErklaerung").html('<h3 style="color: white;">2 '+LNG.K('algorithm_status2_head')+'</h3>\
             <p style="color: white;">'+LNG.K('algorithm_status2_desc6')+'</p>\
             <ul style="color: white;">\
@@ -627,8 +628,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     // Selectiere Start Vertice, entweder #1 (Eulersch) oder #1 mit ungeradem Grad (Semi Eulersch)
     this.findStartingVertex = function() {
-        this.markPseudoCodeLine(3);
         if(!semiEulerianGraph) {
+            this.markPseudoCodeLine(4);
             $("#tf1_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.1a '+LNG.K('algorithm_status31A_head')+'</h3>\
             <p>'+LNG.K('algorithm_status31A_desc1')+'</p>\
@@ -637,6 +638,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
             canvas.on("click.Forschungsaufgabe1", function(e) { algo.canvasClickHandler(e); });
         }else{
+            this.markPseudoCodeLine(3);
             $("#tf1_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.1a '+LNG.K('algorithm_status31A_head')+'</h3>\
             <p>'+LNG.K('algorithm_status31A_desc1')+'</p>\
@@ -676,7 +678,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     // Wenn keiner gefunden -> mergeTour()
     // Wenn gefunden -> findNextVertexForTour()
     this.findNextVertexForTour = function() {
-        this.markPseudoCodeLine(7);
+        this.markPseudoCodeLine(9);
         canvas.off(".Forschungsaufgabe1");
 
         $("#tf1_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
@@ -756,7 +758,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     // Wenn gleich -> mergeTour()
     // Wenn ungleich -> findNextVertexForTour()
     this.compareVertexWithStart = function() {
-        this.markPseudoCodeLine(9);
+        this.markPseudoCodeLine(10);
         
         if(tourStartVertex == tourCurrentVertex) {
             $("#tf1_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
@@ -790,7 +792,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     // Bei leerer Tour, Tour = Subtour
     // Bei vorhandener Tour, Replace Start mit Subtour
     this.mergeTour = function() {
-        this.markPseudoCodeLine(10);
+        this.markPseudoCodeLine(11);
 
         if(JSON.stringify(eulerianSubTour[0]) !== JSON.stringify(eulerianSubTour[(eulerianSubTour.length - 1)])) {
             $("#tf1_div_statusErklaerung").html('<h3>4 '+LNG.K('algorithm_status4_head')+'</h3>\
@@ -1004,7 +1006,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     // Finde neuen Startpunkt in Tour
     // Erster Knoten, dessen Grad unbesuchter Kanten größer 0 ist -> findNextVertexForTour()
     this.findNewStartingVertex = function() {
-        this.markPseudoCodeLine(11);
+        this.markPseudoCodeLine(7);
         $("#tf1_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.1b '+LNG.K('algorithm_status31B_head')+'</h3>\
             <p>'+LNG.K('algorithm_status31B_desc1')+'</p>\
