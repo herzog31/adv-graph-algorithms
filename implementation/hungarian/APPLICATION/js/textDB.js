@@ -79,6 +79,7 @@ function resetNodeLayout(){
 }
 
 function showCurrentMatching(xy, otherEdges){
+    var matching = [];
     if(!otherEdges) {
         for (var edge in $("body").data("graph").edges) {
             $("body").data("graph").edges[edge].hidden = true;
@@ -94,6 +95,7 @@ function showCurrentMatching(xy, otherEdges){
                 $("body").data("graph").edges[edge].originalColor = "green";
                 $("body").data("graph").edges[edge].setLayout("lineWidth", 4);
                 $("body").data("graph").edges[edge].hidden = false;
+                matching.push("(" + $("body").data("graph").edges[edge].getSourceID() + "," + $("body").data("graph").edges[edge].getTargetID() + ")");
                 console.log("green");
             }else if(($("body").data("graph").edges[edge].getSourceID() == i
                 || $("body").data("graph").edges[edge].getTargetID()-xy.length == xy[i])
@@ -103,44 +105,36 @@ function showCurrentMatching(xy, otherEdges){
             }
         }
     }
+
+    $("#ta_td_matching").html(matching.join(",") || "&#8709;");
 }
 
 function displayST(S, T){
-    var sText = "S=[";
-    var first = true;
-    for(var i in S){
-        if(S[i] == true) {
-            if($("body").data("graph").nodes[i].getLayout().fillStyle != const_Colors.NodeFillingHighlight) {
-                $("body").data("graph").nodes[i].setLayout("fillStyle", "green");
-            }
-            if(first){
-                first = false;
-            }else{
-                sText += ", ";
-            }
-            sText += (parseInt(i)+1);
+
+    var sField = S.filter(function(element) {
+        return element;
+    });
+    sField = sField.map(function(node, i) {
+        if($("body").data("graph").nodes[i].getLayout().fillStyle != const_Colors.NodeFillingHighlight) {
+            $("body").data("graph").nodes[i].setLayout("fillStyle", "green");
         }
-    }
-    first = true;
-    sText += "]";
-    var tText = "T=[";
-    for(var i in T){
-        if(T[i] == true){
-            $("body").data("graph").nodes[S.length + parseInt(i)].setLayout("fillStyle", "green");
-            if(first){
-                first = false;
-            }else{
-                tText += ", ";
-            }
-            tText += (parseInt(i)+1);
-        }
-    }
-    tText += "]";
+        return i+1;
+    });
+
+    var tField = T.filter(function(element) {
+        return element;
+    });
+    tField = tField.map(function(node, i) {
+        $("body").data("graph").nodes[(S.length+i)].setLayout("fillStyle", "green");
+        return i+1;
+    });
+
     $("#ta_div_statusErklaerung").html(
-        "<h3>Der Augmentationsweg wird gesucht.</h3>" +
-        "<p>Für die Suche des Augmentationsweges werden zwei Knotenmengen (<b>S</b> und <b>T</b>) genutzt. <b>S</b> enthält schon besuchten Knoten (während dieser Iteration) von U. <b>T</b> enthält schon besuchten Knoten von V.</p>" +
-        "<p>Aktuelle Stände der S und T Mengen:</p>" +
-        "<p><b>" + sText + "</b> <b>" + tText + "</b></p>"
-    );
+        "<h3>Augmentationsweg bestimmen</h3>" +
+        "<p>Der Algorithmus versucht nun schrittweise einen alternierenden Pfad zu konstruieren.</p>" +
+        "<p>Die Konstruktion stoppt, wenn der alternierende Pfad augmentierend wird oder es keine weiteren passenden Kanten mehr gibt.</p>");
+
+    $("#ta_td_setS").html(sField.join(",") || "&#8709;");
+    $("#ta_td_setT").html(tField.join(",") || "&#8709;");
     //TODO node borders
 }

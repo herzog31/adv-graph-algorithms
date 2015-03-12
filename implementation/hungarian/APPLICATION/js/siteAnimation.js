@@ -337,10 +337,10 @@ function CanvasDrawer(p_graph,p_canvas,p_tab) {
             });
         });
 
-        if(!tabIntroDialog.data("wasOpen")) {
+        /* if(!tabIntroDialog.data("wasOpen")) {
             tabIntroDialog.dialog("open");
             tabIntroDialog.data("wasOpen",true);
-        }
+        } */
         // Tabwechsel Warndialog
         if(tabChangeWarningDialog) {
             $(function() {

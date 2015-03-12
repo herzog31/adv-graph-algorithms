@@ -175,11 +175,8 @@
                         <li><a href="#ta_div_statusPseudocode">Pseudocode</a></li>
                     </ul>
                     <div id="ta_div_statusErklaerung">
-                        <h3>Initialisierung des Algorithmus.</h3>
-                        <p>Am Anfang des Algorithmus besitzt kein Knoten einen Matching-Partner. Zuerst werden die maximale Markierungen bzw. Gleichheitsgraph bestimmt.</p>
-                        <p>Maximal heißt hier, dass nur die Kanten dem Gleichheitsgraph hinzugefügt werden, die das maximale Gewicht von allen ausgehenden Kanten aus dem entsprechenden Knoten in U haben. Alle Knoten in U werden mit dem entsprechenden Kantengewicht markiert, alle Knoten in V werden mit 0 markiert.</p>
-                        <p>In jeder Iteration suchen wir einen Augmentationsweg im aktuellen Gleichheitsgraph und vergrößern damit das Matching.</p>
-                        <p>Ein Augmentationsweg ist ein Weg, der mit einem freien Knoten anfängt, mit einem freien Knoten endet und alternierend Matching-Kanten und Nicht-Matching-Kanten benutzt.</p>
+                        <h3>Die Ungarische Methode</h3>
+                        <p>Klicke auf <strong>Nächster Schritt</strong>, um den Algorithmus zu starten.</p>
                     </div>
                     <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
                         <p class="pseudocode" id="ta_p_l1">BEGIN</p>
@@ -195,6 +192,19 @@
                         <p class="pseudocode" id="ta_p_l11">    increase matching</p>
                         <p class="pseudocode" id="ta_p_l12">  END</p>
                         <p class="pseudocode" id="ta_p_l13">END</p>
+                        <h3>Status der Variablen:</h3>
+                        <table class="algoInformationen">
+                            <tr>
+                                <th class="algoInfoTH"><span>Matching</span></th>
+                                <th class="algoInfoTH"><span>S</span></th>
+                                <th class="algoInfoTH"><span>T</span></th>
+                            </tr>
+                            <tr>
+                                <td id="ta_td_matching" class="algoInfoTD">&#8709;</td>
+                                <td id="ta_td_setS" class="algoInfoTD">&#8709;</td>
+                                <td id="ta_td_setT" class="algoInfoTD">&#8709;</td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>

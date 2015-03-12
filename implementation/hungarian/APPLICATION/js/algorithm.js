@@ -435,12 +435,9 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         showLabels(lx, ly);
         statusID = READY_TO_START;
         console.log("READY_TO_START");
-        $("#ta_div_statusErklaerung").html("<h3>Der Algorithmus ist bereit, den Augmentationsweg zu suchen.</h3>"
-            + "<p>Ursprungliche Markierungen sowie Gleichheitsgraph wurden bestimmt.</p>"
-            + "<p>Der Gleichheitsgraph ist durch den dicken schwarzen Kanten bezeichnet. Alle Knoten haben eine Markierung bekommen.</p>"
-            + "<p>Ungarische Methode läuft durch allen Knoten in U und versucht einen Augmentationsweg mit der Wurzel in diesem Knoten zu finden. Wird ein Augmentationsweg gefunden, hört der Algorithmus mit der Iteration auf. Wird der nicht gefunden, passt der Algorithmus die Markierungen bzw. Gleichheitsgraph an.</p>"
-        );
-        //$("#ta_div_statusErklaerung").text("Ursprungliche Markierungen sowie Gleichheitsgraph wurden bestimmt.");
+        $("#ta_div_statusErklaerung").html("<h3>Gleichheitsgraph bestimmen</h3>"
+            + "<p>Der Algorithmus bestimmt zuerst eine initiale Markierung für jeden Knoten.</p>"
+            + "<p>Anhand der Markierungen wird der Gleichheitsgraph ermittelt (<strong>schwarz</strong>).</p>");
         $(".marked").removeClass("marked");
         $("#ta_p_l4").addClass("marked");
         return READY_TO_START;
@@ -481,10 +478,9 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         showTreeRoot(S);
         statusID = READY_FOR_SEARCHING;
         console.log("READY_FOR_SEARCHING");
-        $("#ta_div_statusErklaerung").html("<h3>Die Wurzel des Augmentationsweges wurde bestimmt.</h3>" +
-            "<p>Ungarische Methode hat einen Knoten gefunden, der noch keinen Matching-Partner hat. Dieser Knoten wird <span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span> gekennzechnet.</p>" +
-            "<p>Jetzt wird der Algorithmus versuchen einen Augmentationsweg mit der Wurzel in diesem Knoten zu finden.</p>"
-        );
+        $("#ta_div_statusErklaerung").html("<h3>Augmentationsweg bestimmen</h3>" +
+            "<h3>Wurzel eines alternierenden Pfades finden</h3>" + 
+            "<p>Der Algorithmus wählt als Wurzel einen Knoten, der noch nicht im Matching vorhanden ist und markiert ihn <span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>.</p>");
         $(".marked").removeClass("marked");
         $("#ta_p_l6").addClass("marked");
         $("#ta_p_l7").addClass("marked");
@@ -510,9 +506,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         }
         console.log("AUGMENTING_PATH_NOT_FOUND");
         $("#ta_div_statusErklaerung").html(
-            "<h3>Augmentationsweg wurde nicht gefunden.</h3>" +
-            "<p>Es gibt keinen Augmentationsweg mit der Wurzel im <span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span> gekennzeichneten Knoten im aktuellen Gleichheitsgraph.</p>" +
-            "<p>Deswegen müssen die Knotenmarkierungen bzw. Gleichheitsgraph angepasst werden.</p>"
+            "<h3>Augmentationsweg bestimmen</h3>" +
+            "<p>Der Algorithmus konnte keinen Augmentationsweg mit der gewählten Wurzel (<span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>) im aktuellen Gleichheitsgraph finden.</p>"
             //TODO the algorithm howto anpassen
         );
         statusID = AUGMENTING_PATH_NOT_FOUND;
@@ -529,9 +524,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                     showAugmentingPath(x, y, prev, xy, yx);
                     console.log("AUGMENTING_PATH_FOUND");
                     $("#ta_div_statusErklaerung").html(
-                        "<h3>Augmentationsweg wurde gefunden.</h3>" +
-                        "<p>Der Augmentationsweg ist <span style='font-weight: bold; color: red;'>rot</span> gekennzeichnet.</p>" +
-                        "<p>Jetzt kann das Matching durch den entgegengesetzten Augmentationsweg (die Kanten, die noch nicht im Matching waren, kommen ins Matching rein und die, die da waren, kommen aus dem Matching raus) vergrößert werden.</p>"
+                        "<h3>Augmentationsweg bestimmen</h3>" +
+                        "<p>Es wurde ein Augmentationsweg (<span style='font-weight: bold; color: red;'>rot</span>) gefunden.</p>"
                     );
                     statusID = AUGMENTING_PATH_FOUND;
                     $(".marked").removeClass("marked");
@@ -584,9 +578,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                     statusID = AUGMENTING_PATH_FOUND;
                     console.log("AUGMENTING_PATH_FOUND");
                     $("#ta_div_statusErklaerung").html(
-                        "<h3>Augmentationsweg wurde gefunden.</h3>" +
-                        "<p>Der Augmentationsweg ist <span style='font-weight: bold; color: red;'>rot</span> gekennzeichnet.</p>" +
-                        "<p>Jetzt kann das Matching durch den entgegengesetzten Augmentationsweg (die Kanten, die noch nicht im Matching waren, kommen ins Matching rein und die, die da waren, kommen aus dem Matching raus) vergrößert werden.</p>"
+                        "<h3>Augmentationsweg bestimmen</h3>" +
+                        "<p>Es wurde ein Augmentationsweg (<span style='font-weight: bold; color: red;'>rot</span>) gefunden.</p>"
                     );
                     $(".marked").removeClass("marked");
                     $("#ta_p_l11").addClass("marked");
@@ -632,8 +625,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         statusID = MATCHING_INCREASED;
         console.log("MATCHING_INCREASED");
         $("#ta_div_statusErklaerung").html(
-            "<h3>Matching wurde vergrößert.</h3>" +
-            "<p>Das neue Matching ist <span style='font-weight: bold; color: green;'>grün</span> gekennzeichnet.</p>"
+            "<h3>Matching vergrößern</h3>" +
+            "<p>Mittels des gefundenen Augmentationsweges konnte das Matching (<span style='font-weight: bold; color: green;'>grün</span>) ergänzt werden.</p>"
         );
         $(".marked").removeClass("marked");
         if(maxMatch == cost.length){
@@ -641,6 +634,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         }else {
             $("#ta_p_l4").addClass("marked");
         }
+        $("#ta_td_setS").html("&#8709;");
+        $("#ta_td_setT").html("&#8709;");
         return MATCHING_INCREASED;
     };
 
@@ -676,14 +671,15 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         showLabels(lx, ly);
         console.log("LABELS_UPDATED");
         $("#ta_div_statusErklaerung").html(
-            "<h3>Markierungen sowie Gleichheitsgraph wurden aktualisiert.</h3>" +
-            "<p>Neuer Gleichheitsgraph wurde durch den folgenden Algorithmus bestimmt.</p>" +
-            "<p>Sei l(x), l(y) die aktuellen Markierungen von Knoten x und y, w(x,y) - das Kantengewicht zwichen Knoten x und y, dann</p>" +
-            "<p><b>Δ = min{l(x) + l(y) - w(x,y) : x∈S, y∈V\\T}</b> und die neuen Markierungen wurden wie folgend gerechnet:<br/>" +
-            "<b>l'(v) = l(v) - Δ</b>, falls v∈S<br/>" +
-            "<b>l'(v) = l(v) + Δ</b>, falls v∈T<br/>" +
-            "<b>l'(v) = l(v)</b>, andernfalls<br/></p>"
+            "<h3>Neuen Gleichheitsgraph bestimmen</h3>" +
+            "<p>Zur Bestimmung eines neuen Gleichheitsgraph muss der Algorithmus zunächst die Markierungen aktualisieren.</p>" + 
+            "<p>Dazu wird ein \\(\\Delta\\) wie folgt bestimmt:</p>"+
+            "<p>\\(\\Delta = \\min\\limits_{s \\in S\\ \\wedge\\ y \\in Y \\setminus T}\\{l(s) + l(y) - w(s,y)\\} = "+delta+"\\)</p>" +
+            "<p>Die Markierungen werden dann nach folgender Formel aktualisiert:</p>" + 
+            "<p>\\(\\begin{equation}l^\\prime(v) =\\begin{cases}l(v) - "+delta+" & v \\in S\\\\l(v) + "+delta+" & v \\in T\\\\l(v) & sonst\\end{cases}\\end{equation}\\)</p>" + 
+            "<p>Der neue Gleichheitsgraph wurde vom Algorithmus markiert (<strong style='font-weight: bold; color: green;'>grün</strong> und <strong>schwarz</strong>).</p>"
         );
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub,"ta_div_statusErklaerung"]);
         $(".marked").removeClass("marked");
         $("#ta_p_l6").addClass("marked");
         $("#ta_p_l7").addClass("marked");
@@ -715,9 +711,9 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         //    answer += cost[x][xy[x]];
         //}
         $("#ta_div_statusErklaerung").html(
-            "<h3>Der Algorithmus ist fertig.</h3>" +
-            "<p>Ungarische Methode hat erfolgreich das maximale Matching bestimmt.</p>" +
-            "<p>Das maximale Matching in diesem Graph hat das Gesamtgewicht <b>" + ret + ".</b></p>" +
+            "<h3>Optimales Matching</h3>" +
+            "<p>Die Ungarische Methode hat erfolgreich ein maximales Matching bestimmt.</p>" +
+            "<p>Das Gesamtgewicht beträgt <strong>"+ret+"</strong>.</p>" +
             "<h3>Was nun?</h3>" +
             "<button id='ta_button_gotoIdee' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>Beschreibung des Algorithmus lesen</span></button>" +
             "<h3>Forschungsaufgaben ausprobieren:</h3>" +
@@ -808,11 +804,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                     graph.edges[key].setLayout("dashed", graph.edges[key].originalDashed);
                 }
             }
-            $("#ta_div_statusErklaerung").html("<h3>Initialisierung des Algorithmus.</h3>"
-                + "<p>Am Anfang des Algorithmus besitzt kein Knoten einen Matching-Partner. Zuerst werden die maximale Markierungen bzw. Gleichheitsgraph bestimmt.</p>"
-                + "<p>Maximal heißt hier, dass nur die Kanten dem Gleichheitsgraph hinzugefügt werden, die das maximale Gewicht von allen ausgehenden Kanten aus dem entsprechenden Knoten in U haben. Alle Knoten in U werden mit dem entsprechenden Kantengewicht markiert, alle Knoten in V werden mit 0 markiert.</p>"
-                + "<p>In jeder Iteration suchen wir einen Augmentationsweg im aktuellen Gleichheitsgraph und vergrößern damit das Matching.</p>"
-                + "<p>Ein Augmentationsweg ist ein Weg, der mit einem freien Knoten anfängt, mit einem freien Knoten endet und alternierend Matching-Kanten und Nicht-Matching-Kanten benutzt.</p>");
+            $("#ta_div_statusErklaerung").html("<h3>Die Ungarische Methode</h3>" + 
+                "<p>Klicke auf <strong>Nächster Schritt</strong>, um den Algorithmus zu starten.</p>");
             $(".marked").removeClass("marked");
             $("#ta_p_l2").addClass("marked");
         }
