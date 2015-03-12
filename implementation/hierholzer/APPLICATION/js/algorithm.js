@@ -52,7 +52,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     var eulerianTour = new Array();
     var eulerianSubTour = new Array();
     var subtours = new Array();
-    var currentPseudoCodeLine = 1;
+    var currentPseudoCodeLine = [1];
     var tourColors = new Array("#0000cc", "#990000", "#999900", "#cc6600", "#660099", "#330000");
     var tourColorIndex = 0;
     var tourAnimationIndex = 0; 
@@ -402,10 +402,12 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
 
     };
 
-    this.markPseudoCodeLine = function(line) {
-        currentPseudoCodeLine = line;
+    this.markPseudoCodeLine = function(lineArray) {
+        currentPseudoCodeLine = lineArray;
         $(".marked").removeClass('marked');
-        $("#ta_p_l"+line).addClass('marked');
+        for(var i = 0; i < lineArray.length; i++) {
+            $("#ta_p_l"+lineArray[i]).addClass('marked');
+        }
     };
 
     this.updatePseudoCodeValues = function() {
@@ -552,7 +554,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     // Edge visited = false
     // Benennung v1, v2, ... & e1, e2, ...
     this.initializeGraph = function() {
-        this.markPseudoCodeLine(1);
+        this.markPseudoCodeLine([1]);
 
         $("#ta_div_statusErklaerung").html('<h3>1 '+LNG.K('algorithm_status1_head')+'</h3>\
             <p>'+LNG.K('algorithm_status1_desc')+'</p>');
@@ -576,7 +578,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
 
     // Check ob Graph Euclidisch oder Semi Euclidisch ist
     this.checkGraph = function() {
-        this.markPseudoCodeLine(2);
+        this.markPseudoCodeLine([2]);
         $("#ta_div_statusErklaerung").html('<h3>2 '+LNG.K('algorithm_status2_head')+'</h3>\
             <p>'+LNG.K('algorithm_status2_desc1')+'</p>\
             <ul>\
@@ -647,7 +649,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
 
     // State wenn Graph invalid ist
     this.invalidGraph = function() {
-        this.markPseudoCodeLine(13);
+        this.markPseudoCodeLine([14]);
         $("#ta_div_statusErklaerung").html('<h3 style="color: white;">2 '+LNG.K('algorithm_status2_head')+'</h3>\
             <p style="color: white;">'+LNG.K('algorithm_status2_desc6')+'</p>\
             <ul style="color: white;">\
@@ -694,13 +696,18 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
         this.addVertexToTour(graph.nodes[tourCurrentVertex], eulerianSubTour);
         if(debugConsole) console.log("Subtour: ", eulerianSubTour);
 
+        eulerianTour = new Array();
+        this.addVertexToTour(graph.nodes[tourCurrentVertex], eulerianTour);
+        if(debugConsole) console.log("Tour: ", eulerianTour);
+
         this.needRedraw = true;
+        this.updatePseudoCodeValues();
     };
 
     // Selectiere Start Vertice, entweder #1 (Euclidisch) oder #1 mit ungeradem Grad (Semi Euclidisch)
     this.findStartingVertex = function() {
+        this.markPseudoCodeLine([3, 5, 6]);
         if(!semiEulerianGraph) {
-            this.markPseudoCodeLine(4);
             $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.1a '+LNG.K('algorithm_status31A_head')+'</h3>\
             <p>'+LNG.K('algorithm_status31A_desc1')+'</p>\
@@ -709,7 +716,6 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
 
             canvas.on("click.HAlgorithm", function(e) { algo.canvasClickHandler(e); });
         }else{
-            this.markPseudoCodeLine(3);
             $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.1a '+LNG.K('algorithm_status31A_head')+'</h3>\
             <p>'+LNG.K('algorithm_status31A_desc1')+'</p>\
@@ -749,7 +755,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn keiner gefunden -> mergeTour()
     // Wenn gefunden -> findNextVertexForTour()
     this.findNextVertexForTour = function() {
-        this.markPseudoCodeLine(9);
+        this.markPseudoCodeLine([8, 9, 10]);
         canvas.off(".HAlgorithm");
 
         $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
@@ -829,7 +835,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn gleich -> mergeTour()
     // Wenn ungleich -> findNextVertexForTour()
     this.compareVertexWithStart = function() {
-        this.markPseudoCodeLine(10);
+        this.markPseudoCodeLine([11]);
 
         if(tourStartVertex == tourCurrentVertex) {
             $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
@@ -863,7 +869,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     // Bei leerer Tour, Tour = Subtour
     // Bei vorhandener Tour, Replace Start mit Subtour
     this.mergeTour = function() {
-        this.markPseudoCodeLine(11);
+        this.markPseudoCodeLine([12]);
 
         if(JSON.stringify(eulerianSubTour[0]) !== JSON.stringify(eulerianSubTour[(eulerianSubTour.length - 1)])) {
             // Subweg
@@ -955,7 +961,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn ja -> returnTour()
     // Wenn nein -> findNewStartingVertex()
     this.checkForeulerianTour = function() {
-        this.markPseudoCodeLine(12);
+        this.markPseudoCodeLine([13]);
         $("#ta_div_statusErklaerung").html('<h3>4 '+LNG.K('algorithm_status4_head')+'</h3>\
             <h3>4.2 '+LNG.K('algorithm_status42_head')+'</h3>\
             <p>'+LNG.K('algorithm_status42_desc1')+'</p>\
@@ -992,7 +998,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
 
     // Zeige Tour
     this.returnTour = function() {
-        this.markPseudoCodeLine(13);
+        this.markPseudoCodeLine([14]);
         if(semiEulerianGraph) {
             $("#ta_div_statusErklaerung").html('<h3>5 '+LNG.K('algorithm_status5_head')+'</h3>\
             <p>'+LNG.K('algorithm_status5_desc1a')+'</p>');
@@ -1083,7 +1089,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     // Finde neuen Startpunkt in Tour
     // Erster Knoten, dessen Grad unbesuchter Kanten größer 0 ist -> findNextVertexForTour()
     this.findNewStartingVertex = function() {
-        this.markPseudoCodeLine(7);
+        this.markPseudoCodeLine([5, 6]);
         $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.1b '+LNG.K('algorithm_status31B_head')+'</h3>\
             <p>'+LNG.K('algorithm_status31B_desc1')+'</p>\
