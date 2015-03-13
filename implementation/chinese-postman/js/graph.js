@@ -513,7 +513,10 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
     this.restoreLayout = function() {
         layout = jQuery.extend({}, global_Edgelayout);
     };
-
+    /*
+    * Falls die Kante eine Kurve ist(es gibt Multikanten), wird der Kontrollpunkt zur Zeichnung der Kante berechnet.
+    * @method
+    * */
     this.getControlPoint = function(){
         //finde alle Kanten zwischen source und target
         var edges = [];
@@ -690,7 +693,7 @@ function Graph(filename,canvas) {
      */
     var edgeIDCounter = 0;
     /** 
-     * Für zukünftige Nutzung, gerichtete Graphen
+     * gerichteter oder ungerichteter Graph
      *  @type Boolean 
      */
     var directed = true;
@@ -748,30 +751,14 @@ function Graph(filename,canvas) {
      * @param {Number} weight Gewicht der Kante.
      * @return {Edge}
      */
-    this.addEdge = function(source,target,weight) {
-        //if(this.getEdgeBetween(source,target) != null) {
-        //    return null;
-        //}
-        //if(!directed) {
-        //    if(this.getEdgeBetween(target,source) != null) {
-        //        return null;
-        //    }
-        //}
+    this.addEdge = function(source,target,weight, dir) {
         if(weight == null) {
-            weight = Math.round(Math.random()*100);			// Zufälliges Gewicht zwischen -0 und 100
+            weight = Math.round(Math.random()*100-50);// Zufälliges Gewicht zwischen -50 und 50
         }
-        var edge = new Edge(source,target,weight,edgeIDCounter,directed);
+        if(dir == null) dir = directed;
+        var edge = new Edge(source,target,weight,edgeIDCounter,dir);
         this.edges[edgeIDCounter] = edge;
         edgeIDCounter++;
-/*        if(directed) {
-            var opposite = this.getEdgeBetween(target,source);
-            if(opposite != null) {
-                edge.setOppositeEdgeID(opposite);
-                this.edges[opposite].setOppositeEdgeID(edge.getEdgeID());
-                edge.shift();
-                this.edges[opposite].shift();
-            }
-        }*/
         source.addOutEdge(edge);
         target.addInEdge(edge);
         return edge;

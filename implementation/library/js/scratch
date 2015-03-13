@@ -325,3 +325,29 @@
                    "<p>" + LNG.K('algorithm_balanced_1') + "</p>");
                }
            };
+
+
+this.startAddingPaths = function(){
+        for(var n in this.graph.nodes){
+            //var node = this.graph.nodes[n];
+            this.animateMove(this.graph.nodes[n],tmp.old_coord[n]);
+        }
+        for(var n in graph.nodes){
+            if(!supplyNodes[n] && !demandNodes[n]){
+                var coord = graph.nodes[n].getCoordinates();
+                var node = this.graph.addNode(coord.x,coord.y);
+                node.setLabel(0);
+                tmp.id_map[n] = node.getNodeID();
+            }
+        }
+        for(var e in graph.edges){
+            var edge = graph.edges[e];
+            var ne = this.graph.addEdge(this.graph.nodes[tmp.id_map[edge.getSourceID()]], this.graph.nodes[tmp.id_map[edge.getTargetID()]],edge.weight);
+            ne.setLayout('lineWidth', global_Edgelayout.lineWidth*0.5);
+        }
+        statusID = ADD_PATH;
+        // Erklärung im Statusfenster
+        $("#ta_div_statusErklaerung").html("<h3>4. " + LNG.K('algorithm_new_paths') + "</h3>"
+        + "<p>" + LNG.K('algorithm_new_paths_1') + "</p>"
+        + "<p>" + LNG.K('algorithm_new_paths_2') + "</p>");
+    };

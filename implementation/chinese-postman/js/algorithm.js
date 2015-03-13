@@ -59,17 +59,19 @@ function algorithm(p_graph, p_canvas, p_tab) {
      */
     var phase = 0;
 
-    //var start_node = null;
-
     var delta = new Object();
 
     var excess = 0;
 
-    var demandNodes = new Array();
+    var demandNodes = new Object();
 
-    var supplyNodes = new Array();
-
-    var paths = new Object();
+    var supplyNodes = new Object();
+    /**
+     * Assoz. Array mit Paaren von Knoten, die Pfade repraesentieren<br>
+     * s: Startknoten, d: Zielknoten
+     * @type Object
+     */
+    var matching = new Object();
 
     var current = 0;
     /**
@@ -82,6 +84,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
     var tour = new Array();
 
     var subtours = new Array();
+    var color = {};
     var tourColors = new Array("#0000cc", "#006600", "#990000", "#999900", "#cc6600", "#660099", "#330000");
     var tourAnimationIndex = 0;
     var tourAnimation = null;
@@ -283,7 +286,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
                 this.startAddingPaths();
                 break;
             case ADD_PATH:
-                this.addPath();
+                this.addPaths();
                 break;
             case END_TOUR:
                 this.endTour();
@@ -334,9 +337,9 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
         var match = maxMatching(cost);
         //find the original nodes and paths of the matching
-        paths = [];
+        matching = [];
         for(var i = 0;i< match.length; i++){
-            paths.push({s:uid_map[i],d:vid_map[match[i]]});
+            matching.push({s:uid_map[i],d:vid_map[match[i]]});
         }
     };
     /*
@@ -416,6 +419,12 @@ function algorithm(p_graph, p_canvas, p_tab) {
                 tour = newTour;
             }
             subtours.push({color: tourColorIndex, tour: subtour});
+            for(var i in subtour){//save colors
+                var c = subtour[i];
+                if(c.type == "edge"){
+                    color[c.id] = tourColorIndex;
+                }
+            }
             tourColorIndex++;
             tourColorIndex = tourColorIndex % tourColors.length;
             subtour = [];
@@ -508,18 +517,18 @@ function algorithm(p_graph, p_canvas, p_tab) {
         //findUnbalancedNodes
         excess = 0;
         delta = {};
-        supplyNodes = [];
-        demandNodes = [];
+        supplyNodes = {};
+        demandNodes = {};
         for (var n in graph.nodes){
             var node = graph.nodes[n];
             var d = Object.keys(node.getOutEdges()).length - Object.keys(node.getInEdges()).length;
             delta[node.getNodeID()] = d;
             if(d < 0) {
-                supplyNodes.push(node);
+                supplyNodes[node.getNodeID()] = node;
                 highlightSupply(node);
             }
             else if(d > 0) {
-                demandNodes.push(node);
+                demandNodes[node.getNodeID()] = node;
                 highlightDemand(node);
                 excess+=d;
             }
@@ -570,6 +579,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         var map_supply = {};
         var map_demand = {};
         var old_coord = {};
+        var id_map = {};
         for(var n in supplyNodes){
             var node = supplyNodes[n];
             var coord = node.getCoordinates();
@@ -578,6 +588,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             newn.setLabel(node.getLabel());
             map_supply[node.getNodeID()] = newn.getNodeID();
             old_coord[newn.getNodeID()] = coord;
+            id_map[node.getNodeID()] = newn.getNodeID();
         }
         for(var n in demandNodes){
             var node = demandNodes[n];
@@ -587,6 +598,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             newn.setLabel(node.getLabel());
             map_demand[node.getNodeID()] = newn.getNodeID();
             old_coord[newn.getNodeID()] = coord;
+            id_map[node.getNodeID()] = newn.getNodeID();
         }
         this.graph = new_graph;
         tmp_edges = [];
@@ -594,7 +606,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             for(var d in demandNodes){
                 var id1 = map_supply[supplyNodes[s].getNodeID()];
                 var id2 = map_demand[demandNodes[d].getNodeID()];
-                var e = new_graph.addEdge(new_graph.nodes[id1],new_graph.nodes[id2],distance[supplyNodes[s].getNodeID()][demandNodes[d].getNodeID()]);
+                var e = new_graph.addEdge(new_graph.nodes[id1],new_graph.nodes[id2],distance[supplyNodes[s].getNodeID()][demandNodes[d].getNodeID()],false);
                 tmp_edges.push(e);
             }
         }
@@ -611,7 +623,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             this.animateMove(this.graph.nodes[map_demand[d]],{x: 50 + i*DIFF, y: U_POSITION});
             i++;
         }
-        tmp = {map_supply: map_supply, map_demand: map_demand, old_coord: old_coord};
+        tmp = {map_supply: map_supply, map_demand: map_demand, old_coord: old_coord, id_map: id_map, graph: new_graph};
         statusID = MATCHING;
         // Erklärung im Statusfenster
         $("#ta_div_statusErklaerung").html("<h3>3. " + LNG.K('algorithm_paths') + "</h3>"
@@ -623,11 +635,12 @@ function algorithm(p_graph, p_canvas, p_tab) {
         for(var e in this.graph.edges){
             this.graph.removeEdge(e);
         }
-        for(var p in paths){
-            var id1 = tmp.map_supply[paths[p].s];
-            var id2 = tmp.map_demand[paths[p].d]
-            var e = this.graph.addEdge(this.graph.nodes[id1],this.graph.nodes[id2],distance[paths[p].s][paths[p].d]);
-            e.setLayout('lineColor','blue');
+        for(var p in matching){
+            var id1 = tmp.map_supply[matching[p].s];
+            var id2 = tmp.map_demand[matching[p].d];
+            var e = this.graph.addEdge(this.graph.nodes[id1],this.graph.nodes[id2],distance[matching[p].s][matching[p].d],false);
+            e.setLayout('lineColor','green');
+            e.setLayout('lineWidth', global_Edgelayout.lineWidth*2);
         }
         statusID = START_PATH;
         // Erklärung im Statusfenster
@@ -637,17 +650,29 @@ function algorithm(p_graph, p_canvas, p_tab) {
     };
 
     this.startAddingPaths = function(){
-        for(var n in this.graph.nodes){
-            //var node = this.graph.nodes[n];
-            this.animateMove(this.graph.nodes[n],tmp.old_coord[n]);
+        this.graph = graph;
+        tmp.match = {};
+        for(var p in matching){
+            var s = matching[p].s;
+            var d = matching[p].d;
+            var e = graph.addEdge(graph.nodes[s],graph.nodes[d],distance[matching[p].s][matching[p].d]);
+            tmp.match[e.getEdgeID()] = e;
+            matching[p].edge = e;
         }
         for(var n in graph.nodes){
-            if(!supplyNodes[n] && !demandNodes[n]){
-                var coord = graph.nodes[n].getCoordinates();
-                this.graph.addNode(coord.x,coord.y);
+            if(supplyNodes[n] || demandNodes[n]){
+                var old_coord = graph.nodes[n].getCoordinates();
+                graph.nodes[n].setCoordinates(tmp.graph.nodes[tmp.id_map[n]].getCoordinates());
+                this.animateMove(graph.nodes[n],old_coord);
             }
         }
-        //this.graph = graph;
+        for(var e in graph.edges){
+            graph.edges[e].setLayout('lineWidth', global_Edgelayout.lineWidth*0.4);
+        }
+        for(var e in tmp.match){
+            tmp.match[e].setLayout('lineColor','blue');
+            tmp.match[e].setLayout('lineWidth', global_Edgelayout.lineWidth*2);
+        }
         statusID = ADD_PATH;
         // Erklärung im Statusfenster
         $("#ta_div_statusErklaerung").html("<h3>4. " + LNG.K('algorithm_new_paths') + "</h3>"
@@ -655,13 +680,65 @@ function algorithm(p_graph, p_canvas, p_tab) {
         + "<p>" + LNG.K('algorithm_new_paths_2') + "</p>");
     };
 
+    this.addPaths = function(){
+        var step = 0;
+        var current = 0;
+        var shortest = [];
+        for(var p in matching){
+            var s = matching[p].s;
+            var d = matching[p].d;
+            var last = d;
+            var prev = [];
+            while(last != s){
+                var e = predecessor[s][last];
+                prev.push(e);
+                last = e.getSourceID();
+            }
+            prev.reverse();
+            shortest.push(prev);
+        }
+        var timerId = 0;
+        timerId = setInterval(function () {
+            if(current >= shortest.length){
+                clearInterval(timerId);
+                return;
+            }
+            if(step == 0){
+                graph.nodes[matching[current].s].setLayout('borderColor', const_Colors.NodeBorderHighlight);
+                graph.nodes[matching[current].d].setLayout('borderColor', const_Colors.NodeBorderHighlight);
+            }
+            else if(step == shortest[current].length + 1){
+                graph.nodes[matching[current].s].setLayout('borderColor', const_Colors.NodeBorder);
+                graph.nodes[matching[current].d].setLayout('borderColor', const_Colors.NodeBorder);
+                graph.nodes[matching[current].s].setLabel(graph.nodes[s].getLabel() + 1);
+                graph.nodes[matching[current].d].setLabel(graph.nodes[d].getLabel() - 1);
+                graph.removeEdge(matching[current].edge.getEdgeID());
+                step = -1;
+                current++;
+            }
+            else{
+                var e = shortest[current][step-1];
+                var ne = graph.addEdge(graph.nodes[e.getSourceID()],graph.nodes[e.getTargetID()], e.weight);
+                ne.setLayout('dashed',true);
+            }
+            step++;
+            algo.needRedraw = true;
+        }, 500);
+        statusID = SHOW_TOUR;
+        // Erklärung im Statusfenster
+        $("#ta_div_statusErklaerung").append(
+            //+ "<p>" + LNG.K('algorithm_add_path_3') + "</p>" +
+                "<p>" + LNG.K('algorithm_balanced_1') + "</p>");
+    };
+
     this.addPath = function(){
-        var s = paths[current].s;
-        var d = paths[current].d;
+        var s = matching[current].s;
+        var d = matching[current].d;
         var last = d;
         var edges_on_path = [];
         var cost = 0;
         var timerId = 0;
+        var cur_graph = this.graph;
         timerId = setInterval(function () {
             if(last != s){
                 var e = predecessor[s][last];
@@ -673,14 +750,17 @@ function algorithm(p_graph, p_canvas, p_tab) {
                 edges_on_path.push(ne);
                 last = e.getSourceID();
                 cost += ne.weight;
+                var edge = cur_graph.addEdge(cur_graph.nodes[tmp.id_map[e.getSourceID()]], cur_graph.nodes[tmp.id_map[e.getTargetID()]],e.weight);
+                edge.setLayout('dashed',true);
+                edge.setLayout('lineColor','blue');//highlight path
             }
             else{
                 clearInterval(timerId);
                 graph.nodes[s].setLabel(graph.nodes[s].getLabel() + 1);
                 graph.nodes[d].setLabel(graph.nodes[d].getLabel() - 1);
             }
-            this.needRedraw = true;
-        }, 500);
+            algo.needRedraw = true;
+        }, 1000);
         //unhighlight previous path
         if(new_edges.length > 0){
             for(var i in new_edges[new_edges.length-1]){
@@ -696,7 +776,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         + "<p>" + LNG.K('algorithm_add_path_1') + "</p>"
         + "<p>" + LNG.K('algorithm_add_path_2') + "</p>"
         + "<p>" + LNG.K('algorithm_add_path_cost') + cost + "</p>");
-        if(current >= paths.length){
+        if(current >= matching.length){
             statusID = SHOW_TOUR;
             // Erklärung im Statusfenster
             $("#ta_div_statusErklaerung").append(
@@ -705,33 +785,11 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
     };
 
-    this.addPathStep = function(event) {
-        if(tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "vertex") {
-            graph.nodes[tour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
-        }
-        if(tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "edge") {
-            graph.edges[tour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
-        }
-        this.needRedraw = true;
-        if(tourAnimationIndex >= tour.length) {
-            this.animateTourStop(event);
-            return;
-        }
-
-        if(tour[tourAnimationIndex].type == "vertex") {
-            graph.nodes[tour[tourAnimationIndex].id].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
-        }
-        if(tour[tourAnimationIndex].type == "edge") {
-            graph.edges[tour[tourAnimationIndex].id].setLayout("lineWidth", 6);
-        }
-        this.needRedraw = true;
-        tourAnimationIndex++;
-    };
-
     /*
     * Methoden fuer die Visualisierung der Eulertour
     * */
     this.startTour = function(){
+        this.graph = graph;
         this.computeEulerTour();
         for (var n in graph.nodes) {
             graph.nodes[n].restoreLayout();
@@ -742,7 +800,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
         this.addNamingLabels();
         //color edges
-        for(var i = 0; i < subtours.length; i++) {
+/*        for(var i = 0; i < subtours.length; i++) {
             var cur = subtours[i];
             for(var j = 0; j < cur['tour'].length; j++) {
                 if(cur['tour'][j].type == "edge") {
@@ -751,7 +809,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
                     //edge.weight = null;
                 }
             }
-        }
+        }*/
         //create output path and subpaths
         var output = "";
         for(var i = 0; i < tour.length; i++) {
@@ -888,6 +946,105 @@ function algorithm(p_graph, p_canvas, p_tab) {
         $("#ta_button_vorspulen").button("option", "disabled", true);
     };
 
+    this.hoverSubtour = function(event) {
+
+        var tourId = $(event.target).data("tourId");
+        $(event.target).css("font-weight", "bold");
+        var curSubtour = subtours[tourId]['tour'];
+
+        for(var i = 0; i < curSubtour.length; i++) {
+            if(curSubtour[i].type == "edge") {
+                graph.edges[curSubtour[i].id].setLayout("lineWidth", 6);
+            }
+        }
+        event.data.org.needRedraw = true;
+
+    };
+
+    this.dehoverSubtour = function(event) {
+
+        var tourId = $(event.target).data("tourId");
+        $(event.target).css("font-weight", "normal");
+        var curSubtour = subtours[tourId]['tour'];
+
+        for(var i = 0; i < curSubtour.length; i++) {
+            if(curSubtour[i].type == "edge") {
+                graph.edges[curSubtour[i].id].setLayout("lineWidth", 3);
+            }
+        }
+        event.data.org.needRedraw = true;
+
+    };
+
+    this.animateTourStep = function(event) {
+
+        if(tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "vertex") {
+            graph.nodes[tour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
+        }
+        if(tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "edge") {
+            graph.edges[tour[(tourAnimationIndex - 1)].id].setLayout("lineColor", tourColors[color[tour[(tourAnimationIndex - 1)].id]]);
+            graph.edges[tour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
+        }
+        this.needRedraw = true;
+
+        if(tourAnimationIndex >= tour.length) {
+            this.animateTourStop(event);
+            return;
+        }
+
+        if(tour[tourAnimationIndex].type == "vertex") {
+            graph.nodes[tour[tourAnimationIndex].id].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+        }
+        if(tour[tourAnimationIndex].type == "edge") {
+            graph.edges[tour[tourAnimationIndex].id].setLayout("lineColor", tourColors[color[tour[tourAnimationIndex].id]]);
+            graph.edges[tour[tourAnimationIndex].id].setLayout("lineWidth", 6);
+        }
+
+        this.needRedraw = true;
+        tourAnimationIndex++;
+    };
+
+    this.animateTour = function(event) {
+        $("#animateTour").button("option", "disabled", true);
+        $("#animateTourStop").button("option", "disabled", false);
+        tourAnimationIndex = 0;
+        var self = event.data.org;
+        tourAnimation = window.setInterval(function() {self.animateTourStep(event); }, 250);
+    };
+
+    this.animateTourStop = function(event) {
+        if(tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "vertex") {
+            graph.nodes[tour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
+        }
+        if(tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "edge") {
+            graph.edges[tour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
+        }
+        event.data.org.needRedraw = true;
+        tourAnimationIndex = 0;
+        window.clearInterval(tourAnimation);
+        tourAnimation = null;
+        $("#animateTour").button("option", "disabled", false);
+        $("#animateTourStop").button("option", "disabled", true);
+        return;
+    };
+
+    this.animateMoveStep = function(node,c,newc,step, aid){
+        var STEPS = 100;
+        var coord = c;
+        var dir = {x: newc.x-coord.x, y: newc.y-coord.y};
+        node.setCoordinates({x: coord.x + (step/STEPS*dir.x), y: coord.y + (step/STEPS*dir.y)});
+        algo.needRedraw = true;
+        if(step >= STEPS){
+            window.clearInterval(aid);
+        }
+    };
+    this.animateMove = function(node,newc) {
+        var step = 0;
+        var an = 0;
+        var c = node.getCoordinates();
+        an = window.setInterval(function() {algo.animateMoveStep(node, c, newc, step++, an); }, 5);
+    };
+
     /**
      * Ermittelt basierend auf der StatusID und anderen den vorherigen Schritt aus
      * und ruft die entsprechende Funktion auf.
@@ -897,7 +1054,6 @@ function algorithm(p_graph, p_canvas, p_tab) {
         this.replayStep();
         this.needRedraw = true;
     };
-
 
     this.addReplayStep = function() {
         var nodeProperties = {};
@@ -966,103 +1122,6 @@ function algorithm(p_graph, p_canvas, p_tab) {
             $("#ta_button_1Schritt").button("option", "disabled", false);
             $("#ta_button_vorspulen").button("option", "disabled", false);
         }
-    };
-
-    this.hoverSubtour = function(event) {
-
-        var tourId = $(event.target).data("tourId");
-        $(event.target).css("font-weight", "bold");
-        var curSubtour = subtours[tourId]['tour'];
-
-        for(var i = 0; i < curSubtour.length; i++) {
-            if(curSubtour[i].type == "edge") {
-                graph.edges[curSubtour[i].id].setLayout("lineWidth", 6);
-            }
-        }
-        event.data.org.needRedraw = true;
-
-    };
-
-    this.dehoverSubtour = function(event) {
-
-        var tourId = $(event.target).data("tourId");
-        $(event.target).css("font-weight", "normal");
-        var curSubtour = subtours[tourId]['tour'];
-
-        for(var i = 0; i < curSubtour.length; i++) {
-            if(curSubtour[i].type == "edge") {
-                graph.edges[curSubtour[i].id].setLayout("lineWidth", 3);
-            }
-        }
-        event.data.org.needRedraw = true;
-
-    };
-
-    this.animateTourStep = function(event) {
-
-        if(tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "vertex") {
-            graph.nodes[tour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
-        }
-        if(tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "edge") {
-            graph.edges[tour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
-        }
-        this.needRedraw = true;
-
-        if(tourAnimationIndex >= tour.length) {
-            this.animateTourStop(event);
-            return;
-        }
-
-        if(tour[tourAnimationIndex].type == "vertex") {
-            graph.nodes[tour[tourAnimationIndex].id].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
-        }
-        if(tour[tourAnimationIndex].type == "edge") {
-            graph.edges[tour[tourAnimationIndex].id].setLayout("lineWidth", 6);
-        }
-
-        this.needRedraw = true;
-        tourAnimationIndex++;
-    };
-
-    this.animateTour = function(event) {
-        $("#animateTour").button("option", "disabled", true);
-        $("#animateTourStop").button("option", "disabled", false);
-        tourAnimationIndex = 0;
-        var self = event.data.org;
-        tourAnimation = window.setInterval(function() {self.animateTourStep(event); }, 250);
-    };
-
-    this.animateTourStop = function(event) {
-        if(tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "vertex") {
-            graph.nodes[tour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
-        }
-        if(tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "edge") {
-            graph.edges[tour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
-        }
-        event.data.org.needRedraw = true;
-        tourAnimationIndex = 0;
-        window.clearInterval(tourAnimation);
-        tourAnimation = null;
-        $("#animateTour").button("option", "disabled", false);
-        $("#animateTourStop").button("option", "disabled", true);
-        return;
-    };
-
-    this.animateMoveStep = function(node,c,newc,step, aid){
-        var STEPS = 100;
-        var coord = c;
-        var dir = {x: newc.x-coord.x, y: newc.y-coord.y};
-        node.setCoordinates({x: coord.x + (step/STEPS*dir.x), y: coord.y + (step/STEPS*dir.y)});
-        algo.needRedraw = true;
-        if(step >= STEPS){
-            window.clearInterval(aid);
-        }
-    };
-    this.animateMove = function(node,newc) {
-        var step = 0;
-        var an = 0;
-        var c = node.getCoordinates();
-        an = window.setInterval(function() {algo.animateMoveStep(node, c, newc, step++, an); }, 5);
     };
 }
 

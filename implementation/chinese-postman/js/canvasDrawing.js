@@ -23,20 +23,46 @@ function CanvasDrawMethods() {
  * @param {String} label            Text auf dem Pfeil
  * @param {String} additionalLabel  Zusatztext zu dem Pfeil
  */
+CanvasDrawMethods.drawArrow1 = function (ctx, layout, source, target, control) {
+    // Pfeilkopf zeichnen
+    var arrowHeadColor = layout.lineColor;
+    if (layout.isHighlighted) {
+        arrowHeadColor = const_Colors.EdgeHighlight3;
+    }
+    ctx.beginPath();
+    ctx.strokeStyle = arrowHeadColor;
+    var center;
+    if (control == null) center = {x: (target.x + source.x) / 2, y: (target.y + source.y) / 2};
+    else center = this.getQuadraticCurvePoint(source.x, source.y, control.x, control.y, target.x, target.y, 0.5);
+    var edgeAngle = Math.atan2(target.y - source.y, target.x - source.x);
+    var arrowStart = {
+        x: center.x + Math.cos(edgeAngle) * layout.arrowHeadLength / 2,
+        y: center.y + Math.sin(edgeAngle) * layout.arrowHeadLength / 2
+    };
+    var lineAngle1 = Math.atan2(target.y - source.y, target.x - source.x)
+        + layout.arrowAngle + Math.PI;	// Winkel des rechten Pfeilkopfs relativ zum Nullpunkt
+    var lineAngle2 = Math.atan2(target.y - source.y, target.x - source.x)
+        - layout.arrowAngle + Math.PI;	// Winkel des linken Pfeilkopfs relativ zum Nullpunkt
+    ctx.moveTo(arrowStart.x, arrowStart.y);
+    ctx.lineTo(arrowStart.x + Math.cos(lineAngle1) * layout.arrowHeadLength, arrowStart.y + Math.sin(lineAngle1) * layout.arrowHeadLength);
+    ctx.stroke();
+    ctx.moveTo(arrowStart.x, arrowStart.y);
+    ctx.lineTo(arrowStart.x + Math.cos(lineAngle2) * layout.arrowHeadLength, arrowStart.y + Math.sin(lineAngle2) * layout.arrowHeadLength);
+    ctx.stroke();
+}
 CanvasDrawMethods.drawArrow = function (ctx, layout, source, target, control, label, additionalLabel, dashed) {
     if (dashed) {
         ctx.setLineDash([10]);
     }
-    // Linie zeichnen
+    //Zeichne die Kurve bzw. Linie
     if (control != null) CanvasDrawMethods.drawCurve(ctx, layout, source, target, control);
     else CanvasDrawMethods.drawLine(ctx, layout, source, target);
+    ctx.setLineDash([0]);
+    // Pfeilkopf zeichnen
     var arrowHeadColor = layout.lineColor;
-
     if (layout.isHighlighted) {
         arrowHeadColor = const_Colors.EdgeHighlight3;
     }
-    ctx.setLineDash([0]);
-    // Pfeilkopf zeichnen
     ctx.beginPath();
     ctx.strokeStyle = arrowHeadColor;
     var center;
@@ -67,6 +93,7 @@ CanvasDrawMethods.drawArrow = function (ctx, layout, source, target, control, la
             lineWidth: layout.lineWidth
         }, thirtyPercent, arrowStart);
     }
+    //draw labels
     if (label) {
         if (control == null) {
             if (source.x * target.y - target.x * source.y >= 0) {
