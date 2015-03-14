@@ -432,22 +432,23 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
 
     this.displayST = function(S, T){
 
-        var sField = S.filter(function(element) {
-            return element;
-        });
-        sField = sField.map(function(node, i) {
-            if($("body").data("graph").nodes[i].getLayout().fillStyle != const_Colors.NodeFillingHighlight) {
-                $("body").data("graph").nodes[i].setLayout("fillStyle", "green");
+        var sField = [];
+        var tField = [];
+
+        S.map(function(node, i) {
+            if(node) {
+                if(graph.nodes[i].getLayout().fillStyle != const_Colors.NodeFillingHighlight) {
+                    graph.nodes[i].setLayout("fillStyle", "green");
+                }
+                sField.push(graph.nodes[i].getOuterLabel());
             }
-            return i+1;
         });
 
-        var tField = T.filter(function(element) {
-            return element;
-        });
-        tField = tField.map(function(node, i) {
-            $("body").data("graph").nodes[(S.length+i)].setLayout("fillStyle", "green");
-            return i+1;
+        T.map(function(node, i) {
+            if(node) {
+            graph.nodes[(S.length+i)].setLayout("fillStyle", "green");
+            tField.push(graph.nodes[i+Object.keys(graph.vnodes).length].getOuterLabel());
+            }
         });
 
         $("#ta_div_statusErklaerung").html(
