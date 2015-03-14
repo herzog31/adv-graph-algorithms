@@ -103,9 +103,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         for(var i in graph.nodes) {
             graph.nodes[i].originalBorder = const_Colors.NodeBorder;
             graph.nodes[i].originalFill = const_Colors.NodeFilling;
-            if(!maxKey || parseInt(i) > maxKey){
-                maxKey = parseInt(i);
-            }
             if (graph.nodes[i].getCoordinates().y == graph_constants.U_POSITION) {
                 uNodes++;
             }else{
@@ -154,7 +151,9 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                 }
             }
         }
-        var cnt = maxKey + 1;
+        var cnt = graph.getNodeIDCounter();
+        maxKey = graph.getNodeIDCounter() - 1;
+
         for(var i in graph.nodes) {
             if (graph.nodes[i].getCoordinates().y == graph_constants.U_POSITION){
                 graph.nodes[cnt] = graph.nodes[i];
@@ -254,8 +253,9 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         this.stopFastForward();
         this.destroyCanvasDrawer();
         this.deregisterEventHandlers();
-        $("body").data("graph",new BipartiteGraph("graphs/graph1.txt"));
-        this.graph = new BipartiteGraph("graphs/graph1.txt");
+        var orgGraph = $("body").data("graphOrg");
+        var orgGraph = new BipartiteGraph("text", canvas, orgGraph);
+        $("body").data("graph", orgGraph);
         this.drawCanvas();
     };
 
@@ -418,6 +418,36 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         }
     };
 
+    this.displayST = function(S, T){
+
+        var sField = S.filter(function(element) {
+            return element;
+        });
+        sField = sField.map(function(node, i) {
+            if($("body").data("graph").nodes[i].getLayout().fillStyle != const_Colors.NodeFillingHighlight) {
+                $("body").data("graph").nodes[i].setLayout("fillStyle", "green");
+            }
+            return i+1;
+        });
+
+        var tField = T.filter(function(element) {
+            return element;
+        });
+        tField = tField.map(function(node, i) {
+            $("body").data("graph").nodes[(S.length+i)].setLayout("fillStyle", "green");
+            return i+1;
+        });
+
+        $("#ta_div_statusErklaerung").html(
+            "<h3>Augmentationsweg bestimmen</h3>" +
+            "<p>Der Algorithmus versucht nun schrittweise einen alternierenden Pfad zu konstruieren.</p>" +
+            "<p>Die Konstruktion stoppt, wenn der alternierende Pfad augmentierend wird oder es keine weiteren passenden Kanten mehr gibt.</p>");
+
+        $("#ta_td_setS").html(sField.join(",") || "&#8709;");
+        $("#ta_td_setT").html(tField.join(",") || "&#8709;");
+        //TODO node borders
+    }
+
     this.initLabels = function(){
         this.setAll(S, false);
         this.setAll(T, false);
@@ -496,7 +526,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                 || history[history.length - 1].previousStatusId == READY_TO_BUILD_TREE_AFTER_RELABELING){
                 goOn = true;
             }else{
-                displayST(S, T);
+                this.displayST(S, T);
             }
             statusID = READY_TO_BUILD_TREE;
             $(".marked").removeClass("marked");
@@ -535,7 +565,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                 T[y] = true;
                 q[wr++] = yx[y];
                 this.add_to_tree(yx[y], x);
-                displayST(S, T);
+                this.displayST(S, T);
                 goOn = false;
             }else{
                 goOn = true;
@@ -561,7 +591,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         wr = rd = 0;
         y = 0;
         console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
-        displayST(S, T);
+        this.displayST(S, T);
         statusID = READY_TO_BUILD_TREE_AFTER_RELABELING;
         $(".marked").removeClass("marked");
         $("#ta_p_l6").addClass("marked");
@@ -590,7 +620,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                         q[wr++] = yx[y];
                         this.add_to_tree(yx[y], slackx[y]);
                     }
-                    displayST(S, T);
+                    this.displayST(S, T);
                 }
             }else{
                 goOn = true;

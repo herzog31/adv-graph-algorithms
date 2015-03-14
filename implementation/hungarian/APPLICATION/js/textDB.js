@@ -108,33 +108,3 @@ function showCurrentMatching(xy, otherEdges){
 
     $("#ta_td_matching").html(matching.join(",") || "&#8709;");
 }
-
-function displayST(S, T){
-
-    var sField = S.filter(function(element) {
-        return element;
-    });
-    sField = sField.map(function(node, i) {
-        if($("body").data("graph").nodes[i].getLayout().fillStyle != const_Colors.NodeFillingHighlight) {
-            $("body").data("graph").nodes[i].setLayout("fillStyle", "green");
-        }
-        return i+1;
-    });
-
-    var tField = T.filter(function(element) {
-        return element;
-    });
-    tField = tField.map(function(node, i) {
-        $("body").data("graph").nodes[(S.length+i)].setLayout("fillStyle", "green");
-        return i+1;
-    });
-
-    $("#ta_div_statusErklaerung").html(
-        "<h3>Augmentationsweg bestimmen</h3>" +
-        "<p>Der Algorithmus versucht nun schrittweise einen alternierenden Pfad zu konstruieren.</p>" +
-        "<p>Die Konstruktion stoppt, wenn der alternierende Pfad augmentierend wird oder es keine weiteren passenden Kanten mehr gibt.</p>");
-
-    $("#ta_td_setS").html(sField.join(",") || "&#8709;");
-    $("#ta_td_setT").html(tField.join(",") || "&#8709;");
-    //TODO node borders
-}

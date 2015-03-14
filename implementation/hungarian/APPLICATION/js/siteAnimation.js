@@ -86,6 +86,7 @@ function initializeSiteLayout() {
                 $("#tab_tg").data("algo",algo);
             }
             if(ui.newPanel[0].id == "tab_ta") {
+                $("body").data("graphOrg", $("body").data("graph").getDescriptionAsString());
                 algo = new HungarianMethod($("body").data("graph"),$("#ta_canvas_graph"),$("#tab_ta"));
                 $("#tab_ta").data("algo",algo);
             }

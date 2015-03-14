@@ -824,25 +824,29 @@ function Graph(filename,canvas) {
      * @private
      */
     function generateRandomGraph(canvas) {
-	var NumberOfNodes = 7;
-	
-	// Knoten erstellen
-	for(var i = 0;i<NumberOfNodes;i++) {
-            var x = Math.random()*(canvas.width()-100) +50;     // Knoten nicht zu nah am Rand
-            var y = Math.random()*(canvas.height()-100) +50;
-            x = Math.round(x/10)*10;                            // Knoten ein bisschen gleichmäßiger verteilt.
-            y = Math.round(y/10)*10;
-            closure_graph.addNode(x,y);
-	}
-	
-	// Kanten erstellen, mit WSKeit 30 %
-	for(var i = 0;i<NumberOfNodes;i++) {
-            for(var j = 0;j<NumberOfNodes;j++) {
-                if(i != j && Math.random() < 0.3) {
-                    closure_graph.addEdge(closure_graph.nodes[i],closure_graph.nodes[j],null);
+    	var NumberOfNodes = 7;
+    	
+    	// Knoten erstellen
+    	for(var i = 0;i<NumberOfNodes;i++) {
+                var x = Math.random()*(canvas.width()-100) +50;     // Knoten nicht zu nah am Rand
+                var y = Math.random()*(canvas.height()-100) +50;
+                x = Math.round(x/10)*10;                            // Knoten ein bisschen gleichmäßiger verteilt.
+                y = Math.round(y/10)*10;
+                closure_graph.addNode(x,y);
+    	}
+    	
+    	// Kanten erstellen, mit WSKeit 30 %
+    	for(var i = 0;i<NumberOfNodes;i++) {
+                for(var j = 0;j<NumberOfNodes;j++) {
+                    if(i != j && Math.random() < 0.3) {
+                        closure_graph.addEdge(closure_graph.nodes[i],closure_graph.nodes[j],null);
+                    }
                 }
-            }
-	}
+    	}
+    }
+
+    this.getNodeIDCounter = function() {
+        return nodeIDCounter;
     }
     
     /**

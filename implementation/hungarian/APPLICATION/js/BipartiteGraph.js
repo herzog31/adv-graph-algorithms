@@ -9,7 +9,7 @@ var graph_constants = {
     MAX_NODES: 20
 };
 
-function BipartiteGraph(filename,p_canvas){
+function BipartiteGraph(filename,p_canvas,text){
     Graph.call(this);
 
     this.unodes = new Object();
@@ -101,35 +101,37 @@ function BipartiteGraph(filename,p_canvas){
             dataType: "text"
         });
 
-        request.done(function(text) {
-            var lines=text.split("\n");                     // Nach Zeilen aufteilen
-            var ucard = 0;
-            var vcard = 0;
-            var i;
-            for(i = 0; i < lines.length; i++) {
-                var parameter = lines[i].split(" ");
-                if(!isNaN(parseInt(parameter[0]))){
-                    ucard = parseInt(parameter[0]);
-                    vcard = parseInt(parameter[1]);
-                    for(var j = 0; j < ucard; j++) closure_graph.addNode(true);
-                    for(var j = 0; j < vcard; j++) closure_graph.addNode(false);
-                    i++;
-                    break;
+        request.done(parseFromText);
+    };
+
+    function parseFromText(text) {
+        var lines=text.split("\n");                     // Nach Zeilen aufteilen
+        var ucard = 0;
+        var vcard = 0;
+        var i;
+        for(i = 0; i < lines.length; i++) {
+            var parameter = lines[i].split(" ");
+            if(!isNaN(parseInt(parameter[0]))){
+                ucard = parseInt(parameter[0]);
+                vcard = parseInt(parameter[1]);
+                for(var j = 0; j < ucard; j++) closure_graph.addNode(true);
+                for(var j = 0; j < vcard; j++) closure_graph.addNode(false);
+                i++;
+                break;
+            }
+        }
+        for(; i < lines.length; i++) {
+            var parameter = lines[i].split(" ");     // Nach Parametern aufteilen
+            if(parameter[0] == "e") {
+                if(!isNaN(parseInt(parameter[1])) && !isNaN(parseInt(parameter[2])) && !isNaN(parseFloat(parameter[3]))) {
+                    var sourceId = parseInt(parameter[1]);
+                    var targetId = parseInt(parameter[2]);
+                    var weight = parseFloat(parameter[3]);
+                    //check if bipartite here
+                    closure_graph.addEdge(closure_graph.nodes[sourceId],closure_graph.nodes[targetId],weight);
                 }
             }
-            for(; i < lines.length; i++) {
-                var parameter = lines[i].split(" ");     // Nach Parametern aufteilen
-                if(parameter[0] == "e") {
-                    if(!isNaN(parseInt(parameter[1])) && !isNaN(parseInt(parameter[2])) && !isNaN(parseFloat(parameter[3]))) {
-                        var sourceId = parseInt(parameter[1]);
-                        var targetId = parseInt(parameter[2]);
-                        var weight = parseFloat(parameter[3]);
-                        //check if bipartite here
-                        closure_graph.addEdge(closure_graph.nodes[sourceId],closure_graph.nodes[targetId],weight);
-                    }
-                }
-            }
-        });
+        }
     };
 
     function generateRandomGraph(canvas) {
@@ -155,12 +157,29 @@ function BipartiteGraph(filename,p_canvas){
         canvas = can;
     };
 
+    this.getDescriptionAsString = function() {
+        var graphDescription = "";
+        graphDescription += "% Automatisch generiert um " +(new Date).toGMTString() + "\n";
+        var nodeArray = Utilities.arrayOfKeys(this.nodes);
+        graphDescription += Object.keys(this.unodes).length + " "+Object.keys(this.vnodes).length + "\n";
+        for(var i=0;i<nodeArray.length;i++) {
+            graphDescription += "n " +this.nodes[nodeArray[i]].getCoordinates().x + " " +this.nodes[nodeArray[i]].getCoordinates().y + "\n";
+        }
+        for(var edgeID in this.edges) {
+            var u = nodeArray.indexOf(this.edges[edgeID].getSourceID().toString());
+            var v = nodeArray.indexOf(this.edges[edgeID].getTargetID().toString());
+            graphDescription += "e " +u + " " +v + " "+ this.edges[edgeID].weight + "\n";
+        }
+        return graphDescription;
+    };
+
     // Falls ein Dateiname angegeben wurde, parse den entsprechenden Graph
     // Falls das Canvas angegeben wurde, erstelle Zufallsgraph
     if(filename === "random") {
         generateRandomGraph(canvas);
-    }
-    else if(filename != null) {
+    }else if(filename === "text") {
+        parseFromText(text);
+    }else if(filename != null) {
         parseGraphfromFile(filename);
     }
 }
