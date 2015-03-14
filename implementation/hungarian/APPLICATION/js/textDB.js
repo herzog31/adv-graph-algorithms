@@ -95,8 +95,7 @@ function showCurrentMatching(xy, otherEdges){
                 $("body").data("graph").edges[edge].originalColor = "green";
                 $("body").data("graph").edges[edge].setLayout("lineWidth", 4);
                 $("body").data("graph").edges[edge].hidden = false;
-                matching.push("(" + $("body").data("graph").edges[edge].getSourceID() + "," + $("body").data("graph").edges[edge].getTargetID() + ")");
-                console.log("green");
+                matching.push("(" + $("body").data("graph").nodes[$("body").data("graph").edges[edge].getSourceID()].getOuterLabel() + "," + $("body").data("graph").nodes[$("body").data("graph").edges[edge].getTargetID()].getOuterLabel() + ")");
             }else if(($("body").data("graph").edges[edge].getSourceID() == i
                 || $("body").data("graph").edges[edge].getTargetID()-xy.length == xy[i])
                 && $("body").data("graph").edges[edge].originalColor == "green"){

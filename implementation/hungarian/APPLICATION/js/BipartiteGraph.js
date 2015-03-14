@@ -3,10 +3,10 @@
  */
 var graph_constants = {
     U_POSITION : 75, //standard 75
-    V_POSITION : 325,//standard 425
+    V_POSITION : 425,//standard 425
     LEFT_POSITION : 60,
     DIFF: 80,
-    MAX_NODES: 20
+    MAX_NODES: 8
 };
 
 function BipartiteGraph(filename,p_canvas,text){

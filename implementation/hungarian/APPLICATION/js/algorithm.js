@@ -225,6 +225,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         root = -1;
         q = new Array(n);
         this.initCanvasDrawer();
+        this.addNamingLabels();
         // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
         $("#ta_div_abspielbuttons").append("<button id=\"ta_button_Zurueck\">"+LNG.K('algorithm_btn_prev')+"</button>"
         +"<button id=\"ta_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button>"
@@ -416,6 +417,17 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             this.addReplayStep();
             console.log(history);
         }
+    };
+
+    this.addNamingLabels = function() {
+
+        var nodeCounter = 1;
+
+        for(var knotenID in graph.nodes) {
+            graph.nodes[knotenID].setOuterLabel(String.fromCharCode("a".charCodeAt(0)+nodeCounter-1));
+            nodeCounter++;
+        };
+
     };
 
     this.displayST = function(S, T){

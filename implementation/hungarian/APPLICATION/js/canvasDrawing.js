@@ -96,6 +96,8 @@ CanvasDrawMethods.drawTextOnLine = function(ctx,layout,source,target,label,even,
     ctx.font = layout.fontSize.toString() +"px " +layout.font;
     if(layout.lineColor == const_Colors.grey){
         ctx.fillStyle = const_Colors.grey;
+    }else{
+        ctx.fillStyle = "black";
     }
     var labelMeasure = ctx.measureText(label);
     var alpha = Math.atan2(target.y-source.y,target.x-source.x);
@@ -207,4 +209,33 @@ CanvasDrawMethods.drawDisk = function(ctx,position,layout,label) {
     // Text sollte maximal so breit sein, dass er in den Knoten passt.
     var labelMeasure = Math.min(ctx.measureText(label).width,layout.nodeRadius*1.7);
     ctx.fillText(label, position.x-labelMeasure/2, position.y+layout.nodeRadius-layout.borderWidth-layout.fontSize/2,layout.nodeRadius*1.7);
+};
+
+CanvasDrawMethods.drawDiskOuter = function(ctx,position,layout,label,outerLabel) {
+    ctx.beginPath();
+    // Zeichne Füllung
+    ctx.fillStyle =  layout.fillStyle;
+    ctx.arc(position.x, position.y, layout.nodeRadius, 0, Math.PI*2, true); 
+    ctx.fill();
+    // Zeichne Rand
+    ctx.lineWidth = layout.borderWidth;
+    ctx.strokeStyle = layout.borderColor; 
+    ctx.stroke();
+    // Zeichne NodeID in den Knoten
+    ctx.fillStyle = layout.fontColor; 
+    ctx.font = layout.font + " " +layout.fontSize.toString() + "px sans-serif"; 
+    // Text sollte maximal so breit sein, dass er in den Knoten passt.
+    var labelMeasure = Math.min(ctx.measureText(label).width,layout.nodeRadius*1.7);
+    ctx.fillText(label, position.x-labelMeasure/2, position.y+layout.nodeRadius-layout.borderWidth-layout.fontSize/2,layout.nodeRadius*1.7);
+    ctx.fillStyle = layout.borderColor; 
+    var previousValue = ctx.textAlign;
+    ctx.textAlign="center"; 
+    if(position.y == graph_constants.U_POSITION) {
+        ctx.fillText(outerLabel, position.x, position.y - (1.5 * layout.nodeRadius));
+    }else{
+        ctx.fillText(outerLabel, position.x, position.y + (2.1 *layout.nodeRadius));
+    }
+    ctx.textAlign = previousValue;
+    
+
 };

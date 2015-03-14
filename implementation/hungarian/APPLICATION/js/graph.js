@@ -101,6 +101,7 @@ function GraphNode(coordinates,nodeID) {
      * @type String
      */
     var label = null;
+    var outerLabel = null;
     /**
     * @method
     * @return {Number} Gibt die NodeID zurück.
@@ -212,6 +213,10 @@ function GraphNode(coordinates,nodeID) {
         return label;
     };
 
+    this.getOuterLabel = function() {
+        return outerLabel || "";
+    }
+
     /**
      * Setzt einen Namen für den Knoten
      * @method
@@ -219,6 +224,10 @@ function GraphNode(coordinates,nodeID) {
      */
     this.setLabel = function(newLabel) {
         label = newLabel;
+    };
+
+    this.setOuterLabel = function(newLabel) {
+        outerLabel = newLabel;
     };
 
     /**
@@ -238,7 +247,8 @@ function GraphNode(coordinates,nodeID) {
  * @this {GraphNode}
  */
 GraphNode.prototype.draw = function(ctx) {
-    CanvasDrawMethods.drawDisk(ctx,this.getCoordinates(),this.getLayout(),this.getLabel().toString());
+    //CanvasDrawMethods.drawDisk(ctx,this.getCoordinates(),this.getLayout(),this.getLabel().toString());
+    CanvasDrawMethods.drawDiskOuter(ctx,this.getCoordinates(),this.getLayout(),this.getLabel().toString(),this.getOuterLabel());
 };
 
 /**

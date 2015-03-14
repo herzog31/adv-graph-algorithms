@@ -176,6 +176,16 @@ table.algoInformationen {
     border-collapse:collapse;
     width: 100%;
 }
+.algoInformationen td {
+    -ms-word-break: break-all;
+    word-break: break-all;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+    overflow-wrap: break-word;
+}
 
 #tabs li .ui-icon-refresh { float: right; margin: 0.4em 0.2em 0 0; cursor: pointer; }
 #tabs { 
