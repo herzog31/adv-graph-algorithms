@@ -244,23 +244,23 @@
             <p style="text-align: center;">\(l(x) + l(y) \ge w(x, y)\)</p>
 
             <p><strong>Gleichheitsgraph</strong><br />
-            Mittels der Markierungen können wir einen Gleichheitsgraph \(G_l\) definieren der alle Knoten aus unserem Ausgangsgraph besitzt. Die Kantenmenge enthält jedoch nur die Kanten, deren Gewicht genau der Summe der Markierungen ihrer Knoten entspricht (vgl. Bild 3).</p>
+            Mittels der Markierungen können wir einen Gleichheitsgraph \(G_l = (V, E_l)\) definieren der alle Knoten aus unserem Ausgangsgraph besitzt. Die Kantenmenge enthält jedoch nur die Kanten, deren Gewicht genau der Summe der Markierungen ihrer Knoten entspricht (vgl. Bild 3).</p>
             <p style="text-align: center;">\(E_l = \{(x,y) \in E\ |\ l(x) + l(y) = w(x, y)\}\)</p>
 
-            <p>Nun zu dem oben angesprochenem Theorem. Das Kuhn-Munkres-Theorem besagt, dass wenn man ein perfektes Matching im Gleichheitsgraph \(G_l\) findet, dieses im Ausgangsgraph maximal ist. Das Problem des optimalen Matchings kann man damit also auf das Finden eines perfekten Matchings im Gleichheitsgraph reduzieren.</p>
+            <p>Nun zu dem oben angesprochenem Theorem. Das Kuhn-Munkres-Theorem besagt, dass wenn man ein perfektes Matching im Gleichheitsgraph findet, dieses im Ausgangsgraph maximal ist. Das Problem des optimalen Matchings kann man damit also auf das Finden eines perfekten Matchings im Gleichheitsgraph reduzieren.</p>
 
             <p>Bevor wir nun zum eigentlichen Algorithmus kommen, hier noch ein paar Hinweise:</p>
 
-            <p>Die Ungarische Methode in der hier beschriebenen Form findet maximale Matchings. Das bedeutet, dass wir das zu Beginn geschilderte Problem umformen müssen. Dazu "spiegeln" wir die Kantengewichte: \(w(x,y) \leftarrow -w(x,y)\).</p>
+            <p>Die Ungarische Methode in der hier beschriebenen Form findet maximale Matchings, also Matchings mit möglichst hohen Kantengewichten. Das bedeutet, dass wir das zu Beginn geschilderte Problem umformen müssen. Dazu kann man die Kantengewichte durch einen Vorzeichenwechsel "spiegeln", d.h. aus \(w(x,y)\) macht man \(-w(x,y)\).</p>
 
-            <p>Außerdem muss der bipartite Graph, auf den wir den Algorithmus anwenden vollständig sein. Das heißt, es müssen von jedem Knoten aus \(X\) Kanten zu jedem Knoten aus \(Y\) führen. In unserem Beispiel wäre dies nicht der Fall, wenn ein Mitarbeiter eine Aufgabe gar nicht bearbeiten kann. In diesem Fall fügt man neutrale Kanten mit Kantengewicht \(0\) ein, sodass der Graph vollständig wird.</p>
+            <p>Außerdem muss der bipartite Graph, auf den wir den Algorithmus anwenden vollständig sein. Das heißt, es muss gleich viele Knoten in \(X\) und \(Y\) geben und von jedem Knoten einer Partition müssen Kanten zu jedem Knoten der anderen Partition führen. In unserem Beispiel wäre dies nicht der Fall, wenn ein Mitarbeiter eine Aufgabe gar nicht bearbeiten kann. In diesem Fall fügt man neutrale Knoten und Kanten mit Kantengewicht \(0\) ein, sodass der Graph vollständig wird. Sofern die hinzugefügten neutralen Elemente nach Ausführung des Algorithmus im gefundenen Matching enthalten sind, kann man sie einfach wieder entfernen.</p>
             <p>&nbsp;</p>
 
             <h1>Der Ablauf des Algorithmus</h1>
 
             <p>Das Finden eines perfekten Matchings im Gleichheitsgraph geschieht schrittweise. Der Algorithmus beginnt mit einem leeren Matching und versucht dieses in jedem Schritt zu verbessern, bis es perfekt ist.</p>
 
-            <p>Zu Beginn bestimmt der Algorithmus für alle Knoten eine Markierung. Die Markierung eines Knoten aus \(X\) entspricht dem Gewicht seiner größten Kante und \(0\) für einen Knoten aus \(Y\). Mittels der Markierungen bestimmt der Algorithmus dann einen Gleichheitsgraph \(G_l\). Für den weiteren Ablauf definieren wir zunächst weitere Begriffe:</p>
+            <p>Zu Beginn bestimmt der Algorithmus für alle Knoten eine Markierung. Die Markierung eines Knoten aus \(X\) entspricht dem Gewicht seiner größten Kante und \(0\) für einen Knoten aus \(Y\). Mittels der Markierungen bestimmt der Algorithmus dann einen Gleichheitsgraph. Für den weiteren Ablauf definieren wir zunächst weitere Begriffe:</p>
 
             <p><strong>Alternierende und augmentierende Pfade</strong><br />
             Wir sagen, ein Knoten wurde gematcht, wenn er eine Kante besitzt, die im aktuellen Matching enthalten ist. Ansonsten nennen wir ihn frei (vgl. Bild 4).<br />
