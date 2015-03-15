@@ -23,7 +23,7 @@ function CanvasDrawMethods() {
  * @param {String} label            Text auf dem Pfeil
  * @param {String} additionalLabel  Zusatztext zu dem Pfeil
  */
-CanvasDrawMethods.drawArrow1 = function (ctx, layout, source, target, control) {
+CanvasDrawMethods.drawArrow1 = function (ctx, layout, source, target, center) {
     // Pfeilkopf zeichnen
     var arrowHeadColor = layout.lineColor;
     if (layout.isHighlighted) {
@@ -31,9 +31,6 @@ CanvasDrawMethods.drawArrow1 = function (ctx, layout, source, target, control) {
     }
     ctx.beginPath();
     ctx.strokeStyle = arrowHeadColor;
-    var center;
-    if (control == null) center = {x: (target.x + source.x) / 2, y: (target.y + source.y) / 2};
-    else center = this.getQuadraticCurvePoint(source.x, source.y, control.x, control.y, target.x, target.y, 0.5);
     var edgeAngle = Math.atan2(target.y - source.y, target.x - source.x);
     var arrowStart = {
         x: center.x + Math.cos(edgeAngle) * layout.arrowHeadLength / 2,
@@ -49,77 +46,34 @@ CanvasDrawMethods.drawArrow1 = function (ctx, layout, source, target, control) {
     ctx.moveTo(arrowStart.x, arrowStart.y);
     ctx.lineTo(arrowStart.x + Math.cos(lineAngle2) * layout.arrowHeadLength, arrowStart.y + Math.sin(lineAngle2) * layout.arrowHeadLength);
     ctx.stroke();
-}
-CanvasDrawMethods.drawArrow = function (ctx, layout, source, target, control, label, additionalLabel, dashed) {
-    if (dashed) {
+};
+CanvasDrawMethods.drawArrow = function (ctx, layout, source, target, control, label, additionalLabel) {
+    if (layout.dashed) {
         ctx.setLineDash([10]);
     }
     //Zeichne die Kurve bzw. Linie
-    if (control != null) CanvasDrawMethods.drawCurve(ctx, layout, source, target, control);
-    else CanvasDrawMethods.drawLine(ctx, layout, source, target);
+    CanvasDrawMethods.drawCurve(ctx, layout, source, target, control, label, additionalLabel);
     ctx.setLineDash([0]);
     // Pfeilkopf zeichnen
-    var arrowHeadColor = layout.lineColor;
-    if (layout.isHighlighted) {
-        arrowHeadColor = const_Colors.EdgeHighlight3;
-    }
-    ctx.beginPath();
-    ctx.strokeStyle = arrowHeadColor;
     var center;
     if (control == null) center = {x: (target.x + source.x) / 2, y: (target.y + source.y) / 2};
     else center = this.getQuadraticCurvePoint(source.x, source.y, control.x, control.y, target.x, target.y, 0.5);
-    var edgeAngle = Math.atan2(target.y - source.y, target.x - source.x);
-    var arrowStart = {
-        x: center.x + Math.cos(edgeAngle) * layout.arrowHeadLength / 2,
-        y: center.y + Math.sin(edgeAngle) * layout.arrowHeadLength / 2
-    };
-    var lineAngle1 = Math.atan2(target.y - source.y, target.x - source.x)
-        + layout.arrowAngle + Math.PI;	// Winkel des rechten Pfeilkopfs relativ zum Nullpunkt
-    var lineAngle2 = Math.atan2(target.y - source.y, target.x - source.x)
-        - layout.arrowAngle + Math.PI;	// Winkel des linken Pfeilkopfs relativ zum Nullpunkt
-    ctx.moveTo(arrowStart.x, arrowStart.y);
-    ctx.lineTo(arrowStart.x + Math.cos(lineAngle1) * layout.arrowHeadLength, arrowStart.y + Math.sin(lineAngle1) * layout.arrowHeadLength);
-    ctx.stroke();
-    ctx.moveTo(arrowStart.x, arrowStart.y);
-    ctx.lineTo(arrowStart.x + Math.cos(lineAngle2) * layout.arrowHeadLength, arrowStart.y + Math.sin(lineAngle2) * layout.arrowHeadLength);
-    ctx.stroke();
-    if (layout.isHighlighted) {
+    CanvasDrawMethods.drawArrow1(ctx, layout, source, target, center);
+/*    if (layout.isHighlighted) {
+        var arrowStart = {
+            x: center.x + Math.cos(edgeAngle) * layout.arrowHeadLength / 2,
+            y: center.y + Math.sin(edgeAngle) * layout.arrowHeadLength / 2
+        };
         var thirtyPercent = {
             x: 0.3 * target.x + 0.7 * source.x,
             y: 0.3 * target.y + 0.7 * source.y
         };
         CanvasDrawMethods.drawLine(ctx, {
-            lineColor: arrowHeadColor,
+            lineColor: const_Colors.EdgeHighlight3,
             lineWidth: layout.lineWidth
         }, thirtyPercent, arrowStart);
-    }
-    //draw labels
-    if (label) {
-        if (control == null) {
-            if (source.x * target.y - target.x * source.y >= 0) {
-                CanvasDrawMethods.drawTextOnLine(ctx, layout, target, source, label);
-            }
-            else CanvasDrawMethods.drawTextOnLine(ctx, layout, source, target, label);
-        }
-        else {
-            //finde zwei Punkte auf der Kante nahe dem Mittelpunkt
-            var p1 = this.getQuadraticCurvePoint(source.x, source.y, control.x, control.y, target.x, target.y, 0.45);
-            var p2 = this.getQuadraticCurvePoint(source.x, source.y, control.x, control.y, target.x, target.y, 0.55);
-            //pruefe Orientierung, schreibe den Text nur ueber die Kante und nicht darunter
-            if (source.x * target.y - target.x * source.y >= 0) { //ausnutzung von Kreuzprodukt-Eigenschaften
-                var tmp = p1;
-                p1 = p2;
-                p2 = tmp;
-            }
-            CanvasDrawMethods.drawTextOnLine(ctx, layout, p1, p2, label);
-        }
-    }
-    if (additionalLabel) {
-        //finde zwei Punkte auf der Kante nahe dem Mittelpunkt
-        var p1 = this.getQuadraticCurvePoint(source.x, source.y, control.x, control.y, target.x, target.y, 0.45);
-        var p2 = this.getQuadraticCurvePoint(source.x, source.y, control.x, control.y, target.x, target.y, 0.55);
-        CanvasDrawMethods.drawAdditionalTextOnLine(ctx, layout, p1, p2, additionalLabel);
-    }
+    }*/
+
 };
 
 CanvasDrawMethods.drawDashedArrow = function (ctx, layout, source, target, control, label, additionalLabel) {
@@ -128,23 +82,22 @@ CanvasDrawMethods.drawDashedArrow = function (ctx, layout, source, target, contr
     ctx.setLineDash([0]);
 };
 
-
 /**
  * Zeichnet einen Linie in 2D
  * @param {Object} ctx           2dContext des Canvas
  * @param {Object} layout        Layout der Linie
  * @param {Object} source        Koordinaten des Ausgangspunkts
  * @param {Object} target        Koordinaten des Zielpunkts
+ * @param {Object} control       Kontrollpunkt zur Berechnung der Kurve
  */
-CanvasDrawMethods.drawCurve = function (ctx, layout, source, target, control, dashed) {
-    if (dashed) {
-        ctx.setLineDash([10]);
-    }
+CanvasDrawMethods.drawCurve = function (ctx, layout, source, target, control, label, additionalLabel) {
     if(control == null){
-        this.drawLine(ctx, layout, source, target, control, dashed);
+        this.drawLine(ctx, layout, source, target, control);
     }
     else{
-        // Linie zeichnen
+        if (layout.dashed) {
+            ctx.setLineDash([10]);
+        }
         ctx.beginPath();
         ctx.moveTo(source.x, source.y);
         ctx.quadraticCurveTo(control.x, control.y, target.x, target.y);
@@ -152,12 +105,29 @@ CanvasDrawMethods.drawCurve = function (ctx, layout, source, target, control, da
         ctx.strokeStyle = layout.lineColor;
         ctx.lineWidth = layout.lineWidth;
         ctx.stroke();
+        ctx.setLineDash([0]);
     }
-    ctx.setLineDash([0]);
-
+    //Zeichne Bechriftungen/Labels
+    if (label || additionalLabel) {
+        var s = source;
+        var t = target;
+        if (control != null){
+            //finde zwei Punkte auf der Kante nahe dem Mittelpunkt
+            s = this.getQuadraticCurvePoint(source.x, source.y, control.x, control.y, target.x, target.y, 0.45);
+            t = this.getQuadraticCurvePoint(source.x, source.y, control.x, control.y, target.x, target.y, 0.55);
+        }
+        //pruefe Orientierung
+        if (source.x * target.y - target.x * source.y >= 0) { //Ausnutzung von Kreuzprodukt-Eigenschaften(Rechtskurve)
+            var tmp = s;
+            s = t;
+            t = tmp;
+        }
+        if (label) CanvasDrawMethods.drawTextOnLine(ctx, layout, s, t, label);
+        if (additionalLabel) CanvasDrawMethods.drawAdditionalTextOnLine(ctx, layout, s, t, additionalLabel);
+    }
 };
-CanvasDrawMethods.drawLine = function (ctx, layout, source, target, dashed) {
-    if (dashed) {
+CanvasDrawMethods.drawLine = function (ctx, layout, source, target) {
+    if (layout.dashed) {
         ctx.setLineDash([10]);
     }
     // Linie zeichnen
@@ -170,7 +140,7 @@ CanvasDrawMethods.drawLine = function (ctx, layout, source, target, dashed) {
     ctx.setLineDash([0]);
 };
 
-CanvasDrawMethods.drawDashedLine = function (ctx, layout, source, target) {
+/*CanvasDrawMethods.drawDashedLine = function (ctx, layout, source, target) {
     ctx.setLineDash([10]);
     this.drawLine(ctx, layout, source, target);
     ctx.setLineDash([0]);
@@ -179,7 +149,7 @@ CanvasDrawMethods.drawDashedCurve = function (ctx, layout, source, target, contr
     ctx.setLineDash([10]);
     this.drawCurve(ctx, layout, source, target, control);
     ctx.setLineDash([0]);
-};
+};*/
 
 function getQBezierValue(t, p1, p2, p3) {
     var iT = 1 - t;

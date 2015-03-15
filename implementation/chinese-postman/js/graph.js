@@ -42,6 +42,7 @@ var global_Edgelayout = {
     'fontSize': 12,		// Schriftgrösse in Pixeln
     'isHighlighted': false ,        // Ob die Kante eine besondere Markierung haben soll
     'dashed': false,
+    'showLabels': true,
     'hidden': false
 };
 
@@ -572,17 +573,14 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
      */
     this.draw = function (ctx) {
         var control = this.getControlPoint();
-        //draw
         if (this.getDirected()) {
-            CanvasDrawMethods.drawArrow(ctx, this.getLayout(), this.getSourceCoordinates(), this.getTargetCoordinates(), control, this.weight, this.additionalLabel, this.getLayout().dashed);
+            CanvasDrawMethods.drawArrow(ctx, this.getLayout(), this.getSourceCoordinates(), this.getTargetCoordinates(), control, this.weight, this.additionalLabel);
         }
         else {
-            CanvasDrawMethods.drawCurve(ctx, this.getLayout(), this.getSourceCoordinates(), this.getTargetCoordinates(), control, this.getLayout().dashed);
+            CanvasDrawMethods.drawCurve(ctx, this.getLayout(), this.getSourceCoordinates(), this.getTargetCoordinates(), control, this.weight, this.additionalLabel);
         }
     };
 }
-
-
 
 
 /**

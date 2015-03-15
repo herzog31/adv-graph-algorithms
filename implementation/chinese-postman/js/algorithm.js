@@ -343,7 +343,8 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
     };
     /*
-    *
+    * Computes the eulertour
+    * @method
     * */
     this.computeEulerTour = function() {
         // init
@@ -392,7 +393,6 @@ function algorithm(p_graph, p_canvas, p_tab) {
                 // Get other Vertex which is new current
                 current = graph.nodes[nextEdge.getTargetID()];
                 subtour.push({type: "vertex", id: current.getNodeID()});
-
             } while(start.getNodeID() !== current.getNodeID());
             // Merge
             // If tour is empty, just replace with subtour
@@ -428,7 +428,6 @@ function algorithm(p_graph, p_canvas, p_tab) {
             tourColorIndex++;
             tourColorIndex = tourColorIndex % tourColors.length;
             subtour = [];
-
             // Count number of edges in tour
             numberOfEdgesInTour = 0;
             for(var i = 0; i < tour.length; i++) {
@@ -510,11 +509,10 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
     };
     /*
-    * Findet nicht balancierten Knoten
+    * Findet nicht balancierte Knoten
     * @method
     * */
     this.showUnbalancedNodes = function () {
-        //findUnbalancedNodes
         excess = 0;
         delta = {};
         supplyNodes = {};
@@ -558,9 +556,12 @@ function algorithm(p_graph, p_canvas, p_tab) {
     var highlightDemand = function(node){
       node.setLayout('fillStyle', '#4E6AC1');//CornflowerBlue
     };
-
+    var setEdgeMatched = function (e) {
+        e.setLayout('lineColor', 'green');
+        e.setLayout('lineWidth', global_Edgelayout.lineWidth * 2);
+    };
     var hideEdge = function(edge) {
-        edge.setLayout("lineWidth", global_Edgelayout.lineWidth * 0.3);
+        edge.setLayout("lineWidth", global_Edgelayout.lineWidth * 0.4);
     };
     var hideNode = function(node){
         node.setLayout('fillStyle',"DarkGray");
@@ -568,62 +569,46 @@ function algorithm(p_graph, p_canvas, p_tab) {
         node.setLayout('borderColor',"Gray");
     };
 
-    var tmp_edges = [];
-
     var tmp = {};
 
     this.showShortestPaths = function () {
         this.findMatching();
         //construct new graph
-        var new_graph = new Graph();
-        var map_supply = {};
-        var map_demand = {};
-        var old_coord = {};
+        var matching_graph = new Graph();
         var id_map = {};
-        for(var n in supplyNodes){
-            var node = supplyNodes[n];
-            var coord = node.getCoordinates();
-            var newn= new_graph.addNode(coord.x,coord.y);
-            newn.setLayoutObject(node.getLayout());
-            newn.setLabel(node.getLabel());
-            map_supply[node.getNodeID()] = newn.getNodeID();
-            old_coord[newn.getNodeID()] = coord;
-            id_map[node.getNodeID()] = newn.getNodeID();
-        }
-        for(var n in demandNodes){
-            var node = demandNodes[n];
-            var coord = node.getCoordinates();
-            var newn= new_graph.addNode(coord.x,coord.y);
-            newn.setLayoutObject(node.getLayout());
-            newn.setLabel(node.getLabel());
-            map_demand[node.getNodeID()] = newn.getNodeID();
-            old_coord[newn.getNodeID()] = coord;
-            id_map[node.getNodeID()] = newn.getNodeID();
-        }
-        this.graph = new_graph;
-        tmp_edges = [];
-        for(var s in supplyNodes){
-            for(var d in demandNodes){
-                var id1 = map_supply[supplyNodes[s].getNodeID()];
-                var id2 = map_demand[demandNodes[d].getNodeID()];
-                var e = new_graph.addEdge(new_graph.nodes[id1],new_graph.nodes[id2],distance[supplyNodes[s].getNodeID()][demandNodes[d].getNodeID()],false);
-                tmp_edges.push(e);
-            }
-        }
         var U_POSITION = 75; //standard 75
         var V_POSITION = 325;//standard 325
         var DIFF = 80;
-        var i =0;
-        for(var s in map_supply){
-            this.animateMove(this.graph.nodes[map_supply[s]],{x: 50 + i*DIFF, y: V_POSITION});
-            i++;
+        var i = 0;
+        var j = 0;
+        for(var n in graph.nodes){
+            if(supplyNodes[n] || demandNodes[n]){
+                var node = graph.nodes[n];
+                var coord = node.getCoordinates();
+                var newn= matching_graph.addNode(coord.x,coord.y);
+                newn.setLayoutObject(node.getLayout());
+                newn.setLabel(node.getLabel());
+                id_map[node.getNodeID()] = newn.getNodeID();
+                if(supplyNodes[n]){
+                    this.animateMove(newn,{x: 50 + i*DIFF, y: V_POSITION});
+                    i++;
+                }
+                else{
+                    this.animateMove(newn,{x: 50 + j*DIFF, y: U_POSITION});
+                    j++;
+                }
+            }
         }
-        var i =0;
-        for(var d in map_demand){
-            this.animateMove(this.graph.nodes[map_demand[d]],{x: 50 + i*DIFF, y: U_POSITION});
-            i++;
+        for(var s in supplyNodes){
+            for(var d in demandNodes){
+                var id1 = id_map[s];
+                var id2 = id_map[d];
+                var e = matching_graph.addEdge(matching_graph.nodes[id1],matching_graph.nodes[id2],distance[supplyNodes[s].getNodeID()][demandNodes[d].getNodeID()],false);
+                //todo edges
+            }
         }
-        tmp = {map_supply: map_supply, map_demand: map_demand, old_coord: old_coord, id_map: id_map, graph: new_graph};
+        this.graph = matching_graph;
+        tmp = {id_map: id_map, graph: matching_graph};
         statusID = MATCHING;
         // Erklärung im Statusfenster
         $("#ta_div_statusErklaerung").html("<h3>3. " + LNG.K('algorithm_paths') + "</h3>"
@@ -636,11 +621,10 @@ function algorithm(p_graph, p_canvas, p_tab) {
             this.graph.removeEdge(e);
         }
         for(var p in matching){
-            var id1 = tmp.map_supply[matching[p].s];
-            var id2 = tmp.map_demand[matching[p].d];
-            var e = this.graph.addEdge(this.graph.nodes[id1],this.graph.nodes[id2],distance[matching[p].s][matching[p].d],false);
-            e.setLayout('lineColor','green');
-            e.setLayout('lineWidth', global_Edgelayout.lineWidth*2);
+            var id1 = tmp.id_map[matching[p].s];
+            var id2 = tmp.id_map[matching[p].d];
+            var e = this.graph.addEdge(tmp.graph.nodes[id1],tmp.graph.nodes[id2], distance[matching[p].s][matching[p].d],false);
+            setEdgeMatched(e);
         }
         statusID = START_PATH;
         // Erklärung im Statusfenster
@@ -651,27 +635,25 @@ function algorithm(p_graph, p_canvas, p_tab) {
 
     this.startAddingPaths = function(){
         this.graph = graph;
-        tmp.match = {};
+        //hide normal edges
+        for(var e in graph.edges){
+            hideEdge(graph.edges[e]);
+        }
+        //insert matching edges
         for(var p in matching){
             var s = matching[p].s;
             var d = matching[p].d;
-            var e = graph.addEdge(graph.nodes[s],graph.nodes[d],distance[matching[p].s][matching[p].d]);
-            tmp.match[e.getEdgeID()] = e;
+            var e = graph.addEdge(graph.nodes[s],graph.nodes[d],distance[matching[p].s][matching[p].d],false);
+            setEdgeMatched(e);
             matching[p].edge = e;
         }
+        //start move animations
         for(var n in graph.nodes){
             if(supplyNodes[n] || demandNodes[n]){
                 var old_coord = graph.nodes[n].getCoordinates();
                 graph.nodes[n].setCoordinates(tmp.graph.nodes[tmp.id_map[n]].getCoordinates());
                 this.animateMove(graph.nodes[n],old_coord);
             }
-        }
-        for(var e in graph.edges){
-            graph.edges[e].setLayout('lineWidth', global_Edgelayout.lineWidth*0.4);
-        }
-        for(var e in tmp.match){
-            tmp.match[e].setLayout('lineColor','blue');
-            tmp.match[e].setLayout('lineWidth', global_Edgelayout.lineWidth*2);
         }
         statusID = ADD_PATH;
         // Erklärung im Statusfenster
@@ -684,6 +666,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         var step = 0;
         var current = 0;
         var shortest = [];
+        //first find all edges on the matching paths
         for(var p in matching){
             var s = matching[p].s;
             var d = matching[p].d;
@@ -697,6 +680,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             prev.reverse();
             shortest.push(prev);
         }
+        // animate the adding of the matching path edges
         var timerId = 0;
         timerId = setInterval(function () {
             if(current >= shortest.length){
@@ -730,65 +714,11 @@ function algorithm(p_graph, p_canvas, p_tab) {
             //+ "<p>" + LNG.K('algorithm_add_path_3') + "</p>" +
                 "<p>" + LNG.K('algorithm_balanced_1') + "</p>");
     };
-
-    this.addPath = function(){
-        var s = matching[current].s;
-        var d = matching[current].d;
-        var last = d;
-        var edges_on_path = [];
-        var cost = 0;
-        var timerId = 0;
-        var cur_graph = this.graph;
-        timerId = setInterval(function () {
-            if(last != s){
-                var e = predecessor[s][last];
-                var node1 = graph.nodes[e.getSourceID()];
-                var node2 = graph.nodes[last];
-                var ne = graph.addEdge(node1,node2, e.weight);
-                ne.setLayout('dashed',true);
-                ne.setLayout('lineColor','blue');//highlight path
-                edges_on_path.push(ne);
-                last = e.getSourceID();
-                cost += ne.weight;
-                var edge = cur_graph.addEdge(cur_graph.nodes[tmp.id_map[e.getSourceID()]], cur_graph.nodes[tmp.id_map[e.getTargetID()]],e.weight);
-                edge.setLayout('dashed',true);
-                edge.setLayout('lineColor','blue');//highlight path
-            }
-            else{
-                clearInterval(timerId);
-                graph.nodes[s].setLabel(graph.nodes[s].getLabel() + 1);
-                graph.nodes[d].setLabel(graph.nodes[d].getLabel() - 1);
-            }
-            algo.needRedraw = true;
-        }, 1000);
-        //unhighlight previous path
-        if(new_edges.length > 0){
-            for(var i in new_edges[new_edges.length-1]){
-                var edge = new_edges[new_edges.length-1][i];
-                edge.setLayout('lineColor','black');
-            }
-        }
-        new_edges.push(edges_on_path);
-        current++;
-        statusID = ADD_PATH;
-        // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html("<h3>4. " + LNG.K('algorithm_new_paths') + "</h3>"
-        + "<p>" + LNG.K('algorithm_add_path_1') + "</p>"
-        + "<p>" + LNG.K('algorithm_add_path_2') + "</p>"
-        + "<p>" + LNG.K('algorithm_add_path_cost') + cost + "</p>");
-        if(current >= matching.length){
-            statusID = SHOW_TOUR;
-            // Erklärung im Statusfenster
-            $("#ta_div_statusErklaerung").append(
-            //+ "<p>" + LNG.K('algorithm_add_path_3') + "</p>" +
-            "<p>" + LNG.K('algorithm_balanced_1') + "</p>");
-        }
-    };
-
+    // Methoden fuer die Visualisierung der Eulertour
     /*
-    * Methoden fuer die Visualisierung der Eulertour
+    *
     * */
-    this.startTour = function(){
+     this.startTour = function(){
         this.graph = graph;
         this.computeEulerTour();
         for (var n in graph.nodes) {
@@ -1052,15 +982,21 @@ function algorithm(p_graph, p_canvas, p_tab) {
      */
     this.previousStepChoice = function() {
         this.replayStep();
+        if(history.length == 0){
+            $("#ta_button_Zurueck").button("option", "disabled", true);
+        }
+        else{
+            $("#ta_button_1Schritt").button("option", "disabled", false);
+            $("#ta_button_vorspulen").button("option", "disabled", false);
+        }
         this.needRedraw = true;
     };
 
     this.addReplayStep = function() {
         var nodeProperties = {};
         for(var key in graph.nodes) {
-            nodeProperties[graph.nodes[key].getNodeID()] = {layout: JSON.stringify(graph.nodes[key].getLayout()), label: graph.nodes[key].getLabel()};
+            nodeProperties[graph.nodes[key].getNodeID()] = {layout: JSON.stringify(graph.nodes[key].getLayout()), label: graph.nodes[key].getLabel(), coordiantes: graph.nodes[key].getCoordinates()};
         }
-
         var edgeProperties = {}
         for(var key in graph.edges) {
             edgeProperties[graph.edges[key].getEdgeID()] = {layout: JSON.stringify(graph.edges[key].getLayout()), label: graph.edges[key].getAdditionalLabel()};
@@ -1073,7 +1009,6 @@ function algorithm(p_graph, p_canvas, p_tab) {
             "current": current,
             "graph": this.graph,
             //"animationId": animationId,
-            //"tmp_edges": tmp_edges,
             "htmlSidebar": $(statusErklaerung).html()
         });
         //console.log("Current History Step: ", history[history.length-1]);
@@ -1086,12 +1021,12 @@ function algorithm(p_graph, p_canvas, p_tab) {
             phase = oldState.phase;
             current = oldState.current;
             //animationId = oldState.animationId;
-            //tmp_edges = oldState.tmp_edges;
             this.graph = oldState.graph;
             $(statusErklaerung).html(oldState.htmlSidebar);
             for(var key in oldState.nodeProperties) {
                 graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].layout));
                 graph.nodes[key].setLabel(oldState.nodeProperties[key].label);
+                graph.nodes[key].setCoordinates(oldState.nodeProperties[key].coordiantes);
             }
             for(var key in oldState.edgeProperties) {
                 graph.edges[key].setLayoutObject(JSON.parse(oldState.edgeProperties[key].layout));
@@ -1114,13 +1049,6 @@ function algorithm(p_graph, p_canvas, p_tab) {
                     this.graph.addEdge(this.graph.nodes[sid],this.graph.nodes[tid], tmp_edges[e].weight);
                 }
             }
-        }
-        if(history.length == 0){
-            $("#ta_button_Zurueck").button("option", "disabled", true);
-        }
-        else{
-            $("#ta_button_1Schritt").button("option", "disabled", false);
-            $("#ta_button_vorspulen").button("option", "disabled", false);
         }
     };
 }
