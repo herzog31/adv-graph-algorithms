@@ -1,13 +1,6 @@
-/**
- * Instanz der Ungarischen Methode, erweitert die Klasse CanvasDrawer
- * @constructor
- * @augments CanvasDrawer
- * @param {Graph} p_graph Graph, auf dem der Algorithmus ausgeführt wird
- * @param {Object} p_canvas jQuery Objekt des Canvas, in dem gezeichnet wird.
- * @param {Object} p_tab jQuery Objekt des aktuellen Tabs.
- */
-function HungarianMethod(p_graph,p_canvas,p_tab) {
-    CanvasDrawer.call(this,p_graph,p_canvas,p_tab);
+function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
+    CanvasDrawer.call(this,p_graph,p_canvas,p_tab); 
+    
     /**
      * Convenience Objekt, damit man den Graph ohne this ansprechen kann.
      * @type Graph
@@ -37,19 +30,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     var algo = this;
 
     /**
-     * Hier die Variablen vom HK-Algo
-     */
-
-    /**
-     * Hier die Variablen vom UM-Algo
-     */
-
-    /**
-     * Alle benoetigten Information zur Wiederherstellung der vorangegangenen Schritte werden hier gespeichert.
-     * @type Array
-     */
-    var history = new Array();
-    /**
      * Gibt an, ob der Algorithmus am Ende ist.
      * @type Boolean
      */
@@ -62,9 +42,15 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     /**
      * Gibt das Pseudocodefenster an.
      */
-    var pseudocode = "#ta_div_statusPseudocode";
+    var pseudocode = "#tf1_div_statusPseudocode";
 
-    var currentDisplayStep = 0;
+
+    var currentQuestion = 0;
+    var currentQuestionType = 0;
+    var questions = new Array();
+    var debugConsole = true;
+    var previousStatusId = 0;
+
     /**
      * Hier werden die Statuskonstanten definiert
      */
@@ -224,34 +210,31 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
 
     };
 
-    /**
-     * Startet die Ausführung des Algorithmus.
-     * @method
-     */
     this.run = function() {
-        this.completeGraph();
+    	this.completeGraph();
         this.initCanvasDrawer();
         this.addNamingLabels();
+
+        this.initCanvasDrawer();
         // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
-        $("#ta_div_abspielbuttons").append("<button id=\"ta_button_Zurueck\">"+LNG.K('algorithm_btn_prev')+"</button>"
-        +"<button id=\"ta_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button>"
-        +"<button id=\"ta_button_vorspulen\">"+LNG.K('algorithm_btn_frwd')+"</button>"
-        +"<button id=\"ta_button_stoppVorspulen\">"+LNG.K('algorithm_btn_paus')+"</button>");
-        $("#ta_button_stoppVorspulen").hide();
-        $("#ta_button_Zurueck").button({icons:{primary: "ui-icon-seek-start"}, disabled: true});
-        $("#ta_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: false});
-        $("#ta_button_vorspulen").button({icons:{primary: "ui-icon-seek-next"}, disabled: false});
-        $("#ta_button_stoppVorspulen").button({icons:{primary: "ui-icon-pause"}});
-        $("#ta_div_statusTabs").tabs();
+        $("#tf1_div_abspielbuttons").append("<button id=\"tf1_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button><br>"
+                        +"<button id=\"tf1_button_vorspulen\">"+LNG.K('aufgabe1_btn_next_question')+"</button>"
+                        +"<button id=\"tf1_button_stoppVorspulen\">"+LNG.K('algorithm_btn_paus')+"</button>");
+        $("#tf1_button_stoppVorspulen").hide();
+        $("#tf1_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: false});
+        $("#tf1_button_vorspulen").button({icons:{primary: "ui-icon-seek-next"}, disabled: false});
+        $("#tf1_button_stoppVorspulen").button({icons:{primary: "ui-icon-pause"}});
+        $("#tf1_div_statusTabs").tabs();
         $(".marked").removeClass("marked");
-        //$("#ta_p_l1").addClass("marked");
-        $("#ta_tr_LegendeClickable").removeClass("greyedOutBackground");
-        $(".marked").removeClass("marked");
-        $("#ta_p_l2").addClass("marked");
+        $("#tf1_p_l1").addClass("marked");
+        $("#tf1_tr_LegendeClickable").removeClass("greyedOutBackground");
+
         this.registerEventHandlers();
         this.needRedraw = true;
-    };
+        this.minimizeLegend();
 
+    };
+    
     /**
      * Beendet die Ausführung des Algorithmus.
      * @method
@@ -265,17 +248,20 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         $("body").data("graph", orgGraph);
         this.drawCanvas();
     };
-
+    
     /**
-     * Startet den Algorithmus von Anfang an
+     * Beendet den Tab und startet ihn neu
      * @method
      */
     this.refresh = function() {
-        currentDisplayStep = 0;
-        this.replayStep(currentDisplayStep);
-        this.needRedraw = true;
-    };
 
+    	// TODO
+        this.destroy();
+        var algo = new Forschungsaufgabe1($("body").data("graph"), $("#tf1_canvas_graph"), $("#tab_tf1"));
+        $("#tab_tf1").data("algo", algo);
+        algo.run();
+    };
+    
     /**
      * Zeigt and, in welchem Zustand sich der Algorithmus im Moment befindet.
      * @returns {Number} StatusID des Algorithmus
@@ -283,39 +269,30 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     this.getStatusID = function() {
         return statusID;
     };
-
+    
     /**
      * Registriere die Eventhandler an Buttons und canvas<br>
-     * Nutzt den Event Namespace ".HungarianMethod"
+     * Nutzt den Event Namespace ".Forschungsaufgabe1"
      * @method
      */
     this.registerEventHandlers = function() {
-//        canvas.on("mousemove.HungarianMethod",function(e) {algo.canvasMouseMoveHandler(e);});
-        $("#ta_button_1Schritt").on("click.HungarianMethod",function() {algo.singleStepHandler();});
-        $("#ta_button_vorspulen").on("click.HungarianMethod",function() {algo.fastForwardAlgorithm();});
-        $("#ta_button_stoppVorspulen").on("click.HungarianMethod",function() {algo.stopFastForward();});
-        $("#ta_tr_LegendeClickable").on("click.HungarianMethod",function() {algo.changeVorgaengerVisualization();});
-        $("#ta_button_Zurueck").on("click.HungarianMethod",function() {algo.previousStepChoice();});
+        $("#tf1_button_1Schritt").on("click.Forschungsaufgabe1",function() {algo.singleStepHandler();});
+        $("#tf1_button_vorspulen").on("click.Forschungsaufgabe1",function() {algo.fastForwardAlgorithm();});
+        $("#tf1_button_stoppVorspulen").on("click.Forschungsaufgabe1",function() {algo.stopFastForward();});
     };
-
+    
     /**
-     * Entferne die Eventhandler von Buttons und canvas im Namespace ".HungarianMethod"
+     * Entferne die Eventhandler von Buttons und canvas im Namespace ".Forschungsaufgabe1"
      * @method
      */
     this.deregisterEventHandlers = function() {
-        canvas.off(".HungarianMethod");
-        $("#ta_button_1Schritt").off(".HungarianMethod");
-        $("#ta_button_vorspulen").off(".HungarianMethod");
-        $("#ta_button_stoppVorspulen").off(".HungarianMethod");
-        $("#ta_tr_LegendeClickable").off(".HungarianMethod");
-        $("#ta_button_Zurueck").off(".HungarianMethod");
+        canvas.off(".Forschungsaufgabe1");
+        $("#tf1_button_1Schritt").off(".Forschungsaufgabe1");
+        $("#tf1_button_vorspulen").off(".Forschungsaufgabe1");
+        $("#tf1_button_stoppVorspulen").off(".Forschungsaufgabe1");
+        $("#tf1_tr_LegendeClickable").off(".Forschungsaufgabe1");
     };
 
-
-    /**
-     * Wird aufgerufen, wenn der "1 Schritt" Button gedrückt wird.
-     * @method
-     */
     this.singleStepHandler = function() {
         this.nextStepChoice();
     };
@@ -324,63 +301,53 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
      * "Spult vor", führt den Algorithmus mit hoher Geschwindigkeit aus.
      * @method
      */
-    this.fastForwardAlgorithm = function () {
-        $("#ta_button_vorspulen").hide();
-        $("#ta_button_stoppVorspulen").show();
-        $("#ta_button_1Schritt").button("option", "disabled", true);
-        $("#ta_button_Zurueck").button("option", "disabled", true);
+    this.fastForwardAlgorithm = function() {
+        $("#tf1_button_vorspulen").hide();
+        $("#tf1_button_stoppVorspulen").show();
+        $("#tf1_button_1Schritt").button("option", "disabled", true);
         var geschwindigkeit = 200;	// Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
 
-        fastForwardIntervalID = window.setInterval(function () {
-            algo.nextStepChoice();
-        }, geschwindigkeit);
+        fastForwardIntervalID = window.setInterval(function(){ algo.nextStepChoice(); }, geschwindigkeit);
     };
-
+    
     /**
      * Stoppt das automatische Abspielen des Algorithmus
      * @method
      */
     this.stopFastForward = function() {
-        $("#ta_button_vorspulen").show();
-        $("#ta_button_stoppVorspulen").hide();
-        if(statusID != FINISHED) {
-            $("#ta_button_1Schritt").button("option", "disabled", false);
-            $("#ta_button_vorspulen").button("option", "disabled", false);
-        }else{
-            $("#ta_button_vorspulen").button("option", "disabled", true);
-            $("#ta_button_1Schritt").button("option", "disabled", true);
-        }
-        $("#ta_button_Zurueck").button("option", "disabled", false);
+        $("#tf1_button_vorspulen").show();
+        $("#tf1_button_stoppVorspulen").hide();
+        $("#tf1_button_1Schritt").button("option", "disabled", false);
         window.clearInterval(fastForwardIntervalID);
         fastForwardIntervalID = null;
     };
-
+    
     /**
-     * In dieser Funktion wird der nächste Schritt des Algorithmus ausgewählt.
-     * Welcher das ist, wird über die Variable "statusID" bestimmt.<br>
-     * Mögliche Werte sind:<br>
-     *  0: Initialisierung<br>
-     *  1: Prüfung ob Gewichte aktualisiert werden sollen, und initialierung<br>
-     *  2: Prüfe, ob anhand der aktuellen Kante ein Update vorgenommen wird (Animation)<br>
-     *  3: Update, falls nötig, den Knoten<br>
-     *  4: Untersuche, ob es eine Kante gibt, die auf einen negativen Kreis hinweist.<br>
-     *  5: Finde den negativen Kreis im Graph und beende<br>
-     *  6: Normales Ende, falls kein negativer Kreis gefunden wurde.
-     *  @method
-     */
-    this.nextStepChoice = function () {
-        if(currentDisplayStep < history.length){
-            currentDisplayStep++;
-            this.replayStep(currentDisplayStep);
-            this.needRedraw = true;
-            return;
+    * In dieser Funktion wird der nächste Schritt des Algorithmus ausgewählt.
+    * Welcher das ist, wird über die Variable "statusID" bestimmt.<br>
+    * Mögliche Werte sind:<br>
+    *  0: Initialisierung<br>
+    *  1: Prüfung ob Gewichte aktualisiert werden sollen, und initialierung<br>
+    *  2: Prüfe, ob anhand der aktuellen Kante ein Update vorgenommen wird (Animation)<br>
+    *  3: Update, falls nötig, den Knoten<br>
+    *  4: Untersuche, ob es eine Kante gibt, die auf einen negativen Kreis hinweist.<br>
+    *  5: Finde den negativen Kreis im Graph und beende<br>
+    *  6: Normales Ende, falls kein negativer Kreis gefunden wurde.
+    *  @method
+    */
+    this.nextStepChoice = function() {
+
+        if(statusID == null) {
+            statusID = 0;
+            previousStatusId = 0;
         }
-        $("#ta_div_statusErklaerung").text("");
+        if(debugConsole) console.log("Current State: " + statusID);
+
+        previousStatusId = statusID;
+        currentQuestionType = this.askQuestion();
+
         switch (statusID) {
             case BEGIN:
-                if ($("#ta_button_Zurueck").button("option", "disabled") && fastForwardIntervalID == null) {
-                    $("#ta_button_Zurueck").button("option", "disabled", false);
-                }
                 this.initLabels();
                 break;
             case READY_FOR_SEARCHING:
@@ -407,22 +374,41 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             case AUGMENTING_PATH_FOUND:
                 this.increaseMatching();
                 break;
-            //case FINISHED:
-            //    this.end();
-            //    break;
+            // TODO add step
+            case FINISHED:
+                this.end();
+                this.showQuestionResults();
+                break;
             default:
                 console.log("Fehlerhafte StatusID.");
                 break;
         }
-        if(goOn){
+        if(goOn) {
             goOn = false;
             this.nextStepChoice();
-        }else{
-            currentDisplayStep++;
-            this.needRedraw = true;
-            this.addReplayStep();
-            console.log(history);
+            return;
         }
+
+        if(currentQuestionType !== false) {
+
+        	// TODO 
+            /* if(currentQuestionType === 1) {
+                this.generateNextStepQuestion(previousStatusId);
+            }else if(currentQuestionType === 2) {
+                this.generateSubtourQuestion();
+            }else if(currentQuestionType === 3) {
+                this.generateTourQuestion(previousTour, previousSubtour);
+            }else if(currentQuestionType === 4) {
+                this.generateDegreeQuestion();
+            } */
+            this.showQuestionModal();
+            this.stopFastForward();
+            $("#tf1_button_1Schritt").button("option", "disabled", true);
+            $("#tf1_button_vorspulen").button("option", "disabled", true); 
+        }
+
+        this.needRedraw = true;
+
     };
 
     this.addNamingLabels = function() {
@@ -457,14 +443,13 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             }
         });
 
-        $("#ta_div_statusErklaerung").html(
+        $("#tf1_div_statusErklaerung").html(
             "<h3>Augmentationsweg bestimmen</h3>" +
             "<p>Der Algorithmus versucht nun schrittweise einen alternierenden Pfad zu konstruieren.</p>" +
             "<p>Die Konstruktion stoppt, wenn der alternierende Pfad augmentierend wird oder es keine weiteren passenden Kanten mehr gibt.</p>");
 
-        $("#ta_td_setS").html(sField.join(",") || "&#8709;");
-        $("#ta_td_setT").html(tField.join(",") || "&#8709;");
-        //TODO node borders
+        $("#tf1_td_setS").html(sField.join(",") || "&#8709;");
+        $("#tf1_td_setT").html(tField.join(",") || "&#8709;");
     }
 
     this.initLabels = function(){
@@ -484,24 +469,25 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         showLabels(lx, ly);
         statusID = READY_TO_START;
         console.log("READY_TO_START");
-        $("#ta_div_statusErklaerung").html("<h3>Gleichheitsgraph bestimmen</h3>"
+        $("#tf1_div_statusErklaerung").html("<h3>Gleichheitsgraph bestimmen</h3>"
             + "<p>Der Algorithmus bestimmt zuerst eine initiale Markierung für jeden Knoten.</p>"
             + "<p>Anhand der Markierungen wird der Gleichheitsgraph ermittelt (<strong>schwarz</strong>).</p>");
         $(".marked").removeClass("marked");
-        $("#ta_p_l4").addClass("marked");
+        $("#tf1_p_l4").addClass("marked");
         return READY_TO_START;
     };
 
     this.augment = function() {
         if (maxMatch == cost.length) {
             statusID = FINISHED;
+            // TODO
             console.log("FINISHED");
             this.end();
-            $("#ta_button_1Schritt").button("option", "disabled", true);
+            $("#tf1_button_1Schritt").button("option", "disabled", true);
             showCurrentMatching(xy, false);
             //TODO show answer
             $(".marked").removeClass("marked");
-            $("#ta_p_l13").addClass("marked");
+            $("#tf1_p_l13").addClass("marked");
             return FINISHED;
         }
         showEqualityGraph(lx, ly);
@@ -527,12 +513,12 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         showTreeRoot(S);
         statusID = READY_FOR_SEARCHING;
         console.log("READY_FOR_SEARCHING");
-        $("#ta_div_statusErklaerung").html("<h3>Augmentationsweg bestimmen</h3>" +
+        $("#tf1_div_statusErklaerung").html("<h3>Augmentationsweg bestimmen</h3>" +
             "<h3>Wurzel eines alternierenden Pfades finden</h3>" + 
             "<p>Der Algorithmus wählt als Wurzel einen Knoten, der noch nicht im Matching vorhanden ist und markiert ihn <span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>.</p>");
         $(".marked").removeClass("marked");
-        $("#ta_p_l6").addClass("marked");
-        $("#ta_p_l7").addClass("marked");
+        $("#tf1_p_l6").addClass("marked");
+        $("#tf1_p_l7").addClass("marked");
         return READY_FOR_SEARCHING;
     };
 
@@ -541,28 +527,28 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             x = q[rd++];
             y = 0;
             console.log("iterateX: READY_TO_BUILD_TREE");
-            if(history[history.length - 1].previousStatusId == READY_TO_BUILD_TREE
-                || history[history.length - 1].previousStatusId == READY_TO_BUILD_TREE_AFTER_RELABELING){
+
+            if(previousStatusId === READY_TO_BUILD_TREE || previousStatusId === READY_TO_BUILD_TREE_AFTER_RELABELING) {
                 goOn = true;
             }else{
                 this.displayST(S, T);
             }
+
             statusID = READY_TO_BUILD_TREE;
             $(".marked").removeClass("marked");
-            $("#ta_p_l6").addClass("marked");
-            $("#ta_p_l7").addClass("marked");
+            $("#tf1_p_l6").addClass("marked");
+            $("#tf1_p_l7").addClass("marked");
             return READY_TO_BUILD_TREE;
         }
         console.log("AUGMENTING_PATH_NOT_FOUND");
-        $("#ta_div_statusErklaerung").html(
+        $("#tf1_div_statusErklaerung").html(
             "<h3>Augmentationsweg bestimmen</h3>" +
             "<p>Der Algorithmus konnte keinen Augmentationsweg mit der gewählten Wurzel (<span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>) im aktuellen Gleichheitsgraph finden.</p>"
-            //TODO the algorithm howto anpassen
         );
         statusID = AUGMENTING_PATH_NOT_FOUND;
         $(".marked").removeClass("marked");
-        $("#ta_p_l8").addClass("marked");
-        $("#ta_p_l9").addClass("marked");
+        $("#tf1_p_l8").addClass("marked");
+        $("#tf1_p_l9").addClass("marked");
         return AUGMENTING_PATH_NOT_FOUND;
     };
 
@@ -572,13 +558,13 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                 if (yx[y] == -1) {
                     showAugmentingPath(x, y, prev, xy, yx);
                     console.log("AUGMENTING_PATH_FOUND");
-                    $("#ta_div_statusErklaerung").html(
+                    $("#tf1_div_statusErklaerung").html(
                         "<h3>Augmentationsweg bestimmen</h3>" +
                         "<p>Es wurde ein Augmentationsweg (<span style='font-weight: bold; color: red;'>rot</span>) gefunden.</p>"
                     );
                     statusID = AUGMENTING_PATH_FOUND;
                     $(".marked").removeClass("marked");
-                    $("#ta_p_l11").addClass("marked");
+                    $("#tf1_p_l11").addClass("marked");
                     return AUGMENTING_PATH_FOUND;
                 }
                 T[y] = true;
@@ -593,45 +579,45 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             console.log("buildAlternatingTree: READY_TO_BUILD_TREE");
             statusID = READY_TO_BUILD_TREE;
             $(".marked").removeClass("marked");
-            $("#ta_p_l6").addClass("marked");
-            $("#ta_p_l7").addClass("marked");
+            $("#tf1_p_l6").addClass("marked");
+            $("#tf1_p_l7").addClass("marked");
             return READY_TO_BUILD_TREE;
         }
         goOn = true;
         console.log("READY_FOR_SEARCHING");
         statusID = READY_FOR_SEARCHING;
         $(".marked").removeClass("marked");
-        $("#ta_p_l6").addClass("marked");
-        $("#ta_p_l7").addClass("marked");
+        $("#tf1_p_l6").addClass("marked");
+        $("#tf1_p_l7").addClass("marked");
         return READY_FOR_SEARCHING;
     };
 
-    this.findAugmentPathAfterLabeling = function(){
+    this.findAugmentPathAfterLabeling = function() {
         wr = rd = 0;
         y = 0;
         console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
         this.displayST(S, T);
         statusID = READY_TO_BUILD_TREE_AFTER_RELABELING;
         $(".marked").removeClass("marked");
-        $("#ta_p_l6").addClass("marked");
-        $("#ta_p_l7").addClass("marked");
+        $("#tf1_p_l6").addClass("marked");
+        $("#tf1_p_l7").addClass("marked");
         return READY_TO_BUILD_TREE_AFTER_RELABELING;
     };
 
     this.buildTreeAfterRelabeling = function(){
-        if(y < n){
+        if(y < n) {
             if (!T[y] && slack[y] == 0) {
                 if (yx[y] == -1) {
                     x = slackx[y];
                     showAugmentingPath(x, y, prev, xy, yx);
                     statusID = AUGMENTING_PATH_FOUND;
                     console.log("AUGMENTING_PATH_FOUND");
-                    $("#ta_div_statusErklaerung").html(
+                    $("#tf1_div_statusErklaerung").html(
                         "<h3>Augmentationsweg bestimmen</h3>" +
                         "<p>Es wurde ein Augmentationsweg (<span style='font-weight: bold; color: red;'>rot</span>) gefunden.</p>"
                     );
                     $(".marked").removeClass("marked");
-                    $("#ta_p_l11").addClass("marked");
+                    $("#tf1_p_l11").addClass("marked");
                     return AUGMENTING_PATH_FOUND;
                 } else {
                     T[y] = true;
@@ -648,16 +634,16 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
             statusID = READY_TO_BUILD_TREE_AFTER_RELABELING;
             $(".marked").removeClass("marked");
-            $("#ta_p_l6").addClass("marked");
-            $("#ta_p_l7").addClass("marked");
+            $("#tf1_p_l6").addClass("marked");
+            $("#tf1_p_l7").addClass("marked");
             return READY_TO_BUILD_TREE_AFTER_RELABELING;
         }
         statusID = READY_FOR_SEARCHING;
         console.log("READY_FOR_SEARCHING");
         goOn = true;
         $(".marked").removeClass("marked");
-        $("#ta_p_l6").addClass("marked");
-        $("#ta_p_l7").addClass("marked");
+        $("#tf1_p_l6").addClass("marked");
+        $("#tf1_p_l7").addClass("marked");
         return READY_FOR_SEARCHING;
     };
 
@@ -673,18 +659,18 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         showCurrentMatching(xy, true);
         statusID = MATCHING_INCREASED;
         console.log("MATCHING_INCREASED");
-        $("#ta_div_statusErklaerung").html(
+        $("#tf1_div_statusErklaerung").html(
             "<h3>Matching vergrößern</h3>" +
             "<p>Mittels des gefundenen Augmentationsweges konnte das Matching (<span style='font-weight: bold; color: green;'>grün</span>) ergänzt werden.</p>"
         );
         $(".marked").removeClass("marked");
         if(maxMatch == cost.length){
-            $("#ta_p_l12").addClass("marked");
+            $("#tf1_p_l12").addClass("marked");
         }else {
-            $("#ta_p_l4").addClass("marked");
+            $("#tf1_p_l4").addClass("marked");
         }
-        $("#ta_td_setS").html("&#8709;");
-        $("#ta_td_setT").html("&#8709;");
+        $("#tf1_td_setS").html("&#8709;");
+        $("#tf1_td_setT").html("&#8709;");
         return MATCHING_INCREASED;
     };
 
@@ -719,7 +705,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         statusID = LABELS_UPDATED;
         showLabels(lx, ly);
         console.log("LABELS_UPDATED");
-        $("#ta_div_statusErklaerung").html(
+        $("#tf1_div_statusErklaerung").html(
             "<h3>Neuen Gleichheitsgraph bestimmen</h3>" +
             "<p>Zur Bestimmung eines neuen Gleichheitsgraph muss der Algorithmus zunächst die Markierungen aktualisieren.</p>" + 
             "<p>Dazu wird ein \\(\\Delta\\) wie folgt bestimmt:</p>"+
@@ -730,8 +716,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         );
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,"ta_div_statusErklaerung"]);
         $(".marked").removeClass("marked");
-        $("#ta_p_l6").addClass("marked");
-        $("#ta_p_l7").addClass("marked");
+        $("#tf1_p_l6").addClass("marked");
+        $("#tf1_p_l7").addClass("marked");
         return LABELS_UPDATED;
     };
 
@@ -742,10 +728,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         }
     };
 
-    /**
-     * Zeigt Texte und Buttons zum Ende des Algorithmus
-     * @method
-     */
     this.end = function() {
         if (fastForwardIntervalID != null) {
             this.stopFastForward();
@@ -755,120 +737,148 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         for (var x = 0; x < n; x++) {
             ret += cost[x][xy[x]];
         }
-        //answer = 0;
-        //for (var x = 0; x < n; x++) {
-        //    answer += cost[x][xy[x]];
-        //}
-        $("#ta_div_statusErklaerung").html(
+        $("#tf1_div_statusErklaerung").html(
             "<h3>Optimales Matching</h3>" +
             "<p>Die Ungarische Methode hat erfolgreich ein maximales Matching bestimmt.</p>" +
             "<p>Das Gesamtgewicht beträgt <strong>"+ret+"</strong>.</p>" +
             "<h3>Was nun?</h3>" +
             "<button id='ta_button_gotoIdee' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>Beschreibung des Algorithmus lesen</span></button>" +
-            "<h3>Forschungsaufgaben ausprobieren:</h3>" +
-            "<button id='ta_button_gotoFA1' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>FA1</span></button>" +
+            "<h3>Weitere Forschungsaufgabe ausprobieren:</h3>" +
             "<button id='ta_button_gotoFA2' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>FA2</span></button>"
         );
 
-        $("#ta_button_gotoIdee").click(function() {
+        $("#tf1_button_gotoIdee").click(function() {
             $("#tabs").tabs("option", "active", 3);
         });
-        $("#ta_button_gotoFA1").click(function() {
-            $("#tabs").tabs("option", "active", 4);
-        });
-        $("#ta_button_gotoFA2").click(function() {
+        $("#tf1_button_gotoFA2").click(function() {
             $("#tabs").tabs("option", "active", 5);
         });
     };
 
-    /**
-     * Ermittelt basierend auf der StatusID und anderen den vorherigen Schritt aus
-     * und ruft die entsprechende Funktion auf.
-     * @method
-     */
-    this.previousStepChoice = function() {
-        currentDisplayStep--;
-        $("#ta_button_1Schritt").button("option", "disabled", false);
-        $("#ta_button_vorspulen").button("option", "disabled", false);
-        this.replayStep(currentDisplayStep);
-        this.needRedraw = true;
+    this.showQuestionModal = function() {
+        $("#tf1_div_statusTabs").hide();
+        $("#tf1_div_questionModal").show();
+        $("#tf1_questionSolution").hide();
     };
 
-
-    this.addReplayStep = function() {
-        var nodeProperties = {};
-        for(var key in graph.nodes) {
-            nodeProperties[key] = {edge: JSON.stringify(graph.nodes[key].getLayout()), label: graph.nodes[key].getLabel()};
-        }
-        var edgeProperties = {}
-        for(var key in graph.edges) {
-            edgeProperties[key] = {edge: JSON.stringify(graph.edges[key].getLayout()), hidden: graph.edges[key].hidden};
-        }
-        history.push({
-            "previousStatusId": statusID,
-            "nodeProperties": nodeProperties,
-            "edgeProperties": edgeProperties,
-            "htmlSidebar": $(statusErklaerung).html(),
-            "pseudocode": $(pseudocode).html()
-        });
+    this.closeQuestionModal = function() {
+        $("#tf1_div_statusTabs").show();
+        $("#tf1_div_questionModal").hide();
+        $("#tf1_button_questionClose").off();
+        $("#tf1_button_1Schritt").button("option", "disabled", false);
+        $("#tf1_button_vorspulen").button("option", "disabled", false);
     };
 
-    this.replayStep = function(current) {
-        if(current > 0){
-            var oldState = history[current - 1];
-            statusID = oldState.previousStatusId;
-            $(statusErklaerung).html(oldState.htmlSidebar);
-            $(pseudocode).html(oldState.pseudocode);
-            for(var key in oldState.nodeProperties) {
-                graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].edge));
-                graph.nodes[key].setLabel(oldState.nodeProperties[key].label);
-            }
-            for(var key in oldState.edgeProperties) {
-                var obj = JSON.parse(oldState.edgeProperties[key].edge);
-                graph.edges[key].setLayoutObject(obj);
-                graph.edges[key].hidden = oldState.edgeProperties[key].hidden;
-                //graph.edges[key].setAdditionalLabel(oldState.edgeProperties[key].label);
-            }
-            if(fastForwardIntervalID == null){
-                $("#ta_button_Zurueck").button("option", "disabled", false);
-                $("#ta_button_1Schritt").button("option", "disabled", false);
-            }
-        }else{
-            $("#ta_button_Zurueck").button("option", "disabled", true);
-            for(var key in graph.nodes) {
-                graph.nodes[key].setLayout("fillStyle", graph.nodes[key].originalFill);
-                graph.nodes[key].setLayout("borderColor", graph.nodes[key].originalBorder);
-                graph.nodes[key].setLabel("");
-            }
-            for(var key in graph.edges) {
-                if(graph.edges[key].originalDashed){
-                    graph.edges[key].setLayout("lineColor", const_Colors.grey);
-                    graph.edges[key].setLayout("lineWidth", 1);
-                    graph.edges[key].setLayout("dashed", true);
-                }else {
-                    graph.edges[key].originalColor = "black";
-                    graph.edges[key].originalWidth = 2;
-                    graph.edges[key].setLayout("lineColor", graph.edges[key].originalColor);
-                    graph.edges[key].setLayout("lineWidth", graph.edges[key].originalWidth);
-                    graph.edges[key].setLayout("dashed", graph.edges[key].originalDashed);
+    this.saveAnswer = function() {
+        var givenAnswer = "";
+
+        // TODO
+
+        /* if(currentQuestionType === 1 || currentQuestionType === 3 || currentQuestionType === 4) {
+            givenAnswer = $("#question"+currentQuestion+"_form").find("input[type='radio']:checked").val();
+        }else if(currentQuestionType === 2) {
+            givenAnswer = $("#question"+currentQuestion+"_form").find("input[type='text']").val();
+            givenAnswer = givenAnswer.replace(/(\s|\,)+/g,'');
+        }
+
+        if(questions[currentQuestion].type === 1) { // Next Step
+            for (var i = 0; i < statusArray.length; i++) {
+                if(statusArray[i].key == questions[currentQuestion].rightAnswer) {
+                    $("#tf1_questionSolution").find(".answer").html(statusArray[i].answer);
                 }
             }
-            $("#ta_div_statusErklaerung").html("<h3>Die Ungarische Methode</h3>" + 
-                "<p>Klicke auf <strong>Nächster Schritt</strong>, um den Algorithmus zu starten.</p>");
-            $(".marked").removeClass("marked");
-            $("#ta_p_l2").addClass("marked");
-        }
-        if(end && current == history.length){
-            //end = false;
-            this.stopFastForward();
-            $("#ta_button_1Schritt").button("option", "disabled", true);
-            $("#ta_button_vorspulen").button("option", "disabled", true);
+        }else if(questions[currentQuestion].type === 2) { // Subtour
+            $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswer.split("").join(","));
+        }else if(questions[currentQuestion].type === 3) { // Tour
+            $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswer);
+        }else if(questions[currentQuestion].type === 4) { // Degree
+            $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswer);
         }
 
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub,"ta_div_statusErklaerung"]);
+        questions[currentQuestion].givenAnswer = givenAnswer;
+        if(questions[currentQuestion].givenAnswer == questions[currentQuestion].rightAnswer) {
+            $("#tf1_questionSolution").css("color", "green");
+            if(debugConsole) console.log("Answer given ", givenAnswer, " was right!");
+        }else{
+            $("#tf1_questionSolution").css("color", "red");
+            if(debugConsole) console.log("Answer given ", givenAnswer, " was wrong! Right answer was ", questions[currentQuestion].rightAnswer);
+        } */
+
+        currentQuestion++;
+
+        $("#tf1_questionSolution").show();
+        $("#tf1_button_questionClose").hide();
+        $("#tf1_button_questionClose2").button("option", "disabled", false);
     };
+
+    this.activateAnswerButton = function() {
+        $("#tf1_button_questionClose").button("option", "disabled", false);
+    };
+
+    this.showQuestionResults = function() {
+
+        var correctAnswers = 0;
+        var totalQuestions = questions.length;
+        var table = "";
+
+        for(var i = 0; i < questions.length; i++) {
+            table = table + '<td style="text-align: center;">#'+(i+1)+'</td>';
+            if(questions[i].rightAnswer == questions[i].givenAnswer) {
+                table = table + '<td><span class="ui-icon ui-icon-plusthick"></span> Korrekt</td>';
+                correctAnswers++;
+            }else{
+                table = table + '<td><span class="ui-icon ui-icon-minusthick"></span> Falsch</td>';
+            }
+            table = "<tr>"+table+"</tr>";
+        }
+        table = '<table class="quizTable"><thead><tr><th>Frage</th><th>Antwort</th></tr></thead><tbody>'+table+'</tbody></table>';
+
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Ergebnisse</div>\
+            <p>Von '+totalQuestions+' Fragen hast du '+correctAnswers+' korrekt beantwortet.</p>\
+            <p>'+table+'</p>\
+            <p></p>\
+            <p><button id="tf1_button_questionClose">Schließen</button></p>');
+
+        $("#tf1_button_questionClose").button().one("click", function() { algo.closeQuestionModal(); });
+
+        this.showQuestionModal();
+
+    };
+
+    this.askQuestion = function() {
+
+        var randomVariable = function(min, max) {
+            return Math.random() * (max - min) + min;
+        };
+
+        // TODO
+
+        /* if(statusID == 1) {
+            // Frage zum Grad (100%)
+            return 4;
+        }else if(statusID == 6 && !eulerianTourEmpty) {
+            // Frage zum Mergeergebnis (50%)
+            if(randomVariable(0, 1) > 0.5) {
+                return 3;
+            }
+        }else if(statusID == 5) {
+            // Frage zur Subtour (20%)
+            if(randomVariable(0, 1) > 0.8) {
+                return 2;
+            }
+        }else if(statusID !== 2 && statusID !== 8) {
+            // Frage zum nächsten Schritt (10%)
+            if(randomVariable(1, 10) > 9) {
+                return 1;
+            }
+        } */
+
+        return false;
+
+    };
+
 }
 
 // Vererbung realisieren
-HungarianMethod.prototype = Object.create(CanvasDrawer.prototype);
-HungarianMethod.prototype.constructor = HungarianMethod;
+Forschungsaufgabe1.prototype = new CanvasDrawer;
+Forschungsaufgabe1.prototype.constructor = Forschungsaufgabe1;
