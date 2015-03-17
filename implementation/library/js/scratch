@@ -464,3 +464,126 @@ this.startAddingPaths = function(){
                 }
             }
         }*/
+             this.startTour = function(){
+                 for(var e in graph.edges){
+                     if(graph.edges[e].getLayout().dashed || !graph.edges[e].getDirected()){
+                         graph.removeEdge(e);
+                     }
+                 }
+                 for(var m in matching){
+                     var s = matching[m].s;
+                     var d = matching[m].d;
+                     var last = d;
+                     while(last != s){
+                         var e = predecessor[s][last];
+                         var node1 = graph.nodes[e.getSourceID()];
+                         var node2 = graph.nodes[e.getTargetID()];
+                         var ne = graph.addEdge(node1,node2, e.weight);
+                         ne.setLayout('dashed',true);
+                         last = e.getSourceID();
+                     }
+                 }
+                this.computeEulerTour();
+                for (var n in graph.nodes) {
+                    graph.nodes[n].restoreLayout();
+                }
+                var cost = 0;
+                for (var e in graph.edges) {
+                    cost += graph.edges[e].weight;
+                    graph.edges[e].setLayout('lineWidth',global_Edgelayout.lineWidth);
+                    graph.edges[e].setLayout('lineColor',global_Edgelayout.lineColor);
+                }
+                this.addNamingLabels();
+                //create output path and subpaths
+                var output = "";
+                for(var i = 0; i < tour.length; i++) {
+                    if(tour[i].type == "vertex") {
+                        output += graph.nodes[tour[i].id].getLabel();
+                    }
+                    if(tour[i].type == "edge") {
+                        var layout = graph.edges[tour[i].id].getLayout();
+                        output += ' <span style="color: '+layout.lineColor+';">&rarr;</span> ';
+                    }
+                }
+                var output_subtours = "";
+                for(var i = 0; i < subtours.length; i++) {
+                    var cur = subtours[i];
+                    output_subtours += '<li class="subtour_hover" data-tour-id="'+i+'" style="color: '+tourColors[cur['color']]+';">';
+                    for(var j = 0; j < cur['tour'].length; j++) {
+                        if(cur['tour'][j].type == "vertex" && j == 0) {
+                            output_subtours += graph.nodes[cur['tour'][j].id].getLabel();
+                        }else if(cur['tour'][j].type == "vertex") {
+                            output_subtours += "&rarr;"+graph.nodes[cur['tour'][j].id].getLabel();
+                        }
+                    }
+                    output_subtours += '</li>';
+                }
+                // Erklärung im Statusfenster
+                $("#ta_div_statusErklaerung").html('<h3>5. '+LNG.K('algorithm_euler')+'</h3>\
+                    <p><button id="animateTour">'+LNG.K('algorithm_status51b_desc2')+'</button><button id="animateTourStop">'+LNG.K('algorithm_status51b_desc3')+'</button></p>\
+                    <p>'+LNG.K('algorithm_status51b_desc4')+'</p>\
+                    <p>' + LNG.K('algorithm_cost') + cost + '</p>\
+                    <p class="result_euleriantour">' + output + '</p>\
+                    <p>'+LNG.K('algorithm_status51b_desc1')+'</p>\
+                    <h3>'+LNG.K('algorithm_euler_subtours')+'</h3>\
+                    <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
+                    <p>'+LNG.K('algorithm_status52_desc1')+'</p>');
+                $(".subtourList").on("mouseenter", "li.subtour_hover", {org: this}, this.hoverSubtour).on("mouseleave", "li.subtour_hover", {org: this}, this.dehoverSubtour);
+                $("#animateTour").button({icons:{primary: "ui-icon-play"}}).click({org: this}, this.animateTour);
+                $("#animateTourStop").button({icons:{primary: "ui-icon-stop"}, disabled: true}).click({org: this}, this.animateTourStop);
+                statusID = END;
+            };
+    this.showEulerianCycle = function(){
+        //create output path and subpaths
+        var output = "";
+        for(var i = 0; i < tour.length; i++) {
+            if(tour[i].type == "vertex") {
+                output += graph.nodes[tour[i].id].getLabel();
+            }
+            if(tour[i].type == "edge") {
+                var layout = graph.edges[tour[i].id].getLayout();
+                output += ' <span style="color: '+layout.lineColor+';">&rarr;</span> ';
+            }
+        }
+        var output_subtours = "";
+        for(var i = 0; i < subtours.length; i++) {
+            var cur = subtours[i];
+            output_subtours += '<li class="subtour_hover" data-tour-id="'+i+'" style="color: '+tourColors[cur['color']]+';">';
+            for(var j = 0; j < cur['tour'].length; j++) {
+                if(cur['tour'][j].type == "vertex" && j == 0) {
+                    output_subtours += graph.nodes[cur['tour'][j].id].getLabel();
+                }else if(cur['tour'][j].type == "vertex") {
+                    output_subtours += "&rarr;"+graph.nodes[cur['tour'][j].id].getLabel();
+                }
+            }
+            output_subtours += '</li>';
+        }
+        //print
+        $("#ta_div_statusErklaerung").html('<h3>5. '+LNG.K('algorithm_euler')+'</h3>\
+            <p class="result_euleriantour">' + output + '</p>\
+            <p>'+LNG.K('algorithm_status51b_desc1')+'</p>\
+            <p><button id="animateTour">'+LNG.K('algorithm_status51b_desc2')+'</button><button id="animateTourStop">'+LNG.K('algorithm_status51b_desc3')+'</button></p>\
+            <p>'+LNG.K('algorithm_status51b_desc4')+'</p>\
+            <h3>5.2 '+LNG.K('algorithm_status2_head')+'</h3>\
+            <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
+            <p>'+LNG.K('algorithm_status52_desc1')+'</p>\
+            <p></p><h3>'+LNG.K('algorithm_msg_finish')+'</h3>\
+            <button id="ta_button_gotoIdee">'+LNG.K('algorithm_btn_more')+'</button>\
+            <h3>'+LNG.K('algorithm_msg_test')+'</h3>\
+            <button id="ta_button_gotoFA1">'+LNG.K('algorithm_btn_exe1')+'</button>\
+            <button id="ta_button_gotoFA2">'+LNG.K('algorithm_btn_exe2')+'</button>');
+        if(fastForwardIntervalID != null) {
+            this.stopFastForward();
+        }
+        $("#ta_button_gotoIdee").button();
+        $("#ta_button_gotoFA1").button();
+        $("#ta_button_gotoFA2").button();
+        $("#ta_button_gotoIdee").click(function() {$("#tabs").tabs("option", "active", 3);});
+        $("#ta_button_gotoFA1").click(function() {$("#tabs").tabs("option", "active", 4);});
+        $("#ta_button_gotoFA2").click(function() {$("#tabs").tabs("option", "active", 5);});
+        $("#ta_button_1Schritt").button("option", "disabled", true);
+        $("#ta_button_vorspulen").button("option", "disabled", true);
+        $(".subtourList").on("mouseenter", "li.subtour_hover", {org: this}, this.hoverSubtour).on("mouseleave", "li.subtour_hover", {org: this}, this.dehoverSubtour);
+        $("#animateTour").button({icons:{primary: "ui-icon-play"}}).click({org: this}, this.animateTour);
+        $("#animateTourStop").button({icons:{primary: "ui-icon-stop"}, disabled: true}).click({org: this}, this.animateTourStop);
+    };

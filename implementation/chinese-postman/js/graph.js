@@ -43,6 +43,7 @@ var global_Edgelayout = {
     'isHighlighted': false ,        // Ob die Kante eine besondere Markierung haben soll
     'dashed': false,
     'showLabels': true,
+    'labelPosition': 0.5,
     'hidden': false
 };
 
