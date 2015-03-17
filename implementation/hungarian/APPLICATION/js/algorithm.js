@@ -90,12 +90,9 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     var q;
 
     var goOn = false;
-    /**
-     * Startet die Ausführung des Algorithmus.
-     * @method
-     */
-    this.run = function() {
-        //TODO move to separate function
+
+    this.completeGraph = function() {
+
         var uNodes = 0;
         var vNodes = 0;
         var maxKey;
@@ -224,6 +221,15 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         wr = 0; rd = 0;
         root = -1;
         q = new Array(n);
+
+    };
+
+    /**
+     * Startet die Ausführung des Algorithmus.
+     * @method
+     */
+    this.run = function() {
+        this.completeGraph();
         this.initCanvasDrawer();
         this.addNamingLabels();
         // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
@@ -858,6 +864,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             $("#ta_button_1Schritt").button("option", "disabled", true);
             $("#ta_button_vorspulen").button("option", "disabled", true);
         }
+
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub,"ta_div_statusErklaerung"]);
     };
 }
 

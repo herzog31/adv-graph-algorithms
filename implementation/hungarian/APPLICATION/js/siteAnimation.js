@@ -31,12 +31,12 @@ function initializeSiteLayout() {
                 $("#tab_tg").data("algo").destroy();
             }
             if(ui.oldPanel[0].id == "tab_ta") {
-                if($("#tab_ta").data("algo").getStatusID() != null && $("#tab_ta").data("algo").getStatusID() < 6) {
+                if($("#tab_ta").data("algo").getStatusID() != null && $("#tab_ta").data("algo").getStatusID() < 10) {
                     if($("#tabs").data("tabChangeDialogOpen") == null) {
                         event.preventDefault();
-                        $( "#tabs" ).data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);
-                        $("#tabs").data("tabChangeDialogOpen",true);
-                        $( "#ta_div_confirmTabChange" ).dialog("open");
+                        $("#tabs").data("requestedTab",$("#"+ui.newPanel.attr("id")).index()-1);
+                        $("#tabs").data("tabChangeDialogOpen", true);
+                        $("#ta_div_confirmTabChange").dialog("open");
                     }
                     else {
                         $("#tab_ta").data("algo").destroy();
@@ -47,18 +47,16 @@ function initializeSiteLayout() {
                 }
             }
             if(ui.oldPanel[0].id == "tab_tf1") {
-                if($("#tab_tf1").data("algo").getStatusID() != null && $("#tab_tf1").data("algo").getStatusID() < 6) {
+                if($("#tab_tf1").data("algo").getStatusID() != null && $("#tab_tf1").data("algo").getStatusID() < 10) {
                     if($("#tabs").data("tabChangeDialogOpen") == null) {
                         event.preventDefault();
-                        $( "#tabs" ).data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);
-                        $("#tabs").data("tabChangeDialogOpen",true);
-                        $( "#tf1_div_confirmTabChange" ).dialog("open");
-                    }
-                    else {
+                        $("#tabs").data("requestedTab",$("#"+ui.newPanel.attr("id")).index()-1);
+                        $("#tabs").data("tabChangeDialogOpen", true);
+                        $("#tf1_div_confirmTabChange").dialog("open");
+                    }else{
                         $("#tab_tf1").data("algo").destroy();
                     }
-                }
-                else {
+                }else{
                     $("#tab_tf1").data("algo").destroy();
                 }
             }
@@ -91,6 +89,7 @@ function initializeSiteLayout() {
                 $("#tab_ta").data("algo",algo);
             }
             if(ui.newPanel[0].id == "tab_tf1") {
+                $("body").data("graphOrg", $("body").data("graph").getDescriptionAsString());
                 algo = new Forschungsaufgabe1($("body").data("graph"),$("#tf1_canvas_graph"),$("#tab_tf1"));
                 $("#tab_tf1").data("algo",algo);
             }
@@ -103,7 +102,7 @@ function initializeSiteLayout() {
             }
         }
     });
-    $("body").data("graph",new BipartiteGraph("graphs/graph1.txt"));
+    $("body").data("graph", new BipartiteGraph("graphs/graph1.txt"));
 }
 
 /**
