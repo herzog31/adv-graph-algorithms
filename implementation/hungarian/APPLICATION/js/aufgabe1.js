@@ -76,8 +76,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     var x, y, root;
     var q;
 
-    var goOn = false;
-
     this.completeGraph = function() {
 
         var uNodes = 0;
@@ -215,7 +213,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         currentPseudoCodeLine = lineArray;
         $(".marked").removeClass('marked');
         for(var i = 0; i < lineArray.length; i++) {
-            $("#ta_p_l"+lineArray[i]).addClass('marked');
+            $("#tf1_p_l"+lineArray[i]).addClass('marked');
         }
     };
 
@@ -232,8 +230,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_button_vorspulen").button({icons:{primary: "ui-icon-seek-next"}, disabled: false});
         $("#tf1_button_stoppVorspulen").button({icons:{primary: "ui-icon-pause"}});
         $("#tf1_div_statusTabs").tabs();
-        $(".marked").removeClass("marked");
-        $("#tf1_p_l1").addClass("marked");
+        this.markPseudoCodeLine([1]);
         $("#tf1_tr_LegendeClickable").removeClass("greyedOutBackground");
 
         this.registerEventHandlers();
@@ -346,7 +343,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             statusID = 0;
             previousStatusId = 0;
         }
-        if(debugConsole) console.log("Current State: " + statusID);
+        if(debugConsole) if(debugConsole) console.log("Current State: " + statusID);
 
         previousStatusId = statusID;
         currentQuestionType = this.askQuestion();
@@ -385,13 +382,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
                 this.showQuestionResults();
                 break;
             default:
-                console.log("Fehlerhafte StatusID.");
+                if(debugConsole) console.log("Fehlerhafte StatusID.");
                 break;
-        }
-        if(goOn) {
-            goOn = false;
-            this.nextStepChoice();
-            return;
         }
 
         if(currentQuestionType !== false) {
@@ -473,12 +465,11 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
         showLabels(lx, ly);
         statusID = READY_TO_START;
-        console.log("READY_TO_START");
+        if(debugConsole) console.log("READY_TO_START");
         $("#tf1_div_statusErklaerung").html("<h3>Gleichheitsgraph bestimmen</h3>"
             + "<p>Der Algorithmus bestimmt zuerst eine initiale Markierung für jeden Knoten.</p>"
             + "<p>Anhand der Markierungen wird der Gleichheitsgraph ermittelt (<strong>schwarz</strong>).</p>");
-        $(".marked").removeClass("marked");
-        $("#tf1_p_l4").addClass("marked");
+        this.markPseudoCodeLine([4]);
         return READY_TO_START;
     };
 
@@ -511,43 +502,37 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
         showTreeRoot(S);
         statusID = READY_FOR_SEARCHING;
-        console.log("READY_FOR_SEARCHING");
+        if(debugConsole) console.log("READY_FOR_SEARCHING");
         $("#tf1_div_statusErklaerung").html("<h3>Augmentationsweg bestimmen</h3>" +
             "<h3>Wurzel eines alternierenden Pfades finden</h3>" + 
             "<p>Der Algorithmus wählt als Wurzel einen Knoten, der noch nicht im Matching vorhanden ist und markiert ihn <span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>.</p>");
-        $(".marked").removeClass("marked");
-        $("#tf1_p_l6").addClass("marked");
-        $("#tf1_p_l7").addClass("marked");
-        return READY_FOR_SEARCHING;
+		this.markPseudoCodeLine([6, 7]);
     };
 
     this.iterateX = function(){
         if(rd < wr){
             x = q[rd++];
             y = 0;
-            console.log("iterateX: READY_TO_BUILD_TREE");
+            if(debugConsole) console.log("iterateX: READY_TO_BUILD_TREE");
 
-            if(previousStatusId === READY_TO_BUILD_TREE || previousStatusId === READY_TO_BUILD_TREE_AFTER_RELABELING) {
-                goOn = true;
-            }else{
+            if(previousStatusId !== READY_TO_BUILD_TREE && previousStatusId !== READY_TO_BUILD_TREE_AFTER_RELABELING) {
                 this.displayST(S, T);
             }
 
             statusID = READY_TO_BUILD_TREE;
-            $(".marked").removeClass("marked");
-            $("#tf1_p_l6").addClass("marked");
-            $("#tf1_p_l7").addClass("marked");
-            return READY_TO_BUILD_TREE;
+            this.markPseudoCodeLine([6, 7]);
+
+            this.nextStepChoice();
+            return;
         }
-        console.log("AUGMENTING_PATH_NOT_FOUND");
+
+        if(debugConsole) console.log("AUGMENTING_PATH_NOT_FOUND");
         $("#tf1_div_statusErklaerung").html(
             "<h3>Augmentationsweg bestimmen</h3>" +
             "<p>Der Algorithmus konnte keinen Augmentationsweg mit der gewählten Wurzel (<span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>) im aktuellen Gleichheitsgraph finden.</p>"
         );
         statusID = AUGMENTING_PATH_NOT_FOUND;
-        $(".marked").removeClass("marked");
-        $("#tf1_p_l8").addClass("marked");
-        $("#tf1_p_l9").addClass("marked");
+        this.markPseudoCodeLine([8, 9]);
         return AUGMENTING_PATH_NOT_FOUND;
     };
 
@@ -556,50 +541,46 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             if (cost[x][y] == lx[x] + ly[y] && !T[y]) {
                 if (yx[y] == -1) {
                     showAugmentingPath(x, y, prev, xy, yx);
-                    console.log("AUGMENTING_PATH_FOUND");
+                    if(debugConsole) console.log("AUGMENTING_PATH_FOUND");
                     $("#tf1_div_statusErklaerung").html(
                         "<h3>Augmentationsweg bestimmen</h3>" +
                         "<p>Es wurde ein Augmentationsweg (<span style='font-weight: bold; color: red;'>rot</span>) gefunden.</p>"
                     );
                     statusID = AUGMENTING_PATH_FOUND;
-                    $(".marked").removeClass("marked");
-                    $("#tf1_p_l11").addClass("marked");
-                    return AUGMENTING_PATH_FOUND;
+                    this.markPseudoCodeLine([11]);
+                    return;
                 }
+
                 T[y] = true;
                 q[wr++] = yx[y];
                 this.add_to_tree(yx[y], x);
                 this.displayST(S, T);
-                goOn = false;
+
             }else{
-                goOn = true;
+                var skip = true;
             }
+
             y++;
-            console.log("buildAlternatingTree: READY_TO_BUILD_TREE");
+            if(debugConsole) console.log("buildAlternatingTree: READY_TO_BUILD_TREE");
             statusID = READY_TO_BUILD_TREE;
-            $(".marked").removeClass("marked");
-            $("#tf1_p_l6").addClass("marked");
-            $("#tf1_p_l7").addClass("marked");
-            return READY_TO_BUILD_TREE;
+            this.markPseudoCodeLine([6, 7]);
+            if (skip) this.nextStepChoice();
+            return;
         }
-        goOn = true;
-        console.log("READY_FOR_SEARCHING");
+        
+        if(debugConsole) console.log("READY_FOR_SEARCHING");
         statusID = READY_FOR_SEARCHING;
-        $(".marked").removeClass("marked");
-        $("#tf1_p_l6").addClass("marked");
-        $("#tf1_p_l7").addClass("marked");
-        return READY_FOR_SEARCHING;
+        this.markPseudoCodeLine([6, 7]);
+        this.nextStepChoice();
     };
 
     this.findAugmentPathAfterLabeling = function() {
         wr = rd = 0;
         y = 0;
-        console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
+        if(debugConsole) console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
         this.displayST(S, T);
         statusID = READY_TO_BUILD_TREE_AFTER_RELABELING;
-        $(".marked").removeClass("marked");
-        $("#tf1_p_l6").addClass("marked");
-        $("#tf1_p_l7").addClass("marked");
+        this.markPseudoCodeLine([6, 7]);
         return READY_TO_BUILD_TREE_AFTER_RELABELING;
     };
 
@@ -610,40 +591,38 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
                     x = slackx[y];
                     showAugmentingPath(x, y, prev, xy, yx);
                     statusID = AUGMENTING_PATH_FOUND;
-                    console.log("AUGMENTING_PATH_FOUND");
+                    if(debugConsole) console.log("AUGMENTING_PATH_FOUND");
                     $("#tf1_div_statusErklaerung").html(
                         "<h3>Augmentationsweg bestimmen</h3>" +
                         "<p>Es wurde ein Augmentationsweg (<span style='font-weight: bold; color: red;'>rot</span>) gefunden.</p>"
                     );
-                    $(".marked").removeClass("marked");
-                    $("#tf1_p_l11").addClass("marked");
-                    return AUGMENTING_PATH_FOUND;
-                } else {
-                    T[y] = true;
-                    if (!S[yx[y]]) {
-                        q[wr++] = yx[y];
-                        this.add_to_tree(yx[y], slackx[y]);
-                    }
-                    this.displayST(S, T);
+                    this.markPseudoCodeLine([11]);
+                    return;
                 }
+
+                T[y] = true;
+                if (!S[yx[y]]) {
+                    q[wr++] = yx[y];
+                    this.add_to_tree(yx[y], slackx[y]);
+                }
+                this.displayST(S, T);
+                
             }else{
-                goOn = true;
+                var skip = true;
             }
             y++;
-            console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
+            if(debugConsole) console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
             statusID = READY_TO_BUILD_TREE_AFTER_RELABELING;
-            $(".marked").removeClass("marked");
-            $("#tf1_p_l6").addClass("marked");
-            $("#tf1_p_l7").addClass("marked");
-            return READY_TO_BUILD_TREE_AFTER_RELABELING;
+            this.markPseudoCodeLine([6, 7]);
+            if (skip) this.nextStepChoice();
+            return;
         }
+
         statusID = READY_FOR_SEARCHING;
-        console.log("READY_FOR_SEARCHING");
-        goOn = true;
-        $(".marked").removeClass("marked");
-        $("#tf1_p_l6").addClass("marked");
-        $("#tf1_p_l7").addClass("marked");
-        return READY_FOR_SEARCHING;
+        if(debugConsole) console.log("READY_FOR_SEARCHING");
+        this.markPseudoCodeLine([6, 7]);
+        this.nextStepChoice();
+        return;
     };
 
     this.increaseMatching = function(){
@@ -657,16 +636,15 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
         showCurrentMatching(xy, true);
         statusID = MATCHING_INCREASED;
-        console.log("MATCHING_INCREASED");
+        if(debugConsole) console.log("MATCHING_INCREASED");
         $("#tf1_div_statusErklaerung").html(
             "<h3>Matching vergrößern</h3>" +
             "<p>Mittels des gefundenen Augmentationsweges konnte das Matching (<span style='font-weight: bold; color: green;'>grün</span>) ergänzt werden.</p>"
         );
-        $(".marked").removeClass("marked");
         if(maxMatch == cost.length){
-            $("#tf1_p_l12").addClass("marked");
+            this.markPseudoCodeLine([12]);
         }else {
-            $("#tf1_p_l4").addClass("marked");
+            this.markPseudoCodeLine([4]);
         }
         $("#tf1_td_setS").html("&#8709;");
         $("#tf1_td_setT").html("&#8709;");
@@ -703,7 +681,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
         statusID = LABELS_UPDATED;
         showLabels(lx, ly);
-        console.log("LABELS_UPDATED");
+        if(debugConsole) console.log("LABELS_UPDATED");
         $("#tf1_div_statusErklaerung").html(
             "<h3>Neuen Gleichheitsgraph bestimmen</h3>" +
             "<p>Zur Bestimmung eines neuen Gleichheitsgraph muss der Algorithmus zunächst die Markierungen aktualisieren.</p>" + 
@@ -714,9 +692,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             "<p>Der neue Gleichheitsgraph wurde vom Algorithmus markiert (<strong style='font-weight: bold; color: green;'>grün</strong> und <strong>schwarz</strong>).</p>"
         );
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,"ta_div_statusErklaerung"]);
-        $(".marked").removeClass("marked");
-        $("#tf1_p_l6").addClass("marked");
-        $("#tf1_p_l7").addClass("marked");
+        this.markPseudoCodeLine([6, 7]);
         return LABELS_UPDATED;
     };
 
@@ -729,11 +705,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     this.end = function() {
 
-        console.log("FINISHED");
+        if(debugConsole) console.log("FINISHED");
         $("#tf1_button_1Schritt").button("option", "disabled", true);
         showCurrentMatching(xy, false);
-        $(".marked").removeClass("marked");
-        $("#tf1_p_l13").addClass("marked");
+        this.markPseudoCodeLine([13]);
 
         if (fastForwardIntervalID != null) {
             this.stopFastForward();
@@ -806,10 +781,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         questions[currentQuestion].givenAnswer = givenAnswer;
         if(questions[currentQuestion].givenAnswer == questions[currentQuestion].rightAnswer) {
             $("#tf1_questionSolution").css("color", "green");
-            if(debugConsole) console.log("Answer given ", givenAnswer, " was right!");
+            if(debugConsole) if(debugConsole) console.log("Answer given ", givenAnswer, " was right!");
         }else{
             $("#tf1_questionSolution").css("color", "red");
-            if(debugConsole) console.log("Answer given ", givenAnswer, " was wrong! Right answer was ", questions[currentQuestion].rightAnswer);
+            if(debugConsole) if(debugConsole) console.log("Answer given ", givenAnswer, " was wrong! Right answer was ", questions[currentQuestion].rightAnswer);
         } */
 
         currentQuestion++;
