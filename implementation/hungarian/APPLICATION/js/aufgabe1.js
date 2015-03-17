@@ -50,6 +50,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     var questions = new Array();
     var debugConsole = true;
     var previousStatusId = 0;
+    var currentPseudoCodeLine = [1];
 
     /**
      * Hier werden die Statuskonstanten definiert
@@ -210,13 +211,19 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     };
 
+    this.markPseudoCodeLine = function(lineArray) {
+        currentPseudoCodeLine = lineArray;
+        $(".marked").removeClass('marked');
+        for(var i = 0; i < lineArray.length; i++) {
+            $("#ta_p_l"+lineArray[i]).addClass('marked');
+        }
+    };
+
     this.run = function() {
     	this.completeGraph();
         this.initCanvasDrawer();
         this.addNamingLabels();
 
-        this.initCanvasDrawer();
-        // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
         $("#tf1_div_abspielbuttons").append("<button id=\"tf1_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button><br>"
                         +"<button id=\"tf1_button_vorspulen\">"+LNG.K('aufgabe1_btn_next_question')+"</button>"
                         +"<button id=\"tf1_button_stoppVorspulen\">"+LNG.K('algorithm_btn_paus')+"</button>");
@@ -254,8 +261,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.refresh = function() {
-
-    	// TODO
         this.destroy();
         var algo = new Forschungsaufgabe1($("body").data("graph"), $("#tf1_canvas_graph"), $("#tab_tf1"));
         $("#tab_tf1").data("algo", algo);
@@ -480,16 +485,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     this.augment = function() {
         if (maxMatch == cost.length) {
             statusID = FINISHED;
-            // TODO
-            console.log("FINISHED");
-            this.end();
-            $("#tf1_button_1Schritt").button("option", "disabled", true);
-            showCurrentMatching(xy, false);
-            //TODO show answer
-            $(".marked").removeClass("marked");
-            $("#tf1_p_l13").addClass("marked");
-            return FINISHED;
+            this.nextStepChoice();
+            return;
         }
+
         showEqualityGraph(lx, ly);
         x, y, root = -1;
         q = new Array(n);
@@ -729,14 +728,23 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     };
 
     this.end = function() {
+
+        console.log("FINISHED");
+        $("#tf1_button_1Schritt").button("option", "disabled", true);
+        showCurrentMatching(xy, false);
+        $(".marked").removeClass("marked");
+        $("#tf1_p_l13").addClass("marked");
+
         if (fastForwardIntervalID != null) {
             this.stopFastForward();
         }
+
         end = true;
         var ret = 0;
         for (var x = 0; x < n; x++) {
             ret += cost[x][xy[x]];
         }
+
         $("#tf1_div_statusErklaerung").html(
             "<h3>Optimales Matching</h3>" +
             "<p>Die Ungarische Methode hat erfolgreich ein maximales Matching bestimmt.</p>" +
