@@ -454,49 +454,54 @@
         </div>
     </div>
     <div id="tab_tw">
-        <p>TODO</p>
-        <!-- <div id="tw_Accordion">
+        <div id="tw_Accordion">
             <h3>Wie sieht der (Pseudo-)Code des Algorithmus aus?</h3>
-            <div><pre><code>
-                Eingabe: Bipartiter ungewichteter Graph G=(U &cup; V, E).
-                Ausgabe: Eine Menge M &sube; E, sodass M ein Matching auf G darstellt.
+            <div>
+                <p>
+                    <strong>Eingabe:</strong> Vollständiger gewichteter bipartiter Graph \(G=(V,E)\)<br />
+                    <strong>Ausgabe:</strong> Bezüglich Kantengewichte optimales Matchin \(M \subseteq E\) als Liste von Kanten</p>
+                <hr>
+                <pre><code>BEGIN
+    Initialisiere Markierungen
+    WHILE Matching nicht optimal DO
+        Finde freien Knoten als Wurzel eines alternierenden Pfades
+        WHILE Pfad ist nicht augmentierend DO
+            Konstruiere alternierenden Pfad in Gleichheitsgraph
+            IF Kein alternierender Pfad gefunden THEN Verbessere Markierungen
+        END
+        Verbessere Matching
+    END
+END</code></pre>
+            </div>
 
-                BEGIN
-                M &larr; &empty;
-                REPEAT
-                let &Rho; = {P1,P2,...,Pk} be a maximal set of
-                vertex-disjoint shortest augmenting paths with respect to M
-                M &larr; M &oplus; (P1 &cup; P2 &cup; ... &cup; Pk)
-                UNTIL &Rho; == &empty;
-                RETURN M
-                END
-            </code></pre></div>
             <h3>Wie schnell ist der Algorithmus?</h3>
             <div>
                 <h2>Geschwindigkeit von Algorithmen</h2>
                 <p>Die Geschwindigkeit von Algorithmen wird üblicherweise in der <strong>Anzahl an Einzelschritten</strong> gemessen, die der Algorithmus bei der Ausführung benötigt.</p>
                 <p>Einzelschritte sind beispielsweise:</p>
                 <ul>
-                    <li>Zuweisungen &ndash; Weise Knoten 1 den Wert 20 zu.</li>
-                    <li>Vergleiche  &ndash; Ist 20 größer als 23?</li>
-                    <li>Vergleich und Zuweisung  &ndash; Falls 20 größer als 15 ist, setze Variable <var>n</var> auf 20.</li>
-                    <li>Einfache Arithmetische Operationen &ndash; Was ist 5 + 5 ?</li>
+                  <li>Zuweisungen &ndash; Weise Knoten 1 den Wert 20 zu.</li>
+                  <li>Vergleiche  &ndash; Ist 20 größer als 23?</li>
+                  <li>Vergleich und Zuweisung  &ndash; Falls 20 größer als 15 ist, setze Variable <var>n</var> auf 20.</li>
+                  <li>Einfache Arithmetische Operationen &ndash; Was ist 5 + 5 ?</li>
                 </ul>
-                <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen.
-                    Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus.
-                    Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
-                <h2>Laufzeit des Hopcroft-Karp-Algorithmus</h2>
+                <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen. Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus. Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
+                <h2>Laufzeit der Ungarischen Methode</h2>
+                <p>...</p>
             </div>
+
             <h3>Wie beweist man, dass der Algorithmus stets ein korrektes Ergebnis berechnet?</h3>
             <div>
-                <h2>Ein mathematischer Beweis</h2>
+                ...
             </div>
+
             <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>
-            <div><p>Weitere Graphalgorithmen werden auf der <a href="http://www-m9.ma.tum.de/Allgemeines/Routenplanung">Webseite des Lehrstuhls M9</a> der TU München erklärt.</p>
-                <p>Außerdem es ein interessantes Buch zu kürzesten Wegen:  <a href="http://www-m9.ma.tum.de/Ruth/WebHome">Das Geheimnis des kürzesten Weges</a></p>
+            <div>
+                <p>Weitere Graphalgorithmen werden auf der <a href="http://www-m9.ma.tum.de/Allgemeines/GraphAlgorithmen">Webseite des Lehrstuhls M9</a> der TU München erklärt.</p>
+                <p>Außerdem es ein interessantes Buch zu kürzesten Wegen: <a href="http://www-m9.ma.tum.de/Ruth/WebHome">Das Geheimnis des kürzesten Weges</a></p>
                 <p>Ein <a href="http://www.ma.tum.de/Studium/Studieninteressierte">Mathematikstudium an der TU München</a> beantwortet alle Fragen zur Graphentheorie (falls eine Lösung bekannt ist).</p>
             </div>
-        </div> -->
+        </div>
     </div>
 </div>
 <footer>
