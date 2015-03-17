@@ -440,3 +440,27 @@ this.startAddingPaths = function(){
             "<p>" + LNG.K('algorithm_balanced_1') + "</p>");
         }
     };
+/*    this.findUnbalancedNodes = function () {
+        for (var n in graph.nodes){
+            var node = graph.nodes[n];
+            var d = Object.keys(node.getOutEdges()).length - Object.keys(node.getInEdges()).length;
+            delta[node.getNodeID()] = d;
+            if(d < 0) supplyNodes.push(node);
+            else if(d > 0) {
+                demandNodes.push(node);
+                excess+=d;
+            }
+        }
+    };*/
+
+        //color edges
+/*        for(var i = 0; i < subtours.length; i++) {
+            var cur = subtours[i];
+            for(var j = 0; j < cur['tour'].length; j++) {
+                if(cur['tour'][j].type == "edge") {
+                    var edge = graph.edges[cur['tour'][j].id];
+                    edge.setLayout('lineColor', tourColors[cur['color']]);
+                    //edge.weight = null;
+                }
+            }
+        }*/

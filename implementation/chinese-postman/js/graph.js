@@ -288,8 +288,6 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
      */
     //var oppositeEdge = null;
 
-    var dashed = false;
-
     var source = sourceNode;
 
     var target = targetNode;

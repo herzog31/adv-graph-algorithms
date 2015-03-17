@@ -73,13 +73,17 @@ function algorithm(p_graph, p_canvas, p_tab) {
      */
     var matching = new Object();
 
+    var matching_graph = null;
+
+    var id_map = {};
+
     var current = 0;
     /**
      * Array mit den neu eingefuegten Pfaden<br>
      * Enthaelt Arrays von neuen Kanten
-     * @type Array
+     * @type Object
      */
-    var new_edges = new Array();
+    var new_edges = [];
 
     var tour = new Array();
 
@@ -88,6 +92,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
     var tourColors = new Array("#0000cc", "#006600", "#990000", "#999900", "#cc6600", "#660099", "#330000");
     var tourAnimationIndex = 0;
     var tourAnimation = null;
+    var animationId = 0;
     /*
      * Alle benoetigten Information zur Wiederherstellung der vorangegangenen Schritte werden hier gespeichert.
      * @type Array
@@ -103,13 +108,11 @@ function algorithm(p_graph, p_canvas, p_tab) {
     var FEASIBILITY = 0;
     var SHOW_UNBALANCED_NODES = 3;
     var SHORTEST_PATHS = 7;
-    var ADD_PATH = 11;
+    var ADD_PATHS = 11;
     var MATCHING = 4;
-    var START_PATH = 6;
-    var END_TOUR = 13;
+    var INIT_TOUR = 6;
     var SHOW_TOUR = 15;
     var END = 10;
-
 
     /*
      * Entferne alle Knoten, die zu keiner Kante inzident sind
@@ -154,11 +157,11 @@ function algorithm(p_graph, p_canvas, p_tab) {
      */
     this.destroy = function () {
         //delete all inserted edges
-        for(var p in new_edges){
+        /*for(var e in new_edges){
             for(var e in new_edges[p]){
                 graph.removeEdge(new_edges[p][e].getEdgeID());
             }
-        }
+        }*/
         this.stopFastForward();
         this.destroyCanvasDrawer();
         this.deregisterEventHandlers();
@@ -282,19 +285,18 @@ function algorithm(p_graph, p_canvas, p_tab) {
             case MATCHING:
                 this.showMatching();
                 break;
-            case START_PATH:
+            case INIT_TOUR:
                 this.startAddingPaths();
                 break;
-            case ADD_PATH:
+            case ADD_PATHS:
                 this.addPaths();
                 break;
-            case END_TOUR:
-                this.endTour();
-                break;
             case SHOW_TOUR:
+                clearInterval(animationId);
                 this.startTour();
                 break;
             case END:
+                clearInterval(animationId);
                 this.endAlgorithm();
                 break;
             default:
@@ -455,20 +457,6 @@ function algorithm(p_graph, p_canvas, p_tab) {
             }
         }
     };
-
-/*    this.findUnbalancedNodes = function () {
-        for (var n in graph.nodes){
-            var node = graph.nodes[n];
-            var d = Object.keys(node.getOutEdges()).length - Object.keys(node.getInEdges()).length;
-            delta[node.getNodeID()] = d;
-            if(d < 0) supplyNodes.push(node);
-            else if(d > 0) {
-                demandNodes.push(node);
-                excess+=d;
-            }
-        }
-    };*/
-
     /**
      * Ueberpruefe ob das Problem loesbar ist.
      */
@@ -569,13 +557,11 @@ function algorithm(p_graph, p_canvas, p_tab) {
         node.setLayout('borderColor',"Gray");
     };
 
-    var tmp = {};
-
     this.showShortestPaths = function () {
         this.findMatching();
         //construct new graph
-        var matching_graph = new Graph();
-        var id_map = {};
+        matching_graph = new Graph();
+        id_map = {};
         var U_POSITION = 75; //standard 75
         var V_POSITION = 325;//standard 325
         var DIFF = 80;
@@ -603,12 +589,10 @@ function algorithm(p_graph, p_canvas, p_tab) {
             for(var d in demandNodes){
                 var id1 = id_map[s];
                 var id2 = id_map[d];
-                var e = matching_graph.addEdge(matching_graph.nodes[id1],matching_graph.nodes[id2],distance[supplyNodes[s].getNodeID()][demandNodes[d].getNodeID()],false);
-                //todo edges
+                matching_graph.addEdge(matching_graph.nodes[id1],matching_graph.nodes[id2],distance[supplyNodes[s].getNodeID()][demandNodes[d].getNodeID()],false);
             }
         }
         this.graph = matching_graph;
-        tmp = {id_map: id_map, graph: matching_graph};
         statusID = MATCHING;
         // Erklärung im Statusfenster
         $("#ta_div_statusErklaerung").html("<h3>3. " + LNG.K('algorithm_paths') + "</h3>"
@@ -617,16 +601,16 @@ function algorithm(p_graph, p_canvas, p_tab) {
     };
 
     this.showMatching = function(){
-        for(var e in this.graph.edges){
-            this.graph.removeEdge(e);
+        for(var e in matching_graph.edges){
+            matching_graph.removeEdge(e);
         }
         for(var p in matching){
-            var id1 = tmp.id_map[matching[p].s];
-            var id2 = tmp.id_map[matching[p].d];
-            var e = this.graph.addEdge(tmp.graph.nodes[id1],tmp.graph.nodes[id2], distance[matching[p].s][matching[p].d],false);
+            var id1 = id_map[matching[p].s];
+            var id2 = id_map[matching[p].d];
+            var e = matching_graph.addEdge(matching_graph.nodes[id1],matching_graph.nodes[id2], distance[matching[p].s][matching[p].d],false);
             setEdgeMatched(e);
         }
-        statusID = START_PATH;
+        statusID = INIT_TOUR;
         // Erklärung im Statusfenster
         $("#ta_div_statusErklaerung").html("<h3>3. " + LNG.K('algorithm_paths') + "</h3>"
         + "<p>" + LNG.K('algorithm_matching_1') + "</p>"
@@ -651,17 +635,19 @@ function algorithm(p_graph, p_canvas, p_tab) {
         for(var n in graph.nodes){
             if(supplyNodes[n] || demandNodes[n]){
                 var old_coord = graph.nodes[n].getCoordinates();
-                graph.nodes[n].setCoordinates(tmp.graph.nodes[tmp.id_map[n]].getCoordinates());
+                graph.nodes[n].setCoordinates(matching_graph.nodes[id_map[n]].getCoordinates());
                 this.animateMove(graph.nodes[n],old_coord);
             }
         }
-        statusID = ADD_PATH;
+        statusID = ADD_PATHS;
         // Erklärung im Statusfenster
         $("#ta_div_statusErklaerung").html("<h3>4. " + LNG.K('algorithm_new_paths') + "</h3>"
         + "<p>" + LNG.K('algorithm_new_paths_1') + "</p>"
         + "<p>" + LNG.K('algorithm_new_paths_2') + "</p>");
     };
-
+    /*
+    *
+    * */
     this.addPaths = function(){
         var step = 0;
         var current = 0;
@@ -681,10 +667,10 @@ function algorithm(p_graph, p_canvas, p_tab) {
             shortest.push(prev);
         }
         // animate the adding of the matching path edges
-        var timerId = 0;
-        timerId = setInterval(function () {
+        new_edges = [];
+        animationId = setInterval(function () {
             if(current >= shortest.length){
-                clearInterval(timerId);
+                clearInterval(animationId);
                 return;
             }
             if(step == 0){
@@ -704,6 +690,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
                 var e = shortest[current][step-1];
                 var ne = graph.addEdge(graph.nodes[e.getSourceID()],graph.nodes[e.getTargetID()], e.weight);
                 ne.setLayout('dashed',true);
+                new_edges.push(ne);
             }
             step++;
             algo.needRedraw = true;
@@ -719,7 +706,24 @@ function algorithm(p_graph, p_canvas, p_tab) {
     *
     * */
      this.startTour = function(){
-        this.graph = graph;
+         for(var e in graph.edges){
+             if(graph.edges[e].getLayout().dashed || !graph.edges[e].getDirected()){
+                 graph.removeEdge(e);
+             }
+         }
+         for(var m in matching){
+             var s = matching[m].s;
+             var d = matching[m].d;
+             var last = d;
+             while(last != s){
+                 var e = predecessor[s][last];
+                 var node1 = graph.nodes[e.getSourceID()];
+                 var node2 = graph.nodes[e.getTargetID()];
+                 var ne = graph.addEdge(node1,node2, e.weight);
+                 ne.setLayout('dashed',true);
+                 last = e.getSourceID();
+             }
+         }
         this.computeEulerTour();
         for (var n in graph.nodes) {
             graph.nodes[n].restoreLayout();
@@ -727,19 +731,10 @@ function algorithm(p_graph, p_canvas, p_tab) {
         var cost = 0;
         for (var e in graph.edges) {
             cost += graph.edges[e].weight;
+            graph.edges[e].setLayout('lineWidth',global_Edgelayout.lineWidth);
+            graph.edges[e].setLayout('lineColor',global_Edgelayout.lineColor);
         }
         this.addNamingLabels();
-        //color edges
-/*        for(var i = 0; i < subtours.length; i++) {
-            var cur = subtours[i];
-            for(var j = 0; j < cur['tour'].length; j++) {
-                if(cur['tour'][j].type == "edge") {
-                    var edge = graph.edges[cur['tour'][j].id];
-                    edge.setLayout('lineColor', tourColors[cur['color']]);
-                    //edge.weight = null;
-                }
-            }
-        }*/
         //create output path and subpaths
         var output = "";
         for(var i = 0; i < tour.length; i++) {
@@ -765,13 +760,12 @@ function algorithm(p_graph, p_canvas, p_tab) {
             output_subtours += '</li>';
         }
         // Erklärung im Statusfenster
-        $("#ta_div_statusErklaerung").html('<h3>5. '+LNG.K('algorithm_euler')+'</h3>'
-        /*+ "<p>" + LNG.K('algorithm_end_success') + "</p>"*/
-        + "<p>" + LNG.K('algorithm_cost') + cost + "</p>");
-        $("#ta_div_statusErklaerung").append('<p class="result_euleriantour">' + output + '</p>\
-            <p>'+LNG.K('algorithm_status51b_desc1')+'</p>\
+        $("#ta_div_statusErklaerung").html('<h3>5. '+LNG.K('algorithm_euler')+'</h3>\
             <p><button id="animateTour">'+LNG.K('algorithm_status51b_desc2')+'</button><button id="animateTourStop">'+LNG.K('algorithm_status51b_desc3')+'</button></p>\
             <p>'+LNG.K('algorithm_status51b_desc4')+'</p>\
+            <p>' + LNG.K('algorithm_cost') + cost + '</p>\
+            <p class="result_euleriantour">' + output + '</p>\
+            <p>'+LNG.K('algorithm_status51b_desc1')+'</p>\
             <h3>'+LNG.K('algorithm_euler_subtours')+'</h3>\
             <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
             <p>'+LNG.K('algorithm_status52_desc1')+'</p>');
@@ -850,6 +844,11 @@ function algorithm(p_graph, p_canvas, p_tab) {
      * @method
      */
     this.endAlgorithm = function () {
+        //color edges
+        for (var e in graph.edges) {
+            graph.edges[e].setLayout('lineColor', tourColors[color[e]]);
+
+        }
         $("#ta_div_statusErklaerung").append("<p></p><h3>" + LNG.K('algorithm_msg_finish') + "</h3>");
         $("#ta_div_statusErklaerung").append("<button id=ta_button_gotoIdee>" + LNG.K('algorithm_btn_more') + "</button>");
         $("#ta_div_statusErklaerung").append("<h3>" + LNG.K('algorithm_msg_test') + "</h3>");
@@ -1006,9 +1005,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             "nodeProperties": nodeProperties,
             "edgeProperties": edgeProperties,
             "phase": phase,
-            "current": current,
             "graph": this.graph,
-            //"animationId": animationId,
             "htmlSidebar": $(statusErklaerung).html()
         });
         //console.log("Current History Step: ", history[history.length-1]);
@@ -1017,37 +1014,61 @@ function algorithm(p_graph, p_canvas, p_tab) {
     this.replayStep = function() {
         if(history.length > 0){
             var oldState = history.pop();
+            //remove new edges from the graph
             statusID = oldState.previousStatusId;
             phase = oldState.phase;
-            current = oldState.current;
-            //animationId = oldState.animationId;
             this.graph = oldState.graph;
             $(statusErklaerung).html(oldState.htmlSidebar);
             for(var key in oldState.nodeProperties) {
-                graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].layout));
-                graph.nodes[key].setLabel(oldState.nodeProperties[key].label);
-                graph.nodes[key].setCoordinates(oldState.nodeProperties[key].coordiantes);
+                if(graph.nodes[key]){
+                    graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].layout));
+                    graph.nodes[key].setLabel(oldState.nodeProperties[key].label);
+                    graph.nodes[key].setCoordinates(oldState.nodeProperties[key].coordiantes);
+                }
             }
             for(var key in oldState.edgeProperties) {
-                graph.edges[key].setLayoutObject(JSON.parse(oldState.edgeProperties[key].layout));
-                graph.edges[key].setAdditionalLabel(oldState.edgeProperties[key].label);
+                if(graph.edges[key]){
+                    graph.edges[key].setLayoutObject(JSON.parse(oldState.edgeProperties[key].layout));
+                    graph.edges[key].setAdditionalLabel(oldState.edgeProperties[key].label);
+                }
             }
-            //remove new edges from the graph
-            if(statusID == ADD_PATH){
-                var edges = new_edges.pop();
-                for(var e in edges){
-                    graph.removeEdge(edges[e].getEdgeID());
+            if(statusID == INIT_TOUR){
+                for(var m in matching){
+                    var e = matching[m].edge.getEdgeID();
+                    if(graph.edges[e]) graph.removeEdge(e);
                 }
             }
             if(statusID == MATCHING){
-                for(var e in this.graph.edges){
-                    this.graph.removeEdge(e);
+                for(var e in matching_graph.edges){
+                    matching_graph.removeEdge(e);
                 }
-                for(var e in tmp_edges){
-                    var sid = tmp_edges[e].getSourceID();
-                    var tid = tmp_edges[e].getTargetID()
-                    this.graph.addEdge(this.graph.nodes[sid],this.graph.nodes[tid], tmp_edges[e].weight);
+                for(var s in supplyNodes){
+                    for(var d in demandNodes){
+                        matching_graph.addEdge(matching_graph.nodes[id_map[s]],matching_graph.nodes[id_map[d]],distance[supplyNodes[s].getNodeID()][demandNodes[d].getNodeID()],false);
+                    }
                 }
+            }
+            if(statusID == ADD_PATHS){
+                clearInterval(animationId);
+                for(var e in graph.edges){
+                    if(graph.edges[e].getLayout().dashed){
+                        graph.removeEdge(e);
+                    }
+                }
+                for(var m in matching){//remove matching edges
+                    var e = matching[m].edge.getEdgeID();
+                    if(graph.edges[e]) graph.removeEdge(e);
+                }
+                //insert matching edges
+                for(var p in matching){
+                    var e = graph.addEdge(graph.nodes[matching[p].s],graph.nodes[matching[p].d],distance[matching[p].s][matching[p].d],false);
+                    setEdgeMatched(e);
+                    matching[p].edge = e;
+                }
+            }
+            if(statusID == SHOW_TOUR){
+                clearInterval(animationId);
+
             }
         }
     };
