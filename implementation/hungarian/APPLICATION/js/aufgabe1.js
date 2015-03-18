@@ -46,7 +46,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
 
     var currentQuestion = 0;
-    var currentQuestionType = 0;
+    var currentQuestionType = false;
     var questions = new Array();
     var debugConsole = true;
     var previousStatusId = 0;
@@ -66,15 +66,33 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     const READY_TO_BUILD_TREE_AFTER_RELABELING = 9;
     const FINISHED = 10;
 
-    var cost = new Array();
+    var cost = [];
     this.cost = cost;
 
-    var n;
-    var lx, ly, xy, yx, S, T, slack, slackx, prev, maxMatch;
-
-    var wr, rd;
-    var x, y, root;
-    var q;
+    // Number of nodes per partition
+    var n = 0;
+    // Labels for nodes in partition X and Y
+    var lx, ly;
+    // Matching partner of nodes in partition X (xy) and Y (yx)
+    var xy, yx;
+    // Arrays for visited nodes in partition X (S) and Y (T) for current iteration
+    var S, T;
+    // Slack arrays for efficient calculation of delta
+    var slack, slackx;
+    // Store for current alternating path
+    var prev;
+    // number of edges in current matching
+    var maxMatch = 0;
+    // Counters
+    var x = 0;
+    var y = 0;
+    // Root of alternating path
+    var root = -1;
+    // Queue for BFS
+    var q = [];
+    // Write (wr) and read (rd) pointers for queue
+    var wr = 0;
+    var rd = 0;
 
     this.completeGraph = function() {
 
@@ -191,6 +209,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
                 }
             }
         }
+
         n = Object.keys(graph.nodes).length/2;
         lx = new Array(n);
         ly = new Array(n);
@@ -201,10 +220,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         slack = new Array(n);
         slackx = new Array(n);
         prev = new Array(n);
-        maxMatch = 0;
-
-        wr = 0; rd = 0;
-        root = -1;
         q = new Array(n);
 
     };
@@ -346,7 +361,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         if(debugConsole) if(debugConsole) console.log("Current State: " + statusID);
 
         previousStatusId = statusID;
-        currentQuestionType = this.askQuestion();
+        //currentQuestionType = this.askQuestion();
 
         switch (statusID) {
             case BEGIN:
@@ -376,7 +391,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             case AUGMENTING_PATH_FOUND:
                 this.increaseMatching();
                 break;
-            // TODO add step
             case FINISHED:
                 this.end();
                 this.showQuestionResults();
@@ -388,16 +402,31 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
         if(currentQuestionType !== false) {
 
-        	// TODO 
-            /* if(currentQuestionType === 1) {
-                this.generateNextStepQuestion(previousStatusId);
-            }else if(currentQuestionType === 2) {
-                this.generateSubtourQuestion();
-            }else if(currentQuestionType === 3) {
-                this.generateTourQuestion(previousTour, previousSubtour);
-            }else if(currentQuestionType === 4) {
-                this.generateDegreeQuestion();
-            } */
+        	/* 
+        	Frage Typen:
+
+			- Nächster Schritt
+			- Delta berechnen
+			- Neue Markierungen berechnen (für bspw 4 Knoten)
+			- Gleichgewichtsgraph bestimmen, bzw Kanten markieren die im Gleichgewichtsgraph vorkommen (für bspw 4 Kanten)
+
+        	*/
+
+            switch(currentQuestionType) {
+				case 1:
+					this.generateNextStepQuestion();
+					break;
+				case 2:
+					this.generateDeltaQuestion();
+					break;
+				case 3:
+					this.generateNewLabelQuestion();
+					break;
+				case 4:
+					this.generateEqualityGraphQuestion();
+					break;
+			}
+
             this.showQuestionModal();
             this.stopFastForward();
             $("#tf1_button_1Schritt").button("option", "disabled", true);
@@ -470,7 +499,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             + "<p>Der Algorithmus bestimmt zuerst eine initiale Markierung für jeden Knoten.</p>"
             + "<p>Anhand der Markierungen wird der Gleichheitsgraph ermittelt (<strong>schwarz</strong>).</p>");
         this.markPseudoCodeLine([4]);
-        return READY_TO_START;
     };
 
     this.augment = function() {
@@ -525,18 +553,30 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             this.nextStepChoice();
             return;
         }
-
-        if(debugConsole) console.log("AUGMENTING_PATH_NOT_FOUND");
+      
         $("#tf1_div_statusErklaerung").html(
             "<h3>Augmentationsweg bestimmen</h3>" +
             "<p>Der Algorithmus konnte keinen Augmentationsweg mit der gewählten Wurzel (<span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>) im aktuellen Gleichheitsgraph finden.</p>"
         );
+
+        if(debugConsole) console.log("AUGMENTING_PATH_NOT_FOUND");
         statusID = AUGMENTING_PATH_NOT_FOUND;
         this.markPseudoCodeLine([8, 9]);
-        return AUGMENTING_PATH_NOT_FOUND;
     };
 
-    this.buildAlternatingTree = function(){
+    this.findAugmentPathAfterLabeling = function() {
+        wr = rd = 0;
+        y = 0;
+
+        this.displayST(S, T);
+
+        if(debugConsole) console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
+        statusID = READY_TO_BUILD_TREE_AFTER_RELABELING;
+
+        this.markPseudoCodeLine([6, 7]);
+    };
+
+    this.buildAlternatingTree = function() {
         if(y < n) {
             if (cost[x][y] == lx[x] + ly[y] && !T[y]) {
                 if (yx[y] == -1) {
@@ -572,16 +612,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         statusID = READY_FOR_SEARCHING;
         this.markPseudoCodeLine([6, 7]);
         this.nextStepChoice();
-    };
-
-    this.findAugmentPathAfterLabeling = function() {
-        wr = rd = 0;
-        y = 0;
-        if(debugConsole) console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
-        this.displayST(S, T);
-        statusID = READY_TO_BUILD_TREE_AFTER_RELABELING;
-        this.markPseudoCodeLine([6, 7]);
-        return READY_TO_BUILD_TREE_AFTER_RELABELING;
     };
 
     this.buildTreeAfterRelabeling = function(){
@@ -622,7 +652,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         if(debugConsole) console.log("READY_FOR_SEARCHING");
         this.markPseudoCodeLine([6, 7]);
         this.nextStepChoice();
-        return;
     };
 
     this.increaseMatching = function(){
@@ -635,20 +664,23 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             xy[cx] = cy;
         }
         showCurrentMatching(xy, true);
+
         statusID = MATCHING_INCREASED;
         if(debugConsole) console.log("MATCHING_INCREASED");
+
         $("#tf1_div_statusErklaerung").html(
             "<h3>Matching vergrößern</h3>" +
             "<p>Mittels des gefundenen Augmentationsweges konnte das Matching (<span style='font-weight: bold; color: green;'>grün</span>) ergänzt werden.</p>"
         );
+
         if(maxMatch == cost.length){
             this.markPseudoCodeLine([12]);
         }else {
             this.markPseudoCodeLine([4]);
         }
+
         $("#tf1_td_setS").html("&#8709;");
         $("#tf1_td_setT").html("&#8709;");
-        return MATCHING_INCREASED;
     };
 
     this.add_to_tree = function (x, prevx){
@@ -693,7 +725,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         );
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,"ta_div_statusErklaerung"]);
         this.markPseudoCodeLine([6, 7]);
-        return LABELS_UPDATED;
     };
 
     this.setAll = function (arr, val) {
@@ -750,6 +781,49 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_button_questionClose").off();
         $("#tf1_button_1Schritt").button("option", "disabled", false);
         $("#tf1_button_vorspulen").button("option", "disabled", false);
+    };
+
+
+    this.generateNextStepQuestion = function() {
+
+    	/* var form = "";
+        for(var i = 0; i < answers.length; i++) {
+            form += '<input type="radio" id="tf1_input_question'+currentQuestion+'_'+i+'" name="question'+currentQuestion+'" value="'+answers[i].key+'" />\
+            <label for="tf1_input_question'+currentQuestion+'_'+i+'">'+answers[i].answer+'</label><br />';
+        }
+        form = '<form id="question'+currentQuestion+'_form">'+form+'</form>'; */
+
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
+            <p><em>Im aktuellen Schritt: '+previousStatusId+'</em></p>\
+            <p>...</p>\
+            <p>...</p>\
+            <p><button id="tf1_button_questionClose">Antworten</button></p>\
+            <p id="tf1_questionSolution">Korrekte Antwort:<br /><span class="answer"></span><br /><br />\
+            <button id="tf1_button_questionClose2">Weiter</button>\
+            </p>');
+
+		console.log("Aktueller Status: " + statusID, "Vorheriger Status: " + previousStatusId);
+
+        $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
+        $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
+        this.activateAnswerButton();
+        //$("#question"+currentQuestion+"_form").find("input[type='radio']").one("change", function() { algo.activateAnswerButton(); });
+
+
+    };
+
+    this.generateDeltaQuestion = function() {
+
+
+    };
+
+    this.generateNewLabelQuestion = function() {
+
+    };
+
+    this.generateEqualityGraphQuestion = function() {
+
+
     };
 
     this.saveAnswer = function() {
@@ -856,7 +930,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             }
         } */
 
-        return false;
+        //return false;
+
+        return 1;
 
     };
 
