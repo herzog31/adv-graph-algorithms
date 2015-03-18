@@ -47,7 +47,7 @@ function initializeSiteLayout() {
                 }
             }
             if(ui.oldPanel[0].id == "tab_tf1") {
-                if($("#tab_tf1").data("algo").getStatusID() > 0 && $("#tab_tf1").data("algo").getStatusID() < 10) {
+                if($("#tab_tf1").data("algo").getStatusID() > 1 && $("#tab_tf1").data("algo").getStatusID() < 11) {
                     if($("#tabs").data("tabChangeDialogOpen") == null) {
                         event.preventDefault();
                         $("#tabs").data("requestedTab",$("#"+ui.newPanel.attr("id")).index()-1);

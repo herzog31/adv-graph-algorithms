@@ -55,20 +55,21 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     /**
      * Hier werden die Statuskonstanten definiert
      */
-    const BEGIN = 0;
-    const READY_TO_START = 1;
-    const AUGMENTING_PATH_FOUND = 3;
-    const AUGMENTING_PATH_NOT_FOUND = 4;
-    const READY_FOR_SEARCHING = 5;
-    const LABELS_UPDATED = 6;
-    const MATCHING_INCREASED = 7;
-    const READY_TO_BUILD_TREE = 8;
-    const READY_TO_BUILD_TREE_AFTER_RELABELING = 9;
-    const FINISHED = 10;
+    const START = 0;
+    const INITIAL_LABELS = 1;
+    const EQUALITY_GRAPH = 2;
+    const FIND_ROOT = 3;
+    const CONSTRUCT_ALTERNATING_PATH = 4;
+    const NO_AUGMENT_PATH_FOUND = 5;
+    const IMPROVE_LABELS = 6;
+    const NEW_EQUALITY_GRAPH = 7;
+    const AUGMENT_PATH_FOUND = 8;
+    const IMPROVE_MATCHING = 9;
+    const PERFECT_MATCHING_CHECK = 10;
+    const SHOW_RESULT = 11;
 
+    // Array with edge costs
     var cost = [];
-    this.cost = cost;
-
     // Number of nodes per partition
     var n = 0;
     // Labels for nodes in partition X and Y
@@ -94,7 +95,514 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     var wr = 0;
     var rd = 0;
 
-    this.completeGraph = function() {
+    var labeling = false;
+
+    this.run = function() {
+
+        this.completeGraph();
+        this.initCanvasDrawer();
+
+        $("#tf1_div_abspielbuttons").html("<button id=\"tf1_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button><br>"
+            +"<button id=\"tf1_button_vorspulen\">"+LNG.K('aufgabe1_btn_next_question')+"</button>"
+            +"<button id=\"tf1_button_stoppVorspulen\">"+LNG.K('algorithm_btn_paus')+"</button>");
+        $("#tf1_button_stoppVorspulen").hide();
+        $("#tf1_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: false});
+        $("#tf1_button_vorspulen").button({icons:{primary: "ui-icon-seek-next"}, disabled: false});
+        $("#tf1_button_stoppVorspulen").button({icons:{primary: "ui-icon-pause"}});
+        $("#tf1_div_statusTabs").tabs();
+        $("#tf1_tr_LegendeClickable").removeClass("greyedOutBackground");
+
+        this.registerEventHandlers();
+        this.minimizeLegend();
+        this.markPseudoCodeLine([1]);
+        this.addNamingLabels();
+
+        this.needRedraw = true;
+        
+        statusID = INITIAL_LABELS;
+    };
+    
+    /**
+     * Beendet die Ausführung des Algorithmus.
+     * @method
+     */
+    this.destroy = function() {
+        this.stopFastForward();
+        this.destroyCanvasDrawer();
+        this.deregisterEventHandlers();
+        var orgGraph = $("body").data("graphOrg");
+        var orgGraph = new BipartiteGraph("text", canvas, orgGraph);
+        $("body").data("graph", orgGraph);
+        this.drawCanvas();
+    };
+    
+    /**
+     * Beendet den Tab und startet ihn neu
+     * @method
+     */
+    this.refresh = function() {
+        this.destroy();
+        var algo = new Forschungsaufgabe1($("body").data("graph"), $("#tf1_canvas_graph"), $("#tab_tf1"));
+        $("#tab_tf1").data("algo", algo);
+        algo.run();
+    };
+    
+    /**
+     * Zeigt and, in welchem Zustand sich der Algorithmus im Moment befindet.
+     * @returns {Number} StatusID des Algorithmus
+     */
+    this.getStatusID = function() {
+        return statusID;
+    };
+    
+    /**
+     * Registriere die Eventhandler an Buttons und canvas<br>
+     * Nutzt den Event Namespace ".Forschungsaufgabe1"
+     * @method
+     */
+    this.registerEventHandlers = function() {
+        $("#tf1_button_1Schritt").on("click.Forschungsaufgabe1", function() { algo.singleStepHandler(); });
+        $("#tf1_button_vorspulen").on("click.Forschungsaufgabe1", function() { algo.fastForwardAlgorithm(); });
+        $("#tf1_button_stoppVorspulen").on("click.Forschungsaufgabe1", function() { algo.stopFastForward(); });
+    };
+    
+    /**
+     * Entferne die Eventhandler von Buttons und canvas im Namespace ".Forschungsaufgabe1"
+     * @method
+     */
+    this.deregisterEventHandlers = function() {
+        canvas.off(".Forschungsaufgabe1");
+        $("#tf1_button_1Schritt").off(".Forschungsaufgabe1");
+        $("#tf1_button_vorspulen").off(".Forschungsaufgabe1");
+        $("#tf1_button_stoppVorspulen").off(".Forschungsaufgabe1");
+        $("#tf1_tr_LegendeClickable").off(".Forschungsaufgabe1");
+    };
+
+    this.singleStepHandler = function() {
+        this.nextStepChoice();
+    };
+
+    /**
+     * "Spult vor", führt den Algorithmus mit hoher Geschwindigkeit aus.
+     * @method
+     */
+    this.fastForwardAlgorithm = function() {
+        $("#tf1_button_vorspulen").hide();
+        $("#tf1_button_stoppVorspulen").show();
+        $("#tf1_button_1Schritt").button("option", "disabled", true);
+        var geschwindigkeit = 200;	// Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
+
+        fastForwardIntervalID = window.setInterval(function(){ algo.nextStepChoice(); }, geschwindigkeit);
+    };
+    
+    /**
+     * Stoppt das automatische Abspielen des Algorithmus
+     * @method
+     */
+    this.stopFastForward = function() {
+        $("#tf1_button_vorspulen").show();
+        $("#tf1_button_stoppVorspulen").hide();
+        $("#tf1_button_1Schritt").button("option", "disabled", false);
+        window.clearInterval(fastForwardIntervalID);
+        fastForwardIntervalID = null;
+    };
+
+
+    this.nextStepChoice = function() {
+
+        if(statusID == null) {
+            statusID = 0;
+            previousStatusId = 0;
+        }
+        if(debugConsole) if(debugConsole) console.log("Current State: " + statusID);
+
+        previousStatusId = statusID;
+        //currentQuestionType = this.askQuestion();
+
+        switch (statusID) {
+            case INITIAL_LABELS:
+                this.initialLabels();
+                break;
+            case EQUALITY_GRAPH:
+                this.equalityGraph();
+                break;
+            case FIND_ROOT:
+                this.findRoot();
+                break;
+            case CONSTRUCT_ALTERNATING_PATH:
+                this.constructAlternatingPath();
+                break;
+            case NO_AUGMENT_PATH_FOUND:
+                this.noAugmentPathFound();
+                break;
+            case IMPROVE_LABELS:
+                this.improveLabels();
+                break;
+            case NEW_EQUALITY_GRAPH:
+                this.newEqualityGraph();
+                break;
+            case AUGMENT_PATH_FOUND:
+                this.augmentPathFound();
+                break;
+            case IMPROVE_MATCHING:
+                this.improveMatching();
+                break;
+            case PERFECT_MATCHING_CHECK:
+                this.perfectMatchingCheck();
+                break;
+            case SHOW_RESULT:
+                this.showResult();
+                this.showQuestionResults();
+                break;
+            default:
+                if(debugConsole) console.log("Wrong statusID");
+                break;
+        }
+
+        if(currentQuestionType !== false) {
+
+        	/* 
+        	Frage Typen:
+
+			- Nächster Schritt
+			- Delta berechnen
+			- Neue Markierungen berechnen (für bspw 4 Knoten)
+			- Gleichgewichtsgraph bestimmen, bzw Kanten markieren die im Gleichgewichtsgraph vorkommen (für bspw 4 Kanten)
+
+        	*/
+
+            switch(currentQuestionType) {
+				case 1:
+					this.generateNextStepQuestion();
+					break;
+				case 2:
+					this.generateDeltaQuestion();
+					break;
+				case 3:
+					this.generateNewLabelQuestion();
+					break;
+				case 4:
+					this.generateEqualityGraphQuestion();
+					break;
+			}
+
+            this.showQuestionModal();
+            this.stopFastForward();
+            $("#tf1_button_1Schritt").button("option", "disabled", true);
+            $("#tf1_button_vorspulen").button("option", "disabled", true); 
+        }
+
+        this.needRedraw = true;
+
+    };
+
+    /*
+     * Steps
+     */
+    this.initialLabels = function() {
+
+        $("#tf1_div_statusErklaerung").html("<h3>Initiale Markierungen</h3>"
+            + "<p>Der Algorithmus bestimmt zuerst eine initiale Markierung für jeden Knoten.</p>");
+        this.markPseudoCodeLine([2]);
+
+        this.setAll(xy, -1);
+        this.setAll(yx, -1);
+        this.setAll(lx, 0);
+        this.setAll(ly, 0);
+
+        for (var x = 0; x < n; x++) {
+            for (var y = 0; y < n; y++) {
+                if(cost[x][y] > lx[x]){
+                    lx[x] = cost[x][y];
+                }
+            }
+        }
+
+        this.showLabels();
+
+        // -> 2 EQUALITY_GRAPH
+        statusID = EQUALITY_GRAPH;
+        
+    };
+
+    this.equalityGraph = function() {
+
+        $("#tf1_div_statusErklaerung").html("<h3>Gleichheitsgraph</h3>"
+            + "<p>Mittels der Markierungen kann der Gleichheitsgraph (<strong>schwarz</strong>) bestimmt werden.</p>");
+        this.markPseudoCodeLine([2]);
+
+        this.showEqualityGraph();
+
+        // -> 3 FIND_ROOT
+        statusID = FIND_ROOT;
+    };
+
+    this.findRoot = function() {
+
+        $("#tf1_div_statusErklaerung").html("<h3>Augmentationsweg bestimmen</h3>" +
+            "<h3>Wurzel eines alternierenden Pfades finden</h3>" + 
+            "<p>Der Algorithmus wählt als Wurzel einen Knoten, der noch nicht im Matching vorhanden ist und markiert ihn <span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>.</p>");
+        this.markPseudoCodeLine([4]);
+
+        x, y, root = -1;
+        q = new Array(n);
+        wr = 0;
+        rd = 0;
+        labeling = false;
+        this.setAll(S, false);
+        this.setAll(T, false);
+        this.setAll(prev, -1);
+
+        for (x = 0; x < n; x++) {
+            if (xy[x] == -1) {
+                q[wr++] = root = x;
+                prev[x] = -2;
+                S[x] = true;
+                break;
+            }
+        }
+
+        for (y = 0; y < n; y++) {
+            slack[y] = lx[root] + ly[y] - cost[root][y];
+            slackx[y] = root;
+        }
+        y = 0;
+
+        showTreeRoot(S);
+
+        // -> 4 CONSTRUCT_ALTERNATING_PATH
+        statusID = CONSTRUCT_ALTERNATING_PATH;
+
+    };
+
+    this.constructAlternatingPath = function() {
+
+        $("#tf1_div_statusErklaerung").html(
+            "<h3>Augmentationsweg bestimmen</h3>" +
+            "<p>Der Algorithmus versucht nun schrittweise einen alternierenden Pfad zu konstruieren.</p>" +
+            "<p>Die Konstruktion stoppt, wenn der alternierende Pfad augmentierend wird oder es keine weiteren passenden Kanten mehr gibt.</p>");
+        this.markPseudoCodeLine([6, 7]);
+
+        if(rd < wr) {
+
+            if(!labeling) {
+
+                x = q[rd++];
+                if (cost[x][y] == lx[x] + ly[y] && !T[y]) {
+                    if (yx[y] == -1) {
+                        // -> 8 AUGMENT_PATH_FOUND
+                        statusID = AUGMENT_PATH_FOUND;
+                        this.displayST();
+                        return;
+                    }
+
+                    T[y] = true;
+                    q[wr++] = yx[y];
+                    this.add_to_tree(yx[y], x);
+
+                }
+
+            }else{
+
+                if (!T[y] && slack[y] == 0) {
+                    if (yx[y] == -1) {
+                        x = slackx[y];
+                        // -> 8 AUGMENT_PATH_FOUND
+                        statusID = AUGMENT_PATH_FOUND;
+                        this.displayST();
+                        return;
+                    }
+
+                    T[y] = true;
+                    if (!S[yx[y]]) {
+                        q[wr++] = yx[y];
+                        this.add_to_tree(yx[y], slackx[y]);
+                    }
+                }
+
+            }
+
+            this.displayST();
+            y++;
+
+            // -> 4 CONSTRUCT_ALTERNATING_PATH
+            statusID = CONSTRUCT_ALTERNATING_PATH;
+
+        }else{
+            // -> 5 NO_AUGMENT_PATH_FOUND
+            statusID = NO_AUGMENT_PATH_FOUND;
+        }        
+        
+    };
+
+    this.noAugmentPathFound = function() {
+
+        $("#tf1_div_statusErklaerung").html(
+            "<h3>Augmentationsweg bestimmen</h3>" +
+            "<p>Der Algorithmus konnte keinen Augmentationsweg mit der gewählten Wurzel (<span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>) im aktuellen Gleichheitsgraph finden.</p>"
+        );
+        this.markPseudoCodeLine([8]);
+
+        // -> 6 IMPROVE_LABELS
+        statusID = IMPROVE_LABELS;
+
+    };
+
+    this.improveLabels = function() {
+
+        var delta = -1;
+        for (var y = 0; y < n; y++) {
+            if (!T[y] && (delta == -1 || slack[y] < delta)) {
+                delta = slack[y];
+            }
+        }
+        for (var x = 0; x < n; x++) {
+            if (S[x]) lx[x] -= delta;
+        }
+        for (var y = 0; y < n; y++) {
+            if (T[y]) ly[y] += delta;
+        }
+        for (var y = 0; y < n; y++) {
+            if (!T[y])
+                slack[y] -= delta;
+        }
+        
+        showLabels(lx, ly);
+
+        $("#tf1_div_statusErklaerung").html(
+            "<h3>Markierungen verbessern</h3>" +
+            "<p>Zur Bestimmung eines neuen Gleichheitsgraph muss der Algorithmus zunächst die Markierungen verbessern.</p>" + 
+            "<p>Dazu wird ein \\(\\Delta\\) wie folgt bestimmt:</p>"+
+            "<p>\\(\\Delta = \\min\\limits_{s \\in S\\ \\wedge\\ y \\in Y \\setminus T}\\{l(s) + l(y) - w(s,y)\\} = "+delta+"\\)</p>" +
+            "<p>Die Markierungen werden dann nach folgender Formel aktualisiert:</p>" + 
+            "<p>\\(\\begin{equation}l^\\prime(v) =\\begin{cases}l(v) - "+delta+" & v \\in S\\\\l(v) + "+delta+" & v \\in T\\\\l(v) & sonst\\end{cases}\\end{equation}\\)</p>"
+        );
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub,"tf1_div_statusErklaerung"]);
+        this.markPseudoCodeLine([9]);
+
+        labeling = true;
+
+        // -> 7 NEW_EQUALITY_GRAPH
+        statusID = NEW_EQUALITY_GRAPH;
+
+    };
+
+    this.newEqualityGraph = function() {
+
+        $("#tf1_div_statusErklaerung").html("<h3>Gleichheitsgraph</h3>"
+            + "<p>Mittels der verbesserten Markierungen kann der Gleichheitsgraph (<strong>schwarz</strong>) erweitert werden.</p>");
+        this.markPseudoCodeLine([9]);
+
+        this.showEqualityGraph();
+
+        wr = 0;
+        rd = 0;
+        y = 0;
+
+        // -> 4 CONSTRUCT_ALTERNATING_PATH
+        statusID = CONSTRUCT_ALTERNATING_PATH;
+    };
+
+    this.augmentPathFound = function() {
+
+        $("#tf1_div_statusErklaerung").html(
+            "<h3>Augmentationsweg bestimmen</h3>" +
+            "<p>Es wurde ein Augmentationsweg (<span style='font-weight: bold; color: red;'>rot</span>) gefunden.</p>"
+        );
+        this.markPseudoCodeLine([10]);
+
+        this.showAugmentingPath();
+
+        // -> 9 IMPROVE_MATCHING
+        statusID = IMPROVE_MATCHING;
+    };
+
+    this.improveMatching = function() {
+
+        $("#tf1_div_statusErklaerung").html(
+            "<h3>Matching vergrößern</h3>" +
+            "<p>Mittels des gefundenen Augmentationsweges konnte das Matching (<span style='font-weight: bold; color: green;'>grün</span>) ergänzt werden.</p>"
+        );
+        this.markPseudoCodeLine([11]);
+
+        resetNodeLayout();
+        this.showEqualityGraph();
+        maxMatch++;
+        for (var cx = x, cy = y, ty; cx != -2; cx = prev[cx], cy = ty) {
+            ty = xy[cx];
+            yx[cy] = cx;
+            xy[cx] = cy;
+        }
+        showCurrentMatching(xy, true);
+
+        // -> 10 PERFECT_MATCHING_CHECK
+        statusID = PERFECT_MATCHING_CHECK;
+    };
+
+    this.perfectMatchingCheck = function() {
+
+        if (maxMatch == cost.length) {
+
+            $("#tf1_div_statusErklaerung").html(
+                "<h3>Auf perfektes Matching prüfen</h3>" +
+                "<p>Der Algorithmus prüft nun das erweiterte Matching. Es ist vollständig und damit perfekt.</p>");
+
+            // -> 11 SHOW_RESULT
+            statusID = SHOW_RESULT;
+        }else{
+
+            $("#tf1_div_statusErklaerung").html(
+                "<h3>Auf perfektes Matching prüfen</h3>" +
+                "<p>Der Algorithmus prüft nun das erweiterte Matching. Es ist noch nicht vollständig.</p>");
+
+            // -> 3 FIND_ROOT
+            statusID = FIND_ROOT;
+        }
+        
+        
+    };
+
+    this.showResult = function() {
+
+        $("#tf1_button_1Schritt").button("option", "disabled", true);
+        showCurrentMatching(xy, false);
+        this.markPseudoCodeLine([13]);
+
+        if (fastForwardIntervalID != null) {
+            this.stopFastForward();
+        }
+
+        end = true;
+        var ret = 0;
+        for (var x = 0; x < n; x++) {
+            ret += cost[x][xy[x]];
+        }
+
+        $("#tf1_div_statusErklaerung").html(
+            "<h3>Optimales Matching</h3>" +
+            "<p>Die Ungarische Methode hat erfolgreich ein maximales Matching bestimmt.</p>" +
+            "<p>Das Gesamtgewicht beträgt <strong>"+ret+"</strong>.</p>" +
+            "<h3>Was nun?</h3>" +
+            "<button id='ta_button_gotoIdee' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>Beschreibung des Algorithmus lesen</span></button>" +
+            "<h3>Weitere Forschungsaufgabe ausprobieren:</h3>" +
+            "<button id='ta_button_gotoFA2' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>FA2</span></button>"
+        );
+
+        $("#tf1_button_gotoIdee").click(function() {
+            $("#tabs").tabs("option", "active", 3);
+        });
+        $("#tf1_button_gotoFA2").click(function() {
+            $("#tabs").tabs("option", "active", 5);
+        });
+
+    };
+
+
+    /*
+     * Helper functions
+     */
+
+     this.completeGraph = function() {
 
         var uNodes = 0;
         var vNodes = 0;
@@ -232,211 +740,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
     };
 
-    this.run = function() {
-    	this.completeGraph();
-        this.initCanvasDrawer();
-        this.addNamingLabels();
-
-        $("#tf1_div_abspielbuttons").append("<button id=\"tf1_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button><br>"
-                        +"<button id=\"tf1_button_vorspulen\">"+LNG.K('aufgabe1_btn_next_question')+"</button>"
-                        +"<button id=\"tf1_button_stoppVorspulen\">"+LNG.K('algorithm_btn_paus')+"</button>");
-        $("#tf1_button_stoppVorspulen").hide();
-        $("#tf1_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: false});
-        $("#tf1_button_vorspulen").button({icons:{primary: "ui-icon-seek-next"}, disabled: false});
-        $("#tf1_button_stoppVorspulen").button({icons:{primary: "ui-icon-pause"}});
-        $("#tf1_div_statusTabs").tabs();
-        this.markPseudoCodeLine([1]);
-        $("#tf1_tr_LegendeClickable").removeClass("greyedOutBackground");
-
-        this.registerEventHandlers();
-        this.needRedraw = true;
-        this.minimizeLegend();
-
-    };
-    
-    /**
-     * Beendet die Ausführung des Algorithmus.
-     * @method
-     */
-    this.destroy = function() {
-        this.stopFastForward();
-        this.destroyCanvasDrawer();
-        this.deregisterEventHandlers();
-        var orgGraph = $("body").data("graphOrg");
-        var orgGraph = new BipartiteGraph("text", canvas, orgGraph);
-        $("body").data("graph", orgGraph);
-        this.drawCanvas();
-    };
-    
-    /**
-     * Beendet den Tab und startet ihn neu
-     * @method
-     */
-    this.refresh = function() {
-        this.destroy();
-        var algo = new Forschungsaufgabe1($("body").data("graph"), $("#tf1_canvas_graph"), $("#tab_tf1"));
-        $("#tab_tf1").data("algo", algo);
-        algo.run();
-    };
-    
-    /**
-     * Zeigt and, in welchem Zustand sich der Algorithmus im Moment befindet.
-     * @returns {Number} StatusID des Algorithmus
-     */
-    this.getStatusID = function() {
-        return statusID;
-    };
-    
-    /**
-     * Registriere die Eventhandler an Buttons und canvas<br>
-     * Nutzt den Event Namespace ".Forschungsaufgabe1"
-     * @method
-     */
-    this.registerEventHandlers = function() {
-        $("#tf1_button_1Schritt").on("click.Forschungsaufgabe1",function() {algo.singleStepHandler();});
-        $("#tf1_button_vorspulen").on("click.Forschungsaufgabe1",function() {algo.fastForwardAlgorithm();});
-        $("#tf1_button_stoppVorspulen").on("click.Forschungsaufgabe1",function() {algo.stopFastForward();});
-    };
-    
-    /**
-     * Entferne die Eventhandler von Buttons und canvas im Namespace ".Forschungsaufgabe1"
-     * @method
-     */
-    this.deregisterEventHandlers = function() {
-        canvas.off(".Forschungsaufgabe1");
-        $("#tf1_button_1Schritt").off(".Forschungsaufgabe1");
-        $("#tf1_button_vorspulen").off(".Forschungsaufgabe1");
-        $("#tf1_button_stoppVorspulen").off(".Forschungsaufgabe1");
-        $("#tf1_tr_LegendeClickable").off(".Forschungsaufgabe1");
-    };
-
-    this.singleStepHandler = function() {
-        this.nextStepChoice();
-    };
-
-    /**
-     * "Spult vor", führt den Algorithmus mit hoher Geschwindigkeit aus.
-     * @method
-     */
-    this.fastForwardAlgorithm = function() {
-        $("#tf1_button_vorspulen").hide();
-        $("#tf1_button_stoppVorspulen").show();
-        $("#tf1_button_1Schritt").button("option", "disabled", true);
-        var geschwindigkeit = 200;	// Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
-
-        fastForwardIntervalID = window.setInterval(function(){ algo.nextStepChoice(); }, geschwindigkeit);
-    };
-    
-    /**
-     * Stoppt das automatische Abspielen des Algorithmus
-     * @method
-     */
-    this.stopFastForward = function() {
-        $("#tf1_button_vorspulen").show();
-        $("#tf1_button_stoppVorspulen").hide();
-        $("#tf1_button_1Schritt").button("option", "disabled", false);
-        window.clearInterval(fastForwardIntervalID);
-        fastForwardIntervalID = null;
-    };
-    
-    /**
-    * In dieser Funktion wird der nächste Schritt des Algorithmus ausgewählt.
-    * Welcher das ist, wird über die Variable "statusID" bestimmt.<br>
-    * Mögliche Werte sind:<br>
-    *  0: Initialisierung<br>
-    *  1: Prüfung ob Gewichte aktualisiert werden sollen, und initialierung<br>
-    *  2: Prüfe, ob anhand der aktuellen Kante ein Update vorgenommen wird (Animation)<br>
-    *  3: Update, falls nötig, den Knoten<br>
-    *  4: Untersuche, ob es eine Kante gibt, die auf einen negativen Kreis hinweist.<br>
-    *  5: Finde den negativen Kreis im Graph und beende<br>
-    *  6: Normales Ende, falls kein negativer Kreis gefunden wurde.
-    *  @method
-    */
-    this.nextStepChoice = function() {
-
-        if(statusID == null) {
-            statusID = 0;
-            previousStatusId = 0;
-        }
-        if(debugConsole) if(debugConsole) console.log("Current State: " + statusID);
-
-        previousStatusId = statusID;
-        //currentQuestionType = this.askQuestion();
-
-        switch (statusID) {
-            case BEGIN:
-                this.initLabels();
-                break;
-            case READY_FOR_SEARCHING:
-                this.iterateX();
-                break;
-            case READY_TO_BUILD_TREE:
-                this.buildAlternatingTree();
-                break;
-            case AUGMENTING_PATH_NOT_FOUND:
-                this.update_labels();
-                break;
-            case LABELS_UPDATED:
-                this.findAugmentPathAfterLabeling();
-                break;
-            case MATCHING_INCREASED:
-                this.augment();
-                break;
-            case READY_TO_BUILD_TREE_AFTER_RELABELING:
-                this.buildTreeAfterRelabeling();
-                break;
-            case READY_TO_START:
-                this.augment();
-                break;
-            case AUGMENTING_PATH_FOUND:
-                this.increaseMatching();
-                break;
-            case FINISHED:
-                this.end();
-                this.showQuestionResults();
-                break;
-            default:
-                if(debugConsole) console.log("Fehlerhafte StatusID.");
-                break;
-        }
-
-        if(currentQuestionType !== false) {
-
-        	/* 
-        	Frage Typen:
-
-			- Nächster Schritt
-			- Delta berechnen
-			- Neue Markierungen berechnen (für bspw 4 Knoten)
-			- Gleichgewichtsgraph bestimmen, bzw Kanten markieren die im Gleichgewichtsgraph vorkommen (für bspw 4 Kanten)
-
-        	*/
-
-            switch(currentQuestionType) {
-				case 1:
-					this.generateNextStepQuestion();
-					break;
-				case 2:
-					this.generateDeltaQuestion();
-					break;
-				case 3:
-					this.generateNewLabelQuestion();
-					break;
-				case 4:
-					this.generateEqualityGraphQuestion();
-					break;
-			}
-
-            this.showQuestionModal();
-            this.stopFastForward();
-            $("#tf1_button_1Schritt").button("option", "disabled", true);
-            $("#tf1_button_vorspulen").button("option", "disabled", true); 
-        }
-
-        this.needRedraw = true;
-
-    };
-
     this.addNamingLabels = function() {
 
         var nodeCounter = 1;
@@ -448,7 +751,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     };
 
-    this.displayST = function(S, T){
+    this.displayST = function(){
 
         var sField = [];
         var tField = [];
@@ -469,219 +772,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             }
         });
 
-        $("#tf1_div_statusErklaerung").html(
-            "<h3>Augmentationsweg bestimmen</h3>" +
-            "<p>Der Algorithmus versucht nun schrittweise einen alternierenden Pfad zu konstruieren.</p>" +
-            "<p>Die Konstruktion stoppt, wenn der alternierende Pfad augmentierend wird oder es keine weiteren passenden Kanten mehr gibt.</p>");
-
         $("#tf1_td_setS").html(sField.join(",") || "&#8709;");
         $("#tf1_td_setT").html(tField.join(",") || "&#8709;");
     }
-
-    this.initLabels = function(){
-        this.setAll(S, false);
-        this.setAll(T, false);
-        this.setAll(xy, -1);
-        this.setAll(yx, -1);
-        this.setAll(lx, 0);
-        this.setAll(ly, 0);
-        for (var x = 0; x < n; x++) {
-            for (var y = 0; y < n; y++) {
-                if(this.cost[x][y] > lx[x]){
-                    lx[x] = cost[x][y];
-                }
-            }
-        }
-        showLabels(lx, ly);
-        statusID = READY_TO_START;
-        if(debugConsole) console.log("READY_TO_START");
-        $("#tf1_div_statusErklaerung").html("<h3>Gleichheitsgraph bestimmen</h3>"
-            + "<p>Der Algorithmus bestimmt zuerst eine initiale Markierung für jeden Knoten.</p>"
-            + "<p>Anhand der Markierungen wird der Gleichheitsgraph ermittelt (<strong>schwarz</strong>).</p>");
-        this.markPseudoCodeLine([4]);
-    };
-
-    this.augment = function() {
-        if (maxMatch == cost.length) {
-            statusID = FINISHED;
-            this.nextStepChoice();
-            return;
-        }
-
-        showEqualityGraph(lx, ly);
-        x, y, root = -1;
-        q = new Array(n);
-        wr = 0, rd = 0;
-        this.setAll(S, false);
-        this.setAll(T, false);
-        this.setAll(prev, -1);
-        for (x = 0; x < n; x++) {
-            if (xy[x] == -1) {
-                q[wr++] = root = x;
-                prev[x] = -2;
-                S[x] = true;
-                break;
-            }
-        }
-
-        for (y = 0; y < n; y++) {
-            slack[y] = lx[root] + ly[y] - cost[root][y];
-            slackx[y] = root;
-        }
-        showTreeRoot(S);
-        statusID = READY_FOR_SEARCHING;
-        if(debugConsole) console.log("READY_FOR_SEARCHING");
-        $("#tf1_div_statusErklaerung").html("<h3>Augmentationsweg bestimmen</h3>" +
-            "<h3>Wurzel eines alternierenden Pfades finden</h3>" + 
-            "<p>Der Algorithmus wählt als Wurzel einen Knoten, der noch nicht im Matching vorhanden ist und markiert ihn <span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>.</p>");
-		this.markPseudoCodeLine([6, 7]);
-    };
-
-    this.iterateX = function(){
-        if(rd < wr){
-            x = q[rd++];
-            y = 0;
-            if(debugConsole) console.log("iterateX: READY_TO_BUILD_TREE");
-
-            if(previousStatusId !== READY_TO_BUILD_TREE && previousStatusId !== READY_TO_BUILD_TREE_AFTER_RELABELING) {
-                this.displayST(S, T);
-            }
-
-            statusID = READY_TO_BUILD_TREE;
-            this.markPseudoCodeLine([6, 7]);
-
-            this.nextStepChoice();
-            return;
-        }
-      
-        $("#tf1_div_statusErklaerung").html(
-            "<h3>Augmentationsweg bestimmen</h3>" +
-            "<p>Der Algorithmus konnte keinen Augmentationsweg mit der gewählten Wurzel (<span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>) im aktuellen Gleichheitsgraph finden.</p>"
-        );
-
-        if(debugConsole) console.log("AUGMENTING_PATH_NOT_FOUND");
-        statusID = AUGMENTING_PATH_NOT_FOUND;
-        this.markPseudoCodeLine([8, 9]);
-    };
-
-    this.findAugmentPathAfterLabeling = function() {
-        wr = rd = 0;
-        y = 0;
-
-        this.displayST(S, T);
-
-        if(debugConsole) console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
-        statusID = READY_TO_BUILD_TREE_AFTER_RELABELING;
-
-        this.markPseudoCodeLine([6, 7]);
-    };
-
-    this.buildAlternatingTree = function() {
-        if(y < n) {
-            if (cost[x][y] == lx[x] + ly[y] && !T[y]) {
-                if (yx[y] == -1) {
-                    showAugmentingPath(x, y, prev, xy, yx);
-                    if(debugConsole) console.log("AUGMENTING_PATH_FOUND");
-                    $("#tf1_div_statusErklaerung").html(
-                        "<h3>Augmentationsweg bestimmen</h3>" +
-                        "<p>Es wurde ein Augmentationsweg (<span style='font-weight: bold; color: red;'>rot</span>) gefunden.</p>"
-                    );
-                    statusID = AUGMENTING_PATH_FOUND;
-                    this.markPseudoCodeLine([11]);
-                    return;
-                }
-
-                T[y] = true;
-                q[wr++] = yx[y];
-                this.add_to_tree(yx[y], x);
-                this.displayST(S, T);
-
-            }else{
-                var skip = true;
-            }
-
-            y++;
-            if(debugConsole) console.log("buildAlternatingTree: READY_TO_BUILD_TREE");
-            statusID = READY_TO_BUILD_TREE;
-            this.markPseudoCodeLine([6, 7]);
-            if (skip) this.nextStepChoice();
-            return;
-        }
-        
-        if(debugConsole) console.log("READY_FOR_SEARCHING");
-        statusID = READY_FOR_SEARCHING;
-        this.markPseudoCodeLine([6, 7]);
-        this.nextStepChoice();
-    };
-
-    this.buildTreeAfterRelabeling = function(){
-        if(y < n) {
-            if (!T[y] && slack[y] == 0) {
-                if (yx[y] == -1) {
-                    x = slackx[y];
-                    showAugmentingPath(x, y, prev, xy, yx);
-                    statusID = AUGMENTING_PATH_FOUND;
-                    if(debugConsole) console.log("AUGMENTING_PATH_FOUND");
-                    $("#tf1_div_statusErklaerung").html(
-                        "<h3>Augmentationsweg bestimmen</h3>" +
-                        "<p>Es wurde ein Augmentationsweg (<span style='font-weight: bold; color: red;'>rot</span>) gefunden.</p>"
-                    );
-                    this.markPseudoCodeLine([11]);
-                    return;
-                }
-
-                T[y] = true;
-                if (!S[yx[y]]) {
-                    q[wr++] = yx[y];
-                    this.add_to_tree(yx[y], slackx[y]);
-                }
-                this.displayST(S, T);
-                
-            }else{
-                var skip = true;
-            }
-            y++;
-            if(debugConsole) console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
-            statusID = READY_TO_BUILD_TREE_AFTER_RELABELING;
-            this.markPseudoCodeLine([6, 7]);
-            if (skip) this.nextStepChoice();
-            return;
-        }
-
-        statusID = READY_FOR_SEARCHING;
-        if(debugConsole) console.log("READY_FOR_SEARCHING");
-        this.markPseudoCodeLine([6, 7]);
-        this.nextStepChoice();
-    };
-
-    this.increaseMatching = function(){
-        resetNodeLayout();
-        showEqualityGraph(lx, ly);
-        maxMatch++;
-        for (var cx = x, cy = y, ty; cx != -2; cx = prev[cx], cy = ty) {
-            ty = xy[cx];
-            yx[cy] = cx;
-            xy[cx] = cy;
-        }
-        showCurrentMatching(xy, true);
-
-        statusID = MATCHING_INCREASED;
-        if(debugConsole) console.log("MATCHING_INCREASED");
-
-        $("#tf1_div_statusErklaerung").html(
-            "<h3>Matching vergrößern</h3>" +
-            "<p>Mittels des gefundenen Augmentationsweges konnte das Matching (<span style='font-weight: bold; color: green;'>grün</span>) ergänzt werden.</p>"
-        );
-
-        if(maxMatch == cost.length){
-            this.markPseudoCodeLine([12]);
-        }else {
-            this.markPseudoCodeLine([4]);
-        }
-
-        $("#tf1_td_setS").html("&#8709;");
-        $("#tf1_td_setT").html("&#8709;");
-    };
 
     this.add_to_tree = function (x, prevx){
         S[x] = true;
@@ -694,39 +787,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
     };
 
-    this.update_labels = function() {
-        var x, y, delta = -1;
-        for (y = 0; y < n; y++) {
-            if (!T[y] && (delta == -1 || slack[y] < delta)) {
-                delta = slack[y];
-            }
-        }
-        for (x = 0; x < n; x++) {
-            if (S[x]) lx[x] -= delta;
-        }
-        for (y = 0; y < n; y++) {
-            if (T[y]) ly[y] += delta;
-        }
-        for (y = 0; y < n; y++) {
-            if (!T[y])
-                slack[y] -= delta;
-        }
-        statusID = LABELS_UPDATED;
-        showLabels(lx, ly);
-        if(debugConsole) console.log("LABELS_UPDATED");
-        $("#tf1_div_statusErklaerung").html(
-            "<h3>Neuen Gleichheitsgraph bestimmen</h3>" +
-            "<p>Zur Bestimmung eines neuen Gleichheitsgraph muss der Algorithmus zunächst die Markierungen aktualisieren.</p>" + 
-            "<p>Dazu wird ein \\(\\Delta\\) wie folgt bestimmt:</p>"+
-            "<p>\\(\\Delta = \\min\\limits_{s \\in S\\ \\wedge\\ y \\in Y \\setminus T}\\{l(s) + l(y) - w(s,y)\\} = "+delta+"\\)</p>" +
-            "<p>Die Markierungen werden dann nach folgender Formel aktualisiert:</p>" + 
-            "<p>\\(\\begin{equation}l^\\prime(v) =\\begin{cases}l(v) - "+delta+" & v \\in S\\\\l(v) + "+delta+" & v \\in T\\\\l(v) & sonst\\end{cases}\\end{equation}\\)</p>" + 
-            "<p>Der neue Gleichheitsgraph wurde vom Algorithmus markiert (<strong style='font-weight: bold; color: green;'>grün</strong> und <strong>schwarz</strong>).</p>"
-        );
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub,"ta_div_statusErklaerung"]);
-        this.markPseudoCodeLine([6, 7]);
-    };
-
     this.setAll = function (arr, val) {
         var i, n = arr.length;
         for (i = 0; i < n; ++i) {
@@ -734,40 +794,58 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
     };
 
-    this.end = function() {
-
-        if(debugConsole) console.log("FINISHED");
-        $("#tf1_button_1Schritt").button("option", "disabled", true);
-        showCurrentMatching(xy, false);
-        this.markPseudoCodeLine([13]);
-
-        if (fastForwardIntervalID != null) {
-            this.stopFastForward();
+    this.showLabels = function() {
+        for(var i = 0; i < lx.length; i++){
+            graph.nodes[i].setLabel(lx[i]);
         }
 
-        end = true;
-        var ret = 0;
-        for (var x = 0; x < n; x++) {
-            ret += cost[x][xy[x]];
+        for(var i = 0; i < ly.length; i++){
+            graph.nodes[lx.length + i].setLabel(ly[i]);
         }
+    }
 
-        $("#tf1_div_statusErklaerung").html(
-            "<h3>Optimales Matching</h3>" +
-            "<p>Die Ungarische Methode hat erfolgreich ein maximales Matching bestimmt.</p>" +
-            "<p>Das Gesamtgewicht beträgt <strong>"+ret+"</strong>.</p>" +
-            "<h3>Was nun?</h3>" +
-            "<button id='ta_button_gotoIdee' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>Beschreibung des Algorithmus lesen</span></button>" +
-            "<h3>Weitere Forschungsaufgabe ausprobieren:</h3>" +
-            "<button id='ta_button_gotoFA2' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>FA2</span></button>"
-        );
+    this.showEqualityGraph = function() {
+        for(var edge in graph.edges) {
+            if(lx[graph.edges[edge].getSourceID()] + ly[(graph.edges[edge].getTargetID() - lx.length)] == graph.edges[edge].weight) {
+                if(graph.edges[edge].originalColor != "green") {
+                    graph.edges[edge].originalColor = "black";
+                }
+                graph.edges[edge].setLayout("lineColor", graph.edges[edge].originalColor);
+                graph.edges[edge].setLayout("lineWidth", 3);
+            }else{
+                graph.edges[edge].setLayout("lineColor", const_Colors.grey);
+                graph.edges[edge].setLayout("lineWidth", 1);
+            }
+        }
+    }
 
-        $("#tf1_button_gotoIdee").click(function() {
-            $("#tabs").tabs("option", "active", 3);
-        });
-        $("#tf1_button_gotoFA2").click(function() {
-            $("#tabs").tabs("option", "active", 5);
-        });
-    };
+    this.showAugmentingPath = function() {
+        var xyTemp = xy.slice();
+        var yxTemp = yx.slice();
+        var augmentingPath = new Array();
+        for (var cx = x, cy = y, ty; cx != -2; cx = prev[cx], cy = ty) {
+            ty = xyTemp[cx];
+            yxTemp[cy] = cx;
+            xyTemp[cx] = cy;
+            augmentingPath[augmentingPath.length] = cy;
+            augmentingPath[augmentingPath.length] = cx;
+        }
+        for(var i = 1; i < augmentingPath.length; i++){
+            for(var edge in graph.edges){
+                if(((graph.edges[edge].getSourceID() == augmentingPath[i] && graph.edges[edge].getTargetID()-xy.length == augmentingPath[i-1]) && i%2==1) 
+                    || ((graph.edges[edge].getSourceID() == augmentingPath[i-1] && graph.edges[edge].getTargetID()-xy.length == augmentingPath[i]) && i%2==0)) {
+
+                    graph.edges[edge].setLayout("lineColor", const_Colors.EdgeHighlight1);
+                    graph.edges[edge].setLayout("lineWidth", 3);
+                }
+            }
+        }
+    }
+
+
+    /*
+     * Questions
+     */
 
     this.showQuestionModal = function() {
         $("#tf1_div_statusTabs").hide();
