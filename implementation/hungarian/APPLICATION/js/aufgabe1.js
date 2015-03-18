@@ -96,6 +96,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     var rd = 0;
 
     var labeling = false;
+    var augment = false;
 
     this.run = function() {
 
@@ -366,12 +367,12 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             slack[y] = lx[root] + ly[y] - cost[root][y];
             slackx[y] = root;
         }
-        y = 0;
 
         showTreeRoot(S);
 
         // -> 4 CONSTRUCT_ALTERNATING_PATH
         statusID = CONSTRUCT_ALTERNATING_PATH;
+        augment = true;
 
     };
 
@@ -384,54 +385,59 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         this.markPseudoCodeLine([6, 7]);
 
         if(rd < wr) {
+            if(augment) {
+                x = q[rd++];
+            }
 
             if(!labeling) {
 
-                x = q[rd++];
-                if (cost[x][y] == lx[x] + ly[y] && !T[y]) {
-                    if (yx[y] == -1) {
-                        // -> 8 AUGMENT_PATH_FOUND
-                        statusID = AUGMENT_PATH_FOUND;
-                        this.displayST();
-                        return;
-                    }
+                for(y = 0; y < n; y++) {
 
-                    T[y] = true;
-                    q[wr++] = yx[y];
-                    this.add_to_tree(yx[y], x);
+                    if (cost[x][y] == lx[x] + ly[y] && !T[y]) {
+                        if (yx[y] == -1) {
+                            // -> 8 AUGMENT_PATH_FOUND
+                            statusID = AUGMENT_PATH_FOUND;
+                            this.displayST();
+                            return;
+                        }
+
+                        T[y] = true;
+                        q[wr++] = yx[y];
+                        this.add_to_tree(yx[y], x);
+
+                    }
 
                 }
 
             }else{
+                wr = 0;
+                rd = 0;
+                for(y = 0; y < n; y++) {
 
-                if (!T[y] && slack[y] == 0) {
-                    if (yx[y] == -1) {
-                        x = slackx[y];
-                        // -> 8 AUGMENT_PATH_FOUND
-                        statusID = AUGMENT_PATH_FOUND;
-                        this.displayST();
-                        return;
+                    if (!T[y] && slack[y] == 0) {
+                        if (yx[y] == -1) {
+                            x = slackx[y];
+                            // -> 8 AUGMENT_PATH_FOUND
+                            statusID = AUGMENT_PATH_FOUND;
+                            this.displayST();
+                            return;
+                        }
+
+                        T[y] = true;
+                        if (!S[yx[y]]) {
+                            q[wr++] = yx[y];
+                            this.add_to_tree(yx[y], slackx[y]);
+                        }
                     }
 
-                    T[y] = true;
-                    if (!S[yx[y]]) {
-                        q[wr++] = yx[y];
-                        this.add_to_tree(yx[y], slackx[y]);
-                    }
                 }
 
             }
+    
+        }
 
-            this.displayST();
-            y++;
-
-            // -> 4 CONSTRUCT_ALTERNATING_PATH
-            statusID = CONSTRUCT_ALTERNATING_PATH;
-
-        }else{
-            // -> 5 NO_AUGMENT_PATH_FOUND
-            statusID = NO_AUGMENT_PATH_FOUND;
-        }        
+        // -> 5 NO_AUGMENT_PATH_FOUND
+        statusID = NO_AUGMENT_PATH_FOUND;
         
     };
 
@@ -495,10 +501,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
         this.showEqualityGraph();
 
-        wr = 0;
-        rd = 0;
-        y = 0;
-
+        augment = false;
         // -> 4 CONSTRUCT_ALTERNATING_PATH
         statusID = CONSTRUCT_ALTERNATING_PATH;
     };
