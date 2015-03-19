@@ -68,6 +68,11 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     const PERFECT_MATCHING_CHECK = 10;
     const SHOW_RESULT = 11;
 
+    const NEXT_STEP_QUESTION = 1;
+    const DELTA_QUESTION = 2;
+    const NEW_LABEL_QUESTION = 3;
+    const EQUALITY_GRAPH_QUESTION = 4;
+
     // Array with edge costs
     var cost = [];
     // Number of nodes per partition
@@ -97,6 +102,32 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     var labeling = false;
     var augment = false;
+
+    var statusArray = [ {"key": 0, "answer": "Den Graph vervollständigen."},
+                        {"key": 1, "answer": "Initiale Markierungen bestimmen."},
+                        {"key": 2, "answer": "Den initialen Gleichheitsgraph bestimmen."},
+                        {"key": 3, "answer": "Einen Wurzelknoten für einen alternierenden Pfad bestimmen."},
+                        {"key": 4, "answer": "Einen alternierenden Pfad konstruieren."},
+                        {"key": 5, "answer": "Es kann kein augmentierender Pfad gefunden werden."},
+                        {"key": 6, "answer": "Markierungen verbessern."},
+                        {"key": 7, "answer": "Gleichheitsgraph mittels neuer Markierungen verbessern."},
+                        {"key": 8, "answer": "Es kann ein augmentierender Pfad gefunden werden."},
+                        {"key": 9, "answer": "Matching verbessern."},
+                        {"key": 10, "answer": "Auf ein perfektes Matching prüfen."},
+                        {"key": 11, "answer": "Optimales Matching zeigen."},];
+
+    var statusArrayPast = [ {"key": 0, "answer": "Der Graph wurde vervollständigt."},
+                            {"key": 1, "answer": "Die initialen Markierungen wurden bestimmt."},
+                            {"key": 2, "answer": "Der initiale Gleichheitsgraph wurde bestimmt"},
+                            {"key": 3, "answer": "Eine Wurzel für einen alternierenden Pfad wurde bestimmt."},
+                            {"key": 4, "answer": "Es wurde versucht einen alternierenden Pfad zu konstruieren."},
+                            {"key": 5, "answer": "Es konnte kein augmentierender Pfad gefunden werden."},
+                            {"key": 6, "answer": "Die Markierungen wurden verbessert."},
+                            {"key": 7, "answer": "Der Gleichheitsgraph wurde mittels neuer Markierungen verbessert."},
+                            {"key": 8, "answer": "Es wurde ein augmentierender Pfad gefunden."},
+                            {"key": 9, "answer": "Das Matching wurde verbessert."},
+                            {"key": 10, "answer": "Das Algorithmus hat das aktuelle Matching auf Vollständigkeit (perfekt) geprüft."},
+                            {"key": 11, "answer": "Das optimale Matching wurde gezeigt."}];
 
     this.run = function() {
 
@@ -218,7 +249,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         if(debugConsole) if(debugConsole) console.log("Current State: " + statusID);
 
         previousStatusId = statusID;
-        //currentQuestionType = this.askQuestion();
+        currentQuestionType = this.askQuestion();
 
         switch (statusID) {
             case INITIAL_LABELS:
@@ -273,16 +304,16 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         	*/
 
             switch(currentQuestionType) {
-				case 1:
+				case NEXT_STEP_QUESTION:
 					this.generateNextStepQuestion();
 					break;
-				case 2:
+				case DELTA_QUESTION:
 					this.generateDeltaQuestion();
 					break;
-				case 3:
+				case NEW_LABEL_QUESTION:
 					this.generateNewLabelQuestion();
 					break;
-				case 4:
+				case EQUALITY_GRAPH_QUESTION:
 					this.generateEqualityGraphQuestion();
 					break;
 			}
@@ -866,43 +897,75 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
 
     this.generateNextStepQuestion = function() {
+        // Question Type 1
 
-    	/* var form = "";
+        var answers = [];
+
+        var statusArrayCopy = statusArray.slice();
+        for (var i = 0; i < statusArrayCopy.length; i++) {
+            if(statusArrayCopy[i].key == statusID) {
+                // add correct answer and remove from possible answers
+                answers.push(statusArrayCopy[i]);
+                statusArrayCopy.splice(i, 1);
+            }
+        };
+
+        var previousStep = "";
+        for (var i = 0; i < statusArrayPast.length; i++) {
+            if(statusArrayPast[i].key == previousStatusId) {
+                // remove current step from possible answers
+                previousStep = statusArrayPast[i].answer;
+                statusArrayCopy.splice(i, 1);
+            }
+        };
+
+        statusArrayCopy = Utilities.shuffleArray(statusArrayCopy);
+        statusArrayCopy = statusArrayCopy.slice(1, 4);
+        answers = answers.concat(statusArrayCopy);
+
+        console.log(answers);
+        answers = Utilities.shuffleArray(answers);
+        console.log(answers);
+        questions[currentQuestion] = {type: currentQuestionType, rightAnswer: statusID};
+
+    	var form = "";
         for(var i = 0; i < answers.length; i++) {
             form += '<input type="radio" id="tf1_input_question'+currentQuestion+'_'+i+'" name="question'+currentQuestion+'" value="'+answers[i].key+'" />\
             <label for="tf1_input_question'+currentQuestion+'_'+i+'">'+answers[i].answer+'</label><br />';
         }
-        form = '<form id="question'+currentQuestion+'_form">'+form+'</form>'; */
+        form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
 
         $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
-            <p><em>Im aktuellen Schritt: '+previousStatusId+'</em></p>\
-            <p>...</p>\
-            <p>...</p>\
+            <p><em>Im aktuellen Schritt: '+previousStep+'</em></p>\
+            <p>Welchen Schritt macht der Algorithmus als nächstes?</p>\
+            <p>'+form+'</p>\
             <p><button id="tf1_button_questionClose">Antworten</button></p>\
             <p id="tf1_questionSolution">Korrekte Antwort:<br /><span class="answer"></span><br /><br />\
             <button id="tf1_button_questionClose2">Weiter</button>\
             </p>');
 
-		console.log("Aktueller Status: " + statusID, "Vorheriger Status: " + previousStatusId);
+		//console.log("Aktueller Status: " + statusID, "Vorheriger Status: " + previousStatusId);
 
         $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
         $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
-        this.activateAnswerButton();
-        //$("#question"+currentQuestion+"_form").find("input[type='radio']").one("change", function() { algo.activateAnswerButton(); });
+        $("#question"+currentQuestion+"_form").find("input[type='radio']").one("change", function() { algo.activateAnswerButton(); });
 
 
     };
 
     this.generateDeltaQuestion = function() {
+        // Question Type 2
 
 
     };
 
     this.generateNewLabelQuestion = function() {
+        // Question Type 3
 
     };
 
     this.generateEqualityGraphQuestion = function() {
+        // Question Type 4
 
 
     };
@@ -912,12 +975,16 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
         // TODO
 
+        if(currentQuestionType === NEXT_STEP_QUESTION) {
+            givenAnswer = $("#question"+currentQuestion+"_form").find("input[type='radio']:checked").val();
+        }
+
         /* if(currentQuestionType === 1 || currentQuestionType === 3 || currentQuestionType === 4) {
             givenAnswer = $("#question"+currentQuestion+"_form").find("input[type='radio']:checked").val();
         }else if(currentQuestionType === 2) {
             givenAnswer = $("#question"+currentQuestion+"_form").find("input[type='text']").val();
             givenAnswer = givenAnswer.replace(/(\s|\,)+/g,'');
-        }
+        } */
 
         if(questions[currentQuestion].type === 1) { // Next Step
             for (var i = 0; i < statusArray.length; i++) {
@@ -925,13 +992,15 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
                     $("#tf1_questionSolution").find(".answer").html(statusArray[i].answer);
                 }
             }
+        }
+        /* 
         }else if(questions[currentQuestion].type === 2) { // Subtour
             $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswer.split("").join(","));
         }else if(questions[currentQuestion].type === 3) { // Tour
             $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswer);
         }else if(questions[currentQuestion].type === 4) { // Degree
             $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswer);
-        }
+        } */
 
         questions[currentQuestion].givenAnswer = givenAnswer;
         if(questions[currentQuestion].givenAnswer == questions[currentQuestion].rightAnswer) {
@@ -940,7 +1009,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }else{
             $("#tf1_questionSolution").css("color", "red");
             if(debugConsole) if(debugConsole) console.log("Answer given ", givenAnswer, " was wrong! Right answer was ", questions[currentQuestion].rightAnswer);
-        } */
+        }
 
         currentQuestion++;
 
@@ -989,6 +1058,12 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             return Math.random() * (max - min) + min;
         };
 
+        /*
+        const NEXT_STEP_QUESTION = 1;
+    const DELTA_QUESTION = 2;
+    const NEW_LABEL_QUESTION = 3;
+    const EQUALITY_GRAPH_QUESTION = 4; */
+
         // TODO
 
         /* if(statusID == 1) {
@@ -1011,9 +1086,11 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             }
         } */
 
-        //return false;
-
-        return 1;
+        if(randomVariable(0, 1) > 0.9) {
+            return NEXT_STEP_QUESTION;
+        }
+        
+        return false;
 
     };
 

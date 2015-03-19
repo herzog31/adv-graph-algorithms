@@ -39,6 +39,19 @@ Utilities.objectSize = function(obj) {
     }
     return size;
 };
+
+Utilities.shuffleArray = function(array) {
+    var counter = array.length, temp, index;
+
+    while(counter > 0) {
+        index = Math.floor(Math.random() * counter--);
+        temp = array[counter];
+        array[counter] = array[index];
+        array[index] = temp;
+    }
+
+    return array;
+};
     
 /**
  * Wendet die Cantorsche Paarungsfuntion auf zwei Zahlen an.
