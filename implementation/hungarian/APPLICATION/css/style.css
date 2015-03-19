@@ -306,6 +306,17 @@ table.algoInformationen {
 #tf1_div_questionModal form, #tf2_div_questionModal form {
     margin-left: 1em;
 }
+.question_label_node {
+    display: block;
+    float: left;
+    width: 10px;
+    padding: 0px 10px 5px 10px;
+}
+.question_input_node {
+    text-align: center;
+    width: 50px;
+}
+
 .quizTable {
     width: 80%;
     margin: 0px auto;

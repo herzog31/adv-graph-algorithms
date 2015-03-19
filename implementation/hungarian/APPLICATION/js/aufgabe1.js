@@ -505,7 +505,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
                 slack[y] -= delta;
         }
         
-        if(currentQuestionType !== DELTA_QUESTION) {
+        this.displayST();
+
+        if(currentQuestionType !== DELTA_QUESTION && currentQuestionType !== NEW_LABEL_QUESTION) {
             this.showLabels();
         }
 
@@ -982,7 +984,63 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     };
 
     this.generateNewLabelQuestion = function() {
-        // Question Type 3
+
+        var changedNodes = [];
+        var correctAnswer = [];
+        var currentValue = [];
+
+        for(var i = 0; i < lx.length; i++) {
+            if(parseInt(graph.nodes[i].getLabel()) !== lx[i]) {
+                changedNodes.push(i);
+                correctAnswer.push(lx[i]);
+                currentValue.push(graph.nodes[i].getLabel());
+            }
+        }
+
+        for(var i = 0; i < ly.length; i++) {
+            if(parseInt(graph.nodes[(lx.length + i)].getLabel()) !== ly[i]) {
+                changedNodes.push((lx.length + i));
+                correctAnswer.push(ly[i]);
+                currentValue.push(graph.nodes[(lx.length + i)].getLabel());
+            }
+        }
+
+        var changedNodesOuter = changedNodes.map(function(i) {
+            return graph.nodes[i].getOuterLabel();
+        });
+
+        correctAnswerJoin = correctAnswer.join(",");
+        var correctAnswerForField = [];
+        for(var i = 0; i < changedNodes.length; i++) {
+            correctAnswerForField.push(changedNodesOuter[i]+": "+correctAnswer[i]);
+        }
+        correctAnswerForField = correctAnswerForField.join("<br />");
+
+        questions[currentQuestion] = {type: currentQuestionType, rightAnswer: correctAnswerJoin, rightAnswerField: correctAnswerForField};
+
+        var form = "";
+        for(var i = 0; i < changedNodes.length; i++) {
+            form += '<label for="tf1_input_question'+currentQuestion+'_'+i+'" class="question_label_node">'+changedNodesOuter[i]+'</label>\
+            <input type="text" id="tf1_input_question'+currentQuestion+'_'+i+'" name="question'+currentQuestion+'_'+i+'" value="" placeholder="'+currentValue[i]+'" class="question_input_node" /><br style="clear: both;" />';
+        }
+        form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
+
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
+            <p>Im aktuellen Schritt wird der Algorithmus die Markierungen verbessern. Dazu hat er ein \\(\\Delta = '+delta+'\\) berechnet mit dem die Markierungen nach folgender Formel angepasst werden:</p>\
+            <p style="text-align: center;">\\(\\begin{equation}l^\\prime(v) =\\begin{cases}l(v) - \\Delta & v \\in S\\\\l(v) + \\Delta & v \\in T\\\\l(v) & sonst\\end{cases}\\end{equation}\\)</p>\
+            <p style="text-align: center;">\\(S = \\{'+$("#tf1_td_setS").html()+'\\},\\ T = \\{'+$("#tf1_td_setT").html()+'\\}\\)</p>\
+            <p>Bitte berechne neue Markierungen für folgende Knoten:</p>\
+            <p>'+form+'</p>\
+            <p><button id="tf1_button_questionClose">Antworten</button></p>\
+            <p id="tf1_questionSolution">Korrekte Antwort:<br /><span class="answer"></span><br /><br />\
+            <button id="tf1_button_questionClose2">Weiter</button>\
+            </p>');
+
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub,"tf1_div_questionModal"]);
+
+        $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
+        $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
+        $("#question"+currentQuestion+"_form").find("input[type='text']").one("keyup", function() { algo.activateAnswerButton(); });
 
     };
 
@@ -1004,6 +1062,14 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             givenAnswer = parseInt(givenAnswer);
             this.showLabels();
             this.needRedraw = true;
+        }else if(currentQuestionType === NEW_LABEL_QUESTION) {
+            givenAnswer = [];
+            $("#question"+currentQuestion+"_form").find("input[type='text']").each(function() {
+                givenAnswer.push(parseInt($(this).val()));
+            });
+            givenAnswer = givenAnswer.join(",");
+            this.showLabels();
+            this.needRedraw = true;
         }
 
         /* if(currentQuestionType === 1 || currentQuestionType === 3 || currentQuestionType === 4) {
@@ -1021,6 +1087,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             }
         }else if(questions[currentQuestion].type === DELTA_QUESTION) {
             $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswer);
+        }else if(questions[currentQuestion].type === NEW_LABEL_QUESTION) {
+            $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswerField);
         }
         /* 
         }else if(questions[currentQuestion].type === 2) { // Subtour
@@ -1120,7 +1188,11 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         } */
 
         if(statusID === 6) {
-            return DELTA_QUESTION;
+            if(randomVariable(0, 1) > 0.5) {
+                return DELTA_QUESTION;
+            }else{
+                return NEW_LABEL_QUESTION;
+            }
         }
 
         if(statusID !== 11) {
