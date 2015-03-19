@@ -105,24 +105,31 @@ function BipartiteGraph(filename,p_canvas,text){
     };
 
     function parseFromText(text) {
-        var lines=text.split("\n");                     // Nach Zeilen aufteilen
+        var lines = text.split("\n");                     // Nach Zeilen aufteilen
         var ucard = 0;
         var vcard = 0;
         var i;
         for(i = 0; i < lines.length; i++) {
+            if(lines[i].substring(0,1) === "%") continue;
             var parameter = lines[i].split(" ");
-            if(!isNaN(parseInt(parameter[0]))){
-                ucard = parseInt(parameter[0]);
-                vcard = parseInt(parameter[1]);
-                for(var j = 0; j < ucard; j++) closure_graph.addNode(true);
-                for(var j = 0; j < vcard; j++) closure_graph.addNode(false);
+            if(!isNaN(parseInt(parameter[0]))) {
                 i++;
                 break;
             }
         }
         for(; i < lines.length; i++) {
+            if(lines[i].substring(0,1) === "%") continue;
             var parameter = lines[i].split(" ");     // Nach Parametern aufteilen
-            if(parameter[0] == "e") {
+            if(parameter[0] === "n") {
+                if(!isNaN(parseInt(parameter[1])) && !isNaN(parseInt(parameter[2]))) {
+                    var positionY = parseInt(parameter[2]);
+                    if(positionY === graph_constants.U_POSITION) {
+                        closure_graph.addNode(true);
+                    }else if(positionY == graph_constants.V_POSITION) {
+                        closure_graph.addNode(false);
+                    }
+                }   
+            }else if(parameter[0] === "e") {
                 if(!isNaN(parseInt(parameter[1])) && !isNaN(parseInt(parameter[2])) && !isNaN(parseFloat(parameter[3]))) {
                     var sourceId = parseInt(parameter[1]);
                     var targetId = parseInt(parameter[2]);
@@ -162,7 +169,7 @@ function BipartiteGraph(filename,p_canvas,text){
         graphDescription += "% Automatisch generiert um " +(new Date).toGMTString() + "\n";
         var nodeArray = Utilities.arrayOfKeys(this.nodes);
         graphDescription += Object.keys(this.unodes).length + " "+Object.keys(this.vnodes).length + "\n";
-        for(var i=0;i<nodeArray.length;i++) {
+        for(var i=0; i<nodeArray.length; i++) {
             graphDescription += "n " +this.nodes[nodeArray[i]].getCoordinates().x + " " +this.nodes[nodeArray[i]].getCoordinates().y + "\n";
         }
         for(var edgeID in this.edges) {
