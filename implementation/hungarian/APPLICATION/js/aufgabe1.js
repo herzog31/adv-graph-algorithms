@@ -294,16 +294,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
         if(currentQuestionType !== false) {
 
-        	/* 
-        	Frage Typen:
-
-			- Nächster Schritt
-			- Delta berechnen
-			- Neue Markierungen berechnen (für bspw 4 Knoten)
-			- Gleichgewichtsgraph bestimmen, bzw Kanten markieren die im Gleichgewichtsgraph vorkommen (für bspw 4 Kanten)
-
-        	*/
-
             switch(currentQuestionType) {
 				case NEXT_STEP_QUESTION:
 					this.generateNextStepQuestion();
@@ -535,8 +525,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             + "<p>Mittels der verbesserten Markierungen kann der Gleichheitsgraph (<strong>schwarz</strong>) erweitert werden.</p>");
         this.markPseudoCodeLine([9]);
 
-        this.showEqualityGraph();
-
+        if(currentQuestionType !== EQUALITY_GRAPH_QUESTION) {
+            this.showEqualityGraph();
+        }
+        
         augment = false;
         // -> 4 CONSTRUCT_ALTERNATING_PATH
         statusID = CONSTRUCT_ALTERNATING_PATH;
@@ -928,9 +920,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         statusArrayCopy = statusArrayCopy.slice(1, 4);
         answers = answers.concat(statusArrayCopy);
 
-        console.log(answers);
         answers = Utilities.shuffleArray(answers);
-        console.log(answers);
         questions[currentQuestion] = {type: currentQuestionType, rightAnswer: statusID};
 
     	var form = "";
@@ -1045,15 +1035,47 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     };
 
     this.generateEqualityGraphQuestion = function() {
-        // Question Type 4
 
+        var allEdges = [];
+        var edgesInEqualityGraph = [];
+        var correctAnswerForField = [];
+
+        var inputs = "", source, target, edgeLabel;
+        for(var i in graph.edges) {
+            source = graph.edges[i].getSourceID();
+            target = graph.edges[i].getTargetID();
+            edgeLabel = '('+graph.nodes[source].getOuterLabel()+','+graph.nodes[target].getOuterLabel()+')';
+
+            if(lx[source] + ly[(target - lx.length)] === graph.edges[i].weight) {
+                edgesInEqualityGraph.push(i);
+                correctAnswerForField.push(edgeLabel);
+            }
+
+            inputs += '<input type="checkbox" id="tf1_input_question'+currentQuestion+'_'+i+'" data-answer-id="'+i+'" name="question'+currentQuestion+'_'+i+'" value="'+i+'" />\
+            <label for="tf1_input_question'+currentQuestion+'_'+i+'">'+edgeLabel+'</label><br />';
+        }
+
+        correctAnswerForField = correctAnswerForField.join("<br />");
+        edgesInEqualityGraph = edgesInEqualityGraph.join(",");
+        questions[currentQuestion] = {type: currentQuestionType, rightAnswer: edgesInEqualityGraph, rightAnswerField: correctAnswerForField};
+
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
+            <p>Im aktuellen Schritt wird der Algorithmus einen neuen Gleichheitsgraph bestimmen. Bitte markiere alle Kanten des neuen Gleichheitsgraphs.</p>\
+            <p><form id="question'+currentQuestion+'_form">'+inputs+'</form></p>\
+            <p><button id="tf1_button_questionClose">Antworten</button></p>\
+            <p id="tf1_questionSolution">Korrekte Antwort:<br /><span class="answer"></span><br /><br />\
+            <button id="tf1_button_questionClose2">Weiter</button>\
+            </p>');
+
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub,"tf1_div_questionModal"]);
+
+        $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
+        $("#tf1_button_questionClose").button({disabled: false}).on("click", function() { algo.saveAnswer(); });
 
     };
 
     this.saveAnswer = function() {
         var givenAnswer = "";
-
-        // TODO
 
         if(currentQuestionType === NEXT_STEP_QUESTION) {
             givenAnswer = $("#question"+currentQuestion+"_form").find("input[type='radio']:checked").val();
@@ -1070,14 +1092,20 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             givenAnswer = givenAnswer.join(",");
             this.showLabels();
             this.needRedraw = true;
+        }else if(currentQuestionType === EQUALITY_GRAPH_QUESTION) {
+            var givenAnswer = [];
+            $('#question'+currentQuestion+'_form').find("input[type='checkbox']").each(function() {
+                $(this).attr("disabled", true);
+                var isChecked = $(this).prop('checked');
+                var answerId = parseInt($(this).data("answerId"));
+                if(isChecked) {
+                    givenAnswer.push(answerId);
+                }
+            });
+            givenAnswer = givenAnswer.join(",");
+            this.showEqualityGraph();
+            this.needRedraw = true;
         }
-
-        /* if(currentQuestionType === 1 || currentQuestionType === 3 || currentQuestionType === 4) {
-            givenAnswer = $("#question"+currentQuestion+"_form").find("input[type='radio']:checked").val();
-        }else if(currentQuestionType === 2) {
-            givenAnswer = $("#question"+currentQuestion+"_form").find("input[type='text']").val();
-            givenAnswer = givenAnswer.replace(/(\s|\,)+/g,'');
-        } */
 
         if(questions[currentQuestion].type === NEXT_STEP_QUESTION) { // Next Step
             for (var i = 0; i < statusArray.length; i++) {
@@ -1089,15 +1117,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswer);
         }else if(questions[currentQuestion].type === NEW_LABEL_QUESTION) {
             $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswerField);
+        }else if(questions[currentQuestion].type === EQUALITY_GRAPH_QUESTION) {
+            $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswerField);
         }
-        /* 
-        }else if(questions[currentQuestion].type === 2) { // Subtour
-            $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswer.split("").join(","));
-        }else if(questions[currentQuestion].type === 3) { // Tour
-            $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswer);
-        }else if(questions[currentQuestion].type === 4) { // Degree
-            $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswer);
-        } */
 
         questions[currentQuestion].givenAnswer = givenAnswer;
         if(questions[currentQuestion].givenAnswer == questions[currentQuestion].rightAnswer) {
@@ -1155,48 +1177,22 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             return Math.random() * (max - min) + min;
         };
 
-        /*
-        const NEXT_STEP_QUESTION = 1;
-    const DELTA_QUESTION = 2;
-    const NEW_LABEL_QUESTION = 3;
-    const EQUALITY_GRAPH_QUESTION = 4; */
-
-        // TODO
-
-        /* if(statusID == 1) {
-            // Frage zum Grad (100%)
-            return 4;
-        }else if(statusID == 6 && !eulerianTourEmpty) {
-            // Frage zum Mergeergebnis (50%)
+        if(statusID === NEW_EQUALITY_GRAPH) {
             if(randomVariable(0, 1) > 0.5) {
-                return 3;
+                return EQUALITY_GRAPH_QUESTION;
             }
-        }else if(statusID == 5) {
-            // Frage zur Subtour (20%)
-            if(randomVariable(0, 1) > 0.8) {
-                return 2;
-            }
-        }else if(statusID !== 2 && statusID !== 8) {
-            // Frage zum nächsten Schritt (10%)
-            if(randomVariable(1, 10) > 9) {
-                return 1;
-            }
-        } */
+        }
 
-        /* if(randomVariable(0, 1) > 0.9) {
-            return NEXT_STEP_QUESTION;
-        } */
-
-        if(statusID === 6) {
-            if(randomVariable(0, 1) > 0.5) {
+        if(statusID === IMPROVE_LABELS) {
+            if(randomVariable(0, 1) > 0.7) {
                 return DELTA_QUESTION;
-            }else{
+            }else if(randomVariable(0, 1) > 0.4) {
                 return NEW_LABEL_QUESTION;
             }
         }
 
-        if(statusID !== 11) {
-            if(randomVariable(0, 1) > 0.9) {
+        if(statusID !== SHOW_RESULT) {
+            if(randomVariable(0, 1) > 0.8) {
                 return NEXT_STEP_QUESTION;
             }
         }
