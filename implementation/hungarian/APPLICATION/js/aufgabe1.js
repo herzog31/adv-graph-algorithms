@@ -99,6 +99,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     // Write (wr) and read (rd) pointers for queue
     var wr = 0;
     var rd = 0;
+    var delta = -1;
 
     var labeling = false;
     var augment = false;
@@ -487,7 +488,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     this.improveLabels = function() {
 
-        var delta = -1;
+        delta = -1;
         for (var y = 0; y < n; y++) {
             if (!T[y] && (delta == -1 || slack[y] < delta)) {
                 delta = slack[y];
@@ -504,7 +505,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
                 slack[y] -= delta;
         }
         
-        showLabels(lx, ly);
+        if(currentQuestionType !== DELTA_QUESTION) {
+            this.showLabels();
+        }
 
         $("#tf1_div_statusErklaerung").html(
             "<h3>Markierungen verbessern</h3>" +
@@ -954,8 +957,27 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     };
 
     this.generateDeltaQuestion = function() {
-        // Question Type 2
+        
+        questions[currentQuestion] = {type: currentQuestionType, rightAnswer: delta};
 
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
+            <p>Im aktuellen Schritt wird der Algorithmus die Markierungen verbessern. Dazu benötigt er ein \\(\\Delta\\), welches sich nach folgender Formel berechnet:</p>\
+            <p style="text-align: center;">\\(\\Delta = \\min\\limits_{s \\in S\\ \\wedge\\ y \\in Y \\setminus T}\\{l(s) + l(y) - w(s,y)\\}\\)</p>\
+            <p style="text-align: center;">\\(S = \\{'+$("#tf1_td_setS").html()+'\\},\\ T = \\{'+$("#tf1_td_setT").html()+'\\}\\)</p>\
+            <p>Welchen Wert für \\(\\Delta\\) wird der Algorithmus ermitteln?</p>\
+            <p><form id="question'+currentQuestion+'_form">\
+            <input type="text" name="question'+currentQuestion+'" value="" placeholder="0" />\
+            </form></p>\
+            <p><button id="tf1_button_questionClose">Antworten</button></p>\
+            <p id="tf1_questionSolution">Korrekte Antwort: <span class="answer"></span><br /><br />\
+            <button id="tf1_button_questionClose2">Weiter</button>\
+            </p>');
+
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub,"tf1_div_questionModal"]);
+
+        $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
+        $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
+        $("#question"+currentQuestion+"_form").find("input[type='text']").one("keyup", function() { algo.activateAnswerButton(); });
 
     };
 
@@ -977,6 +999,11 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
         if(currentQuestionType === NEXT_STEP_QUESTION) {
             givenAnswer = $("#question"+currentQuestion+"_form").find("input[type='radio']:checked").val();
+        }else if(currentQuestionType === DELTA_QUESTION) {
+            givenAnswer = $("#question"+currentQuestion+"_form").find("input[type='text']").val();
+            givenAnswer = parseInt(givenAnswer);
+            this.showLabels();
+            this.needRedraw = true;
         }
 
         /* if(currentQuestionType === 1 || currentQuestionType === 3 || currentQuestionType === 4) {
@@ -986,12 +1013,14 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             givenAnswer = givenAnswer.replace(/(\s|\,)+/g,'');
         } */
 
-        if(questions[currentQuestion].type === 1) { // Next Step
+        if(questions[currentQuestion].type === NEXT_STEP_QUESTION) { // Next Step
             for (var i = 0; i < statusArray.length; i++) {
                 if(statusArray[i].key == questions[currentQuestion].rightAnswer) {
                     $("#tf1_questionSolution").find(".answer").html(statusArray[i].answer);
                 }
             }
+        }else if(questions[currentQuestion].type === DELTA_QUESTION) {
+            $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswer);
         }
         /* 
         }else if(questions[currentQuestion].type === 2) { // Subtour
@@ -1086,8 +1115,18 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             }
         } */
 
-        if(randomVariable(0, 1) > 0.9) {
+        /* if(randomVariable(0, 1) > 0.9) {
             return NEXT_STEP_QUESTION;
+        } */
+
+        if(statusID === 6) {
+            return DELTA_QUESTION;
+        }
+
+        if(statusID !== 11) {
+            if(randomVariable(0, 1) > 0.9) {
+                return NEXT_STEP_QUESTION;
+            }
         }
         
         return false;
