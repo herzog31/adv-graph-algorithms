@@ -200,8 +200,40 @@
         <div id="tab_ti">
             <div id="ti_div_Einfuehrungstext">
                 <h1>Matching auf bipartiten Graphen</h1>
-                <h1>Idee des Algorithmus</h1>
-                <h1>Finden der Länge des kürzesten Augmentationsweges</h1>
+                <p>Maximales Matching ist ein bekanntes Problem in der Informatik. Gegeben ein Graph G wird eine maximale Menge M von Kanten gesucht, sodass kein Knoten zu mehr als einer Kante inzident ist.
+                Ein Graph ist bipartit, falls er aus zwei Knotenpartitionen U und V besteht, sodass innerhalb der Partitionen keine Kanten existieren. D.h. es existieren nur Kanten, die Knoten aus der Partition V mir den Knoten aus der Partition U verbinden.
+                Das zu untersuchende Problem ist das Finden von maximalen Matchings auf bipartiten Graphen.
+                </p>
+                <p>Das Problem lässt sich besser veranschaulichen, wenn man unter Knoten aus U Arbeitnehmer und unter Knoten aus V Arbeitgeber vorstellt. Die Kanten repräsentieren mögliche Zuordnungen von Arbeitnehmern zu Arbeitgebern.
+                Das Ziel ist möglicht viele passende Zuordnungen zu finden, wobei der Arbeitnehmer nur einen Arbeitsplatz annehmen kann und der Arbeitgeber nur einen Arbeitsplatz zur Verfügung hat.
+                </p>
+                <h1>Idee des Algorithmen</h1>
+                <p>
+                    Sei M das aktuelle Matching. Eine Kante e aus M heißt Matching-Kante und eine Kante e nicht aus M heißt freie Kante. Ein Knoten v aus einer Matching-Kante e heißt besetzt und ein Knoten aus einer freien Kante heißt frei.
+                    Ein Augmentationsweg im Graphen G ist ein Weg, der mit einem freien Knoten startet, mit einem freien Knoten endet und alternierend freie Kanten und Matching-Kanten benutzt.
+                    Das Besondere an dem Augmentationsweg ist, dass wenn man die Matching-Kanten des Weges aus M entfernt aus stattdessen die freien Kanten des Weges einfügt, das Matching um eins erhöht wird.
+                    Die Eigenschaften des Augmentationswegs stellen sicher, dass die freien Kanten des Weges die Matching-Eigenschaften nicht verletzen. Ein Augmentationsweg vergrößert also das Matching. Ein Theorem aus der
+                    Graphentheorie besagt, dass das Matching genau dann maximal ist, wenn es keinen Augmentationsweg gibt.
+                </p>
+                <p>
+                    Ein einfacher Algorithmus zur Bestimmung von maximalen Matchings besteht darin, immer nach einem Augmantationsweg suchen und das Matching vergrößern. Existiert kein Augmentationsweg mehr, so ist das Matching optimal.
+                    Allerdings kann die Laufzeit dieses Algorithmen in bestimmten Fällen lang sein. Der Algorithmus von Hopcroft und Karp verbessert die Laufzeit im Vergleich zu dem einfachen Algorithmus. Die Idee hier besteht darin eine Menge von kürzesten
+                    knotendisjunkten Augmentationswegen zu suchen und das Matching zu verbessern. In jeder Iteration des Algorithmen wird eine maximale Menge von kürzesten
+                    knotendisjunkten Augmentationswegen gesucht. Maximal bedeutet in diesem Kontext, dass es keinen kürzesten Augmentationsweg existiert, der knotendisjunkt bezüglich der bereits gefundenen ist.
+                    D.h. diese Menge muss nicht kardinalitätsmaximal sein. Nach jeder Iteration erhöht sich die Länge des kürzesten Augmentationsweges.
+                </p>
+                <h1>Finden von kürzesten Augmentationswegen</h1>
+                <p>
+                    Die kürzesten Augmentationswege lassen sich leicht mit der Breitensuche bestimmen. Dabei startet man mit den freien Knoten einer Partition (erste Schicht). Von diesen Knoten aus folgt man den Kanten zu allen Nachbarn dieser Knoten(zweite Schicht).
+                    Befindet sich ein freier Knoten in dieser Schicht, so wird die Prozedur gestoppt. Andererseits erweitert man den erstellten Graphen um eine Schicht mit den Matching-Partnern der letzten Schicht.
+                    Von diesen Knoten aus untersucht man wieder Nachbarknoten, wobei Knoten der vorherigen Schichten nicht betrachtet werden. Dies wiederholt man solange bis man einen freien Knoten findet oder alle Knoten untersucht wurden,
+                    was bedeutet, dass es keinen weiteren Augmentationsweg existiert. Am Ende entsteht ein Graph, der alle kürzesten Augmentationswege enthält.
+                </p>
+                <p>
+                    Um eine maximale Menge von knotendisjunkten Augmentationswegen zu finden, benutzt man den Graphen aus dem letzten Schritt. Man startet mit dem freien Knoten der ersten Schicht und wendet die Tiefensuche darauf.
+                    Falls es einen Augmentationsweg gibt, der mit diesem Knoten startet, wird er gefunden. Alle Knoten, die auf diesem Weg vorkommen werden aus dem erstellten Graphen entfernt. Wendet man diese Prozedur auf alle Knoten der
+                    ersten Schicht an, so ist die gefundene Menge der knotendisjunkten kürzesten Wege maximal.
+                </p>
                 <h1>Was nun?</h1>
                 <div class="Entscheidungsweg" id="ti_div_EntscheidungLeft">
                     <h3>Einen Graph erstellen und den Algorithmus durchspielen</h3>
@@ -209,9 +241,9 @@
                     <button id="ti_button_gotoAlgorithm">Algorithmus am fertigen Beispiel ausprobieren</button>
                 </div>
                 <div class="Entscheidungsweg" id="ti_div_EntscheidungRight">
-                    <h3>Sein Wissen an den Forschungsaufgaben testen</h3>
-                    <button id="ti_button_gotoFA1">Forschungsaufgabe 1: </button><br>
-                    <button id="ti_button_gotoFA2">Forschungsaufgabe 2: </button>
+                    <h3>Dein Wissen an den Forschungsaufgaben testen</h3>
+                    <button id="ti_button_gotoFA1">Forschungsaufgabe 1 </button><br>
+                    <button id="ti_button_gotoFA2">Forschungsaufgabe 2 </button>
                 </div>
             </div>
         </div>
@@ -397,15 +429,30 @@
                     <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen.
                         Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus.
                        Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
+
                     <h2>Laufzeit des Hopcroft-Karp-Algorithmus</h2>
+                    <p>
+                        Angenommen der Graph enthält n Knoten und m Kanten. In jeder Iteration des Algorithmen wird die
+                        Länge des kürzesten Weges um mindestens eins erhöht. Daraus geht hervor, dass es maximal
+                        2*&radic;<span style="text-decoration:overline;">&nbsp;n&nbsp;</span> Iterationen geben kann.
+                        Den vollständigen Beweis kann der interessierte Leser in der geeigneten Literatur nachlesen.
+                    </p>
+                    <p> Jede Iteration kann in  O(m) Schritten durchgeführt werden. Dazu wird einmal Breitensuche und einmal Tiefensuche ausgeführt. Ausserdem wird das
+                        Matching aktualisiert. Jede dieser Operationen benötigt maximal O(m) Schritte, da jede Kante maximal
+                        zweimal betrachtet wird (von beiden inzidenten Knoten aus). Dann ist die Laufzeit des
+                        Algorithmen
+                        O(m&radic;<span style="text-decoration:overline;">&nbsp;n&nbsp;</span>).
+                    </p>
                 </div>
-                <h3>Wie beweist man, dass der Algorithmus stets ein korrektes Ergebnis berechnet?</h3>
+                <h3>Wie beweist man, dass der Algorithmus stets ein korrekt arbeitet?</h3>
                 <div>
-                    <h2>Ein mathematischer Beweis</h2>
+                    <!--<h2>Ein mathematischer Beweis</h2>-->
+                    <p>
+                        Nach der letzten Iteration existieren keine Augmentationswege mehr. Dann ist das Matching optimal und der Hopcroft-Karp-Algorithmus berechnet das richtige Ergebnis.
+                    </p>
                 </div>
                 <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>
                 <div><p>Weitere Graphalgorithmen werden auf der <a href="http://www-m9.ma.tum.de/Allgemeines/Routenplanung">Webseite des Lehrstuhls M9</a> der TU München erklärt.</p>
-                <p>Außerdem es ein interessantes Buch zu kürzesten Wegen:  <a href="http://www-m9.ma.tum.de/Ruth/WebHome">Das Geheimnis des kürzesten Weges</a></p>
                 <p>Ein <a href="http://www.ma.tum.de/Studium/Studieninteressierte">Mathematikstudium an der TU München</a> beantwortet alle Fragen zur Graphentheorie (falls eine Lösung bekannt ist).</p>
                 </div>
             </div>

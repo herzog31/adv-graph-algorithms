@@ -587,3 +587,41 @@ this.startAddingPaths = function(){
         $("#animateTour").button({icons:{primary: "ui-icon-play"}}).click({org: this}, this.animateTour);
         $("#animateTourStop").button({icons:{primary: "ui-icon-stop"}, disabled: true}).click({org: this}, this.animateTourStop);
     };
+    this.addPaths = function () {
+        var step = 0;
+        var shortest = [];
+        //new_edges = [];
+        animationId = setInterval(function () {
+            if (current >= shortest.length) {
+                clearInterval(animationId);
+
+                return;
+            }
+            if (step == 0) {
+                graph.nodes[matching[current].s].setLayout('borderColor', const_Colors.NodeBorderHighlight);
+                graph.nodes[matching[current].d].setLayout('borderColor', const_Colors.NodeBorderHighlight);
+            }
+            else if (step == shortest[current].length + 1) {
+                graph.nodes[matching[current].s].setLayout('borderColor', const_Colors.NodeBorder);
+                graph.nodes[matching[current].d].setLayout('borderColor', const_Colors.NodeBorder);
+                graph.nodes[matching[current].s].setLabel(graph.nodes[s].getLabel() + 1);
+                graph.nodes[matching[current].d].setLabel(graph.nodes[d].getLabel() - 1);
+                graph.removeEdge(matching[current].edge.getEdgeID());
+                step = -1;
+                current++;
+            }
+            else {
+                var e = shortest[current][step - 1];
+                var ne = graph.addEdge(graph.nodes[e.getSourceID()], graph.nodes[e.getTargetID()], e.weight);
+                ne.setLayout('dashed', true);
+                new_edges.push(ne);
+            }
+            step++;
+            algo.needRedraw = true;
+        }, 500);
+        statusID = START_TOUR;
+        // Erklärung im Statusfenster
+        $("#ta_div_statusErklaerung").append(
+            //+ "<p>" + LNG.K('algorithm_add_path_3') + "</p>" +
+            "<p>" + LNG.K('algorithm_balanced_1') + "</p>");
+    };
