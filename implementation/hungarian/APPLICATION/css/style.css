@@ -315,6 +315,7 @@ table.algoInformationen {
 .question_input_node {
     text-align: center;
     width: 50px;
+    margin-right: 10px;
 }
 
 .quizTable {

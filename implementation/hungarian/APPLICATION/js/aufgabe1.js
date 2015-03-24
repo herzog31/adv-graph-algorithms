@@ -939,8 +939,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             <button id="tf1_button_questionClose2">Weiter</button>\
             </p>');
 
-		//console.log("Aktueller Status: " + statusID, "Vorheriger Status: " + previousStatusId);
-
         $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
         $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
         $("#question"+currentQuestion+"_form").find("input[type='radio']").one("change", function() { algo.activateAnswerButton(); });
@@ -1000,13 +998,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         });
 
         correctAnswerJoin = correctAnswer.join(",");
-        var correctAnswerForField = [];
-        for(var i = 0; i < changedNodes.length; i++) {
-            correctAnswerForField.push(changedNodesOuter[i]+": "+correctAnswer[i]);
-        }
-        correctAnswerForField = correctAnswerForField.join("<br />");
 
-        questions[currentQuestion] = {type: currentQuestionType, rightAnswer: correctAnswerJoin, rightAnswerField: correctAnswerForField};
+        questions[currentQuestion] = {type: currentQuestionType, rightAnswer: correctAnswerJoin, rightAnswerField: correctAnswer};
 
         var form = "";
         for(var i = 0; i < changedNodes.length; i++) {
@@ -1016,13 +1009,12 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
 
         $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
-            <p>Im aktuellen Schritt wird der Algorithmus die Markierungen verbessern. Dazu hat er ein \\(\\Delta = '+delta+'\\) berechnet mit dem die Markierungen nach folgender Formel angepasst werden:</p>\
-            <p style="text-align: center;">\\(\\begin{equation}l^\\prime(v) =\\begin{cases}l(v) - \\Delta & v \\in S\\\\l(v) + \\Delta & v \\in T\\\\l(v) & sonst\\end{cases}\\end{equation}\\)</p>\
+            <p>Im aktuellen Schritt wird der Algorithmus die Markierungen verbessern. Dazu wurde bereits \\(\\Delta = '+delta+'\\) bestimmt.</p>\
             <p style="text-align: center;">\\(S = \\{'+$("#tf1_td_setS").html()+'\\},\\ T = \\{'+$("#tf1_td_setT").html()+'\\}\\)</p>\
-            <p>Bitte berechne neue Markierungen für folgende Knoten:</p>\
+            <p>Bitte berechne neue Markierungen nach der bekannten Formel für folgende Knoten:</p>\
             <p>'+form+'</p>\
             <p><button id="tf1_button_questionClose">Antworten</button></p>\
-            <p id="tf1_questionSolution">Korrekte Antwort:<br /><span class="answer"></span><br /><br />\
+            <p id="tf1_questionSolution">\
             <button id="tf1_button_questionClose2">Weiter</button>\
             </p>');
 
@@ -1047,7 +1039,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             edgeLabel = '('+graph.nodes[source].getOuterLabel()+','+graph.nodes[target].getOuterLabel()+')';
 
             if(lx[source] + ly[(target - lx.length)] === graph.edges[i].weight) {
-                edgesInEqualityGraph.push(i);
+                edgesInEqualityGraph.push(parseInt(i));
                 correctAnswerForField.push(edgeLabel);
             }
 
@@ -1055,15 +1047,13 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             <label for="tf1_input_question'+currentQuestion+'_'+i+'">'+edgeLabel+'</label><br />';
         }
 
-        correctAnswerForField = correctAnswerForField.join("<br />");
-        edgesInEqualityGraph = edgesInEqualityGraph.join(",");
-        questions[currentQuestion] = {type: currentQuestionType, rightAnswer: edgesInEqualityGraph, rightAnswerField: correctAnswerForField};
+        questions[currentQuestion] = {type: currentQuestionType, rightAnswer: edgesInEqualityGraph};
 
         $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
             <p>Im aktuellen Schritt wird der Algorithmus einen neuen Gleichheitsgraph bestimmen. Bitte markiere alle Kanten des neuen Gleichheitsgraphs.</p>\
             <p><form id="question'+currentQuestion+'_form">'+inputs+'</form></p>\
             <p><button id="tf1_button_questionClose">Antworten</button></p>\
-            <p id="tf1_questionSolution">Korrekte Antwort:<br /><span class="answer"></span><br /><br />\
+            <p id="tf1_questionSolution">\
             <button id="tf1_button_questionClose2">Weiter</button>\
             </p>');
 
@@ -1116,9 +1106,22 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }else if(questions[currentQuestion].type === DELTA_QUESTION) {
             $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswer);
         }else if(questions[currentQuestion].type === NEW_LABEL_QUESTION) {
-            $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswerField);
+            $(".question_input_node").each(function(i) {
+                if(parseInt($(this).val()) === questions[currentQuestion].rightAnswerField[i]) {
+                    $(this).after('<span class="answer" style="color: green;">'+questions[currentQuestion].rightAnswerField[i]+'</span>');
+                }else{
+                    $(this).after('<span class="answer" style="color: red;">'+questions[currentQuestion].rightAnswerField[i]+'</span>');
+                }  
+            });
         }else if(questions[currentQuestion].type === EQUALITY_GRAPH_QUESTION) {
-            $("#tf1_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswerField);
+            $('#question'+currentQuestion+'_form').find('label').each(function(i) {
+                if($.inArray(i, questions[currentQuestion].rightAnswer) > -1) {
+                    $(this).css("color", "green");
+                }else{
+                    $(this).css("color", "red");
+                }
+            });
+            questions[currentQuestion].rightAnswer = questions[currentQuestion].rightAnswer.join(",");
         }
 
         questions[currentQuestion].givenAnswer = givenAnswer;
@@ -1182,7 +1185,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
                 return EQUALITY_GRAPH_QUESTION;
             }
         }
-
+    
         if(statusID === IMPROVE_LABELS) {
             if(randomVariable(0, 1) > 0.7) {
                 return DELTA_QUESTION;
