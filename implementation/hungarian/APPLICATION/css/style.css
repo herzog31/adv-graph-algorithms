@@ -304,7 +304,7 @@ table.algoInformationen {
 }
 
 #tf1_div_questionModal form, #tf2_div_questionModal form {
-    margin-left: 1em;
+    padding: 0 1em 0 1em;
 }
 .question_label_node {
     display: block;

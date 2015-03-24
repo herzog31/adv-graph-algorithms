@@ -107,15 +107,15 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     var statusArray = [ {"key": 0, "answer": "Den Graph vervollständigen."},
                         {"key": 1, "answer": "Initiale Markierungen bestimmen."},
                         {"key": 2, "answer": "Den initialen Gleichheitsgraph bestimmen."},
-                        {"key": 3, "answer": "Einen Wurzelknoten für einen alternierenden Pfad bestimmen."},
-                        {"key": 4, "answer": "Einen alternierenden Pfad konstruieren."},
-                        {"key": 5, "answer": "Es kann kein augmentierender Pfad gefunden werden."},
+                        {"key": 3, "answer": "Der Algorithmus muss einen neuen Wurzelknoten für einen alternierenden Pfad bestimmen."},
+                        {"key": 4, "answer": "Einen neuen alternierenden Pfad konstruieren."},
+                        {"key": 5, "answer": "Es existiert kein kein augmentierender Pfad im Gleichheitsgraph."},
                         {"key": 6, "answer": "Markierungen verbessern."},
                         {"key": 7, "answer": "Gleichheitsgraph mittels neuer Markierungen verbessern."},
-                        {"key": 8, "answer": "Es kann ein augmentierender Pfad gefunden werden."},
+                        {"key": 8, "answer": "Es existiert ein augmentierender Pfad im Gleichheitsgraph."},
                         {"key": 9, "answer": "Matching verbessern."},
                         {"key": 10, "answer": "Auf ein perfektes Matching prüfen."},
-                        {"key": 11, "answer": "Optimales Matching zeigen."},];
+                        {"key": 11, "answer": "Das Matching ist perfekt. Der Algorithmus kann das optimales Matching ausgeben."},];
 
     var statusArrayPast = [ {"key": 0, "answer": "Der Graph wurde vervollständigt."},
                             {"key": 1, "answer": "Die initialen Markierungen wurden bestimmt."},
@@ -897,28 +897,29 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         // Question Type 1
 
         var answers = [];
-
         var statusArrayCopy = statusArray.slice();
-        for (var i = 0; i < statusArrayCopy.length; i++) {
-            if(statusArrayCopy[i].key == statusID) {
-                // add correct answer and remove from possible answers
-                answers.push(statusArrayCopy[i]);
-                statusArrayCopy.splice(i, 1);
-            }
-        };
+
+        var contextQuestions = [];
+        contextQuestions[CONSTRUCT_ALTERNATING_PATH] = [AUGMENT_PATH_FOUND, NO_AUGMENT_PATH_FOUND];
+        contextQuestions[PERFECT_MATCHING_CHECK] = [SHOW_RESULT, FIND_ROOT];
+        contextQuestions[IMPROVE_MATCHING] = [PERFECT_MATCHING_CHECK, FIND_ROOT, IMPROVE_LABELS];
+        contextQuestions[NO_AUGMENT_PATH_FOUND] = [CONSTRUCT_ALTERNATING_PATH, FIND_ROOT, IMPROVE_LABELS];
+        contextQuestions[AUGMENT_PATH_FOUND] = [CONSTRUCT_ALTERNATING_PATH, IMPROVE_LABELS, IMPROVE_MATCHING];
+
+        if(previousStatusId in contextQuestions) {
+            statusArrayCopy.map(function(x) {
+                if($.inArray(x.key, contextQuestions[previousStatusId]) > -1) {
+                    answers.push(x);
+                }
+            });
+        }
 
         var previousStep = "";
         for (var i = 0; i < statusArrayPast.length; i++) {
-            if(statusArrayPast[i].key == previousStatusId) {
-                // remove current step from possible answers
+            if(statusArrayPast[i].key === previousStatusId) {
                 previousStep = statusArrayPast[i].answer;
-                statusArrayCopy.splice(i, 1);
             }
         };
-
-        statusArrayCopy = Utilities.shuffleArray(statusArrayCopy);
-        statusArrayCopy = statusArrayCopy.slice(1, 4);
-        answers = answers.concat(statusArrayCopy);
 
         answers = Utilities.shuffleArray(answers);
         questions[currentQuestion] = {type: currentQuestionType, rightAnswer: statusID};
@@ -1194,7 +1195,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             }
         }
 
-        if(statusID !== SHOW_RESULT) {
+        if($.inArray(statusID, [CONSTRUCT_ALTERNATING_PATH, PERFECT_MATCHING_CHECK, IMPROVE_MATCHING, NO_AUGMENT_PATH_FOUND, AUGMENT_PATH_FOUND]) > -1) {
             if(randomVariable(0, 1) > 0.8) {
                 return NEXT_STEP_QUESTION;
             }
