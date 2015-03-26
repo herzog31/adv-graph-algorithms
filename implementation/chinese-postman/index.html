@@ -169,12 +169,11 @@
                         </div>
                         <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
                             <p class="pseudocode" id="ta_p_begin">BEGIN</p>
-                            <p class="pseudocode" id="ta_p_l">  1. Prüfe ob der das Problem lösbar ist.</p>
-                            <p class="pseudocode" id="ta_p_2">  2. Bestimme alle Knoten, die ungleiche Anzahl von Eingeh- und Ausgehkanten besitzen.</p>
-                            <p class="pseudocode" id="ta_p_3">  3. Kürzeste Wege</p>
-                            <p class="pseudocode" id="ta_p_4">  4. Finde Matching</p>
-                            <p class="pseudocode" id="ta_p_5">  5. Füge Kanten hinzu</p>
-                            <p class="pseudocode" id="ta_p_6">  6. Finde die Eulertour</p>
+                            <p class="pseudocode" id="ta_p_l">  1. Prüfen ob der das Problem lösbar ist</p>
+                            <p class="pseudocode" id="ta_p_2">  2. Finden von nicht balancierten Knoten</p>
+                            <p class="pseudocode" id="ta_p_3">  3. Bestimmen von zusätzlichen Pfaden</p>
+                            <p class="pseudocode" id="ta_p_4">  4. Einfügen von zusätzlichen Pfaden</p>
+                            <p class="pseudocode" id="ta_p_5">  5. Bestimmen von dem Eulerkreis</p>
                             <p class="pseudocode" id="ta_p_end">END</p>
 <!--                            <h3>Status der Variablen:</h3>
                             <table class="algoInformationen">
@@ -281,12 +280,12 @@
                         <div class="LegendeText">
                             <table>
                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>Startknoten, von dem aus die Entfernungen und günstigsten Wege berechnet werden.</span></td>
+                                    <td class="LegendeTabelle"><img src="img/knoten.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td><span>Knoten</span></td>
                                 </tr>
-                                <tr class="LegendeZeileClickable" id="tf1_tr_LegendeClickable" title="Klicke zum Ein-/Ausblenden">
-                                    <td class="LegendeTabelle"><img src="img/markierteKante.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>"Vorgängerkante", die der günstigste Weg zum Knoten benutzt.</span></td>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/kante.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td><span>Kante mit Gewicht 50</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -319,32 +318,13 @@
                             <p>Tipp: Vorher nochmals die Beschreibung des Algorithmus durchlesen.</p>
                         </div>
                         <div class="PseudocodeWrapper" id="tf1_div_statusPseudocode">
-                            <p class="pseudocode" id="tf1_p_l1">BEGIN</p>
-                            <p class="pseudocode" id="tf1_p_l2">  d(v[1]) &larr; 0</p>
-                            <p class="pseudocode" id="tf1_p_l3">  FOR j = 2,..,n DO</p>
-                            <p class="pseudocode" id="tf1_p_l4">    d(v[j]) &larr; &#8734;</p>
-                            <p class="pseudocode" id="tf1_p_l5">  FOR i = 1,..,(|V|-1) DO</p>
-                            <p class="pseudocode" id="tf1_p_l6">    FOR ALL (u,v) aus E DO</p>
-                            <p class="pseudocode" id="tf1_p_l7">      d(v) &larr; min(d(v), d(u)+l(u,v))</p>
-                            <p class="pseudocode" id="tf1_p_l8">  FOR ALL (u,v) aus E DO</p>
-                            <p class="pseudocode" id="tf1_p_l9">    IF d(v) > d(u) + l(u,v) DO</p>
-                            <p class="pseudocode" id="tf1_p_l10">     Meldung: "Negativer Kreis"</p>
-                            <p class="pseudocode" id="tf1_p_l11">END</p>
-                            <h3>Status der Variablen:</h3>
-                            <table class="algoInformationen">
-                                <tr>
-                                    <th class="algoInfoTH"><span>i</span></th>
-                                    <th class="algoInfoTH"><span>d(u)</span></th>
-                                    <th class="algoInfoTH"><span>d(v)</span></th>
-                                    <th class="algoInfoTH"><span>l(u,v)</span></th>
-                                </tr>
-                                <tr>
-                                    <td id="tf1_td_vari" class="algoInfoTD"></td>
-                                    <td id="tf1_td_vardu" class="algoInfoTD"></td>
-                                    <td id="tf1_td_vardv" class="algoInfoTD"></td>
-                                    <td id="tf1_td_varluv" class="algoInfoTD"></td>
-                                </tr>
-                            </table>
+                            <p class="pseudocode" id="tf1_p_begin">BEGIN</p>
+                            <p class="pseudocode" id="tf1_p_l">  1. Prüfen ob der das Problem lösbar ist</p>
+                            <p class="pseudocode" id="tf1_p_2">  2. Finden von nicht balancierten Knoten</p>
+                            <p class="pseudocode" id="tf1_p_3">  3. Bestimmen von zusätzlichen Pfaden</p>
+                            <p class="pseudocode" id="tf1_p_4">  4. Einfügen von zusätzlichen Pfaden</p>
+                            <p class="pseudocode" id="tf1_p_5">  5. Bestimmen von dem Eulerkreis</p>
+                            <p class="pseudocode" id="tf1_p_end">END</p>
                         </div>
                     </div>
                 </div>
@@ -373,12 +353,12 @@
                         <div class="LegendeText">
                             <table>
                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>Startknoten, von dem aus die Entfernungen und günstigsten Wege berechnet werden.</span></td>
+                                    <td class="LegendeTabelle"><img src="img/knoten.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td><span>Knoten</span></td>
                                 </tr>
-                                <tr class="LegendeZeileClickable" id="tf2_tr_LegendeClickable" title="Klicke zum Ein-/Ausblenden">
-                                    <td class="LegendeTabelle"><img src="img/markierteKante.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>"Vorgängerkante", die der günstigste Weg zum Knoten benutzt.</span></td>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/kante.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td><span>Kante mit Gewicht 50</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -421,10 +401,18 @@
             <div id="tw_Accordion">
                 <h3>Wie sieht der (Pseudo-)Code des Algorithmus aus?</h3>
                 <div><pre><code>
-
+                    Eingabe: Gewichteter, ungerichteter Graph G=(V,E)
+                    Ausgabe: Die Länge eines kürzesten Rundgangs, der alle Kanten enthält,
+                             falls das Problem lösbar ist. Sonst unmöglich.
                     </code></pre>
                     <hr><pre><code>
-
+                            BEGIN
+                            1. Prüfen ob das Problem lösbar ist
+                            2. Finden von nicht balancierte Knoten
+                            3. Bestimmen von zusätzlichen Pfaden
+                            4. Einfügen von zusätzlichen Pfaden
+                            5. Bestimmen von dem Eulerkreis
+                            END
                     </code></pre>
                 </div>
                 <h3>Wie schnell ist der Algorithmus?</h3>

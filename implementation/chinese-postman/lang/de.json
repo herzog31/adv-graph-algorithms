@@ -9,7 +9,7 @@
     "algorithm_msg_test": "Forschungsaufgaben ausprobieren:",
     "algorithm_btn_more": "Beschreibung des Algorithmus lesen",
     "algorithm_btn_exe1": "Wie würde der Algorithmus entscheiden?",
-    "algorithm_btn_exe2": "Welche Sortierung der Kanten ist optimal?",
+    "algorithm_btn_exe2": "Finde selber einen Rundgang",
     "algorithm_status1": "Kosten des Anfangsknotens: ",
     "algorithm_status2": "Kosten der Kante: ",
     "algorithm_status3": "Kosten des Zielknotens: ",
@@ -116,7 +116,7 @@
     "aufgabe2_cost": "Die Kosten de angegebenen Tour betragen: ",
     "aufgabe2_optimal_cost": "Die optimalen Kosten betragen: ",
     "aufgabe2_tour_completed": "Die Tour wurde abgeschlossen.",
-    "aufgabe2_btn_rev": "Letzte Auswahl rückgängig machen",
+    "aufgabe2_not_feasible": "Das Problem ist auf diesem Graphen nicht lösbar. Bitte wählen Sie einen anderen Graphen aus.",
     "aufgabe2_btn_more": "Weitere Informationen über den Algorithmus"
   }
 }

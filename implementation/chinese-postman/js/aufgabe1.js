@@ -396,6 +396,45 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_button_questionClose").show();
     };
 
+
+    this.askQuestion4 = function () {
+        var match = this.getMatching();
+        var dist = this.getDistance();
+        var m = match[Math.floor(Math.random()*match.length)];
+        var correctAnswer  = dist[m.s][m.d];
+        var AntwortGrund = "<p>" + LNG.K('aufgabe1_answer3_reason1') + "</p>";
+        this.addFrageTab();
+        frageStatus = {"aktiv": true, "warAktiv": false};
+        this.frageParam = {
+            qid: 3,
+            "Antwort": correctAnswer,
+            "AntwortGrund": AntwortGrund,
+            gewusst: true,
+            "node1": graph.nodes[m.s],
+            "layout1": graph.nodes[m.s].getLayout(),
+            "node2": graph.nodes[m.d],
+            "layout2": graph.nodes[m.d].getLayout()
+        };
+        //Knoten hervorheben
+        graph.nodes[m.s].setLayout("borderColor", const_Colors.NodeBorderHighlight);
+        graph.nodes[m.d].setLayout("borderColor", const_Colors.NodeBorderHighlight);
+        //stelle die Frage
+        $("#tf1_div_Frage").html(LNG.K('aufgabe1_text_question') + " " + (++frageStats.gestellt));
+        $("#tf1_div_Frage").append("<p class=\"frage\">" + LNG.K('aufgabe1_question3') + "</p>");
+        $("#tf1_div_Antworten").append("<input type=\"text\" id=\"tf1_input_frage3\" name=\"frage3\" value=\"\" />");
+        $("#tf1_div_Antworten").append("<button id=\"tf1_button_questionClose\">"+LNG.K('aufgabe1_btn_answer')+"</button>");
+        $("#tf1_input_frage3").one("keyup", function() { $("#tf1_button_questionClose").button("option", "disabled", false); });
+        //Pruefe ob korrekte Antwort
+        $("#tf1_button_questionClose").button({disabled: false}).on("click", function() {
+            var answer = $("#tf1_input_frage3").val();
+            $("#tf1_button_questionClose").hide();
+            if(answer != algo.frageParam.Antwort){
+                $("#tf1_input_frage3").addClass("ui-state-error");
+                algo.frageParam.gewusst = false;
+            }
+            algo.handleCorrectAnswer(); });
+        $("#tf1_button_questionClose").show();
+    };
     /**
      * Generiert eine zufällige Permutation von [0,1,2]<br>
      * Könnte man mal allgemeiner mit Fisher-Yates machen.

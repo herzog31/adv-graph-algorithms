@@ -57,7 +57,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      * Zeigt an, ob vor dem Verlassen des Tabs gewarnt werden soll.
      * @type Boolean
      */
-    var warnBeforeLeave = false;
+    var warnBeforeLeave = true;
 
     /*
      * Alle benoetigten Information zur Wiederherstellung der vorangegangenen Schritte werden hier gespeichert.
@@ -86,21 +86,20 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     this.run = function() {
         this.initCanvasDrawer();
         cpAlgo = new algorithm(graph,canvas,p_tab);
-        //cpAlgo.deregisterEventHandlers();
-        //cpAlgo.setStatusWindow("tf2");
-        //cpAlgo.run();
-        while (cpAlgo.getStatusID() != SHOW_TOUR){
-            cpAlgo.nextStepChoice();
+        cpAlgo.setStatusWindow('dummy');
+        cpAlgo.deleteIsolatedNodes();
+        cpAlgo.nextStepChoice();//check if feasible
+        if(!cpAlgo.isFeasible()){
+            $("#tf2_div_statusErklaerung").html("<h3>"+LNG.K('aufgabe2_header')+"</h3>" + "<p>"+LNG.K('aufgabe2_not_feasible')+"</p>");
+            warnBeforeLeave = false;
         }
-        cpAlgo.deleteInsertedEdges();
-
-        //cpAlgo.nextStepChoice();
-        feasible = cpAlgo.isFeasible();
-        var cost = cpAlgo.getCost();
-        if(!feasible){
-
+        else{
+            while (cpAlgo.getStatusID() != SHOW_TOUR){
+                cpAlgo.nextStepChoice();
+            }
+            cpAlgo.deleteInsertedEdges();
+            this.registerEventHandlers();
         }
-        this.registerEventHandlers();
         this.needRedraw = true;
     };
 
@@ -109,7 +108,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.destroy = function() {
-        //cpAlgo.destroy();
         this.destroyCanvasDrawer();
         this.deregisterEventHandlers();
     };
@@ -202,19 +200,20 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     var next = function(edge){
         if(tour.length == 0) return true;
         var prev = tour[tour.length-1];
-        if(prev.getTargetID() == edge.getSourceID()) return true;
+        if(prev.id == edge.getSourceID()) return true;
         else return false;
     };
 
     var completed = function(){
+        if(tour.length == 0) return false;
         var all_edges_used = (Object.keys(used).length == Object.keys(graph.edges).length);
-        var back_to_start = (tour[0].getSourceID() == tour[tour.length-1].getTargetID());
+        var back_to_start = (tour[0].id == tour[tour.length-1].id);
         return all_edges_used && back_to_start;
     };
 
     var highlight = function(edge){
         edge.setLayout("lineColor", "green");
-        edge.setLayout("lineWidth", global_Edgelayout.lineWidth*2);
+        edge.setLayout("lineWidth", global_Edgelayout.lineWidth*3);
         var node = algo.graph.nodes[edge.getTargetID()];
         node.setLayout("borderColor", const_Colors.NodeBorderHighlight);
         node.setLayout("borderWidth", global_NodeLayout.borderWidth*2);
@@ -245,26 +244,25 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         if(edge && next(edge)){
             this.addReplayStep();
             $("#tf2_div_statusErklaerung").html("<h3>"+LNG.K('aufgabe2_header')+"</h3>" + "<p>"+LNG.K('aufgabe2_path')+"</p>" + "<p>"+LNG.K('aufgabe2_legend')+"</p>");
-            if(tour.length > 0)unhighlight(tour[tour.length-1]);
-            tour.push(edge);
+            if(tour.length == 0){//first edge
+                start = graph.nodes[edge.getSourceID()];
+                tour.push({type: "vertex", id: edge.getSourceID()});
+                setNodeStart(start);
+            }
+            else{
+                unhighlight(graph.edges[tour[tour.length-2].id]);
+            }
+            tour.push({type: "edge", id: edge.getEdgeID()});
+            tour.push({type: "vertex", id: edge.getTargetID()});
             if(used[edge.getEdgeID()]) used[edge.getEdgeID()] += 1;
             else used[edge.getEdgeID()] = 1;
             cost += edge.weight;
-            //layoutStack.push(edge.getLayout());
             highlight(edge);
-            //setNodeLast(graph.nodes[edge.getTargetID()]);
-            if(tour.length == 1){//first edge
-                start = graph.nodes[edge.getSourceID()];
-                setNodeStart(start);
-            }
-            else if (completed()){
+            if (completed()){
                 this.deregisterEventHandlers();
                 unhighlight(edge);
                 this.showCreatedTour();
             }
-/*            else{
-                $("#tf2_div_statusErklaerung").append(LNG.K('aufgabe2_tour_completed'));
-            }*/
         }
         this.needRedraw = true;
     };
@@ -272,9 +270,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     this.rightClickHandler = function(e) {
         e.preventDefault();
         if(tour.length > 0){
+            tour.pop();
             var edge = tour.pop();
-/*            var layout = layoutStack.pop();
-            edge.setLayoutObject(layout);*/
             used[edge.getEdgeID()] -= 1;
             if(used[edge.getEdgeID()] == 0) delete used[edge.getEdgeID()];
             cost -= edge.weight;
@@ -286,57 +283,53 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     this.showCreatedTour = function(){
         $("#tf2_div_statusErklaerung").html("<h3>"+LNG.K('aufgabe2_header')+"</h3>" + "<p>"+LNG.K('aufgabe2_tour_completed')+"</p>"
         + "<p>"+LNG.K('aufgabe2_cost') + cost + "</p>"
-        + "<p>"+LNG.K('aufgabe2_optimal_cost')+"</p>");
-        //create output path and subpaths
-        $("#tf2_div_statusErklaerung").append(' <p><button id="animateTour">' + LNG.K('algorithm_status51b_desc2') +
-        '</button><button id="animateTourStop">' + LNG.K('algorithm_status51b_desc3') + '</button></p>\
+        + "<p>"+LNG.K('aufgabe2_optimal_cost')+ cpAlgo.getCost() + "</p>");
+
+        $("#tf2_div_statusErklaerung").append(' <p><button id="tf2_animateTour">' + LNG.K('algorithm_status51b_desc2') +
+        '</button><button id="tf2_animateTourStop">' + LNG.K('algorithm_status51b_desc3') + '</button></p>\
             <p>' + LNG.K('algorithm_status51b_desc4') + '</p>');
-        $("#animateTour").button({icons: {primary: "ui-icon-play"}}).click({org: this}, this.animateTour);
-        $("#animateTourStop").button({
+        $("#tf2_animateTour").button({icons: {primary: "ui-icon-play"}}).click({org: this}, this.animateTour);
+        $("#tf2_animateTourStop").button({
             icons: {primary: "ui-icon-stop"},
             disabled: true
         }).click({org: this}, this.animateTourStop);
-    };
-
-    this.showTour = function(){
-        //color edges
-        for (var e in graph.edges) {
-            graph.edges[e].setLayout('lineColor', tourColors[color[e]]);
-
-        }
-        //create output path and subpaths
-        $("#"+st+"_div_statusErklaerung").html('<h3>5. ' + LNG.K('algorithm_euler') + '</h3>\
-            <p><button id="animateTour">' + LNG.K('algorithm_status51b_desc2') + '</button><button id="animateTourStop">' + LNG.K('algorithm_status51b_desc3') + '</button></p>\
-            <p>' + LNG.K('algorithm_status51b_desc4') + '</p>');
-        $("#animateTour").button({icons: {primary: "ui-icon-play"}}).click({org: this}, this.animateTour);
-        $("#animateTourStop").button({
-            icons: {primary: "ui-icon-stop"},
-            disabled: true
-        }).click({org: this}, this.animateTourStop);
-        this.appendTours();
-        statusID = END;
+        $("#tf2_div_statusErklaerung").append('<button id="tf2_button_gotoWeiteres">'+LNG.K('aufgabe2_btn_more')+'</button>');//button
+        $("#tf2_button_gotoWeiteres").button().click(function() {$("#tabs").tabs("option","active", 6);});
+        warnBeforeLeave = false;
+        this.needRedraw;
     };
 
     this.animateTourStep = function (event) {
-        this.needRedraw = true;
-        if (tourAnimationIndex > 0){
-            tour[(tourAnimationIndex - 1)].setLayout("lineWidth", 3);
+        if (tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "vertex") {
+            graph.nodes[tour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
         }
+        if (tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "edge") {
+            //graph.edges[tour[(tourAnimationIndex - 1)].id].setLayout("lineColor", tourColors[color[tour[(tourAnimationIndex - 1)].id]]);
+            graph.edges[tour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
+        }
+        this.needRedraw = true;
         if (tourAnimationIndex >= tour.length) {
             this.animateTourStop(event);
             return;
         }
-        tour[(tourAnimationIndex)].setLayout("lineWidth", 6);
+        if (tour[tourAnimationIndex].type == "vertex") {
+            graph.nodes[tour[tourAnimationIndex].id].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+        }
+        if (tour[tourAnimationIndex].type == "edge") {
+            //graph.edges[tour[tourAnimationIndex].id].setLayout("lineColor", tourColors[color[tour[tourAnimationIndex].id]]);
+            graph.edges[tour[tourAnimationIndex].id].setLayout("lineWidth", 6);
+        }
         tourAnimationIndex++;
     };
+
     this.animateTour = function (event) {
-        $("#animateTour").button("option", "disabled", true);
-        $("#animateTourStop").button("option", "disabled", false);
+        $("#tf2_animateTour").button("option", "disabled", true);
+        $("#tf2_animateTourStop").button("option", "disabled", false);
         tourAnimationIndex = 0;
         var self = event.data.org;
         animationId = window.setInterval(function () {
             self.animateTourStep(event);
-        }, 350);
+        }, 250);
     };
 
     this.animateTourStop = function (event) {
@@ -350,8 +343,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         tourAnimationIndex = 0;
         window.clearInterval(animationId);
         animationId = null;
-        $("#animateTour").button("option", "disabled", false);
-        $("#animateTourStop").button("option", "disabled", true);
+        $("#tf2_animateTour").button("option", "disabled", false);
+        $("#tf2_animateTourStop").button("option", "disabled", true);
         return;
     };
 
@@ -365,11 +358,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     };
 
     this.showResult = function() {
-        // Falls wir im "Vorspulen" Modus waren, daktiviere diesen
-        if(fastForwardIntervalID != null) {
-            this.stopFastForward();
-        }
-        $("#tf2_button_1Schritt").hide();
         $("#tf2_div_statusErklaerung").html("<h3> "+LNG.K('textdb_msg_end_algo')+"</h3>" + "<p>"+LNG.K('textdb_msg_end_algo_1')+"</p>");
         $("#tf2_div_statusErklaerung").append('<button id="tf2_button_gotoWeiteres">'+LNG.K('aufgabe2_btn_more')+'</button>');
         $("#tf2_button_gotoWeiteres").button().click(function() {$("#tabs").tabs("option","active", 6);});

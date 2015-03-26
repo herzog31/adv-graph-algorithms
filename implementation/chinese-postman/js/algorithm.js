@@ -146,7 +146,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         $("#"+st+"_button_stoppVorspulen").button({icons: {primary: "ui-icon-pause"}});
         $("#"+st+"_div_statusTabs").tabs();
         $(".marked").removeClass("marked");
-        $("#"+st+"_p_begin").addClass("marked");
+        //$("#"+st+"_p_begin").addClass("marked");
         $("#"+st+"_tr_LegendeClickable").removeClass("greyedOutBackground");
         this.registerEventHandlers();
         this.deleteIsolatedNodes();
@@ -159,14 +159,8 @@ function algorithm(p_graph, p_canvas, p_tab) {
      * @method
      */
     this.destroy = function () {
-        //stop animations
-        clearInterval(animationId);
-        //delete all inserted edges
-        for (var e in graph.edges) {
-            if (graph.edges[e].getLayout().dashed || !graph.edges[e].getDirected()) {
-                graph.removeEdge(e);
-            }
-        }
+        clearInterval(animationId);//stop animations
+        this.deleteInsertedEdges();//delete all new edges
         this.stopFastForward();
         this.destroyCanvasDrawer();
         this.deregisterEventHandlers();
@@ -530,7 +524,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         "<p>" + LNG.K('algorithm_find_balanced_nodes_1') + "</p>");
         //fall es alle Knoten balanciert sind, kann gleich mit Eulertour begonnen werden
         if (excess == 0) {
-            statusID = SHOW_TOUR;
+            statusID = START_TOUR;
             // Erklärung im Statusfenster
             $("#"+st+"_div_statusErklaerung").append("<p>" + LNG.K('algorithm_balanced_1') + "</p>"
             + "<p>" + LNG.K('algorithm_balanced_2') + "</p>");
@@ -676,8 +670,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         + "<p>" + LNG.K('algorithm_new_paths_2') + "</p>");
     };
 
-    var redoPath = function(path){
-        //if the animation not yet ended, repare
+    var redoPath = function(path){//if the animation not yet ended, repare
         var match = matching[path];
         if(next > 0 && graph.edges[match.edge.getEdgeID()]){
             graph.removeEdge(match.edge.getEdgeID());//remove matching edge
@@ -765,16 +758,16 @@ function algorithm(p_graph, p_canvas, p_tab) {
     *
     * */
     this.startTour = function () {
-        redoPath(next-1);
+        if(next > 0) redoPath(next-1);
+        //compute the tour and the cost of the tour
         this.computeEulerTour();
-        for (var n in graph.nodes) {
-            graph.nodes[n].restoreLayout();
-        }
         cost = 0;
         for (var e in graph.edges) {
             cost += graph.edges[e].weight;
-            //graph.edges[e].setLayout('lineWidth', global_Edgelayout.lineWidth);
-            //graph.edges[e].setLayout('lineColor', global_Edgelayout.lineColor);
+        }
+        //restore layout, add labels
+        for (var n in graph.nodes) {
+            graph.nodes[n].restoreLayout();
         }
         this.addNamingLabels();
         // Erklärung im Statusfenster
@@ -1061,7 +1054,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             if (statusID == SHOW_TOUR) {
                 this.startTour();
             }
-            if (statusID == END) {
+            if (statusID == END && feasible) {
                 this.showTour();
             }
         }
