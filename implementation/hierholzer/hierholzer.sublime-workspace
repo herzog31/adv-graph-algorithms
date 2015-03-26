@@ -4,6 +4,162 @@
 		"selected_items":
 		[
 			[
+				"get",
+				"getVisited"
+			],
+			[
+				"setLayout",
+				"setLayoutObject"
+			],
+			[
+				"euli",
+				"euclideanSubTour"
+			],
+			[
+				"eud",
+				"euclideanTour"
+			],
+			[
+				"html",
+				"htmlSidebar"
+			],
+			[
+				"tourColor",
+				"tourColorIndex"
+			],
+			[
+				"prev",
+				"previousStatusId"
+			],
+			[
+				"replay",
+				"replayHistory"
+			],
+			[
+				"stat",
+				"statusID"
+			],
+			[
+				"eucli",
+				"euclideanTour"
+			],
+			[
+				"tourStar",
+				"tourStartOddVertex"
+			],
+			[
+				"getL",
+				"getLabel"
+			],
+			[
+				"curren",
+				"currentStatus"
+			],
+			[
+				"eul",
+				"euclideanTour"
+			],
+			[
+				"euclid",
+				"euclideanSubTour"
+			],
+			[
+				"eucl",
+				"euclideanSubTour"
+			],
+			[
+				"add",
+				"addEdgeToTour"
+			],
+			[
+				"test",
+				"testTour"
+			],
+			[
+				"node",
+				"nodeCounter"
+			],
+			[
+				"number",
+				"numberOfEdgesInTour"
+			],
+			[
+				"euc",
+				"euclideanSubTour"
+			],
+			[
+				"euclidean",
+				"euclideanSubTour"
+			],
+			[
+				"sub",
+				"euclideanSubTour"
+			],
+			[
+				"tourC",
+				"tourColors"
+			],
+			[
+				"tourColo",
+				"tourColorIndex"
+			],
+			[
+				"next",
+				"nextEdge"
+			],
+			[
+				"tourc",
+				"tourColorIndex"
+			],
+			[
+				"tourCo",
+				"tourColors"
+			],
+			[
+				"tour",
+				"tourStartOddVertex"
+			],
+			[
+				"semi",
+				"semiEuclideanGraph"
+			],
+			[
+				"fir",
+				"firstOddVertex"
+			],
+			[
+				"edge",
+				"edgeCounter"
+			],
+			[
+				"sta",
+				"statusID"
+			],
+			[
+				"find",
+				"findNewStartingVertex"
+			],
+			[
+				"check",
+				"checkForEuclideanTour"
+			],
+			[
+				"merge",
+				"mergeTour"
+			],
+			[
+				"findNe",
+				"findNextVertexForTour"
+			],
+			[
+				"inv",
+				"invalidGraph"
+			],
+			[
+				"ini",
+				"initializeGraph"
+			],
+			[
 				"save",
 				"saveSection"
 			],
@@ -18,10 +174,6 @@
 			[
 				"deleteTem",
 				"deleteTemplateRequest"
-			],
-			[
-				"sub",
-				"submitContactForm"
 			],
 			[
 				"section",
@@ -46,24 +198,51 @@
 			[
 				"aj",
 				"ajax	$.ajax()"
-			],
-			[
-				"add",
-				"addClass	.addClass()"
-			],
-			[
-				"number",
-				"numberTwo"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
+			"contents": "<!DOCTYPE html>\n<head>\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n    <meta charset=\"utf-8\">\n    <meta name=\"description\" content=\"Diese Seite demonstriert den Hierholzer Algorithmus zum Finden von Eulerwegen.\" />\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=9\">\n    <meta name=\"author\" content=\"Mark J. Becker\">\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"css/tum-theme2/jquery-ui-1.10.1.custom.min.css\" />\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"css/style.css\" />\n    <script src=\"js/jquery-1.9.1.min.js\" type=\"text/javascript\"></script>\n    <script src=\"js/jquery-ui-1.10.1.custom.min.js\" type=\"text/javascript\"></script>\n    <script src=\"js/lang.js\" type=\"text/javascript\"></script>\n    <script src=\"js/utilities.js\" type=\"text/javascript\"></script>\n    <script src=\"js/siteAnimation.js\" type=\"text/javascript\"></script>\n    <script src=\"js/canvasDrawing.js\" type=\"text/javascript\"></script>\n    <script src=\"js/graph.js\" type=\"text/javascript\"></script>\n    <script src=\"js/algorithm.js\" type=\"text/javascript\"></script>\n    <script src=\"js/aufgabe1.js\" type=\"text/javascript\"></script>\n    <script src=\"js/aufgabe2.js\" type=\"text/javascript\"></script>\n\n    <title>Der Hierholzer Algorithmus</title>\n</head>\n<body>\n    <noscript>\n        <div class=\"ui-widget\">\n            <div class=\"ui-state-error ui-corner-all\" style=\"padding: .7em;\">\n                <div class=\"ui-icon ui-icon-alert errorIcon\"></div>\n                <strong>Bitte aktivieren Sie Javascript!</strong>\n                <ul style=\"margin: 0px;\">\n                    <li>\n                        Diese Seite benötigt Javascript, um ordnungsgemäß angezeigt zu werden.\n                    </li>\n                    <li>\n                        In Ihrem Browser ist Javascript aktuell deaktiviert. Eine Anleitung zur Aktivierung von Javascript finden Sie beispielsweise <a href=\"http://www.enable-javascript.com/\">hier</a>.\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </noscript>\n    <script>\n        $(document).ready(initializeSiteLayout);\n        LNG.setLanguage('de');\n    </script>\n    <header>\n        <img src=\"img/titel.png\" alt=\"Kürzeste Wege in Graphen: Der Bellman-Ford-Algorithmus\">\n        <img style=\"position:absolute; right:0px\" src=\"img/TUMLogo.png\" alt=\"Technische Universität München\">\n    </header>\n    <div id=\"tabs\">\n        <ul>\n            <li><a href=\"#tab_te\"><span>Einführung</span></a></li>\n            <li><a href=\"#tab_tg\"><span>Graph erstellen</span></a></li>\n            <li><a href=\"#tab_ta\"><span>Algorithmus ausführen</span></a></li>\n            <!-- <li><a href=\"#tab_ti\"><span>Beschreibung des Algorithmus</span></a></li>\n            <li><a href=\"#tab_tf1\"><span>Forschungsaufgabe 1</span></a></li>\n            <li><a href=\"#tab_tf2\"><span>Forschungsaufgabe 2</span></a></li>\n            <li><a href=\"#tab_tw\"><span>Weiteres</span></a></li> -->\n        </ul>\n\n        <!-- TAB Einführung -->\n        <div id=\"tab_te\">\n            <div id=\"te_div_Einfuehrungstext\">\n                <p style=\"color: red;\">\n                    TODO\n                </p>\n                <!-- <div id=\"te_div_beispiel1Container\"><img id=\"te_img_beispiel1\" src=\"img/beispiel1.png\" alt=\"Einfacher Graph mit 4 Knoten.\"><p>Wie komme ich am günstigsten von links nach rechts?</p></div>\n                <h1>Kürzeste Wege und günstigste Wege</h1>\n                <p>In vielen Anwendungen kann es nützlich sein, den kürzesten Weg von a nach b zu berechnen.\n                Dabei muss die Länge eines Weges nicht unbedingt die Länge in Metern sein: Genauso gut kann man die Kosten eines Weges betrachten &ndash; man sucht also den <strong>günstigsten Weg</strong>.</p>\n                <h2>Hier wird der Bellman-Ford-Algorithmus vorgestellt, der günstigste Wege auch bei negativen Kosten berechnet.</h2>\n                <div id =\"te_div_Entscheidung\">\n                    <h2>Was möchtest du zuerst tun?</h2>\n                    <button id=\"te_button_gotoDrawGraph\">Den Algorithmus testen!</button> <button id=\"te_button_gotoIdee\">Genauere Beschreibung des Algorithmus lesen</button>\n                </div>\n                <p></p> -->\n            </div>\n        </div>\n\n        <!-- TAB Graph Erstellen -->\n        <div id=\"tab_tg\">\n            <div>\n                <div class=\"canvasWrapper\">\n                    <canvas class=\"graphCanvas\" id=\"tg_canvas_graph\" width=\"700\" height=\"500\">\n                        Ihr Browser unterstützt kein HTML5 Canvas. Bitte verwenden Sie einen modernen Browser, z.B.<a href=\"http://www.mozilla.org/de/firefox\">Mozilla Firefox</a>\n                    </canvas>\n                    <div class=\"Legende\" id=\"tg_div_Legende\">\n                        <h2 class=\"LegendeHeader\"><button class=\"LegendeMin\"></button> Legende</h2>\n                        <div class=\"LegendeText\">\n                            <table>\n                                <tr>\n                                    <td class=\"LegendeTabelle\"><img src=\"img/knoten.png\" alt=\"Knoten\" class=\"LegendeIcon\"></td>\n                                    <td><span>Knoten</span></td>\n                                </tr>\n                                <tr>\n                                    <!-- TODO -->\n                                    <td class=\"LegendeTabelle\"><img src=\"img/kante.png\" alt=\"Knoten\" class=\"LegendeIcon\"></td>\n                                    <td><span>Kante mit Gewicht 50</span></td>\n                                </tr>\n                            </table>\n                        </div>\n                    </div>\n                    <div class=\"LegendeMinimized\">\n                        <h2 class=\"LegendeHeader\"><button class=\"LegendeMin\"></button> Legende</h2>\n                    </div>\n                </div>\n                <div id=\"tg_div_statusWindow\" class=\"statusWindow\">\n                    <h2>Auf welchem Graph soll der Algorithmus ausgeführt werden?</h2>\n                    <div id=\"tg_div_statusErklaerung\">\n                        <p>Um einen Knoten zu erstellen, mache einen Doppelklick in das Zeichenfeld.</p>\n                        <p>Um eine Kante zu erstellen, klicke zunächst auf den Ausgangsknoten und dann auf den Zielknoten.</p>\n                        <p>Das Kantengewicht kann mit einem Doppelklick auf die Kante verändert werden.</p>\n                        <p>Ein Rechtsklick löscht Kanten und Knoten.</p>\n                    </div>\n                    <h3>Keine Lust, selbst einen Graph zu erstellen?<br></h3>\n                    <h3>Nimm ein fertiges Beispiel!<br></h3>\n                    <select id=\"tg_select_GraphSelector\" name=\"Wähle einen Graphen\">\n                        <option selected id=\"tg_selectoption_empty\">Selbsterstellter Graph</option>\n                        <option>Zufallsgraph</option>\n                        <option>Standardbeispiel</option>\n                        <option>Negativer Kreis</option>\n                        <option>Positiver Kreis</option>\n                        <option>Großstädte Europas</option>\n                    </select>\n                    <p><button id=\"tg_button_gotoAlgorithmTab\">Fertig &ndash; weiter zum Algorithmus!</button></p>\n                </div>\n            </div>\n            <div title=\"Graph erstellen\" class=\"tabIntroDialog\">\n                <h2>Auf welchem Graph soll der Algorithmus ausgeführt werden?</h2>\n                <p>Um einen Knoten zu erstellen, mache einen Doppelklick in das Zeichenfeld.</p>\n                <p>Um eine Kante zu erstellen, klicke zunächst auf den Ausgangsknoten und dann auf den Zielknoten.</p>\n                <p>Das Kantengewicht kann mit einem Doppelklick auf die Kante verändert werden.</p>\n                <p>Ein Rechtsklick löscht Kanten und Knoten.</p>\n            </div>\n        </div>\n\n        <!-- TAB Algorithmus ausführen -->\n        <div id=\"tab_ta\">\n            <div>\n                <div class=\"canvasWrapper\">\n                    <canvas class=\"graphCanvas\" id=\"ta_canvas_graph\" width=\"700\" height=\"500\">\n                        Ihr Browser unterstützt kein HTML5 Canvas. Bitte verwenden Sie einen modernen Browser, z.B.<a href=\"http://www.mozilla.org/de/firefox\">Mozilla Firefox</a>\n                    </canvas>\n                    <div class=\"Legende\">\n                        <h2 class=\"LegendeHeader\"><button class=\"LegendeMin\"></button> Legende</h2>\n                        <div class=\"LegendeText\">\n                            <table>\n                                <tr>\n                                    <td class=\"LegendeTabelle\"><img src=\"img/startknoten.png\" alt=\"Knoten\" class=\"LegendeIcon\"></td>\n                                    <td><span>Startknoten, von dem aus die Entfernungen und günstigsten Wege berechnet werden.</span></td>\n                                </tr>\n                                <tr class=\"LegendeZeileClickable\" id=\"ta_tr_LegendeClickable\" title=\"Klicke zum Ein-/Ausblenden\">\n                                    <td class=\"LegendeTabelle\"><img src=\"img/markierteKante.png\" alt=\"Knoten\" class=\"LegendeIcon\"></td>\n                                    <td><span>\"Vorgängerkante\", die der günstigste Weg zum Knoten benutzt.</span></td>\n                                </tr>\n                            </table>\n                        </div>\n                    </div>\n                    <div class=\"LegendeMinimized\">\n                        <h2 class=\"LegendeHeader\"><button class=\"LegendeMin\"></button> Legende</h2>\n                    </div>\n                </div>\n                <div id=\"ta_div_statusWindow\" class=\"statusWindow\">\n                    <h2 class=\"\">Status des Algorithmus</h2>\n                    <div id=\"ta_div_abspielbuttons\">\n                    </div>\n                    <div id=\"ta_div_statusTabs\">\n                         <ul>\n                            <li><a href=\"#ta_div_statusErklaerung\">Erklärung</a></li>\n                            <li><a href=\"#ta_div_statusPseudocode\">Pseudocode</a></li>\n                        </ul>\n                        <div id=\"ta_div_statusErklaerung\">\n                            <h3>Wähle zuerst einen Startknoten aus!</h3>\n                            <p>Von diesem Knoten aus werden die Abstände zu den anderen Knoten berechnet.</p>\n                            <p>Klicke einfach auf den entsprechenden Knoten im Zeichenbereich.</p>\n                        </div>\n                        <div class=\"PseudocodeWrapper\" id=\"ta_div_statusPseudocode\">\n                            <p class=\"pseudocode\" id=\"ta_p_l1\">BEGIN</p>\n                            <p class=\"pseudocode\" id=\"ta_p_l2\">  d(v[1]) &larr; 0</p>\n                            <p class=\"pseudocode\" id=\"ta_p_l3\">  FOR j = 2,..,n DO</p>\n                            <p class=\"pseudocode\" id=\"ta_p_l4\">    d(v[j]) &larr; &#8734;</p>\n                            <p class=\"pseudocode\" id=\"ta_p_l5\">  FOR i = 1,..,(|V|-1) DO</p>\n                            <p class=\"pseudocode\" id=\"ta_p_l6\">    FOR ALL (u,v) aus E DO</p>\n                            <p class=\"pseudocode\" id=\"ta_p_l7\">      d(v) &larr; min(d(v), d(u)+l(u,v))</p>\n                            <p class=\"pseudocode\" id=\"ta_p_l8\">  FOR ALL (u,v) aus E DO</p>\n                            <p class=\"pseudocode\" id=\"ta_p_l9\">    IF d(v) > d(u) + l(u,v) DO</p>\n                            <p class=\"pseudocode\" id=\"ta_p_l10\">      Meldung: \"Negativer Kreis\"</p>\n                            <p class=\"pseudocode\" id=\"ta_p_l11\">END</p>\n                            <h3>Status der Variablen:</h3>\n                            <table class=\"algoInformationen\">\n                                <tr>\n                                    <th class=\"algoInfoTH\"><span>i</span></th>\n                                    <th class=\"algoInfoTH\"><span>d(u)</span></th>\n                                    <th class=\"algoInfoTH\"><span>d(v)</span></th>\n                                    <th class=\"algoInfoTH\"><span>l(u,v)</span></th>\n                                </tr>\n                                <tr>\n                                    <td id=\"ta_td_vari\" class=\"algoInfoTD\"></td>\n                                    <td id=\"ta_td_vardu\" class=\"algoInfoTD\"></td>\n                                    <td id=\"ta_td_vardv\" class=\"algoInfoTD\"></td>\n                                    <td id=\"ta_td_varluv\" class=\"algoInfoTD\"></td>\n                                </tr>\n                            </table>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div title=\"Algorithmus ausführen\" class=\"tabIntroDialog\">\n                <h2>Den Bellman-Ford-Algorithmus ausführen</h2>\n                <p>In diesem Schritt sehen wir, wie der Algorithmus arbeitet.</p>\n                <p>Wähle zunächst den Knoten aus, von dem aus die günstigsten Wege berechnet werden.</p>\n                <p>Rechts vom Graph kannst du die Ausführung kontrollieren.</p>\n            </div>\n            <div id=\"ta_div_confirmTabChange\" title=\"Algorithmus abbrechen?\" class=\"tabChangeWarningDialog\">\n                <h2>Beim Wechsel des Tabs wird der Algorithmus abgebrochen.</h2>\n                <p>Du kannst die Anwendung <a href=\"#\" target=\"_blank\" tabindex=-1> in einem anderen Browserfenster</a> öffnen, um parallel einen anderen Tab zu lesen.</p>\n            </div>\n        </div>\n\n        <!-- TAB Beschreibung des Algorithmus -->\n        <div id=\"tab_ti\" style=\"display: none;\">\n            <div id=\"ti_div_Einfuehrungstext\">\n                <div class=\"BeispielbildContainer\"><img id=\"ti_img_beispiel1\" src=\"img/beispiel1.png\" alt=\"Einfacher Graph mit 4 Knoten.\"><p>Wie komme ich am günstigsten von links nach rechts?</p></div>\n                <h1>Kürzeste Wege</h1>\n                <p>In vielen Anwendungen kann es nützlich sein, den kürzesten Weg von a nach b zu berechnen.\n                Dabei muss die Länge eines Weges nicht unbedingt die Länge in Metern sein: Genauso gut kann man die Fahrzeit eines Weges betrachten oder, ob wir für dessen Benutzung Geld zahlen müssen &ndash; oder Geld erhalten.</p>\n                <p><strong>Im Allgemeinen sprechen wir von Kosten</strong>.\n                Dementsprechend weist man jedem Teilstück des Weges &ndash; auch \"Kante\" genannt &ndash; Kosten zu.</p>\n                <p>Der Algorithmus von Dijkstra berechnet kürzeste &ndash; oder eben kostengünstigste Wege, wenn alle Kosten positive Zahlen sind.\n                Wenn man allerdings auch negative Zahlen zulässt, scheitert der Algorithmus.</p>\n                <p>Der Bellman-Ford-Algorithmus dagegen kann auch mit negativen Kosten arbeiten.</p>\n                <p>Diese können beispielsweise für einen Taxifahrer entstehen, wenn er einen Fahrgast transportiert und für die Fahrt mehr Geld einnimmt, als ihn Benzin und Fahrzeug für die Fahrt kosten. Fährt er ohne Fahrgast, sind seine Kosten positiv.</p>\n                <h1>Idee des Algorithmus</h1>\n                <div class=\"BeispielbildContainer\">\n                    <img id=\"ti_img_beispiel4_1\" src=\"img/beispiel4_1.png\" alt=\"Kante vor Update\"><p>Die Kante ist eine Abkürzung:<br> Wir wissen, dass es uns 20 kostet, um vom Startknoten zum linken Knoten zu gelangen. Der Weg vom linken zum rechten Knoten kostet 1.<br> Also kommt man vom Startknoten zum rechten Knoten mit Kosten 21.</p>\n                    <img id=\"ti_img_beispiel4_2\" src=\"img/beispiel4_2.png\" alt=\"Kante vor Update\">\n                </div>\n                <p>Der Bellman-Ford-Algorithmus berechnet die <strong>Kosten</strong> der günstigsten Wege von einem Startknoten aus zu allen anderen Knoten im Graph. Er kann dadurch die günstigsten Wege selbst konstruieren.</p>\n                <p>Der Algorithmus geht dabei iterativ vor, er geht also zunächst von einer sehr schlechten Schätzung der Kosten aus, und verbessert diese so lange, bis die korrekten Werte gefunden sind.</p>\n                <p>Die erste Schätzung ist:</p>\n                <ul>\n                    <li> <strong>Der Startknoten hat Kosten 0</strong>, denn seine Entfernung zu sich selbst ist natürlich 0.\n                    <li> <strong>Alle anderen Knoten haben Kosten unendlich</strong>, also die schlechtestmögliche Schätzung.\n                </ul>\n                <p>Danach prüft er alle Kanten auf folgende Bedingung: <strong>Sind die Kosten des Anfangsknotens der Kante plus die Kosten für die Benutzung der Kante niedriger als die Kosten des Zielknotens der Kante?</strong></p>\n                <p>Falls dies der Fall ist, so haben wir eine <strong>Abkürzung</strong> gefunden: Es ist besser, die eben geprüfte Kante zu nutzen, als den bisherigen Weg. \n                    Deshalb werden die Kosten des Zielknotens der Kante aktualisiert: Sie entsprechen jetzt genau den Kosten des Anfangsknotens der Kante plus den Kosten für die Benutzung der Kante (siehe Beispiel rechts).</p>\n                <p>Alle Kanten des Graphen zu betrachten und die Kosten der Knoten zu aktualisieren, nennen wir <strong>Phase</strong>. Leider reicht es nicht aus, alle Kanten nur einmal zu betrachten. \n                    Nach der ersten Phase haben wir die Kosten für alle Knoten korrekt berechnet, für die der günstigste Weg nur eine Kante benutzt. Nach 2 Phasen haben wir schon die Wege,\n                    die maximal 2 Kanten benutzen, korrekt berechnet und so weiter.</p>\n                <div class=\"BeispielbildContainer\"><img id=\"ti_img_beispiel3\" src=\"img/beispiel3.png\" alt=\"Graph mit eingezeichneten Abstandswerten\">\n                    <p>Der grüne Weg vom Startknoten ist der günstigste Weg. Er benutzt 3 Kanten.</p>\n                </div>\n                <p>Wie viele Phasen brauchen wir also? Hier hilft uns die Beobachtung, dass <strong>ein kürzester Weg weniger Kanten benutzen muss, als es Knoten im Graph gibt.</strong>\n                    Wir brauchen also eine Phase weniger, als es Knoten im Graph gibt. Ein kürzester Weg, der mehr Kanten benutzte, als es Knoten gibt, würde einen Knoten zweimal besuchen und somit im Kreis laufen.</p>\n                <h1>Konstruktion des günstigsten Weges</h1>\n                <p>Bei jeder Aktualisierung der Kosten speichert der Algorithmus die Kante, mit deren Hilfe er aktualisiert wurde, als <strong>Vorgängerkante</strong> des Knotens.</p>\n                <p>Am Ende des Algorithmus kann dann der günstigste Weg für jeden Knoten konstruiert werden, indem man so lange über Vorgängerkanten läuft, bis man am Startknoten angekommen ist.</p>\n                <h1>Kreise mit negativem Gewicht</h1>\n                <div class=\"BeispielbildContainer\"><img id=\"ti_img_beispiel2\" src=\"img/beispiel2.png\" alt=\"Graph mit negativem Kreis.\"><p>Hier müsste ein günstigster Weg unendlich oft im Kreis laufen. Der Weg würde bei jedem Durchlauf kürzer werden.</p></div>\n                <p>Falls im Graph ein Kreis existiert, bei dem die Summe der Kantengewichte negativ ist &ndash; ein <strong>negativer Kreis</strong>, wird der Algorithmus möglicherweise keinen günstigsten Weg finden.</p>\n                <p>Wie man an dem Beispiel rechts schon sehen kann, sind Wege in diesem Fall nämlich möglicherweise unendlich günstig &ndash; man läuft einfach immer weiter durch den Kreis.</p>\n                <p>Dieses Problem tritt auf, falls der negative Kreis vom Startknoten aus erreichbar ist.\n                    Erfreulicherweise kann der Algorithmus aber entdecken, ob ein solcher negativer Kreis existiert.\n                    Dies wird im letzten Teil des Algorithmus überprüft.</p>\n                <p>Ein erreichbarer negativer Kreis existiert genau dann, wenn nach dem Durchlaufen aller Phasen immer noch Abkürzungen möglich sind. \n                    <strong>Der Algorithmus überprüft also am Ende nochmals bei allen Kanten</strong>, ob die Kosten des Anfangsknotens der Kante plus die Kosten für die Benutzung der Kante niedriger sind als die Kosten des Zielknotens der Kante.\n                    Falls dies bei einer Kante der Fall ist, so wird die Meldung \"negativer Kreis gefunden\" ausgegeben.</p>\n                <p>Mithilfe der Vorgängerkanten kann man den negativen Kreis sogar finden: Man läuft so lange zurück, bis man im Kreis gelaufen ist (und das Gewicht des Kreises negativ ist).</p>\n                <h1>Was nun?</h1>\n                <div class=\"Entscheidungsweg\" id=\"ti_div_EntscheidungLeft\">\n                    <h3>Einen Graph erstellen und den Algorithmus durchspielen</h3>\n                    <button id=\"ti_button_gotoDrawGraph\">Graph erstellen und daran den Algorithmus testen</button>\n                    <button id=\"ti_button_gotoAlgorithm\">Algorithmus am fertigen Beispiel ausprobieren</button>\n                </div>\n                <div class=\"Entscheidungsweg\" id=\"ti_div_EntscheidungRight\">\n                    <h3>Sein Wissen an den Forschungsaufgaben testen</h3>\n                    <button id=\"ti_button_gotoFA1\">Forschungsaufgabe: Wie würde der Algorithmus entscheiden?</button><br>\n                    <button id=\"ti_button_gotoFA2\">Forschungsaufgabe: Wie ist die optimale Sortierung der Knoten?</button>\n                </div>\n            </div>\n        </div>\n\n        <!-- TAB Forschungsaufgabe 1 -->\n        <div id=\"tab_tf1\" style=\"display: none;\">\n            <div>\n                <div class=\"canvasWrapper\">\n                    <canvas class=\"graphCanvas\" id=\"tf1_canvas_graph\" width=\"700\" height=\"500\">\n                        Ihr Browser unterstützt kein HTML5 Canvas. Bitte verwenden Sie einen modernen Browser, z.B.<a href=\"http://www.mozilla.org/de/firefox\">Mozilla Firefox</a>\n                    </canvas>\n                    <div class=\"Legende\">\n                        <h2 class=\"LegendeHeader\"><button class=\"LegendeMin\"></button> Legende</h2>\n                        <div class=\"LegendeText\">\n                            <table>\n                                <tr>\n                                    <td class=\"LegendeTabelle\"><img src=\"img/startknoten.png\" alt=\"Knoten\" class=\"LegendeIcon\"></td>\n                                    <td><span>Startknoten, von dem aus die Entfernungen und günstigsten Wege berechnet werden.</span></td>\n                                </tr>\n                                <tr class=\"LegendeZeileClickable\" id=\"tf1_tr_LegendeClickable\" title=\"Klicke zum Ein-/Ausblenden\">\n                                    <td class=\"LegendeTabelle\"><img src=\"img/markierteKante.png\" alt=\"Knoten\" class=\"LegendeIcon\"></td>\n                                    <td><span>\"Vorgängerkante\", die der günstigste Weg zum Knoten benutzt.</span></td>\n                                </tr>\n                            </table>\n                        </div>\n                    </div>\n                    <div class=\"LegendeMinimized\">\n                        <h2 class=\"LegendeHeader\"><button class=\"LegendeMin\"></button> Legende</h2>\n                    </div>\n                </div>\n                <div id=\"tf1_div_statusWindow\" class=\"statusWindow\">\n                    <h2 class=\"\">Prüfe dein Wissen: Wie würde der Algorithmus entscheiden?</h2>\n                    <select id=\"tf1_select_aufgabeGraph\" name=\"Wähle einen Graphen\">\n                        <option selected>Selbsterstellter Graph</option>\n                        <option>Standardbeispiel</option>\n                        <option>Negativer Kreis</option>\n                        <option>Positiver Kreis</option>\n                    </select>\n                    <div id=\"tf1_div_abspielbuttons\">\n                    </div>\n                    <div id=\"tf1_div_statusTabs\">\n                         <ul>\n                            <li><a href=\"#tf1_div_statusErklaerung\">Erklärung</a></li>\n                            <li><a href=\"#tf1_div_statusPseudocode\">Pseudocode</a></li>\n                        </ul>\n                        <div id=\"tf1_div_statusErklaerung\">\n                            <h3>Wähle zuerst einen Startknoten aus!</h3>\n                            <p>Von diesem Knoten aus werden die Abstände zu den anderen Knoten berechnet.</p>\n                            <p>Klicke einfach auf den entsprechenden Knoten im Zeichenbereich.</p>\n                        </div>\n                        <div class=\"PseudocodeWrapper\" id=\"tf1_div_statusPseudocode\">\n                            <p class=\"pseudocode\" id=\"tf1_p_l1\">BEGIN</p>\n                            <p class=\"pseudocode\" id=\"tf1_p_l2\">  d(v[1]) &larr; 0</p>\n                            <p class=\"pseudocode\" id=\"tf1_p_l3\">  FOR j = 2,..,n DO</p>\n                            <p class=\"pseudocode\" id=\"tf1_p_l4\">    d(v[j]) &larr; &#8734;</p>\n                            <p class=\"pseudocode\" id=\"tf1_p_l5\">  FOR i = 1,..,(|V|-1) DO</p>\n                            <p class=\"pseudocode\" id=\"tf1_p_l6\">    FOR ALL (u,v) aus E DO</p>\n                            <p class=\"pseudocode\" id=\"tf1_p_l7\">      d(v) &larr; min(d(v), d(u)+l(u,v))</p>\n                            <p class=\"pseudocode\" id=\"tf1_p_l8\">  FOR ALL (u,v) aus E DO</p>\n                            <p class=\"pseudocode\" id=\"tf1_p_l9\">    IF d(v) > d(u) + l(u,v) DO</p>\n                            <p class=\"pseudocode\" id=\"tf1_p_l10\">     Meldung: \"Negativer Kreis\"</p>\n                            <p class=\"pseudocode\" id=\"tf1_p_l11\">END</p>\n                            <h3>Status der Variablen:</h3>\n                            <table class=\"algoInformationen\">\n                                <tr>\n                                    <th class=\"algoInfoTH\"><span>i</span></th>\n                                    <th class=\"algoInfoTH\"><span>d(u)</span></th>\n                                    <th class=\"algoInfoTH\"><span>d(v)</span></th>\n                                    <th class=\"algoInfoTH\"><span>l(u,v)</span></th>\n                                </tr>\n                                <tr>\n                                    <td id=\"tf1_td_vari\" class=\"algoInfoTD\"></td>\n                                    <td id=\"tf1_td_vardu\" class=\"algoInfoTD\"></td>\n                                    <td id=\"tf1_td_vardv\" class=\"algoInfoTD\"></td>\n                                    <td id=\"tf1_td_varluv\" class=\"algoInfoTD\"></td>\n                                </tr>\n                            </table>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div title=\"Forschungsaufgabe 1\" class=\"tabIntroDialog\">\n                <h2>In diesem Teil kann man sein Wissen testen: Wie würde der Algorithmus entscheiden?</h2>\n                <p>\n                    Der Algorithmus wird normal ausgeführt, stoppt aber an einigen Stellen. \n                    Du musst dann vorhersagen, wie der Algorithmus entscheiden würde.\n                </p>\n                <p>Tipp: Vorher nochmals die Beschreibung des Algorithmus durchlesen.</p>\n            </div>\n            <div id=\"tf1_div_confirmTabChange\" title=\"Aufgabe abbrechen?\" class=\"tabChangeWarningDialog\">\n                <h2>Beim Wechsel des Tabs wird die Aufgabe abgebrochen.</h2>\n                <p>Du kannst die Anwendung <a href=\"#\" target=\"_blank\" tabindex=-1> in einem anderen Browserfenster</a> öffnen, um parallel einen anderen Tab zu lesen.</p>\n            </div>\n        </div>\n\n        <!-- TAB Forschungsaufgabe 2 -->\n        <div id=\"tab_tf2\" style=\"display: none;\">\n            <div>\n                <div class=\"canvasWrapper\">\n                    <canvas class=\"graphCanvas\" id=\"tf2_canvas_graph\" width=\"700\" height=\"500\">\n                        Ihr Browser unterstützt kein HTML5 Canvas. Bitte verwenden Sie einen modernen Browser, z.B.<a href=\"http://www.mozilla.org/de/firefox\">Mozilla Firefox</a>\n                    </canvas>\n                    <div class=\"Legende\">\n                        <h2 class=\"LegendeHeader\"><button class=\"LegendeMin\"></button> Legende</h2>\n                        <div class=\"LegendeText\">\n                            <table>\n                                <tr>\n                                    <td class=\"LegendeTabelle\"><img src=\"img/startknoten.png\" alt=\"Knoten\" class=\"LegendeIcon\"></td>\n                                    <td><span>Startknoten, von dem aus die Entfernungen und günstigsten Wege berechnet werden.</span></td>\n                                </tr>\n                                <tr class=\"LegendeZeileClickable\" id=\"tf2_tr_LegendeClickable\" title=\"Klicke zum Ein-/Ausblenden\">\n                                    <td class=\"LegendeTabelle\"><img src=\"img/markierteKante.png\" alt=\"Knoten\" class=\"LegendeIcon\"></td>\n                                    <td><span>\"Vorgängerkante\", die der günstigste Weg zum Knoten benutzt.</span></td>\n                                </tr>\n                            </table>\n                        </div>\n                    </div>\n                    <div class=\"LegendeMinimized\">\n                        <h2 class=\"LegendeHeader\"><button class=\"LegendeMin\"></button> Legende</h2>\n                    </div>\n                </div>\n                <div id=\"tf2_div_statusWindow\" class=\"statusWindow\">\n                    <h2>Wie ist die optimale Sortierung der Kanten?</h2>\n                    <div id=\"tf2_div_Abspielbuttons\"></div>\n                    <select id=\"tf2_select_aufgabeGraph\" name=\"Wähle einen Graphen\">\n                        <option selected>Selbsterstellter Graph</option>\n                        <option>Standardbeispiel</option>\n                        <option>Negativer Kreis</option>\n                        <option>Positiver Kreis</option>\n                    </select>\n                    <div id=\"tf2_div_statusErklaerung\">\n                        <h3>Wähle zuerst den Graphen, mit dem du arbeiten möchtest.</h3>\n                        <h3>Klicke danach auf den Startknoten, um die Aufgabe zu beginnen.</h3>\n                        <p>Klicke danach in der Reihenfolge auf die Kanten, in der Sie der Algorithmus betrachten soll.</p>\n                    </div>\n                    <div id=\"tf2_div_Frage\">\n                    </div>\n                    <div id=\"tf2_div_Antworten\">\n                    </div>\n                </div>\n            </div>\n            <div title=\"Forschungsaufgabe 2\" class=\"tabIntroDialog\">\n                <h2>\n                    Wie ist die optimale Sortierung der Kanten?\n                </h2>\n                <p>Der Bellman-Ford-Algorithmus kann schon nach einer einzigen Phase alle Entfernungen korrekt berechnet haben.</p>\n                <p>Dafür müssen die Kanten allerdings in der <strong>optimalen Reihenfolge</strong> betrachtet werden.\n                    <strong>Diese Reihenfolge ist aber nicht leicht zu finden</strong> &ndash; das dauert genauso lange wie der Bellman-Ford-Algorithmus selbst.</p>\n                <img src=\"img/FA2BeispielGut.png\" alt=\"Diese Reihenfolge ist sinnvoll\">\n                <img src=\"img/FA2BeispielSchlecht.png\" id=\"tf2_img_beispielSchlecht\" alt=\"Diese Reihenfolge ist weniger sinnvoll\">\n                <p>Im Beispiel sieht man: Links ist die Reihenfolge sinnvoll, der Algorithmus kann schon nach einer Runde alle Kosten korrekt berechnet haben. Rechts ist das nicht der Fall.</p>\n                <p>In dieser Aufgabe kannst du experimentieren, wie viele Phasen der Bellman-Ford-Algorithmus bei verschiedenen Sortierungen benötigt.</p>\n            </div>\n            <div id=\"tf2_div_confirmTabChange\" title=\"Aufgabe abbrechen?\" class=\"tabChangeWarningDialog\">\n                <h2>Beim Wechsel des Tabs wird die Aufgabe abgebrochen.</h2>\n                <p>Du kannst die Anwendung <a href=\"#\" target=\"_blank\" tabindex=-1> in einem anderen Browserfenster</a> öffnen, um parallel einen anderen Tab zu lesen.</p>\n            </div>\n        </div>\n\n        <!-- TAB Weiteres -->\n        <div id=\"tab_tw\" style=\"display: none;\">\n            <div id=\"tw_Accordion\">\n                <h3>Wie sieht der (Pseudo-)Code des Algorithmus aus?</h3>\n                <div><pre><code>Eingabe: Gewichteter, ungerichteter Graph G=(V,E) mit Gewichtsfunktion l.\nAusgabe: Eine Liste {d(v[j]) : j = 1,..,n}, die die Distanzen dist(v[1],v[j]) = d(v[j]) enthält,\n         falls von v[1] aus keine Kreise negativer Länge erreichbar sind. \n         Die Meldung \"Kreis negativer Länge\", falls von v[1] ein solcher Kreis erreichbar ist.</code></pre>\n<hr><pre><code>\nBEGIN\n   d(v[1]) &larr; 0\n   FOR j = 2,..,n DO\n      d(v[j]) &larr; &#8734;\n   FOR i = 1,..,(|V|-1) DO\n      FOR ALL (u,v) aus E DO\n         d(v) &larr; min(d(v), d(u) + l(u,v))\n   FOR ALL (u,v) aus E DO\n      IF d(v) > d(u) + l(u,v) DO\n         Meldung: \"Kreis negativer Länge\"\nEND</code></pre></div>\n                <h3>Wie schnell ist der Algorithmus?</h3>\n                <div>\n                    <h2>Geschwindigkeit von Algorithmen</h2>\n                    <p>Die Geschwindigkeit von Algorithmen wird üblicherweise in der <strong>Anzahl an Einzelschritten</strong> gemessen, die der Algorithmus bei der Ausführung benötigt.</p>\n                    <p>Einzelschritte sind beispielsweise:</p>\n                    <ul>\n                      <li>Zuweisungen &ndash; Weise Knoten 1 den Wert 20 zu.</li>\n                      <li>Vergleiche  &ndash; Ist 20 größer als 23?</li>\n                      <li>Vergleich und Zuweisung  &ndash; Falls 20 größer als 15 ist, setze Variable <var>n</var> auf 20.</li>\n                      <li>Einfache Arithmetische Operationen &ndash; Was ist 5 + 5 ?</li>\n                    </ul>\n                    <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen. \n                        Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus.\n                       Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>\n                    <h2>Laufzeit des Bellman-Ford-Algorithmus</h2>\n                    <p>Nehmen wir an, dass der Bellman-Ford-Algorithmus auf einem Graph mit <var>n</var> Knoten und <var>m</var> Kanten ausgeführt wird.</p>\n                    <p>Am Anfang wird jedem Knoten der Wert &#8734; zugewiesen. Dafür benötigen wir <var>n</var> Einzelschritte.</p>\n                    <p>Danach kommen die <var>n-1</var> Phasen des Algorithmus &ndash; eine Phase weniger als es Knoten gibt. \n                        In jeder Phase wird jede Kante des Graphen überprüft, und möglicherweise wird der Abstandswert ihres Zielknotens verändert.\n                        Wir können diese Überprüfung und Zuweisung als einen Schritt sehen und haben also in jeder Phase <var>m</var> Einzelschritte.\n                        Insgesamt benötigen die Phasen also <var>m &middot; (n-1)</var> Einzelschritte.</p>\n                    <p>Schließlich überprüft der Algorithmus noch, ob es negative Kreise gibt. Dafür betrachtet er jede Kante einmal.\n                        Insgesamt braucht er für die Überprüfung also <var>m</var> Einzelschritte.</p>\n                    <p><strong>Die Gesamtlaufzeit des Algorithmus</strong> ist von der Größenordnung <var>m &middot; n</var> Schritte, weil die <var>n</var> Schritte zu Beginn und die <var>m</var>\n                        Schritt am Schluss des Algorithmus vernachlässigbar gegenüber <var>m &middot; (n-1)</var> sind.</p>\n                </div>\n                <h3>Wie beweist man, dass der Algorithmus stets ein korrektes Ergebnis berechnet?</h3>\n                <div>\n                    <h2>Ein mathematischer Beweis</h2>\n                    <p>In diesem Abschnitt werden wir beweisen, dass der Bellman-Ford-Algorithmus immer ein korrektes Ergebnis liefert, falls der Graph keine vom Startknoten erreichbaren negativen Kreise hat.</p>\n                    <h3>Das Prinzip der Induktion</h3>\n                    <p>Der Beweis basiert auf dem Prinzip der Induktion. Wir beweisen zunächst, dass wir zu Beginn der ersten Phase bereits die Kosten für\n                    mindestens einen Knoten korrekt berechnet haben. Wir zeigen dann, dass wir in jeder Phase die bisherigen Schätzungen verbessern.\n                    Am Ende jeder Phase kennen wir also für mehr Knoten die korrekten Kosten als zu Beginn der Phase. Außerdem zerstören wir in der jeweiligen Phase keine\n                    Informationen &ndash; die Schätzungen können nur besser werden.</p>\n                    <p>Schließlich zeigen wir, dass uns weniger Phasen reichen, als es Knoten gibt, um für alle Knoten die korrekten Kosten zu berechnen.</p>\n                    <h3>Nach Phase <var>i</var> gilt:</h3>\n                    <p>Der Algorithmus hat jedem Knoten <var>u</var> als Kostenschätzung höchstens die Länge des kürzesten Weges vom Startknoten zu <var>u</var>, der maximal <var>i</var>\n                    Kanten benutzt, zugewiesen, falls ein solcher Weg existiert.</p>\n                    <p>Betrachten wir diese Aussage in ihren Einzelteilen für einen Knoten <var>u</var> am Ende von Phase <var>i</var>:</p>\n                    <p>Falls kein Weg vom Startknoten zu <var>u</var> existiert, der maximal <var>i</var> Kanten benutzt, so erfahren wir nichts.</p>\n                    <p>Falls ein Weg vom Startknoten zu <var>u</var> existiert, der maximal <var>i</var> Kanten benutzt, dann wissen wir, dass die Kostenschätzung für <var>u</var>\n                    höchstens so hoch ist wie die Kosten des Weges. Der Grund ist folgender: Wenn wir den Weg ohne seine letzte Kante betrachten, so sehen wir einen Weg, der <var>i</var>-1 Kanten benutzt.\n                    Die Kosten des letzten Knotens dieses Weges hatten wir also schon zu Beginn der Phase korrekt berechnet. Innerhalb der Phase haben wir alle Kanten, also auch das letzte Teilstück, betrachtet.\n                    Da wir beim Betrachten des letzten Teilstücks die Kosten korrekt aktualisiert haben, sind jetzt auch die Kosten für den letzten Knoten des Gesamtwegs, der <var>i</var> Kanten benutzt, korrekt.</p>\n                    <h3>Es reichen weniger Phasen, als es Knoten gibt.</h3>\n                    <p>Ein Weg, der mindestens so viele Kanten benutzt, wie es Knoten gibt, kann kein kürzester Weg sein, falls alle Kreise positives Gesamtgewicht haben. Mit jeder Kante, die ein Weg benutzt, sieht er nämlich einen weiteren Knoten (den Zielknoten der Kante).\n                    Dazu kommt noch der Startknoten, den er auch sieht, ohne Kanten benutzt zu haben. Falls er also so viele Kanten benutzt, wie es Knoten gibt, so hat er mindestens einen Knoten zweimal gesehen, ist also im Kreis gelaufen.\n                    Da wir angenommen haben, dass alle Kreise negatives Gesamtgewicht haben, wäre es kürzer gewesen, nicht im Kreis zu laufen.</p>\n                    <p>Falls es Kreise mit Gesamtgewicht 0 gibt, so ist es schlicht genauso teuer, diese zu durchlaufen, wie sie auszulassen. \n                        Auch in diesem Fall reichen also die Wege, die weniger Kanten benutzen, als es Knoten gibt.</p>\n                </div>\n                <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>\n                <div><p>Weitere Graphalgorithmen werden auf der <a href=\"http://www-m9.ma.tum.de/Allgemeines/Routenplanung\">Webseite des Lehrstuhls M9</a> der TU München erklärt.</p>\n                <p>Außerdem es ein interessantes Buch zu kürzesten Wegen:  <a href=\"http://www-m9.ma.tum.de/Ruth/WebHome\">Das Geheimnis des kürzesten Weges</a></p>\n                <p>Ein <a href=\"http://www.ma.tum.de/Studium/Studieninteressierte\">Mathematikstudium an der TU München</a> beantwortet alle Fragen zur Graphentheorie (falls eine Lösung bekannt ist).</p>\n                </div>\n            </div>\n        </div>\n    </div>\n    <footer>\n        <p class=\"Disclaimer\">\n            IDP Projekt von Mark J. Becker am Lehrstuhl M9 der Technischen Universität München. 2014 | <a href=\"http://www-m9.ma.tum.de/Allgemeines/Rechtliches\">Disclaimer und Rechtshinweise</a> | <a href=\"http://www-m9.ma.tum.de/Allgemeines/Impressum\">Impressum</a> | <a href=\"mailto&#58;m&#46;ritter&#64;ma&#46;tum&#46;de&#63;subject&#61;M9&#45;Web&#45;Feedback\">Anregungen</a>\n        </p>\n    </footer>\n</body>",
 			"file": "APPLICATION/Hierholzer-Algorithmus.html",
+			"file_size": 40321,
+			"file_write_time": 130575112580000000,
 			"settings":
 			{
-				"buffer_size": 39586,
+				"buffer_size": 40108,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "APPLICATION/js/graph.js",
+			"settings":
+			{
+				"buffer_size": 44477,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "APPLICATION/js/canvasDrawing.js",
+			"settings":
+			{
+				"buffer_size": 8053,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "APPLICATION/js/siteAnimation.js",
+			"settings":
+			{
+				"buffer_size": 15509,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "APPLICATION/js/algorithm.js",
+			"settings":
+			{
+				"buffer_size": 31067,
 				"line_ending": "Unix"
 			}
 		}
@@ -71,9 +250,29 @@
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 47.0,
+		"height": 327.0,
 		"selected_items":
 		[
+			[
+				"packet",
+				"Package Control: Install Package"
+			],
+			[
+				"update",
+				"Package Control: Upgrade/Overwrite All Packages"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"Snippet: html",
+				"Snippet: html"
+			],
 			[
 				"Package Control: ins",
 				"Package Control: Install Package"
@@ -103,7 +302,7 @@
 				"Package Control: Install Package"
 			]
 		],
-		"width": 449.0
+		"width": 530.0
 	},
 	"console":
 	{
@@ -125,11 +324,15 @@
 	"expanded_folders":
 	[
 		"/Uni/IDP/GIT/implementation/hierholzer",
-		"/Uni/IDP/GIT/implementation/hierholzer/APPLICATION"
+		"/Uni/IDP/GIT/implementation/hierholzer/APPLICATION",
+		"/Uni/IDP/GIT/implementation/hierholzer/APPLICATION/css",
+		"/Uni/IDP/GIT/implementation/hierholzer/APPLICATION/js"
 	],
 	"file_history":
 	[
+		"/Uni/IDP/GIT/implementation/hierholzer/APPLICATION/css/style.css",
 		"/Uni/IDP/GIT/pseudo code/hierholzer/hierholzer.md",
+		"/Uni/Advanced Computer Networking/GIT/03620474/git_task.txt",
 		"/Users/Mark/Documents/opa2/single-page-app/static/js/main.js",
 		"/Users/Mark/Documents/opa2/single-page-app/static/js/admin.js",
 		"/Users/Mark/Documents/opa2/single-page-app/views/layout.ejs",
@@ -153,13 +356,14 @@
 	],
 	"find":
 	{
-		"height": 25.0
+		"height": 35.0
 	},
 	"find_in_files":
 	{
 		"height": 93.0,
 		"where_history":
 		[
+			"/Uni/IDP/GIT/implementation/hierholzer/APPLICATION",
 			"/Users/Mark/Documents/opa2/single-page-app"
 		]
 	},
@@ -168,6 +372,44 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"draw",
+			"canvas",
+			"console.log",
+			"graph.edg",
+			"tourStartVertex",
+			"push(",
+			"legende",
+			"graphdrawer",
+			"Legende",
+			"LegendeText",
+			"legende",
+			"graphdrawer",
+			".length",
+			"euclideanSubTour",
+			"setLayout",
+			"getvisited",
+			"NodeFillingHighlight",
+			"findstart",
+			"NodeFillingHighlight",
+			"setLayout",
+			"layou",
+			"red",
+			"graph.nodes",
+			"initialize",
+			"redraw",
+			"additionalLabel",
+			"edge",
+			"setLabel",
+			"additionalLabel",
+			"drawAdditionalTextOnLine",
+			"edges",
+			"drawAdditionalTextOnLine",
+			"drawLine",
+			"showVariableStatusField",
+			"canvasMouseMoveHandler",
+			"canvasClickHandler",
+			"showWeightChangeField",
+			"graphdrawer",
 			"about",
 			"delete",
 			"smooth",
@@ -197,24 +439,24 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 4,
 			"sheets":
 			[
 				{
 					"buffer": 0,
 					"file": "APPLICATION/Hierholzer-Algorithmus.html",
-					"semi_transient": true,
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 39586,
+						"buffer_size": 40108,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								297,
+								297
 							]
 						],
 						"settings":
@@ -225,6 +467,126 @@
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "APPLICATION/js/graph.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 44477,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7248,
+								7248
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 6011.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "APPLICATION/js/canvasDrawing.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8053,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7678,
+								7678
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2051.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "APPLICATION/js/siteAnimation.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 15509,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7432,
+								7432
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2574.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "APPLICATION/js/algorithm.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 31067,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								18581,
+								18581
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 8530.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -296,11 +658,15 @@
 	},
 	"select_symbol":
 	{
-		"height": 0.0,
+		"height": 392.0,
 		"selected_items":
 		[
+			[
+				"",
+				"addInEdge"
+			]
 		],
-		"width": 0.0
+		"width": 392.0
 	},
 	"selected_group": 0,
 	"settings":

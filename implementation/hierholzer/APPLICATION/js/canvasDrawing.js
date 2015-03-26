@@ -11,6 +11,33 @@
  */
 function CanvasDrawMethods() {};
 
+
+
+CanvasDrawMethods.drawArrowAtPosition = function(ctx,layout,source,target,label,additionalLabel) {
+    if(!layout.progressArrow) {
+        return;
+    }
+    var arrowHeadColor = const_Colors.EdgeHighlight2;
+    // Pfeilkopf zeichnen
+    ctx.beginPath();
+    ctx.strokeStyle = arrowHeadColor;
+    ctx.lineWidth = 4.0;
+    var position = layout.progressArrowPosition || 0.0;
+    var center = {x: (source.x + (target.x - source.x) * position), y: (source.y + (target.y - source.y) * position)};
+    var edgeAngle = Math.atan2(target.y-source.y,target.x-source.x);
+    var arrowStart = {x:center.x+ Math.cos(edgeAngle)* layout.arrowHeadLength/2,y:center.y+ Math.sin(edgeAngle) * layout.arrowHeadLength/2};
+    var lineAngle1 = Math.atan2(target.y-source.y,target.x-source.x)
+            + layout.arrowAngle + Math.PI;  // Winkel des rechten Pfeilkopfs relativ zum Nullpunkt
+    var lineAngle2 = Math.atan2(target.y-source.y,target.x-source.x)
+            - layout.arrowAngle + Math.PI;  // Winkel des linken Pfeilkopfs relativ zum Nullpunkt
+    ctx.moveTo(arrowStart.x, arrowStart.y);
+    ctx.lineTo(arrowStart.x + Math.cos(lineAngle1) * layout.arrowHeadLength, arrowStart.y + Math.sin(lineAngle1) * layout.arrowHeadLength);
+    ctx.stroke();
+    ctx.moveTo(arrowStart.x, arrowStart.y);
+    ctx.lineTo(arrowStart.x + Math.cos(lineAngle2) * layout.arrowHeadLength, arrowStart.y + Math.sin(lineAngle2) * layout.arrowHeadLength);
+    ctx.stroke();
+}
+
 /**
  * Zeichnet einen Pfeil, wobei die Pfeilspitze in der Mitte ist.<br>
  * Falls der Pfeil als "Highlighted" gekennzeichnet ist wird, so wird ein kleinerer
@@ -34,7 +61,9 @@ CanvasDrawMethods.drawArrow = function(ctx,layout,source,target,label,additional
     // Pfeilkopf zeichnen
     ctx.beginPath();
     ctx.strokeStyle = arrowHeadColor;
+    //var position = 0.0;
     var center = {x: (target.x+source.x)/2, y:(target.y+source.y)/2};
+    //var center = {x: (source.x + (target.x - source.x) * position), y: (source.y + (target.y - source.y) * position)};
     var edgeAngle = Math.atan2(target.y-source.y,target.x-source.x);
     var arrowStart = {x:center.x+ Math.cos(edgeAngle)* layout.arrowHeadLength/2,y:center.y+ Math.sin(edgeAngle)* layout.arrowHeadLength/2};
     var lineAngle1 = Math.atan2(target.y-source.y,target.x-source.x)
