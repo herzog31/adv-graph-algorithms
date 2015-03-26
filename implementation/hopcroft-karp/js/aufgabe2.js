@@ -83,7 +83,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         this.initCanvasDrawer();
         hkAlgo = new HKAlgorithm(graph,canvas,p_tab);
         hkAlgo.deregisterEventHandlers();
-        hkAlgo.setOutputFenster("#dummy");
+        hkAlgo.setStatusWindow("#dummy");
         // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
         $("#tf2_div_abspielbuttons").append("<button id=\"tf2_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button><br>");
         $("#tf2_button_1Schritt").on("click.Forschungsaufgabe1",function() {algo.nextStepChoice();});

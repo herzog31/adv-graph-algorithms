@@ -711,7 +711,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         }
     };
 
-    this.setOutputFenster = function(fenster){
+    this.setStatusWindow = function(fenster){
         statusErklaerung = fenster;
     };
     this.getShortestPathLength = function(){

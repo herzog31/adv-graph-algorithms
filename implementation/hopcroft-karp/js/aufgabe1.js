@@ -91,7 +91,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         this.initCanvasDrawer();
         hkAlgo = new HKAlgorithm(graph,canvas,p_tab);
         hkAlgo.deregisterEventHandlers();
-        hkAlgo.setOutputFenster("#tf1_div_statusErklaerung");
+        hkAlgo.setStatusWindow("#tf1_div_statusErklaerung");
         // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
         $("#tf1_div_abspielbuttons").append("<button id=\"tf1_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button><br>"
         +"<button id=\"tf1_button_vorspulen\">"+LNG.K('aufgabe1_btn_next_question')+"</button>"

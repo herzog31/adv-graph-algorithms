@@ -388,18 +388,18 @@
                     </div>
                 </div>
                 <div id="tf2_div_statusWindow" class="statusWindow">
-                    <h2>Wie ist die optimale Sortierung der Kanten?</h2>
+                    <h2>Finde selber einen Rundweg</h2>
                     <div id="tf2_div_Abspielbuttons"></div>
-                    <select id="tf2_select_aufgabeGraph" name="Wähle einen Graphen">
+<!--                    <select id="tf2_select_aufgabeGraph" name="Wähle einen Graphen">
                         <option selected>Selbsterstellter Graph</option>
                         <option>Standardbeispiel</option>
                         <option>Negativer Kreis</option>
                         <option>Positiver Kreis</option>
-                    </select>
+                    </select>-->
                     <div id="tf2_div_statusErklaerung">
-                        <h3>Wähle zuerst den Graphen, mit dem du arbeiten möchtest.</h3>
-                        <h3>Klicke danach auf den Startknoten, um die Aufgabe zu beginnen.</h3>
-                        <p>Klicke danach in der Reihenfolge auf die Kanten, in der Sie der Algorithmus betrachten soll.</p>
+                        <h3>Klicke auf eine beliebige Kante, um mit der Aufgabe zu beginnen.</h3>
+                        <p>Klicke danach in der Reihenfolge auf die Kanten, in der Sie der Postbote ablaufen soll.</p>
+                        <p>Der Rundweg endet, wenn alle Kanten abgelaufen sind und der Postbote zum Anfangsknotenzurückkehrt.</p>
                     </div>
                     <div id="tf2_div_Frage">
                     </div>
@@ -408,16 +408,9 @@
                 </div>
             </div>
             <div title="Forschungsaufgabe 2" class="tabIntroDialog">
-                <h2>
-                    Wie ist die optimale Sortierung der Kanten?
-                </h2>
-                <p>Der Bellman-Ford-Algorithmus kann schon nach einer einzigen Phase alle Entfernungen korrekt berechnet haben.</p>
-                <p>Dafür müssen die Kanten allerdings in der <strong>optimalen Reihenfolge</strong> betrachtet werden.
-                    <strong>Diese Reihenfolge ist aber nicht leicht zu finden</strong> &ndash; das dauert genauso lange wie der Bellman-Ford-Algorithmus selbst.</p>
-                <img src="img/FA2BeispielGut.png" alt="Diese Reihenfolge ist sinnvoll">
-                <img src="img/FA2BeispielSchlecht.png" id="tf2_img_beispielSchlecht" alt="Diese Reihenfolge ist weniger sinnvoll">
-                <p>Im Beispiel sieht man: Links ist die Reihenfolge sinnvoll, der Algorithmus kann schon nach einer Runde alle Kosten korrekt berechnet haben. Rechts ist das nicht der Fall.</p>
-                <p>In dieser Aufgabe kannst du experimentieren, wie viele Phasen der Bellman-Ford-Algorithmus bei verschiedenen Sortierungen benötigt.</p>
+                <h2>Klicke auf eine beliebige Kante, um mit der Aufgabe zu beginnen.</h2>
+                <p>Klicke danach in der Reihenfolge auf die Kanten, in der Sie der Postbote ablaufen soll.</p>
+                <p>Der Rundweg endet, wenn alle Kanten abgelaufen sind und der Postbote zum Anfangsknotenzurückkehrt.</p>
             </div>
             <div id="tf2_div_confirmTabChange" title="Aufgabe abbrechen?" class="tabChangeWarningDialog">
                 <h2>Beim Wechsel des Tabs wird die Aufgabe abgebrochen.</h2>

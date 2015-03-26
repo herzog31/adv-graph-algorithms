@@ -1,5 +1,5 @@
 /**
- * @author Richard Stotz
+ * @author Ruslan Zabrodin
  * Code für Forschungsaufgabe 1<br>
  * Basiert auf dem Code für den normalen Algorithmus
  */
@@ -13,39 +13,29 @@
  * @augments CanvasDrawer
  */
 function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
-    CanvasDrawer.call(this,p_graph,p_canvas,p_tab); 
-    
+    //CanvasDrawer.call(this,p_graph,p_canvas,p_tab);
+    algorithm.call(this,p_graph,p_canvas,p_tab);
     /**
      * Convenience Objekt, damit man den Graph ohne this ansprechen kann.
      * @type Graph
      */
     var graph = this.graph;
-    /**
-     * Convenience Objekt, damit man das Canvas ohne this. ansprechen kann.
-     * @type Object
-     */
-    var canvas = this.canvas;
-    /**
-     * ID des Intervals, der für das "Vorspulen" genutzt wurde.
-     * @type Number
-     */
-    var fastForwardIntervalID = null;
-    /*
-     * Das Objekt, das den Hopcroft-Karp-Algorithmus ausfuehrt
-     * */
-    var cpAlgo;
-    /**
-     * Der Algorithmus kann in verschiedenen Zuständen sein, diese Variable 
-     * speichert die ID des aktuellen Zustands.<br>
-     * Siehe Dokumentation bei der Funktion nextStepChoice
-     * @type Number
-     */
-    var statusID = null;
+
     /**
      * Closure Variable für dieses Objekt
      * @type Forschungsaufgabe1
      */
     var algo = this;
+
+    this.algoNext = this.nextStepChoice;
+
+    this.base_destroy = this.destroy;
+
+    this.base_stopFastForward = this.stopFastForward;
+
+    this.base_run = this.run;
+
+    //this.base_
     /**
      * Status der Frage.<br>
      * Keys: aktiv, warAktiv
@@ -76,7 +66,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     var frageStats = {
         richtig: 0,
         falsch: 0,
-        gestellt:0
+        gestellt: 0
     };
     /**
      * Gibt das Statusausgabefenster an.
@@ -99,44 +89,25 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.run = function () {
-        this.initCanvasDrawer();
-        cpAlgo = new algorithm(graph,canvas,p_tab);
-        cpAlgo.deregisterEventHandlers();
-        cpAlgo.setOutputFenster("#tf1_div_statusErklaerung");
-        // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
-        $("#tf1_div_abspielbuttons").append("<button id=\"tf1_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button><br>"
-        +"<button id=\"tf1_button_vorspulen\">"+LNG.K('aufgabe1_btn_next_question')+"</button>"
-        +"<button id=\"tf1_button_stoppVorspulen\">"+LNG.K('algorithm_btn_paus')+"</button>");
-        $("#tf1_button_stoppVorspulen").hide();
-        $("#tf1_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: false});
-        $("#tf1_button_vorspulen").button({icons:{primary: "ui-icon-seek-next"}, disabled: false});
-        $("#tf1_button_stoppVorspulen").button({icons:{primary: "ui-icon-pause"}});
-        this.registerEventHandlers();
-        this.needRedraw = true;
-        $("#tf1_button_1Schritt").show();
-        $("#tf1_button_stoppVorspulen").hide();
-        $("#tf1_button_vorspulen").show();
-        $("#tf1_div_statusTabs").tabs();
-        $(".marked").removeClass("marked");
-        $("#tf1_tr_LegendeClickable").removeClass("greyedOutBackground");
+        this.setStatusWindow("tf1");
+        this.base_run();
+        $("#tf1_button_Zurueck").hide();
+        $("#tf1_button_vorspulen").button( "option", "label", LNG.K('aufgabe1_btn_next_question'));
     };
     /**
      * Beendet die Ausführung des Algorithmus.
      * @method
      */
     this.destroy = function () {
-        //stop animations
-        //clearInterval(animationId);
-        //delete all inserted edges
-/*        for (var e in graph.edges) {
+        this.base_destroy();
+        /*for (var e in graph.edges) {
             if (graph.edges[e].getLayout().dashed || !graph.edges[e].getDirected()) {
                 graph.removeEdge(e);
             }
-        }*/
+        }
         this.stopFastForward();
         this.destroyCanvasDrawer();
-        this.deregisterEventHandlers();
-
+        this.deregisterEventHandlers();*/
     };
 
     /**
@@ -151,44 +122,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     };
 
     /**
-     * Zeigt and, in welchem Zustand sich der Algorithmus im Moment befindet.
-     * @returns {Number} StatusID des Algorithmus
-     */
-    this.getStatusID = function () {
-        return statusID;
-    };
-
-    /**
-     * Registriere die Eventhandler an Buttons und canvas<br>
-     * Nutzt den Event Namespace ".algorithm"
-     * @method
-     */
-    this.registerEventHandlers = function () {
-        $("#tf1_button_1Schritt").on("click.algorithm", function () {
-            algo.singleStepHandler();
-        });
-        $("#tf1_button_vorspulen").on("click.algorithm", function () {
-            algo.fastForwardAlgorithm();
-        });
-        $("#tf1_button_stoppVorspulen").on("click.algorithm", function () {
-            algo.stopFastForward();
-        });
-    };
-
-    /**
-     * Entferne die Eventhandler von Buttons und canvas im Namespace ".algorithm"
-     * @method
-     */
-    this.deregisterEventHandlers = function () {
-        canvas.off(".Forschungsaufgabe1");
-        $("#tf1_button_1Schritt").off(".Forschungsaufgabe1");
-        $("#tf1_button_vorspulen").off(".Forschungsaufgabe1");
-        $("#tf1_button_stoppVorspulen").off(".Forschungsaufgabe1");
-        $("#tf1_tr_LegendeClickable").off(".Forschungsaufgabe1");
-        $("#tf1_button_Zurueck").off(".Forschungsaufgabe1");
-    };
-
-    /**
      * Wird aufgerufen, wenn der "1 Schritt" Button gedrückt wird.
      * @method
      */
@@ -196,30 +129,22 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         this.nextStepChoice();
     };
 
-     /**
-     * "Spult vor", führt den Algorithmus mit hoher Geschwindigkeit aus.
-     * @method
-     */
-    this.fastForwardAlgorithm = function() {
-        $("#tf1_button_vorspulen").hide();
-        $("#tf1_button_stoppVorspulen").show();
-        $("#tf1_button_1Schritt").button("option", "disabled", true);
-        var geschwindigkeit = 200;	// Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
-        fastForwardIntervalID = window.setInterval(function(){algo.nextStepChoice();},geschwindigkeit);
-    };
-
     /**
      * Stoppt das automatische Abspielen des Algorithmus
      * @method
      */
     this.stopFastForward = function() {
-        $("#tf1_button_vorspulen").show();
+        this.base_stopFastForward();
+        if(!frageStatus || !frageStatus.aktiv) {
+            $("#tf1_button_1Schritt").button("option", "disabled", false);
+        }
+/*        $("#tf1_button_vorspulen").show();
         $("#tf1_button_stoppVorspulen").hide();
         if(!frageStatus || !frageStatus.aktiv) {
             $("#tf1_button_1Schritt").button("option", "disabled", false);
         }
         window.clearInterval(fastForwardIntervalID);
-        fastForwardIntervalID = null;
+        fastForwardIntervalID = null;*/
     };
 
     /**
@@ -228,51 +153,30 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      *  @method
      */
     this.nextStepChoice = function() {
-        cpAlgo.nextStepChoice();
-       /* if(frageStatus.aktiv) {
-            this.stopFastForward();
+        if (frageStatus.warAktiv) {
+            this.removeFrageTab();
+            frageStatus.warAktiv = false;
         }
-        if(!frageStatus.aktiv) {
-            if(frageStatus.warAktiv) {
-                this.removeFrageTab();
-                frageStatus.warAktiv = false;
-            }
-            var algoStatus = cpAlgo.getStatusID();
-            if(algoStatus == END){
+        var algoStatus = this.getStatusID();
+        switch (algoStatus) {
+            case SHOW_UNBALANCED_NODES:
+                this.askQuestion1();
+                break;
+            case MATCHING:
+                this.askQuestion2();
+                break;
+            case START_ADDING_PATHS:
+                this.algoNext();
+                this.askQuestion3();
+                break;
+            case END:
                 this.endAlgorithm();
-            }
-            else if(algoStatus == SHOW_UNBALANCED_NODES){
-                //cpAlgo.nextStepChoice();
-                this.askQuestion1();
-            }
-            else if(algoStatus == SHORTEST_PATHS){
-                cpAlgo.nextStepChoice();
-                this.askQuestion1();
-            }
-            else if(algoStatus == MATCHING){
-                cpAlgo.nextStepChoice();
-                this.askQuestion1();
-            }
-            else if(algoStatus == ADD_PATHS){
-                this.askQuestion1();
-            }
-            else cpAlgo.nextStepChoice();
-        }*/
-        this.needRedraw = true;
-    };
-
-    /**
-     * Zeigt Texte und Buttons zum Ende des Algorithmus
-     * @method
-     */
-    this.endAlgorithm = function() {
-        // Falls wir im "Vorspulen" Modus waren, daktiviere diesen
-        if(fastForwardIntervalID != null) {
-            this.stopFastForward();
+                break;
+            default:
+                this.algoNext();
+                break;
         }
-        $("#tf1_button_1Schritt").button("option", "disabled", true);
-        $("#tf1_button_vorspulen").button("option", "disabled", true);
-        this.showResults();
+        this.needRedraw = true;
     };
 
     /**
@@ -281,6 +185,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.addFrageTab = function() {
+        this.stopFastForward();
         var li = "<li id='tf1_li_FrageTab'><a href='#tf1_div_FrageTab'>"+LNG.K('aufgabe1_text_question')+"</a></li>", id= "tf1_div_FrageTab";
         $("#tf1_div_statusTabs").find(".ui-tabs-nav").append(li);
         $("#tf1_div_statusTabs").append("<div id='" + id + "'><div id='tf1_div_Frage'></div><div id='tf1_div_Antworten'></div></div>");
@@ -336,11 +241,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.endAlgorithm = function() {
-        //this.showVariableStatusField(null,null);
-        // Falls wir im "Vorspulen" Modus waren, daktiviere diesen
-        if(fastForwardIntervalID != null) {
-            this.stopFastForward();
-        }
+        // Falls wir im "Vorspulen" Modus waren, deaktiviere diesen
+        this.stopFastForward();
         $("#tf1_button_1Schritt").button("option", "disabled", true);
         $("#tf1_button_vorspulen").button("option", "disabled", true);
         this.showResults();
@@ -363,11 +265,15 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         else {
             frageStats.falsch++;
         }
-        if(this.frageParam.qid == 1) {
+        if(this.frageParam.qid == 1 || this.frageParam.qid == 2) {
             this.frageParam.node.setLayoutObject(this.frageParam.layout);
         }
+        else if(this.frageParam.qid == 3){
+            this.frageParam.node1.setLayoutObject(this.frageParam.layout1);
+            this.frageParam.node2.setLayoutObject(this.frageParam.layout2);
+        }
         frageStatus = {"aktiv" :false, "warAktiv": true};
-        cpAlgo.nextStepChoice();// Hier wird der nächste Schritt des Algorithmus ausgefuehrt
+        this.algoNext();// Hier wird der nächste Schritt des Algorithmus ausgefuehrt
         this.needRedraw = true;
     };
 
@@ -387,7 +293,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         this.addFrageTab();
         frageStatus = {"aktiv": true, "warAktiv": false};
         this.frageParam = {
-            qid: 3,
+            qid: 1,
             "Antwort": correctAnswer,
             "AntwortGrund": AntwortGrund,
             gewusst: true,
@@ -408,10 +314,86 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             $("#tf1_label_frage1_" + (1-pos)).addClass("ui-state-error"); algo.frageParam.gewusst = false;
         });
     };
+
     var chooseNode = function(){
-        var keys = Object.keys(graph.nodes);
+        var keys = Object.keys(algo.graph.nodes);
         var rand = Math.floor(Math.random()*keys.length);
-        return graph.nodes[keys[rand]];
+        return algo.graph.nodes[keys[rand]];
+    };
+
+    this.askQuestion2 = function () {
+        var node = chooseNode();
+        var delta = node.getLabel();
+        var correctAnswer  = Math.abs(delta);
+        var AntwortGrund = "<p>" + LNG.K('aufgabe1_answer2_reason1') + "</p>";
+        this.addFrageTab();
+        frageStatus = {"aktiv": true, "warAktiv": false};
+        this.frageParam = {
+            qid: 2,
+            "Antwort": correctAnswer,
+            "AntwortGrund": AntwortGrund,
+            gewusst: true,
+            "node": node,
+            "layout": node.getLayout()
+        };
+        //Knoten hervorheben
+        node.setLayout("borderColor", const_Colors.NodeBorderHighlight);
+        //stelle die Frage
+        $("#tf1_div_Frage").html(LNG.K('aufgabe1_text_question') + " " + (++frageStats.gestellt));
+        $("#tf1_div_Frage").append("<p class=\"frage\">" + LNG.K('aufgabe1_question2') + "</p>");
+        //$("#tf1_div_Antworten").append("<input type=\"radio\" id=\"tf1_input_frage2_0\" name=\"frage1\"/><label id=\"tf1_label_frage1_0\" for=\"tf1_input_frage1_0\"> ja </label><br>");
+        $("#tf1_div_Antworten").append("<input type=\"text\" id=\"tf1_input_frage2\" name=\"frage2\" value=\"\" />");
+        $("#tf1_div_Antworten").append("<button id=\"tf1_button_questionClose\">"+LNG.K('aufgabe1_btn_answer')+"</button>");
+        $("#tf1_input_frage2").one("keyup", function() { $("#tf1_button_questionClose").button("option", "disabled", false); });
+        //Pruefe ob korrekte Antwort
+        $("#tf1_button_questionClose").button({disabled: false}).on("click", function() {
+            var answer = $("#tf1_input_frage2").val();
+            $("#tf1_button_questionClose").hide();
+            if(answer != algo.frageParam.Antwort){
+                $("#tf1_input_frage2").addClass("ui-state-error");
+                algo.frageParam.gewusst = false;
+            }
+            algo.handleCorrectAnswer(); });
+        $("#tf1_button_questionClose").show();
+    };
+
+    this.askQuestion3 = function () {
+        var match = this.getMatching();
+        var dist = this.getDistance();
+        var m = match[Math.floor(Math.random()*match.length)];
+        var correctAnswer  = dist[m.s][m.d];
+        var AntwortGrund = "<p>" + LNG.K('aufgabe1_answer3_reason1') + "</p>";
+        this.addFrageTab();
+        frageStatus = {"aktiv": true, "warAktiv": false};
+        this.frageParam = {
+            qid: 3,
+            "Antwort": correctAnswer,
+            "AntwortGrund": AntwortGrund,
+            gewusst: true,
+            "node1": graph.nodes[m.s],
+            "layout1": graph.nodes[m.s].getLayout(),
+            "node2": graph.nodes[m.d],
+            "layout2": graph.nodes[m.d].getLayout()
+        };
+        //Knoten hervorheben
+        graph.nodes[m.s].setLayout("borderColor", const_Colors.NodeBorderHighlight);
+        graph.nodes[m.d].setLayout("borderColor", const_Colors.NodeBorderHighlight);
+        //stelle die Frage
+        $("#tf1_div_Frage").html(LNG.K('aufgabe1_text_question') + " " + (++frageStats.gestellt));
+        $("#tf1_div_Frage").append("<p class=\"frage\">" + LNG.K('aufgabe1_question3') + "</p>");
+        $("#tf1_div_Antworten").append("<input type=\"text\" id=\"tf1_input_frage3\" name=\"frage3\" value=\"\" />");
+        $("#tf1_div_Antworten").append("<button id=\"tf1_button_questionClose\">"+LNG.K('aufgabe1_btn_answer')+"</button>");
+        $("#tf1_input_frage3").one("keyup", function() { $("#tf1_button_questionClose").button("option", "disabled", false); });
+        //Pruefe ob korrekte Antwort
+        $("#tf1_button_questionClose").button({disabled: false}).on("click", function() {
+            var answer = $("#tf1_input_frage3").val();
+            $("#tf1_button_questionClose").hide();
+            if(answer != algo.frageParam.Antwort){
+                $("#tf1_input_frage3").addClass("ui-state-error");
+                algo.frageParam.gewusst = false;
+            }
+            algo.handleCorrectAnswer(); });
+        $("#tf1_button_questionClose").show();
     };
 
     /**
@@ -432,64 +414,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
         return [0,1,2];
     };
-    
-    /**
-     * Fügt einen Tab für die Frage hinzu.<br>
-     * Deaktiviert außerdem die Buttons zum weitermachen
-     * @method
-     */
-    this.addFrageTab = function() {
-        var li = "<li id='tf1_li_FrageTab'><a href='#tf1_div_FrageTab'>"+LNG.K('aufgabe1_text_question')+"</a></li>", id= "tf1_div_FrageTab";
-        $("#tf1_div_statusTabs").find(".ui-tabs-nav").append(li);
-        $("#tf1_div_statusTabs").append("<div id='" + id + "'><div id='tf1_div_Frage'></div><div id='tf1_div_Antworten'></div></div>");
-        $("#tf1_div_statusTabs").tabs("refresh");
-        tabVorFrage = $("#tf1_div_statusTabs").tabs("option","active");
-        $("#tf1_div_statusTabs").tabs("option","active",2);
-        $("#tf1_button_1Schritt").button("option", "disabled", true);
-        $("#tf1_button_vorspulen").button("option", "disabled", true);
-    };
-    
-    /**
-     * Entfernt den Tab für die Frage und aktiviert den vorherigen Tab.
-     * @method
-     */
-    this.removeFrageTab = function() {
-        if($("#tf1_div_statusTabs").tabs("option","active") == 2){
-            $("#tf1_div_statusTabs").tabs("option","active",tabVorFrage);
-        }
-        $("#tf1_li_FrageTab").remove().attr("aria-controls");
-        $("#tf1_div_FrageTab").remove();
-        $("#tf1_div_statusTabs").tabs( "refresh" );
-    };
-    
-    /**
-     * Zeigt - in eigenem Tab - die Resultate der Aufgabe an.
-     * @method
-     */
-    this.showResults = function() {
-        var li = "<li id='tf1_li_ErgebnisseTab'><a href='#tf1_div_ErgebnisseTab'>"+LNG.K('aufgabe1_text_results')+"</a></li>", id= "tf1_div_ErgebnisseTab";
-        $("#tf1_div_statusTabs").find(".ui-tabs-nav").append(li);
-        $("#tf1_div_statusTabs").append("<div id='" + id + "'></div>");
-        $("#tf1_div_statusTabs").tabs("refresh");
-        $("#tf1_div_statusTabs").tabs("option","active",2);
-        if(frageStats.anzahlFragen == frageStats.richtig) {
-            $("#tf1_div_ErgebnisseTab").append("<h2>"+LNG.K('aufgabe1_result1')+"</h2>");
-            $("#tf1_div_ErgebnisseTab").append("<p>"+LNG.K('aufgabe1_result2')+"</p>");
-        }
-        else {
-            $("#tf1_div_ErgebnisseTab").append("<h2>"+LNG.K('aufgabe1_result3')+"</h2>");
-            $("#tf1_div_ErgebnisseTab").append("<p>"+LNG.K('aufgabe1_result4')+" " +frageStats.anzahlFragen + "</p>");
-            $("#tf1_div_ErgebnisseTab").append("<p>"+LNG.K('aufgabe1_result5')+" " +frageStats.richtig + "</p>");
-            $("#tf1_div_ErgebnisseTab").append("<p>"+LNG.K('aufgabe1_result6')+" " +frageStats.falsch + "</p>");
-            $("#tf1_div_ErgebnisseTab").append('<button id="tf1_button_Retry">'+LNG.K('aufgabe1_btn_retry')+'</button>');
-            $("#tf1_button_Retry").button().click(function() {algo.refresh();});
-        }
-        $("#tf1_div_ErgebnisseTab").append("<h3>"+LNG.K('aufgabe1_btn_exe2')+"</h3>");
-        $("#tf1_div_ErgebnisseTab").append('<button id="tf1_button_gotoFA2">'+LNG.K('algorithm_btn_exe2')+'</button>');
-        $("#tf1_button_gotoFA2").button().click(function() {$("#tabs").tabs("option","active", 5);});
-    };
 }
-
 // Vererbung realisieren
 Forschungsaufgabe1.prototype = new CanvasDrawer;
 Forschungsaufgabe1.prototype.constructor = Forschungsaufgabe1;

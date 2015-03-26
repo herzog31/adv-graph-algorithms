@@ -625,3 +625,21 @@ this.startAddingPaths = function(){
             //+ "<p>" + LNG.K('algorithm_add_path_3') + "</p>" +
             "<p>" + LNG.K('algorithm_balanced_1') + "</p>");
     };
+        for (var e in graph.edges) {
+            if (graph.edges[e].getLayout().dashed || !graph.edges[e].getDirected()) {
+                graph.removeEdge(e);
+            }
+        }
+        for (var m in matching) {
+            var s = matching[m].s;
+            var d = matching[m].d;
+            var last = d;
+            while (last != s) {
+                var e = predecessor[s][last];
+                var node1 = graph.nodes[e.getSourceID()];
+                var node2 = graph.nodes[e.getTargetID()];
+                var ne = graph.addEdge(node1, node2, e.weight);
+                ne.setLayout('dashed', true);
+                last = e.getSourceID();
+            }
+        }
