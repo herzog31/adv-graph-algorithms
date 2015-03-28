@@ -1,0 +1,481 @@
+footer {
+    font-family: "arial";
+    font-size: 12px;
+    line-height: 50%;
+    padding-top: 20px;
+    min-width: 1140px;
+}
+
+h1 {
+    font-family: "arial";
+    font-weight: bold;
+    font-size: 22px;
+    color: #0A5096;
+    line-height: 25px;
+}
+
+h2 {
+    font-family: "arial";
+    font-weight: bold;
+    font-size: 12px;
+    color: #0A5096;
+    line-height: 16px;
+}
+
+h3 {
+    font-family: "arial";
+    font-weight: bold;
+    font-size: 12px;
+    color: #333333;
+    line-height: 16px;
+}
+
+h3.pq_hidden {
+    font-family: "arial";
+    font-weight: bold;
+    font-size: 12px;
+    text-align: left;
+    color: #333333;
+    line-height: 16px;
+    display: none;
+    padding-left: 18px;
+}
+
+p ul.li{
+    font-family: "arial";
+    font-size: 13px;
+    color: #333333;
+    line-height: 16px;
+}
+
+label {
+    font-family: "arial";
+    font-size: 13px;
+    color: #333333;
+    line-height: 16px;
+    padding-left: 5px;
+}
+
+p.question {
+    font-family: "arial";
+    font-size: 15px;
+    color: #C4071B;
+    line-height: 16px;
+}
+
+div.statusWindow {
+    text-align: center;
+    margin-left: 715px;
+    width: 350px;
+    height: 500px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border: 2px groove #78C8FF;
+    overflow: hidden; 
+}
+
+div.canvasWrapper {
+    width: 700px;
+    height: 500px;
+    float: left;
+}
+
+div.Legende {
+    position: absolute;
+    border: 2px groove #78C8FF; 
+    width: 250px;
+    background-color: #DDDDDD;
+    opacity: .9;
+}
+
+div.LegendeMinimized {
+    position: absolute;
+    border: 2px groove #78C8FF; 
+    width: 100px;
+    background-color: #DDDDDD;
+    opacity: .9;
+}
+
+.ui-effects-transfer { 
+    border: 2px solid #78C8FF; 
+}
+
+canvas.graphCanvas {
+    border: 1px dashed black;
+}
+
+img.LegendeIcon {
+    height: 22px;
+}
+
+tr.LegendeZeileClickable {
+    cursor: pointer;
+}
+
+div.LegendeText {
+    padding: 10px;
+    padding-top: 0px;
+    line-height: 16px;
+}
+
+div.BeispielbildContainer {
+    float: right;
+    text-align: center;
+    padding-left: 15px;
+    width: 330px;
+}
+
+div.tabIntroDialog {}
+
+div.tabChangeWarningDialog {}
+
+div.Entscheidungsweg {
+    font-size: 12px;
+    width: 400px;
+    height: 150px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border: 2px groove #78C8FF;
+    text-align: center;
+    vertical-align: middle;
+}
+
+div.PseudocodeWrapper {
+    text-align: left;
+}
+
+p.Disclaimer {
+    text-align: right;
+}
+
+h2.LegendeHeader {
+    padding-left: 10px;
+    vertical-align: top;
+}
+
+td.LegendeTabelle {
+    text-align: center;
+}
+
+th.algoInfoTH {
+    font-family: "Courier New", Courier, monospace;
+    text-align: center;
+    padding: 8px;
+    border:1px solid black;
+}
+
+td.algoInfoTD {
+    text-align: center;
+    padding: 8px;
+    border:1px solid black;
+}
+
+button.LegendeMin {
+    height: 16px;
+    width: 16px;
+}
+
+p.pseudocode {
+    line-height: 110%;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 13px;
+    color: #000000;
+    margin: 1px;
+    white-space: pre;
+} 
+
+table.algoInformationen {
+    text-align: center;
+    border: 1px solid gray;
+    border-collapse:collapse;
+}
+
+.fig {
+    text-align: center;
+}
+
+figcaption {
+    text-align: center;
+}
+
+#picTitle{
+    height: 80px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#figTitle{
+    margin-left: 140px;
+    margin-top: 33px;
+    margin-bottom: 33px;
+}
+
+#tumTitle{
+    position:absolute; right:0px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+#tabs li .ui-icon-refresh { float: right; margin: 0.4em 0.2em 0 0; cursor: pointer; }
+#tabs { 
+    min-width: 1140px;
+    max-width: 1140px;
+}
+
+.marked {
+    background-color: #E37222;
+}
+
+.greyedOut {
+    color: #666666;
+}
+
+.greyedOutBackground {
+    opacity: 0.6;
+}
+
+.shadow{
+    -moz-box-shadow: 4px 4px 5px #0A5096;
+    -webkit-box-shadow: 4px 4px 5px #0A5096;
+    box-shadow: 4px 4px 4px #0A5096;
+}
+
+#ta_div_statusErklaerung {
+    text-align: left;
+}
+
+#te_div_Einfuehrungstext {
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 1040px;
+    font-size: 13px;
+    line-height: 16px;
+    text-align: justify;
+}
+
+#te_div_beispiel1Container {
+    float: right;
+    text-align: center;
+    padding-left: 15px;
+}
+
+#tf1_div_statusErklaerung{
+    text-align: left;
+    padding-top: 10px;
+}
+
+#tf2_div_statusErklaerung{
+    text-align: left;
+    padding-top: 10px;
+}
+
+#tf3_div_statusErklaerung{
+    text-align: left;
+    padding-top: 10px;
+}
+
+#tf3_div_FrageTab{
+    text-align: left;
+    padding-top: 10px;
+}
+
+#tf1_div_Frage {
+    text-align: left;
+}
+
+#tf1_div_Antworten {
+    text-align: left;
+    padding-top: 5px;
+}
+
+#te_div_Entscheidung {
+    font-size: 12px;
+    padding-top: 30px;
+    text-align: center;
+}
+
+#te_button_gotoDrawGraph {
+    width: 320px;
+}
+
+#te_button_gotoIdee {
+    width: 320px;
+}
+
+#ti_div_Einfuehrungstext {
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 1000px;
+    font-size: 13px;
+    line-height: 16px;
+    text-align: justify;
+}
+
+#ta_div_statusTabs .ui-widget-header {
+    background: transparent; 
+    border: none;
+} 
+
+#ta_div_statusTabs .ui-tabs-nav li.ui-state-default { 
+    background: transparent; 
+    border: 1px solid #c0c0c0;
+} 
+
+#ta_div_statusTabs .ui-tabs-nav li.ui-state-active { 
+    background: transparent; 
+    border-bottom: none;
+}
+
+#tf1_div_statusTabs .ui-widget-header {
+    background: transparent; 
+    border: none;
+} 
+#tf1_div_statusTabs .ui-tabs-nav li.ui-state-default { 
+    background: transparent; 
+    border: 1px solid #c0c0c0;
+} 
+
+#tf1_div_statusTabs .ui-tabs-nav li.ui-state-active { 
+    background: transparent; 
+    border-bottom: none;
+}
+
+#tf3_div_statusTabs .ui-widget-header {
+    background: transparent; 
+    border: none;
+} 
+#tf3_div_statusTabs .ui-tabs-nav li.ui-state-default { 
+    background: transparent; 
+    border: 1px solid #c0c0c0;
+} 
+
+#tf3_div_statusTabs .ui-tabs-nav li.ui-state-active { 
+    background: transparent; 
+    border-bottom: none;
+}
+
+#tg_div_statusErklaerung {
+    text-align: left;
+}
+
+#ti_div_EntscheidungLeft {
+    float: left;
+}
+
+#ti_div_EntscheidungRight {
+    margin-left: 470px;
+}
+
+#tw_Accordion {
+    width: 800px;
+    margin: auto;
+    text-align: justify;
+    font-size: 13px;
+    line-height: 16px;
+}
+
+body {
+    max-width: 1140px;
+    margin-left: auto;
+    margin-right: auto;
+}
+@media screen and (max-width: 1170px) {
+body {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+}
+
+header {
+    position: relative;
+    min-width: 1140px;
+}
+
+html {
+    overflow-y: scroll; 
+}
+
+.node_label{
+    font-weight: bold;
+}
+
+td.updated-cell{
+    background-color: #0072bd;
+}
+
+td.summand-cell{
+    background-color: #98C6EA;
+}
+
+#matrix-display td{
+    min-width: 14px;
+    overflow: hidden;
+    text-align: center;
+}
+
+#matrix-display{
+    font-size: 12px;
+}
+
+#matrix td{
+    min-width: 21px;
+    overflow: hidden;
+    text-align: center;
+}
+
+#matrix{
+    font-size: 12px;
+}
+
+#tf2_matrix td{
+    min-width: 25px;
+    overflow: hidden;
+    text-align: center;
+}
+
+.tableHeader{
+    width: 16px;   
+}
+
+#matrix-overlay{
+    background-color: rgb(148, 214, 249);
+    z-index: 900;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    padding: 5px 5px 5px 5px;
+    width: 600px;
+    height: 600px;
+    overflow: auto;
+}
+
+#tf2_matrix{
+    font-size: 14px;
+}
+
+.not-number-cell{
+    color: darkgrey;
+}
+
+.candidate-cell{
+    background-color: rgb(174, 174, 174);
+}
+
+#ta_div_completeMatrix{
+    max-width: 500px;
+}
+
+.matrix-cell.node_label{
+    width: 16px;
+    overflow: hidden;
+}
