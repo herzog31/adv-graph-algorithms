@@ -169,17 +169,18 @@
                             <p class="pseudocode" id="ta_p_l1">BEGIN</p>
                             <p class="pseudocode" id="ta_p_l2">  IF Graph ungültig THEN END</p>
                             <p class="pseudocode" id="ta_p_l3">  start &larr; geeigneter Knoten</p>
-                            <p class="pseudocode" id="ta_p_l4">  REPEAT</p>
-                            <p class="pseudocode" id="ta_p_l5">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten</p>
-                            <p class="pseudocode" id="ta_p_l6">    subtour &larr; {start}</p>
-                            <p class="pseudocode" id="ta_p_l7">    DO</p>
-                            <p class="pseudocode" id="ta_p_l8">      {akt, u} &larr; Suche unbesuchte Kante</p>
-                            <p class="pseudocode" id="ta_p_l9">      subtour &larr; subtour &#8746; {u}</p>
-                            <p class="pseudocode" id="ta_p_l10">      akt &larr; u</p>
-                            <p class="pseudocode" id="ta_p_l11">    WHILE start &#8800; akt</p>
-                            <p class="pseudocode" id="ta_p_l12">    Integriere subtour in tour</p>
-                            <p class="pseudocode" id="ta_p_l13">  UNTIL tour ist Eulerweg/-tour</p>
-                            <p class="pseudocode" id="ta_p_l14">END</p> 
+                            <p class="pseudocode" id="ta_p_l4">  tour &larr; {start}</p>
+                            <p class="pseudocode" id="ta_p_l5">  REPEAT</p>
+                            <p class="pseudocode" id="ta_p_l6">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten</p>
+                            <p class="pseudocode" id="ta_p_l7">    subtour &larr; {start}</p>
+                            <p class="pseudocode" id="ta_p_l8">    DO</p>
+                            <p class="pseudocode" id="ta_p_l9">      {akt, u} &larr; Suche unbesuchte Kante</p>
+                            <p class="pseudocode" id="ta_p_l10">      subtour &larr; subtour &#8746; {u}</p>
+                            <p class="pseudocode" id="ta_p_l11">      akt &larr; u</p>
+                            <p class="pseudocode" id="ta_p_l12">    WHILE start &#8800; akt</p>
+                            <p class="pseudocode" id="ta_p_l13">    Integriere subtour in tour</p>
+                            <p class="pseudocode" id="ta_p_l14">  UNTIL tour ist Eulerweg/-tour</p>
+                            <p class="pseudocode" id="ta_p_l15">END</p> 
                             <h3>Status der Variablen:</h3>
                             <table class="algoInformationen">
                                 <tr>
@@ -301,17 +302,18 @@
                             <p class="pseudocode" id="tf1_p_l1">BEGIN</p>
                             <p class="pseudocode" id="tf1_p_l2">  IF Graph ungültig THEN END</p>
                             <p class="pseudocode" id="tf1_p_l3">  start &larr; geeigneter Knoten</p>
-                            <p class="pseudocode" id="tf1_p_l4">  REPEAT</p>
-                            <p class="pseudocode" id="tf1_p_l5">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten</p>
-                            <p class="pseudocode" id="tf1_p_l6">    subtour &larr; {start}</p>
-                            <p class="pseudocode" id="tf1_p_l7">    DO</p>
-                            <p class="pseudocode" id="tf1_p_l8">      {akt, u} &larr; Suche unbesuchte Kante</p>
-                            <p class="pseudocode" id="tf1_p_l9">      subtour &larr; subtour &#8746; {u}</p>
-                            <p class="pseudocode" id="tf1_p_l10">      akt &larr; u</p>
-                            <p class="pseudocode" id="tf1_p_l11">    WHILE start &#8800; akt</p>
-                            <p class="pseudocode" id="tf1_p_l12">    Integriere subtour in tour</p>
-                            <p class="pseudocode" id="tf1_p_l13">  UNTIL tour ist Eulerweg/-tour</p>
-                            <p class="pseudocode" id="tf1_p_l14">END</p> 
+                            <p class="pseudocode" id="tf1_p_l4">  tour &larr; {start}</p>
+                            <p class="pseudocode" id="tf1_p_l5">  REPEAT</p>
+                            <p class="pseudocode" id="tf1_p_l6">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten</p>
+                            <p class="pseudocode" id="tf1_p_l7">    subtour &larr; {start}</p>
+                            <p class="pseudocode" id="tf1_p_l8">    DO</p>
+                            <p class="pseudocode" id="tf1_p_l9">      {akt, u} &larr; Suche unbesuchte Kante</p>
+                            <p class="pseudocode" id="tf1_p_l10">      subtour &larr; subtour &#8746; {u}</p>
+                            <p class="pseudocode" id="tf1_p_l11">      akt &larr; u</p>
+                            <p class="pseudocode" id="tf1_p_l12">    WHILE start &#8800; akt</p>
+                            <p class="pseudocode" id="tf1_p_l13">    Integriere subtour in tour</p>
+                            <p class="pseudocode" id="tf1_p_l14">  UNTIL tour ist Eulerweg/-tour</p>
+                            <p class="pseudocode" id="tf1_p_l15">END</p> 
                             <h3>Status der Variablen:</h3>
                             <table class="algoInformationen">
                                 <tr>
@@ -384,17 +386,18 @@
                             <p class="pseudocode" id="tf2_p_l1">BEGIN</p>
                             <p class="pseudocode" id="tf2_p_l2">  IF Graph ungültig THEN END</p>
                             <p class="pseudocode" id="tf2_p_l3">  start &larr; geeigneter Knoten</p>
-                            <p class="pseudocode" id="tf2_p_l4">  REPEAT</p>
-                            <p class="pseudocode" id="tf2_p_l5">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten</p>
-                            <p class="pseudocode" id="tf2_p_l6">    subtour &larr; {start}</p>
-                            <p class="pseudocode" id="tf2_p_l7">    DO</p>
-                            <p class="pseudocode" id="tf2_p_l8">      (akt, u) &larr; Suche unbesuchte Kante</p>
-                            <p class="pseudocode" id="tf2_p_l9">      subtour &larr; subtour &#8746; {u}</p>
-                            <p class="pseudocode" id="tf2_p_l10">      akt &larr; u</p>
-                            <p class="pseudocode" id="tf2_p_l11">    WHILE start &#8800; akt</p>
-                            <p class="pseudocode" id="tf2_p_l12">    Integriere subtour in tour</p>
-                            <p class="pseudocode" id="tf2_p_l13">  UNTIL tour ist Eulerweg/-tour</p>
-                            <p class="pseudocode" id="tf2_p_l14">END</p> 
+                            <p class="pseudocode" id="tf2_p_l4">  tour &larr; {start}</p>
+                            <p class="pseudocode" id="tf2_p_l5">  REPEAT</p>
+                            <p class="pseudocode" id="tf2_p_l6">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten</p>
+                            <p class="pseudocode" id="tf2_p_l7">    subtour &larr; {start}</p>
+                            <p class="pseudocode" id="tf2_p_l8">    DO</p>
+                            <p class="pseudocode" id="tf2_p_l9">      (akt, u) &larr; Suche unbesuchte Kante</p>
+                            <p class="pseudocode" id="tf2_p_l10">      subtour &larr; subtour &#8746; {u}</p>
+                            <p class="pseudocode" id="tf2_p_l11">      akt &larr; u</p>
+                            <p class="pseudocode" id="tf2_p_l12">    WHILE start &#8800; akt</p>
+                            <p class="pseudocode" id="tf2_p_l13">    Integriere subtour in tour</p>
+                            <p class="pseudocode" id="tf2_p_l14">  UNTIL tour ist Eulerweg/-tour</p>
+                            <p class="pseudocode" id="tf2_p_l15">END</p> 
                             <h3>Status der Variablen:</h3>
                             <table class="algoInformationen">
                                 <tr>

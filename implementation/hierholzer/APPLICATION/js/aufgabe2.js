@@ -578,7 +578,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
     // State wenn Graph invalid ist
     this.invalidGraph = function() {
-        this.markPseudoCodeLine([14]);
+        this.markPseudoCodeLine([15]);
         $("#tf2_div_statusErklaerung").html('<h3 style="color: white;">2 '+LNG.K('algorithm_status2_head')+'</h3>\
             <p style="color: white;">'+LNG.K('aufgabe2_status2_desc7')+'</p>\
             <ul style="color: white;">\
@@ -634,7 +634,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
     // Selectiere Start Vertice, entweder #1 (Eulerisch) oder #1 mit ungeradem Grad (Semi Eulerisch)
     this.findStartingVertex = function() {
-        this.markPseudoCodeLine([3, 5, 6]);
+        this.markPseudoCodeLine([3, 4, 6, 7]);
         if(!semiEulerianGraph) {
             $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.1a '+LNG.K('algorithm_status31A_head')+'</h3>\
@@ -677,7 +677,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     // Wenn keiner gefunden -> mergeTour()
     // Wenn gefunden -> findNextVertexForTour()
     this.findNextVertexForTour = function() {
-        this.markPseudoCodeLine([8, 9, 10]);
+        this.markPseudoCodeLine([9, 10, 11]);
         canvas.off(".Forschungsaufgabe2");
 
         $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
@@ -738,7 +738,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     // Wenn gleich -> mergeTour()
     // Wenn ungleich -> findNextVertexForTour()
     this.compareVertexWithStart = function() {
-        this.markPseudoCodeLine([11]);
+        this.markPseudoCodeLine([12]);
 
         if(tourStartVertex == tourCurrentVertex) {
             $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
@@ -772,7 +772,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     // Bei leerer Tour, Tour = Subtour
     // Bei vorhandener Tour, Replace Start mit Subtour
     this.mergeTour = function() {
-        this.markPseudoCodeLine([12]);
+        this.markPseudoCodeLine([13]);
         $("#tf2_div_statusErklaerung").html('<h3>4 '+LNG.K('algorithm_status4_head')+'</h3>\
             <h3>4.1 '+LNG.K('algorithm_status41_head')+'</h3>\
             <p>'+LNG.K('aufgabe2_status41_desc1')+'</p>\
@@ -826,7 +826,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     // Wenn ja -> returnTour()
     // Wenn nein -> findNewStartingVertex()
     this.checkForeulerianTour = function() {
-        this.markPseudoCodeLine([13]);
+        this.markPseudoCodeLine([14]);
         $("#tf2_div_statusErklaerung").html('<h3>4 '+LNG.K('algorithm_status4_head')+'</h3>\
             <h3>4.2 '+LNG.K('algorithm_status42_head')+'</h3>\
             <p>'+LNG.K('aufgabe2_status42_desc1')+'</p>\
@@ -864,7 +864,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
     // Zeige Tour
     this.returnTour = function() {
-        this.markPseudoCodeLine([14]);
+        this.markPseudoCodeLine([15]);
         /* if(semiEulerianGraph) {
             $("#tf2_div_statusErklaerung").html('<h3>5 '+LNG.K('algorithm_status5_head')+'</h3>\
             <p>'+LNG.K('aufgabe2_status5_desc1a')+'</p>');
@@ -952,7 +952,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     // Finde neuen Startpunkt in Tour
     // Erster Knoten, dessen Grad unbesuchter Kanten größer 0 ist -> findNextVertexForTour()
     this.findNewStartingVertex = function() {
-        this.markPseudoCodeLine([5, 6]);
+        this.markPseudoCodeLine([6, 7]);
         $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.1b '+LNG.K('algorithm_status31B_head')+'</h3>\
             <p>'+LNG.K('aufgabe2_status31B_desc1')+'</p>\
@@ -1037,9 +1037,9 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             questions[currentQuestion].rightAnswer = questions[currentQuestion].rightAnswer.join("");
 
             if(questions[currentQuestion].rightAnswerShow.length > 1) {
-                $("#tf2_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswerShow.join(", ")+" müssen betrachtet werden.");
+                $("#tf2_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswerShow.join(", ")+LNG.K('aufgabe2_qst1_solution1'));
             }else{
-                $("#tf2_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswerShow.join(", ")+" muss betrachtet werden.");
+                $("#tf2_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswerShow.join(", ")+LNG.K('aufgabe2_qst1_solution2'));
             }
 
         }
@@ -1121,8 +1121,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
 
         $("#tf2_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_qst')+' #'+(currentQuestion+1)+'</div>\
-            <p>Welche Voraussetzungen muss dieser gerichtete Graph erfüllen, damit der Algorithmus eine Eulertour finden kann?</p>\
-            <p><em>Die Antworten schließen auch implizierte Voraussetzungen ein!</em></p>\
+            <p>'+LNG.K('aufgabe2_qst1_1')+'</p>\
+            <p>'+LNG.K('aufgabe2_qst1_2')+'</p>\
             <p><form id="question'+currentQuestion+'_form">'+inputs+'</form></p>\
             <p><button id="tf2_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button></p>\
             <p id="tf2_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />\
@@ -1171,7 +1171,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
 
         $("#tf2_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_qst')+' #'+(currentQuestion+1)+'</div>\
-            <p>Welche(n) Nachbarn von <strong>'+graph.nodes[tourCurrentVertex].getLabel()+'</strong> kommen für den Algorithmus im nächsten Schritt potentiell in Frage?</p>\
+            <p>'+LNG.K('aufgabe2_qst2_1')+'<strong>'+graph.nodes[tourCurrentVertex].getLabel()+'</strong>'+LNG.K('aufgabe2_qst2_2')+'</p>\
             <p><form id="question'+currentQuestion+'_form">'+inputs+'</form></p>\
             <p><button id="tf2_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button></p>\
             <p id="tf2_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />\

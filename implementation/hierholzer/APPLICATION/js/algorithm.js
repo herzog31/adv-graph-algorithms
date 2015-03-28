@@ -649,7 +649,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
 
     // State wenn Graph invalid ist
     this.invalidGraph = function() {
-        this.markPseudoCodeLine([14]);
+        this.markPseudoCodeLine([15]);
         $("#ta_div_statusErklaerung").html('<h3 style="color: white;">2 '+LNG.K('algorithm_status2_head')+'</h3>\
             <p style="color: white;">'+LNG.K('algorithm_status2_desc6')+'</p>\
             <ul style="color: white;">\
@@ -706,7 +706,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
 
     // Selectiere Start Vertice, entweder #1 (Euclidisch) oder #1 mit ungeradem Grad (Semi Euclidisch)
     this.findStartingVertex = function() {
-        this.markPseudoCodeLine([3, 5, 6]);
+        this.markPseudoCodeLine([3, 4, 6, 7]);
         if(!semiEulerianGraph) {
             $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.1a '+LNG.K('algorithm_status31A_head')+'</h3>\
@@ -755,7 +755,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn keiner gefunden -> mergeTour()
     // Wenn gefunden -> findNextVertexForTour()
     this.findNextVertexForTour = function() {
-        this.markPseudoCodeLine([8, 9, 10]);
+        this.markPseudoCodeLine([9, 10, 11]);
         canvas.off(".HAlgorithm");
 
         $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
@@ -835,7 +835,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn gleich -> mergeTour()
     // Wenn ungleich -> findNextVertexForTour()
     this.compareVertexWithStart = function() {
-        this.markPseudoCodeLine([11]);
+        this.markPseudoCodeLine([12]);
 
         if(tourStartVertex == tourCurrentVertex) {
             $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
@@ -869,7 +869,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     // Bei leerer Tour, Tour = Subtour
     // Bei vorhandener Tour, Replace Start mit Subtour
     this.mergeTour = function() {
-        this.markPseudoCodeLine([12]);
+        this.markPseudoCodeLine([13]);
 
         if(JSON.stringify(eulerianSubTour[0]) !== JSON.stringify(eulerianSubTour[(eulerianSubTour.length - 1)])) {
             // Subweg
@@ -961,7 +961,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     // Wenn ja -> returnTour()
     // Wenn nein -> findNewStartingVertex()
     this.checkForeulerianTour = function() {
-        this.markPseudoCodeLine([13]);
+        this.markPseudoCodeLine([14]);
         $("#ta_div_statusErklaerung").html('<h3>4 '+LNG.K('algorithm_status4_head')+'</h3>\
             <h3>4.2 '+LNG.K('algorithm_status42_head')+'</h3>\
             <p>'+LNG.K('algorithm_status42_desc1')+'</p>\
@@ -998,7 +998,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
 
     // Zeige Tour
     this.returnTour = function() {
-        this.markPseudoCodeLine([14]);
+        this.markPseudoCodeLine([15]);
         if(semiEulerianGraph) {
             $("#ta_div_statusErklaerung").html('<h3>5 '+LNG.K('algorithm_status5_head')+'</h3>\
             <p>'+LNG.K('algorithm_status5_desc1a')+'</p>');
@@ -1089,7 +1089,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     // Finde neuen Startpunkt in Tour
     // Erster Knoten, dessen Grad unbesuchter Kanten größer 0 ist -> findNextVertexForTour()
     this.findNewStartingVertex = function() {
-        this.markPseudoCodeLine([5, 6]);
+        this.markPseudoCodeLine([6, 7]);
         $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.1b '+LNG.K('algorithm_status31B_head')+'</h3>\
             <p>'+LNG.K('algorithm_status31B_desc1')+'</p>\

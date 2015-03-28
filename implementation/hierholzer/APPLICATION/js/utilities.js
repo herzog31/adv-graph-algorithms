@@ -44,8 +44,7 @@ Utilities.shuffleArray = function(array) {
     var counter = array.length, temp, index;
 
     while (counter > 0) {
-        index = Math.floor(Math.random() * counter);
-        counter--;
+        index = Math.floor(Math.random() * counter--);
         temp = array[counter];
         array[counter] = array[index];
         array[index] = temp;
