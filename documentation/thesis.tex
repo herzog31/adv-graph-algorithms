@@ -1,0 +1,153 @@
+% ==============================================================================
+% thesis.tex
+% Beispieldatei für tumthesis.csl
+% Michael Ritter, 2012
+% Lizenz: 
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+% http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% ==============================================================================
+\documentclass[]{tumthesis}
+
+% ------------------------------------------------------------------------------
+%FixMe-Status: final (keine FixMe-Anmerkungen) oder draft (Anmerkungen sichtbar)
+\fxsetup{draft}
+%\fxsetup{final}
+% ------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------
+%  Sprachauswahl für die Metadaten und den Haupttext (kann jederzeit auch im
+%  laufenden Text geändert werden)
+\selectlanguage{ngerman}
+%\selectlanguage{english}
+% ------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------
+% Daten fürs Literaturverzeichnis
+\addbibresource{thesis.bib}
+% ------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------
+% Weitere Pakete und TikZ-Bibliotheken können hier eingebunden werden
+\usetikzlibrary{arrows}
+% ------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------
+% include-Kommando steuern: Die Inhalte der Arbeit werden im Folgenden per
+% include-Befehl eingebunden. Damit man zum Testen nicht immer die komplette
+% Arbeit benötigt, lässt sich hier definieren, welche Teile eingebunden werden
+% sollen und welche nicht. Für die endgültige Version sollte man natürlich
+% darauf achten, dass hier auch alles eingebunden wird.
+\includeonly{%
+%titlepage,%
+%declaration,%
+abstract,%
+introduction,%
+% hier eigene Teile einfügen (Faustregel: eine Datei pro Kapitel)
+conclusion,%
+appendix%
+}%
+% ------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------
+% PDF-Metadaten
+\hypersetup{
+ pdfauthor={Wolfgang Ferdinand Riedl, Michael Ritter},
+ pdftitle={Die tumthesis-Klasse},
+ pdfsubject={Anleitung für Abschlussarbeiten},
+ pdfkeywords={Masterarbeit, Bachelorarbeit},
+ colorlinks=true, %farbige Links (für die PDF-Version)
+% colorlinks=false, % keine farbigen Links (für die Druckversion)
+}
+% ------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------
+% Basisdaten für Titelseite und Erklärung
+\author{Wolfgang F. Riedl, Michael Ritter}
+\title{Die \texttt{tumthesis}-Klasse}
+\subtitle{Eine Anleitung für Abschlussarbeiten}
+\faculty{Fakultät für Mathematik}
+\institute{Lehrstuhl für Angewandte Geometrie und Diskrete Mathematik}
+%\subject{master}
+%\subject{bachelor}
+%\subject{diploma}
+%\subject{project}
+%\subject{seminar}
+%\subject{idp}
+\subject{Kleiner Überblick}
+\professor{Prof. Dr. Peter Gritzmann} %Themensteller
+\advisor{Dr. René Brandenberg} %Betreuer
+\date{\today} %Abgabedatum
+\place{München} %Ort für die Unterschrift
+% ------------------------------------------------------------------------------
+
+% ==============================================================================
+% Hauptteil des Dokuments
+% ==============================================================================
+\makeindex[title=Index,options=-s myindex]
+\begin{document}
+\pagestyle{empty}
+\frontmatter%
+\selectlanguage{ngerman}
+%\selectlanguage{english}
+\maketitlepage%
+\makedeclaration%
+
+\include{abstract}
+\tableofcontents%
+
+\mainmatter%
+\pagestyle{headings}
+
+\include{introduction}
+\include{conclusion}
+
+
+% Eventuelle Anhänge
+\appendix
+\include{appendix}
+% Alle Anhänge hinter backmatter werden nicht nummeriert
+\backmatter
+
+
+%Abbildungsverzeichnis
+\listoffigures
+
+\vspace*{1.5cm}
+
+Alle Abbildungen in diesem Dokument stammen vom Autor selbst. Zur Erzeugung
+wurde das großartige \TeX-Paket TikZ von Till Tantau verwendet, vgl.
+\cite{Tantau2007}.
+
+%Tabellenverzeichnis
+\listoftables
+
+%Algorithmenverzeichnis
+% nur in Verbindung mit algorithm2e
+%\phantomsection% fuer hyperref
+%\addcontentsline{toc}{chapter}{Algorithmenverzeichnis}%
+%\markboth{Algorithmenverzeichnis}{Algorithmenverzeichnis}
+%\listofalgorithms
+
+% Index
+% Für Index zum Inhaltsverzeichnis hinzu 	
+\addcontentsline{toc}{chapter}{Index}
+\printindex
+
+% Literaturverzeichnis
+\printbibliography[heading=bibintoc]
+
+% In der Endversion sollte das hier leer sein und muss dann nicht auskommentiert
+% werden. Wer schlampig arbeitet, sollte aber zumindest daran denken, die
+% fixme-Liste hier auszukommentieren, damit die "Baustellen" für die
+% KorrektorInnen nicht ganz so offensichtlich sind.
+\listoffixmes
+%
+\end{document}
+% ==============================================================================
+% Ende des Dokuments
+% ==============================================================================

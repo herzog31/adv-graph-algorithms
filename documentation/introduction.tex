@@ -1,0 +1,558 @@
+%% ==============================
+\chapter{Einleitung}
+\label{ch:introduction}
+%% ==============================
+Dieses Kapitel gibt ein kurzes Beispiel für die Verwendung der
+\texttt{tumthesis}-Klasse. 
+
+\section{Dateien}
+\label{sec:intro:dateien}
+
+\Cref{tab:intro:dateien} zeigt alle zu diesem Beispiel
+gehörenden Dateien mit einer kurzen Erklärung.
+
+\begin{table}[htb]
+  \centering
+  \begin{tabular}{lp{10cm}} 
+    \toprule
+    \textbf{Dateiname} & \textbf{Erklärung} \\ \midrule
+    \texttt{tumthesis.cls} & Klassendatei, stellt die grundlegenden Kommandos
+    bereit und bindet wichtige Pakete ein\\
+    \texttt{tumcolors.sty} & \LaTeX-Paket, in dem die offiziellen Farben der TUM
+    definiert werden, wird von tumthesis.cls benutzt\\
+    \texttt{thesis.tex} & Hauptdatei dieses Beispiels, Ausgangspunkt für die
+    eigene Arbeit. Alle anderen \texttt{.tex}-Dateien werden von dieser Datei
+    eingebunden.\\
+    \texttt{thesis.pdf} & PDF-Version von thesis.tex\\
+		\texttt{preamble.tex} & Präamble, in welcher vom Nutzer Pakete geladen werden können\\
+    \texttt{abstract.tex} & Text für die Abstracts in Deutsch und Englisch\\
+    \texttt{introduction.tex} & Text für dieses Kapitel\\
+    \texttt{conclusion.tex} & Text für das folgende Kapitel\\
+    \texttt{appendix.tex} & Text für den Anhang\\
+    \texttt{thesis.bib} & Bib\TeX-Datei für die Literaturhinweise\\
+    \texttt{TUMlMblau} & Logo der Mathematik-Fakultät für die Titelseite\\
+    \texttt{TUMloblauSchriftzugL} & TUM-Logo für die Titelseite\\
+		\texttt{TopMath-Bildmotiv.jpg} & TopMath Logo für die Titelseite\\
+    \bottomrule
+  \end{tabular} 
+  \caption{zum Beispiel gehörige Dateien}
+  \label{tab:intro:dateien}
+\end{table}
+
+Um aus den Quelldateien das fertige PDF zu erstellen, sind folgende Befehle
+aufzurufen:
+\begin{verbatim}
+pdflatex thesis
+biber thesis
+makeindex -s myindex.ist
+pdflatex thesis
+pdflatex thesis
+\end{verbatim}
+
+Der erste Durchlauf von \texttt{pdflatex} erzeugt einige Hilfsdateien und eine
+(fast schon fertige) PDF-Ausgabe -- lediglich einige Grafiken können noch an der
+falschen Stelle sitzen und die Verweise und Literaturangaben funktionieren noch
+nicht. Mit dem \texttt{biber}-Aufruf arbeitet das System dann die Datei
+\texttt{thesis.bib} durch und erzeugt daraus das Literaturverzeichnis (siehe \cref{sec:intro:biblatex}). Anschließend wird mit \texttt{makeindex} noch der Index erstellt (siehe \cref{sec:intro:index}). Die
+beiden folgenden Aufrufe von \texttt{pdflatex} dienen dazu, die Verweise korrekt
+zu setzen und die Platzierung der Grafiken auszurichten. 
+
+Fortgeschrittene können den Prozess übrigens auch automatisieren, indem einfach
+\begin{verbatim}
+latexmk --pdf thesis
+\end{verbatim}
+aufgerufen wird. Das Tool \texttt{latexmk} sorgt dann automatisch für die
+korrekte Anzahl von Aufrufen und für den Bib\TeX-Durchlauf.
+
+\section{Konfiguration und Optionen}
+\label{sec:intro:optionen}
+Eigene Pakete des Nutzers sowie Änderung von vorgenommenen Einstellungen können in der Datei \texttt{preamble.tex} geladen werden. Der dort enthaltene Code wird zum Ende der Klasse (unmittelbar vor dem Laden der letzten Pakete \texttt{hyperref}und \texttt{cleveref}) eingelesen und ausgeführt.
+
+Die \texttt{tumthesis}-Klasse akzeptiert einige Optionen, die das Aussehen der Titelseite und anderes Verhalten ändern:
+\begin{itemize}
+	\item \texttt{topmath}: Diese Option platziert das TopMath-Bildmotiv auf der Titelseite:
+		\begin{verbatim}
+		\documentclass[topmath]{tumthesis}
+		\end{verbatim}
+\end{itemize}
+Alternativ kann man auch ein eigenes Motiv auf der Titelseite platzieren:
+\begin{itemize}
+	\item \texttt{titlepicture}: Name der einzubindenen Datei
+	\item \texttt{titlepictureX}: Horizontaler Abstand (mit Einheit) zwischen rechter unteren Ecke der Seite und recher unteren Ecke des Bildes
+	\item \texttt{titlepictureY}: Vertikaler Abstand (mit Einheit) zwischen rechter unteren Ecke der Seite und recher unteren Ecke des Bildes
+		\begin{verbatim}
+		\documentclass[titlepicture=MA_CMYK.pdf,titlepictureX=25mm,
+				titlepictureY=40mm]{tumthesis}
+		\end{verbatim}
+        würde nochmals das Mathelogo rechts unten auf der Seite einfügen.
+\end{itemize}
+Weiterhin kann auch das Verhalten des Inhalts von Theoremen angepasst werden:
+\begin{itemize}
+	\item \texttt{theoremtitle}: Soll der Inhalt eines Theorems neben dem Titel begonnen werden (nobreak) oder in der nächsten Zeile (break, Standardoption)
+		\begin{verbatim}
+		\documentclass[theoremtitle=nobreak]{tumthesis}
+		\end{verbatim}
+\end{itemize}
+Eine weitere Option erlaubt die Konfiguration des BibLaTeX-Backends:
+\begin{itemize}
+	\item \texttt{biblatexBackend}: Die Defaulteinstellung ist Biber (Parameter biber), alternativ sind alle Optionen des Parameters \enquote{backend} des BibLaTeX-Packets möglich:
+		\begin{verbatim}
+		\documentclass[biblatexBackend=bibtex]{tumthesis}
+		\end{verbatim}
+\end{itemize}
+
+\section{Grundeinstellungen}
+\label{sec:intro:grundeinstellungen}
+
+Ganz zu Beginn werden in der Datei \texttt{thesis.tex} ein paar wichtige
+Einstellungen vorgenommen. Der Code sieht wie folgt aus:
+
+\begin{lstlisting}[language={[LaTeX]TeX}]
+% -------------------------------
+% PDF-Information
+\hypersetup{
+ pdfauthor={Wolfgang Ferdinand Riedl, Michael Ritter},
+ pdftitle={Die tumthesis-Klasse},
+ pdfsubject={Anleitung für Abschlussarbeiten},
+ pdfkeywords={Masterarbeit, Bachelorarbeit}
+ colorlinks=true, %farbige Links (für die PDF-Version)
+% colorlinks=false, % keine farbigen Links (für die Druckversion)
+}
+
+% -------------------------------
+
+% Basisdaten 
+
+\author{Wolfgang F. Riedl, Michael Ritter}
+\title{Die \texttt{tumthesis}-Klasse}
+\subtitle{Eine Anleitung für Abschlussarbeiten}
+\faculty{Fakultät für Mathematik}
+\institute{Lehrstuhl für Angewandte Geometrie und Diskrete Mathematik}
+%\subject{master}
+%\subject{bachelor}
+%\subject{diploma}
+%\subject{project}
+%\subject{seminar}
+%\subject{idp}
+\subject{Kleiner Überblick}
+\professor{Prof. Dr. Peter Gritzmann} %Themensteller
+\advisor{Dr. René Brandenberg} %Betreuer
+\date{26.12.2012} %Abgabedatum
+\place{München} %Ort für die Unterschrift
+\end{lstlisting}
+
+Die Angaben im \verb|hypersetup|-Befehl erscheinen zwar nicht im Dokument
+selbst, sie werden aber als Metadaten in die PDF-Datei eingebettet und lassen
+sich im Acrobat Reader (und vielen anderen PDF-Betrachtern) anzeigen. Bei den
+restlichen Befehlen dürfte das meiste selbsterklärend sein. Beim
+\verb|subject{}| kann man entweder einen beliebigen Text angeben (wie das in
+diesem Beispiel mit \enquote{Kleiner Überblick} gemacht wird) oder man verwendet
+eines der vordefinierten Schlüsselwörter, die automatisch die Ausgabe
+\enquote{Masterarbeit}, \enquote{Bachelorarbeit} bzw. eine passende andere
+Ausgabe erzeugen.  Dazu entfernt man einfach das Kommentarzeichen in der
+betreffenden Zeile und kommentiert dafür den jetzt aktiven \verb|subject|-Befehl
+aus. Es ist natürlich darauf zu achten, dass man die Bezeichnungen der gewählten
+Sprache anpasst, vgl. dazu \cref{sec:intro:sprachauswahl}. (Man kann den
+\verb|\subject{}|-Befehl übrigens auch ganz weglassen, dann wird eben keine
+Bezeichnung auf der Titelseite erzeugt und nur der Autor genannt.)
+
+\section{Sprachauswahl und Zeichensatz}
+\label{sec:intro:sprachauswahl}
+Die Klasse unterstützt als Sprachen Deutsch und Englisch. Zu Beginn von
+\texttt{thesis.tex} gibt es den Befehl
+\begin{lstlisting}[language={[LaTeX]TeX}]
+  \selectlanguage{ngerman}
+\end{lstlisting}
+mit dem die Grundsprache eingestellt wird. Diese kann man mit genau diesem
+Befehl bzw. \verb|\selectlanguage{english}| übrigens jederzeit im Dokument
+ändern. Dabei passen sich ein paar Einstellungen automatisch an, \eg liefern die
+Befehle \verb|\eg| und \verb|\ie| jeweils den passenden Text (die sollte man
+übrigens verwenden, weil sie gleich für den typographisch korrekten Abstand
+sorgen) und die Überschriften ändern sich, aber auch etwas subtilere Dinge wie
+die verwendeten Trennmuster für die automatische Silbentrennung. Ein Beispiel
+für so eine Umschaltung findet man im Abstract.
+
+Für eigene Dateien ist es wichtig, das korrekte \enquote{Encoding} zu
+wählen. Vorgabe ist hier Unicode (UTF-8). Das ermöglicht es, Umlaute und andere
+Sonderzeichen direkt einzugeben, erfordert aber unter Umständen eine richtige
+Einstellung im Editor. Besonders unter Windows-Systemen sind manche Editoren
+standardmäßig auf Latin-1 statt auf Unicode eingestellt -- so etwas kann zu sehr
+merkwürdigen Fehlermeldungen führen!
+
+\section{Druck}
+\label{sec:intro:bindung}
+Beim Drucken ist unbedingt darauf zu achten, dass die Arbeit doppelseitig
+gedruckt wird. Die Seitenränder und die Kopf- und Fußzeilen sind darauf
+ausgelegt, dass die Arbeit doppelseitig gedruckt und dann gebunden wird.
+
+Um die Bindekorrektur anzupassen (und so zum Beispiel in der Mitte mehr Platz für die Bindung zu lassen) muss einfach die Zeile 
+\begin{lstlisting}[language={[LaTeX]TeX}]
+  BCOR =5 mm % Binding correction , ensures sufficient space for binding
+\end{lstlisting}
+in der Datei \verb|tumthesis.cls| angepasst werden.
+
+\section{Titelseite}
+Standardmäßig wird eine dem TUM-Styleguide weitestmöglich folgende Titelseite dargestellt. Durch das Ersetzen der Zeile
+\begin{verbatim}
+\maketitlepage%
+\end{verbatim}
+in der Datei \texttt{thesis.tex} durch
+\begin{verbatim}
+\maketitlepageDissertation%
+\end{verbatim}
+wird diese durch eine an eine Dissertation angepasst Titelseite ersetzt.
+
+\section{Wichtige Hinweise}
+\label{sec:intro:hinweise}
+\subsection{Mathe-Umgebungen}
+Da diese Klasse das Packet \texttt{ntheorem} lädt, werden durch Matheumgebungen der Art 
+\verb|\[ ... \]| Fehlermeldungen erzeugt. Solche Umgebungen sollten stattdessen durch
+\verb|\begin{equation*} ... \end{equation*}| ersetzt werden.
+
+\subsection{BibLaTeX}
+\label{sec:intro:biblatex}
+Das Packet nutzt als Standard das Biber Backend, welches UTF-8 kodierte Bibliographiedateien 
+lesen kann. Die Umstellung auf ein anderes Backend erfolgt über den Parameter \texttt{biblatexBackend} (siehe Parameter).
+
+Für die meisten \LaTeX-Editoren findet man im Web Anleitungen für die Einrichtung mit biber.
+\section{Einige Pakete}
+\label{sec:intro:pakete}
+Die Klasse \texttt{tumthesis.cls} bindet bereits eine ganze Reihe nützlicher
+Pakete ein, die wir hier kurz auflisten wollen.
+
+\subsection{Index}
+\label{sec:intro:index}
+Die tumthesis Klasse lädt das Paket imakeidx, welches die schnelle und einfach Erstellung eines \emph{Index}\index{Index}\index{index!imakeidx} erlaubt. Um ein Wort zum Index hinzuzufügen muss einfach der Befehl \verb|\index{Schlüsselwort}| angehängt werden. Das Wort \enquote{Index} wird zum Beispiel wie folgt zum Index dieses Dokuments hinzugefügt:
+\begin{lstlisting}[language={[LaTeX]TeX}]
+  ... einfach Erstellung eines \emph{Index}\index{Index} erlaubt. Um ...
+\end{lstlisting}
+Symbole können ebenso einfach hinzugefügt werden: Das Symbol $\zeta$\index{$\zeta$} wird mit folgender Zeile zum Index hinzugefügt:
+\begin{lstlisting}[language={[LaTeX]TeX}]
+  ... Das Symbol $\zeta$\index{$\zeta$} wird mit ...
+\end{lstlisting}
+Um die Position eines Symbols (oder anderen Elements) im Index zu ändern, kann man ein zusätzliches Schlüsselwort (welches auch eine Formel sein kann) angeben:
+
+Um das Symbol $\pi$\index{pi@$\pi$}\index{$p_i$@$\pi$} so in den Index aufzunehmen, dass es an der Stelle des Wortes \enquote{pi} und zusätzlich noch an der Position des Symbols \enquote{$p_i$} erscheinen würde, kann man den folgenden Code nutzen:
+\begin{lstlisting}[language={[LaTeX]TeX}]
+  ... as Symbol $\pi$\index{pi@$\pi$}\index{$p_i$@$\pi$} so in den ...
+\end{lstlisting}
+
+Subkategorien können auch sehr einfach über \verb|\index{Schlüsselwort!Subkategorie}| erstellt werden: Die Definition eines metrischen Raums 
+\begin{definition}[Metric]
+	\index{metric}
+	Let $X$ be a set and $d: X \times X \longrightarrow \mathbb{R}$. The function $d$ is a metric on $X$ if the following three properties hold for all $x,y,z \in X$
+	\begin{enumerate}
+	  \item $d(x,x) \geq 0$ and $d(x,y) = 0 \iff x = y$ (non-negativity)\index{metric!non-negativity}
+	  \item $d(x,y) = d(y,x)$ (symmetry)\index{metric!symmetry}
+	  \item $d(x,z) \leq d(x,y) + d(y,z)$ (triangle inequality)\index{metric!triangle inequality}.
+	\end{enumerate}
+\end{definition}
+kann beispielsweise im Index mit Hilfe des folgenden Codes referenziert werden:
+\begin{lstlisting}[language={[LaTeX]TeX}]
+\begin{definition}[Metric]
+	\index{metric}
+	Let $X$ be a set and $d: X \times X \longrightarrow \mathbb{R}$. The function $d$ is a metric on $X$ if the following three properties hold for all $x,y,z \in X$
+	\begin{enumerate}
+	  \item $d(x,x) \geq 0$ and $d(x,y) = 0 \iff x = y$ (non-negativity)\index{metric!non-negativity}
+	  \item $d(x,y) = d(y,x)$ (symmetry)\index{metric!symmetry}
+	  \item $d(x,z) \leq d(x,y) + d(y,z)$ (triangle inequality)\index{metric!triangle inequality}.
+	\end{enumerate}
+\end{definition}
+\end{lstlisting}
+
+Zur Erstellung des Index muss die folgende Zeile
+\begin{lstlisting}[language={[LaTeX]TeX}]
+	\makeindex[title=Index,options=-s myindex]
+\end{lstlisting}
+zur Datei \verb|thesis.tex| \emph{vor} dem Befehl \verb|\begin{document}| hinzugefügt werden! Die Option \verb|title=Index| gibt die Überschrift des Index (in diesem Fall \enquote{Index}) an; die zweite Option eine angepasst Style-Datei (funktioniert nicht in allen Umgebungen, andernfalls müssen die unten aufgeführten Kommandozeilenoptionen genutzt werden).
+
+Der Index kann dann über das folgende Kommando zum Dokument hinzugefügt werden:
+
+\begin{lstlisting}[language={[LaTex]TeX}]
+	%Add the index to the table of contents
+	\addcontentsline{toc}{chapter}{Index}
+	%print the index
+	\printindex
+\end{lstlisting}
+Der Index muss mit Hilfe des \verb|makeindex|-Befehl kompiliert werden (was die meisten Editoren automatisch machen). Das Layout des Index kann mit Hilfe einer modifizierten Style-Datei angepasst werden, diese wird über die Option \verb|-s stylefile.ist| geladen (oder unter Umständen über die oben dem \verb|\makeindex|-Befehl übergebene Option). Dieses Dokument wurde mit Hilfe des in der beiliegenden Datei d\verb|myindex.ist| definierten Styles erstellt.
+
+\subsection{scrbook}
+\label{sec:intro:scrbook}
+Die Klasse \texttt{tumthesis.cls} baut komplett auf \texttt{scrbook.cls}
+auf. Das bedeutet insbesondere, dass auch alle Optionen und Befehle von
+\texttt{scrbook} zur Verfügung stehen. Genaueres dazu findet man in der
+Dokumentation \cite{KohmMorawski2012} oder in gedruckten Ausgabe
+\textcite{KohmMorawski2012b}.
+
+\subsection{csquotes}
+\label{sec:intro:csquotes}
+Dieses Paket liefert unter anderem den Befehl \verb|\enquote{}|, mit dem sich
+automatisch korrekte Anführungszeichen setzen lassen. Dabei richtet sich das
+Paket nach der gerade aktiven Sprache: In deutschen Texten erscheinen
+\enquote{deutsche Anführungszeichen}, \selectlanguage{english} while English
+texts use \enquote{corresponding quotation marks}. \selectlanguage{ngerman}
+
+\subsection{cleveref}
+\label{sec:intro:cleveref}
+Verweise unter \LaTeX{} setzt man normalerweise mit \verb|\ref{}|. Dieses Paket
+definiert die neuen Befehle \verb|\cref| und \verb|\Cref|, die dafür sorgen,
+dass neben der richtigen Nummer automatisch auch ein beschreibender Text gesetzt
+wird (und zwar in der gerade eingestellten Sprache). Die zweite Version sorgt
+dabei für Großschreibung und sollte daher am Satzanfang verwendet werden (auch
+wenn das im Deutschen meistens keinen Unterschied macht, weil die Bezeichnungen
+häufig Substantive sind, die ohnehin großgeschrieben werden). Ein Beispiel kann
+man weiter oben und auch hier sehen: Die Verweise auf \cref{tab:intro:dateien}
+werden mit \texttt{cleveref} erzeugt, der Text \enquote{Tabelle} wird dabei
+automatisch eingefügt.
+
+\subsection{ntheorem}
+\label{sec:intro:ntheorem}
+Mit diesem Paket werden eine Reihe Standard-Umgebungen für Definitionen, Sätze,
+Beweise etc. bereitgestellt. Die Bezeichnungen sind übrigens sprachabhängig. Ein
+Beispiel:
+\begin{definition}
+  Jedes Element eines Vektorraums bezeichnen wir als \emph{Vektor}.
+\end{definition}
+
+\begin{satz}[Hauptsatz der kanonischen Vektorraumbezeichnungen]
+  \label{satz:vektorhauptsatz}
+  Zu jedem Vektor $v$ gibt es einen Vektorraum $V$ mit $v \in V$.
+\end{satz}
+\begin{beweis}
+  Der triviale Beweis wird dem Leser zu Übung überlassen. Es ist wirklich nicht
+  schwer, probieren Sie es einfach. 
+\end{beweis}
+
+\selectlanguage{english}
+Let us now demonstrate an English version of the above proof:
+\begin{beweis}
+  The proof of \cref{satz:vektorhauptsatz} is most trivial and only complete
+  idiots would not be able to do it themselves. If you even bothered reading
+  this proof you might want to think about studying some other subject.
+\end{beweis}
+\selectlanguage{ngerman}
+
+Wir formulieren noch einen Satz, um nebenbei ein weiteres Feature von
+\texttt{cref} vorzuführen, mit dem man nämlich auch mehrere Verweise
+zusammenpacken kann, hierzu sei auf \cref{satz:vektorhauptsatz,satz:latex}
+verwiesen.
+\begin{satz}
+\label{satz:latex}
+  \LaTeX{} ist toll!
+\end{satz}
+
+Die Umgebungen lassen sich natürlich auch ergänzen und dem eigenen Geschmack
+anpassen. Dazu kann entweder die Beispiele in \texttt{tumthesis.cls} anschauen
+oder man zieht die Dokumentation \cite{ntheorem} zum \texttt{ntheorem}-Paket zu
+Rate. In \cref{tab:ntheorem} sind alle vordefinierten Umgebungen aufgelistet.
+
+\begin{table}[hbt]
+  \centering
+  \begin{tabular}{lll}
+    \toprule%
+    \textbf{Umgebung} & \multicolumn{2}{c}{\textbf{Text}} \\
+    & \textbf{Deutsch} & \textbf{Englisch}\\ \midrule
+    \texttt{definition} & Definition & Definition \\
+    \texttt{theorem} & Satz & Theorem \\
+    \texttt{satz} & Satz & Theorem \\
+    \texttt{lemma} & Lemma & Lemma\\
+    \texttt{proposition} & Proposition & Proposition \\
+    \texttt{corollary} & Korollar & Corollary\\
+    \texttt{korollar} & Korollar & Corollary\\
+    \texttt{remark} & Bemerkung & Remark \\
+    \texttt{bemerkung} & Bemerkung & Remark \\
+    \texttt{example} & Beispiel & Example \\
+    \texttt{beispiel} & Beispiel & Example \\
+    \texttt{proof} & Beweis & Proof \\
+    \texttt{beweis} & Beweis & Proof \\
+    \texttt{conjecture} & Vermutung & Conjecture \\
+    \texttt{vermutung} & Vermutung & Conjecture \\
+    \texttt{problem} & Problem & problem \\
+\bottomrule
+
+    
+  \end{tabular}
+  \caption{vordefinierte \texttt{ntheorem}-Umgebungen}
+  \label{tab:ntheorem}
+\end{table}
+
+\subsection{booktabs}
+\label{sec:intro:booktabs}
+Mit diesem Paket lassen sich schönere Tabellen setzen, \cref{tab:intro:dateien}
+zeigt ein Beispiel. Viele Hinweise zum Tabellensatz finden sich auch in der
+ausführlichen Dokumentation zu diesem Paket.
+
+\subsection{tabularx}
+\label{sec:intro:tabularx}
+Tabellen, welche die Breite bestimmer Spalten ändern, um eine vorgegebene Breite zu haben, können mit Hilfe von \texttt{tabularx} erzeugt werden.
+
+\subsection{TikZ}
+\label{sec:intro:tikz}
+TikZ ist zwar kein Zeichenprogramm, man kann damit aber trotzdem verdammt gute
+Abbildungen erzeugen. Die Dokumentation \cite{Tantau2007} ist sehr ausführlich,
+im Internet findet man unter \url{http://www.texample.net} eine Menge
+Beispiele, die zeigen, was mit dem Paket alles möglich ist. Damit das
+Abbildungsverzeichnis nicht so leer bleibt, fügen wir hier in
+\cref{fig:split-disjunction} mal ein TikZ-Bild
+ein. Keine Angst, den Code müssen Sie nicht direkt verstehen. In der
+TikZ-Anleitung gibt es auch ein paar schön erklärte, einfachere Beispiele.
+
+\begin{figure}[htb]
+\centering
+\begin{subfigure}[b]{9cm}
+\tikzset{%
+  covering text/.style={shape=rectangle, fill=white, opaque, inner sep=2pt},%
+  coordinate axis/.style={very thick, -stealth'},%
+  faded coordinate axis/.style={gray, -stealth'},%
+  coordinate grid/.style={help lines,xstep=1,ystep=1},%
+  polytope/.style ={ultra thick},%
+  integer polytope/.style={orange, ultra thick},%, 
+  grid point/.style = {draw = none,fill=orange},%
+  vertex point/.style = {draw = none,fill=black},%
+  grid line/.style = {ultra thick,orange},%
+  inequality hyperplane/.style={ultra thick, rot},%
+  inequality halfspace/.style={draw=none, fill=rot, opacity=0.3},%
+  valid hyperplane/.style={ultra thick, green},%
+  valid halfspace/.style={draw=none, fill=green, opacity=0.3},%
+  objective function/.style={ultra thick, gelb},%
+  highlighted point/.style={draw=none,fill=blau},%
+}
+  \centering
+    \begin{tikzpicture}[x=1.5cm, y=1.5cm]
+    %\useasboundingbox (-0.5,-0.7) rectangle (4.5,3.9);%
+    \draw[coordinate grid] (0,0) grid (4,3);
+    \draw[coordinate axis] (0,0) -- (0,3.3) node[left] {$y$};%
+    \draw[faded coordinate axis] (0,0) -- (4.3,0) node[below] {$x$};%
+    \foreach \x in {1,2,3,4} {%
+      \fill[] (\x,0) circle (0.07);
+      \draw[ultra thick, dotted] (\x,-0.1) -- (\x,3.1);%
+    }%
+    %         %
+    \coordinate (A) at (0.5,0.2);%
+    \coordinate (B) at (3.5,0.5);%
+    \coordinate (C) at (1.3,2.8);%
+    \coordinate (A1) at (intersection of 1,0--1,1 and A--B);%
+    \coordinate (A2) at (intersection of 2,0--2,1 and A--B);%
+    \coordinate (A3) at (intersection of 3,0--3,1 and A--B);%
+    \coordinate (B1) at (intersection of 1,0--1,1 and A--C);%
+    \coordinate (B2) at (intersection of 2,0--2,1 and B--C);%
+    \coordinate (B3) at (intersection of 3,0--3,1 and B--C);%
+%  
+    \draw[polytope] (A) -- (B) -- (C) -- cycle;%
+    \draw[integer polytope, fill opacity=0.5] (A1) -- (A2) -- (A3) -- (B3)
+    -- (B2) -- (B1) -- cycle;%
+      %
+    \draw[highlighted point] (C) circle (0.07) node[blau, above right]
+    {$(x^*, y^*)$};%
+    \draw[highlighted point] (C |- 0,0) circle (0.07) node[blau, below
+    right] {$x^*$};%
+    \draw[valid halfspace] (1,-0.2) rectangle (-1,3.2);%
+    \draw[valid halfspace] (2,-0.2) rectangle (4,3.2);%
+    \draw[valid hyperplane] (1,-0.2) -- (1,3.2);%
+    \draw[valid hyperplane] (2,-0.2) -- (2,3.2);%
+    \draw[inequality hyperplane] (-0.5,2) -- (4,3);%
+    \fill[inequality halfspace] (C) -- (intersection of -0.5,2--4,3 and A--C)
+    -- (intersection of -0.5,2--4,3 and B--C) -- cycle;%
+    \draw[green] (1,3.2) node[covering text, above left]  {$d^Tx \le \delta$};%
+    \draw[green] (2,3.2) node[covering text, above right]  {$d^Tx \ge \delta+1$};%
+%
+  \end{tikzpicture}
+  \caption{Beispiel einer Split Disjunction}
+  \label{fig:split-disjunction}
+ \end{subfigure}
+ \qquad
+ \begin{subfigure}[b]{4cm}
+   \centering
+   \includegraphics[width=2cm]{TUMlMblau.png}
+  \caption{Das TUM Logo}
+  \label{fig:logo}
+\end{subfigure}
+\caption{Zwei Graphiken}
+\label{fig:graphics}
+\end{figure}
+
+\subsection{subcaption}
+\label{sec:intro:subcaption}
+Um innerhalb einer Figure mehrere Subfigures zu erzeugen, kann man die folgende Umgebung aus dem Packet \texttt{subcaption} nutzen: \verb|\begin{subfigure} ... \end{subfigure}|. Hiermit kann man Subfigure und Subtables mit einer zu figures und tables identischen Syntax erzeugen.
+
+\subsection{fixme}
+\label{sec:intro:fixme}
+
+Mit diesem Paket kann man Anmerkungen im Dokument erstellen, die noch nötige
+Arbeiten dokumentieren.\fxnote{Hier könnte noch ein Beispiel folgen.} Ganz am
+Ende des Dokuments gibt es dann eine \enquote{List of Corrections}, in der alle
+Notizen aufgelistet sind. In diesem Absatz sind zur Demonstration zwei solche
+FixMe-Hinweise eingebaut -- man sieht das einmal an den Anmerkungen am Rand,
+andererseits aber auch ganz hinten in diesem Dokument in der erwähnten
+\enquote{List of Corrections}. Auch hier kann man zahlreiche Einstellungen
+vornehmen, die \fxnote*{ins Literaturerzeichnis aufnehmen}{Dokumentation} ist
+empfehlenswert. Erwähnt sei eine Einstellung, die man ganz am Anfang der Datei
+\texttt{thesis.tex} vornehmen sollte:
+\begin{lstlisting}[language={[LaTeX]TeX}]
+%FixMe-Status: final (keine FixMe-Anmerkungen) oder draft (Anmerkungen sichtbar)
+\fxsetup{draft}
+%\fxsetup{final}
+\end{lstlisting}
+
+Ersetzt man hier die \enquote{draft}-Zeile durch die \enquote{final}-Zeile, so
+passieren zwei Dinge: Alle \verb|\fxfatal{}|-Kommandos werden zu \LaTeX-Fehlern,
+der \TeX-Lauf bricht bei so einem Kommando also ab (nützlich, um wirklich böse
+Fehler anzumerken, die man auf keinen Fall übersehen darf). Alle anderen
+fixme-Kommandos (also \verb|\fxnote{}|, \verb|\fxwarning{}|, \verb|\fxerror{}|)
+werden dagegen unsichtbar, die Markierungen im Text und auch die \enquote{List
+  of Corrections} am Ende des Dokuments verschwinden. Genaueres zu den möglichen
+Kommandos und zahlreichen Einstellmöglichkeiten bietet die Dokumentation
+\cite{fixme}.
+
+\subsection{hyperref}
+\label{sec:intro:hyperref}
+
+Mit dem \texttt{hyperref}-Paket werden einige PDF-Einstellungen vorgenommen
+(vgl. \cref{sec:intro:grundeinstellungen}). Außerdem sorgt das Paket dafür, dass
+alle Referenzen, Literaturverweise und das Inhaltsverzeichnis zu klickbaren
+Links werden, mit denen man im Dokument hin- und herspringen kann. Standardmäßig
+werden diese Links auch in schwarzer Farbe gesetzt, sie sind also nicht sofort
+sichtbar. Alternativ kann man mit der Einstellung \texttt{colorlinks=true} im
+\verb|\hypersetup{}|-Befehl zu Beginn des Dokuments aber auch dafür sorgen, dass
+Links in einem dezenten dunkelblauen Farbton erscheinen. Für die
+Bildschirm-Version ist das praktisch, für die Druckversion sollte man aber auf
+schwarze Farbe zurückschalten, also die Option \texttt{colorlinks=false}
+verwenden (schließlich kann man Links im Ausdruck ja nicht anklicken).
+\begin{lstlisting}[language={[LaTeX]TeX}]
+\hypersetup{
+ pdfauthor={Wolfgang Ferdinand Riedl, Michael Ritter},
+ pdftitle={Die tumthesis-Klasse},
+ pdfsubject={Anleitung für Abschlussarbeiten},
+ pdfkeywords={Masterarbeit, Bachelorarbeit},
+ colorlinks=true, %farbige Links (für die PDF-Version)
+% colorlinks=false, % keine farbigen Links (für die Druckversion)
+}
+\end{lstlisting}
+
+\subsection{listings}
+\label{sec:intro:listings}
+Mit dem Paket \texttt{listings} kann man Quellcode-Listings schön formatiert
+darstellen. In diesem Beispiel wird es benutzt, um \LaTeX-Quellcode
+darzustellen. Mit den Standardeinstellungen in diesem Paket sorgt es automatisch
+für Zeilennummerierung, Zeilenumbruch und einige anderen
+Kleinigkeiten. Natürlich lässt sich vieles individuell anpassen, Details dazu
+sind in der Dokumentation \cite{listings} zu finden. Eine kleine Warnung: Das
+Paket ist so eingestellt, dass es mit Umlauten und \enquote{ß} in Quelltexten
+zurechtkommt, andere Sonderzeichen können aber Probleme machen  (auch in
+Kommentaren). Am besten, man vermeidet Sonderzeichen in Quelltexten komplett --
+wenn es aber nicht anders geht, kann man sich in \texttt{tumthesis.cls}
+anschauen, wie die Einstellungen ergänzt werden müssen, um auch andere
+Sonderzeichen zu behandeln.
+
+\subsection{algorithm2e}
+\label{sec:intro:algorithm2e}
+Mit \texttt{algorithm2e} hat man eine weitere Möglichkeit, Quelltext darzustellen. 
+Im Gegensatz zu \texttt{listings} wird hier jedoch nicht Code für eine bestimmte
+Programmiersprache formatiert, vielmehr wird formatierter Pseudocode mit
+einer eigenen leicht verständlichen Syntax erzeugt.
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "thesis"
+%%% End: 
