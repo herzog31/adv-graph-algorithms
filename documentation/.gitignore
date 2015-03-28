@@ -20,5 +20,11 @@
 *.mtc
 *.mtc1
 *.out
+*.bcf
+*.fdb_latexmk
+*.fls
+*.lox
+*.run.xml
+*.thm
 *.synctex.gz
 .DS_Store
