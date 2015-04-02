@@ -72,6 +72,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     const DELTA_QUESTION = 2;
     const NEW_LABEL_QUESTION = 3;
     const EQUALITY_GRAPH_QUESTION = 4;
+    const START_LABEL_QUESTION = 5;
 
     // Array with edge costs
     var cost = [];
@@ -307,6 +308,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 				case EQUALITY_GRAPH_QUESTION:
 					this.generateEqualityGraphQuestion();
 					break;
+                case START_LABEL_QUESTION:
+                    this.generateStartLabelQuestion();
+                    break;
 			}
 
             this.showQuestionModal();
@@ -1083,6 +1087,44 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     };
 
+    this.generateStartLabelQuestion = function() {
+
+        var nodeKeys = Object.keys(graph.nodes);
+        var randomKey = nodeKeys[nodeKeys.length * Math.random() << 0];
+        var answer = 0;
+        if(randomKey < lx.length) {
+            answer = lx[randomKey];
+        }else if (randomKey < ly.length) {
+            answer = ly[randomKey];
+        }
+        var randomNode = graph.nodes[randomKey];
+
+        randomNode.setLabel("?");
+        this.needRedraw = true;
+
+        questions[currentQuestion] = {type: currentQuestionType, rightAnswer: answer};
+
+        var form = '<label for="tf1_input_question'+currentQuestion+'" class="question_label_node">'+randomNode.getOuterLabel()+'</label>\
+            <input type="text" id="tf1_input_question'+currentQuestion+'" name="question'+currentQuestion+'" value="" class="question_input_node" /><br style="clear: both;" />';
+        form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
+
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
+            <p>Im ersten Schritt bestimmt der Algorithmus die initialen Markierungen.</p>\
+            <p>Bitte berechne die initiale Markierung für den Knoten <strong>'+randomNode.getOuterLabel()+'</strong>.</p>\
+            <p>'+form+'</p>\
+            <p><button id="tf1_button_questionClose">Antworten</button></p>\
+            <p id="tf1_questionSolution">\
+            <button id="tf1_button_questionClose2">Weiter</button>\
+            </p>');
+
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub,"tf1_div_questionModal"]);
+
+        $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
+        $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
+        $("#question"+currentQuestion+"_form").find("input[type='text']").one("keyup", function() { algo.activateAnswerButton(); });
+
+    };
+
     this.saveAnswer = function() {
         var givenAnswer = "";
 
@@ -1102,7 +1144,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             this.showLabels();
             this.needRedraw = true;
         }else if(currentQuestionType === EQUALITY_GRAPH_QUESTION) {
-            var givenAnswer = [];
+            givenAnswer = [];
             $('#question'+currentQuestion+'_form').find("input[type='checkbox']").each(function() {
                 $(this).attr("disabled", true);
                 var isChecked = $(this).prop('checked');
@@ -1113,6 +1155,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             });
             givenAnswer = givenAnswer.join(",");
             this.showEqualityGraph();
+            this.needRedraw = true;
+        }else if(currentQuestionType === START_LABEL_QUESTION) {
+            var givenAnswer = parseInt($("#question"+currentQuestion+"_form").find("input[type='text']").val());
+            this.showLabels();
             this.needRedraw = true;
         }
 
@@ -1141,6 +1187,12 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
                 }
             });
             questions[currentQuestion].rightAnswer = questions[currentQuestion].rightAnswer.join(",");
+        }else if(questions[currentQuestion].type === START_LABEL_QUESTION) {
+            if(givenAnswer === questions[currentQuestion].rightAnswer) {
+                $(".question_input_node").after('<span class="answer" style="color: green;">'+questions[currentQuestion].rightAnswer+'</span>');
+            }else{
+                $(".question_input_node").after('<span class="answer" style="color: red;">'+questions[currentQuestion].rightAnswer+'</span>');
+            }
         }
 
         questions[currentQuestion].givenAnswer = givenAnswer;
@@ -1198,6 +1250,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         var randomVariable = function(min, max) {
             return Math.random() * (max - min) + min;
         };
+
+        if(statusID === INITIAL_LABELS) {
+            return START_LABEL_QUESTION;
+        }
 
         if(statusID === NEW_EQUALITY_GRAPH) {
             if(randomVariable(0, 1) > 0.5) {
