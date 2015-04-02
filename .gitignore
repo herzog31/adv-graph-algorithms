@@ -21,4 +21,13 @@
 *.mtc1
 *.out
 *.synctex.gz
+*.bcf
+*.fdb_latexmk
+*.fls
+*.lox
+*.run.xml
+*.thm
 .idea
+.DS_Store
+*.sublime-workspace
+*.sublime-project
