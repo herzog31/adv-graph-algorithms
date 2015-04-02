@@ -994,6 +994,24 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             }
         }
 
+        var range = $.map($(Array(changedNodes.length)), function(val, i) { return i; });
+        range = Utilities.shuffleArray(range);
+        if(range.length > 4) {
+            range = range.slice(0, 4);
+        }
+        range.sort();
+        var changedNodesR = [];
+        var correctAnswerR = [];
+        var currentValueR = [];
+        for(var i = 0; i < range.length; i++) {
+            changedNodesR.push(changedNodes[range[i]]);
+            correctAnswerR.push(correctAnswer[range[i]]);
+            currentValueR.push(currentValue[range[i]]);
+        }
+        changedNodes = changedNodesR;
+        correctAnswer = correctAnswerR;
+        currentValue = currentValueR;
+
         var changedNodesOuter = changedNodes.map(function(i) {
             return graph.nodes[i].getOuterLabel();
         });
