@@ -9,7 +9,7 @@ import os
 import difflib
 
 # Compare files in following folders
-folders = ['chinese-postman', 'floyd-warshall', 'hierholzer', 'hopcroft-karp', 'hungarian']
+folders = ['library', 'chinese-postman', 'floyd-warshall', 'hierholzer', 'hopcroft-karp', 'hungarian']
 # Identity threshold
 threshold = 0.5
 # Files types to exclude
