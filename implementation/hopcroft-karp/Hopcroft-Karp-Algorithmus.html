@@ -197,21 +197,25 @@
                 <p>Du kannst die Anwendung <a href="#" target="_blank" tabindex=-1> in einem anderen Browserfenster</a> öffnen, um parallel einen anderen Tab zu lesen.</p>
             </div>
         </div>
-        <div id="tab_ti">
+        <div id="tab_ti" style="display: none;">
             <div id="ti_div_Einfuehrungstext">
+                <div class="BeispielbildContainer">
+                    <img id="ti_img_1" src="img/search.png" alt="Suche" width="370"/><p>Suche</p><br />
+                    <!--<img id="ti_img_2" src="img/koenigsberg_degree.png" alt="Gerade (grün) und ungerade (rot) Grade" /><p>Gerade (grün) und ungerade Grade (rot)</p><br />-->
+                </div>
                 <h1>Matching auf bipartiten Graphen</h1>
-                <p>Maximales Matching ist ein bekanntes Problem in der Informatik. Gegeben ein Graph G wird eine maximale Menge M von Kanten gesucht, sodass kein Knoten zu mehr als einer Kante inzident ist.
-                Ein Graph ist bipartit, falls er aus zwei Knotenpartitionen U und V besteht, sodass innerhalb der Partitionen keine Kanten existieren. D.h. es existieren nur Kanten, die Knoten aus der Partition V mir den Knoten aus der Partition U verbinden.
-                Das zu untersuchende Problem ist das Finden von maximalen Matchings auf bipartiten Graphen.
+                <p>Maximales Matching ist ein bekanntes Problem in der Informatik. Gegeben ist ein ungerichteter Graph G. Es wird eine kardinalitätsmaximale Menge M von Kanten gesucht, sodass kein Knoten zu mehr als einer Kante inzident ist.
+                Ein Graph ist bipartit, falls er aus zwei Knotenpartitionen U und V besteht, sodass innerhalb der Partitionen keine Kanten existieren. D.h. es existieren nur Kanten, die Knoten aus der Partition V mit den Knoten aus der Partition U verbinden.
+                Das zu untersuchende Problem ist das Bestimmen von kardinalitätsmaximale Matchings auf bipartiten Graphen.
                 </p>
-                <p>Das Problem lässt sich besser veranschaulichen, wenn man unter Knoten aus U Arbeitnehmer und unter Knoten aus V Arbeitgeber vorstellt. Die Kanten repräsentieren mögliche Zuordnungen von Arbeitnehmern zu Arbeitgebern.
+                <p>Das Problem lässt sich besser veranschaulichen, wenn man unter Knoten aus U Arbeitnehmer und unter Knoten aus V Arbeitgeber sich vorstellt. Die Kanten repräsentieren mögliche Zuordnungen von Arbeitnehmern zu Arbeitgebern.
                 Das Ziel ist möglicht viele passende Zuordnungen zu finden, wobei der Arbeitnehmer nur einen Arbeitsplatz annehmen kann und der Arbeitgeber nur einen Arbeitsplatz zur Verfügung hat.
                 </p>
                 <h1>Idee des Algorithmen</h1>
                 <p>
-                    Sei M das aktuelle Matching. Eine Kante e aus M heißt Matching-Kante und eine Kante e nicht aus M heißt freie Kante. Ein Knoten v aus einer Matching-Kante e heißt besetzt und ein Knoten aus einer freien Kante heißt frei.
+                    Sei M das aktuelle Matching. Eine Kante e aus M heißt Matching-Kante und eine Kante e nicht in M heißt freie Kante. Ein Knoten, der zu einer Matching-Kante inzident ist, heißt besetzt. Anderenfalls ist der Knoten frei.
                     Ein Augmentationsweg im Graphen G ist ein Weg, der mit einem freien Knoten startet, mit einem freien Knoten endet und alternierend freie Kanten und Matching-Kanten benutzt.
-                    Das Besondere an dem Augmentationsweg ist, dass wenn man die Matching-Kanten des Weges aus M entfernt aus stattdessen die freien Kanten des Weges einfügt, das Matching um eins erhöht wird.
+                    Das Besondere an dem Augmentationsweg ist, dass wenn man die Matching-Kanten des Weges aus M entfernt und stattdessen die freien Kanten des Weges einfügt, das Matching um eins erhöht wird.
                     Die Eigenschaften des Augmentationswegs stellen sicher, dass die freien Kanten des Weges die Matching-Eigenschaften nicht verletzen. Ein Augmentationsweg vergrößert also das Matching. Ein Theorem aus der
                     Graphentheorie besagt, dass das Matching genau dann maximal ist, wenn es keinen Augmentationsweg gibt.
                 </p>
@@ -235,6 +239,7 @@
                     ersten Schicht an, so ist die gefundene Menge der knotendisjunkten kürzesten Wege maximal.
                 </p>
                 <h1>Was nun?</h1>
+                <br style="clear: both;" />
                 <div class="Entscheidungsweg" id="ti_div_EntscheidungLeft">
                     <h3>Einen Graph erstellen und den Algorithmus durchspielen</h3>
                     <button id="ti_button_gotoDrawGraph">Graph erstellen und daran den Algorithmus testen</button>
@@ -245,6 +250,7 @@
                     <button id="ti_button_gotoFA1">Forschungsaufgabe 1 </button><br>
                     <button id="ti_button_gotoFA2">Forschungsaufgabe 2 </button>
                 </div>
+                <br style="clear: both;" />
             </div>
         </div>
         <div id="tab_tf1">

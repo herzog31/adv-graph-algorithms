@@ -567,7 +567,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         matching_graph = new Graph();
         id_map = {};
         var U_POSITION = 75; //standard 75
-        var V_POSITION = 325;//standard 325
+        var V_POSITION = 225;//standard 325
         var DIFF = 80;
         var i = 0;
         var j = 0;

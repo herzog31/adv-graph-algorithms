@@ -272,9 +272,9 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         if(tour.length > 0){
             tour.pop();
             var edge = tour.pop();
-            used[edge.getEdgeID()] -= 1;
-            if(used[edge.getEdgeID()] == 0) delete used[edge.getEdgeID()];
-            cost -= edge.weight;
+            used[edge.id] -= 1;
+            if(used[edge.id] == 0) delete used[edge.id];
+            cost -= graph.edges[edge.id].weight;
             this.replayStep();
         }
         this.needRedraw = true;
