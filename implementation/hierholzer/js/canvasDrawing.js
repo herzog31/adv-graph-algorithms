@@ -1,5 +1,5 @@
 /**
- * @author Richard Stotz
+ * @author Mark J. Becker
  * Funktionen in dieser Datei werden dazu genutzt,
  * Formen auf das Canvas zu zeichnen
  */

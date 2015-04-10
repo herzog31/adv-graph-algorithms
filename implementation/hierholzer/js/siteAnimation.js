@@ -1,5 +1,5 @@
 /**
- * @author Richard Stotz
+ * @author Mark J. Becker
  * Allgemeine Animationen der Seite, Initialisierungscode<br>
  * Es wird auch die Oberklasse CanvasDrawer definiert, von der alle Klassen erben, die 
  * mit dem Canvas arbeiten.

@@ -1,5 +1,5 @@
 /**
- * @author Richard Stotz
+ * @author Mark J. Becker
  * Hier wird der Graph und alle zugehörigen Fuktionen definiert.<br>
  * Außerdem wird die Klasse GraphDrawer definiert, die es ermöglicht auf das Canvas zu zeichnen<br>
  * Schließich werden einige globale Objekte definiert.

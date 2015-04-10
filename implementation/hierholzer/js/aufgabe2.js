@@ -1,15 +1,10 @@
 /**
- * @author Richard Stotz
- * Code für Forschungsaufgabe 2<br>
- * Basiert auf dem Code für den normalen Algorithmus
+ * @author Mark J. Becker
+ * Code für Forschungsaufgabe 2
  */
 
 /**
- * Diese Klasse kapselt alle Informationen zu Forschungsaufgabe 2.<br>
- * In Forschungsaufgabe 2 muss der Nutzer die optimale Reihenfolge der Kanten 
- * finden.<br>
- * Da auch diese Aufgabe wieder Dinge auf das Canvas zeichnet, erweitert diese Klasse
- * die Klasse CanvasDrawer. 
+ * Diese Klasse kapselt alle Informationen zu Forschungsaufgabe 2.
  * @constructor
  * @augments CanvasDrawer
  * @param {Graph} p_graph Graph, auf dem der Algorithmus ausgeführt wird
@@ -66,14 +61,14 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     var currentQuestionType = 0;
     var questions = new Array();
 
-    var reqCorrect = [  "schwach zusammenhängend",
-                        "Ingrad gleich Ausgrad",
-                        "Graph besitzt mindestens einen Kreis",
-                        "Knotengrade sind gerade"];
-    var reqWrong = [    "Graph ist kreisfrei",
-                        "Keine negativen Kantengewichte",
-                        "Ingrad größer Ausgrad",
-                        "Ingrad kleiner Ausgrad"];
+    var reqCorrect = [  LNG.K('aufgabe2_reqcorrect0'),
+                        LNG.K('aufgabe2_reqcorrect1'),
+                        LNG.K('aufgabe2_reqcorrect2'),
+                        LNG.K('aufgabe2_reqcorrect3')];
+    var reqWrong = [    LNG.K('aufgabe2_reqwrong0'),
+                        LNG.K('aufgabe2_reqwrong1'),
+                        LNG.K('aufgabe2_reqwrong2'),
+                        LNG.K('aufgabe2_reqwrong3')];
     
     /**
      * Startet die Ausführung des Algorithmus.
