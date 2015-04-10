@@ -328,8 +328,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      */
     this.initialLabels = function() {
 
-        $("#tf1_div_statusErklaerung").html("<h3>Initiale Markierungen</h3>"
-            + "<p>Der Algorithmus bestimmt zuerst eine initiale Markierung für jeden Knoten.</p>");
+        $("#tf1_div_statusErklaerung").html("<h3>"+LNG.K('aufgabe1_initial_h')+"</h3>"
+            + "<p>"+LNG.K('aufgabe1_initial_t1')+"</p>");
         this.markPseudoCodeLine([2]);
 
         this.setAll(xy, -1);
@@ -354,8 +354,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     this.equalityGraph = function() {
 
-        $("#tf1_div_statusErklaerung").html("<h3>Gleichheitsgraph</h3>"
-            + "<p>Mittels der Markierungen kann der Gleichheitsgraph (<strong>schwarz</strong>) bestimmt werden.</p>");
+        $("#tf1_div_statusErklaerung").html("<h3>"+LNG.K('aufgabe1_equal_h')+"</h3>"
+            + "<p>"+LNG.K('aufgabe1_equal_t1')+"</p>");
         this.markPseudoCodeLine([2]);
 
         this.showEqualityGraph();
@@ -366,9 +366,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     this.findRoot = function() {
 
-        $("#tf1_div_statusErklaerung").html("<h3>Augmentationsweg bestimmen</h3>" +
-            "<h3>Wurzel eines alternierenden Pfades finden</h3>" + 
-            "<p>Der Algorithmus wählt als Wurzel einen Knoten, der noch nicht im Matching vorhanden ist und markiert ihn <span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>.</p>");
+        $("#tf1_div_statusErklaerung").html("<h3>"+LNG.K('aufgabe1_augment_h')+"</h3>" +
+            "<h3>"+LNG.K('aufgabe1_augment_t1')+"</h3>" + 
+            "<p>"+LNG.K('aufgabe1_augment_t2')+"<span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>"+LNG.K('aufgabe1_augment_t3')+"</span>.</p>");
         this.markPseudoCodeLine([4]);
 
         x, y, root = -1;
@@ -405,9 +405,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     this.constructAlternatingPath = function() {
 
         $("#tf1_div_statusErklaerung").html(
-            "<h3>Augmentationsweg bestimmen</h3>" +
-            "<p>Der Algorithmus versucht nun schrittweise einen alternierenden Pfad zu konstruieren.</p>" +
-            "<p>Die Konstruktion stoppt, wenn der alternierende Pfad augmentierend wird oder es keine weiteren passenden Kanten mehr gibt.</p>");
+            "<h3>"+LNG.K('aufgabe1_augment_h')+"</h3>" +
+            "<p>"+LNG.K('aufgabe1_augment_t4')+"</p>" +
+            "<p>"+LNG.K('aufgabe1_augment_t5')+"</p>");
         this.markPseudoCodeLine([6, 7]);
 
         if(rd < wr) {
@@ -470,8 +470,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     this.noAugmentPathFound = function() {
 
         $("#tf1_div_statusErklaerung").html(
-            "<h3>Augmentationsweg bestimmen</h3>" +
-            "<p>Der Algorithmus konnte keinen Augmentationsweg mit der gewählten Wurzel (<span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>) im aktuellen Gleichheitsgraph finden.</p>"
+            "<h3>"+LNG.K('aufgabe1_augment_h')+"</h3>" +
+            "<p>"+LNG.K('aufgabe1_augment_t6')+"<span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>"+LNG.K('aufgabe1_augment_t7')+"</span>"+LNG.K('aufgabe1_augment_t8')+"</p>"
         );
         this.markPseudoCodeLine([8]);
 
@@ -506,12 +506,12 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
 
         $("#tf1_div_statusErklaerung").html(
-            "<h3>Markierungen verbessern</h3>" +
-            "<p>Zur Bestimmung eines neuen Gleichheitsgraph muss der Algorithmus zunächst die Markierungen verbessern.</p>" + 
-            "<p>Dazu wird ein \\(\\Delta\\) wie folgt bestimmt:</p>"+
-            "<p>\\(\\Delta = \\min\\limits_{s \\in S\\ \\wedge\\ y \\in Y \\setminus T}\\{l(s) + l(y) - w(s,y)\\} = "+delta+"\\)</p>" +
-            "<p>Die Markierungen werden dann nach folgender Formel aktualisiert:</p>" + 
-            "<p>\\(\\begin{equation}l^\\prime(v) =\\begin{cases}l(v) - "+delta+" & v \\in S\\\\l(v) + "+delta+" & v \\in T\\\\l(v) & sonst\\end{cases}\\end{equation}\\)</p>"
+            "<h3>"+LNG.K('aufgabe1_label_h')+"</h3>" +
+            "<p>"+LNG.K('aufgabe1_label_t1')+"</p>" + 
+            "<p>"+LNG.K('aufgabe1_label_t2')+"</p>"+
+            "<p>"+LNG.K('aufgabe1_label_t3')+delta+LNG.K('aufgabe1_label_t4')+"</p>" +
+            "<p>"+LNG.K('aufgabe1_label_t5')+"</p>" + 
+            "<p>"+LNG.K('aufgabe1_label_t6')+delta+LNG.K('aufgabe1_label_t7')+delta+LNG.K('aufgabe1_label_t8')+"</p>"
         );
         MathJax.Hub.Queue(["Typeset", MathJax.Hub,"tf1_div_statusErklaerung"]);
         this.markPseudoCodeLine([9]);
@@ -525,8 +525,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     this.newEqualityGraph = function() {
 
-        $("#tf1_div_statusErklaerung").html("<h3>Gleichheitsgraph</h3>"
-            + "<p>Mittels der verbesserten Markierungen kann der Gleichheitsgraph (<strong>schwarz</strong>) erweitert werden.</p>");
+        $("#tf1_div_statusErklaerung").html("<h3>"+LNG.K('aufgabe1_equal_h')+"</h3>"
+            + "<p>"+LNG.K('aufgabe1_equal_t2')+"</p>");
         this.markPseudoCodeLine([9]);
 
         if(currentQuestionType !== EQUALITY_GRAPH_QUESTION) {
@@ -541,8 +541,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     this.augmentPathFound = function() {
 
         $("#tf1_div_statusErklaerung").html(
-            "<h3>Augmentationsweg bestimmen</h3>" +
-            "<p>Es wurde ein Augmentationsweg (<span style='font-weight: bold; color: red;'>rot</span>) gefunden.</p>"
+            "<h3>"+LNG.K('aufgabe1_augment_h')+"</h3>" +
+            "<p>"+LNG.K('aufgabe1_augment_t9')+"</p>"
         );
         this.markPseudoCodeLine([10]);
 
@@ -555,8 +555,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     this.improveMatching = function() {
 
         $("#tf1_div_statusErklaerung").html(
-            "<h3>Matching vergrößern</h3>" +
-            "<p>Mittels des gefundenen Augmentationsweges konnte das Matching (<span style='font-weight: bold; color: green;'>grün</span>) ergänzt werden.</p>"
+            "<h3>"+LNG.K('aufgabe1_matchinc_h')+"</h3>" +
+            "<p>"+LNG.K('aufgabe1_matchinc_t1')+"</p>"
         );
         this.markPseudoCodeLine([11]);
 
@@ -579,16 +579,16 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         if (maxMatch == cost.length) {
 
             $("#tf1_div_statusErklaerung").html(
-                "<h3>Auf perfektes Matching prüfen</h3>" +
-                "<p>Der Algorithmus prüft nun das erweiterte Matching. Es ist vollständig und damit perfekt.</p>");
+                "<h3>"+LNG.K('aufgabe1_matchchk_h')+"</h3>" +
+                "<p>"+LNG.K('aufgabe1_matchchk_t1')+"</p>");
 
             // -> 11 SHOW_RESULT
             statusID = SHOW_RESULT;
         }else{
 
             $("#tf1_div_statusErklaerung").html(
-                "<h3>Auf perfektes Matching prüfen</h3>" +
-                "<p>Der Algorithmus prüft nun das erweiterte Matching. Es ist noch nicht vollständig.</p>");
+                "<h3>"+LNG.K('aufgabe1_matchchk_h')+"</h3>" +
+                "<p>"+LNG.K('aufgabe1_matchchk_t2')+"</p>");
 
             // -> 3 FIND_ROOT
             statusID = FIND_ROOT;
@@ -614,13 +614,13 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
 
         $("#tf1_div_statusErklaerung").html(
-            "<h3>Optimales Matching</h3>" +
-            "<p>Die Ungarische Methode hat erfolgreich ein maximales Matching bestimmt.</p>" +
-            "<p>Das Gesamtgewicht beträgt <strong>"+ret+"</strong>.</p>" +
-            "<h3>Was nun?</h3>" +
-            "<button id='ta_button_gotoIdee' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>Beschreibung des Algorithmus lesen</span></button>" +
-            "<h3>Weitere Forschungsaufgabe ausprobieren:</h3>" +
-            "<button id='ta_button_gotoFA2' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>FA2</span></button>"
+            "<h3>"+LNG.K('aufgabe1_result_h')+"</h3>" +
+            "<p>"+LNG.K('aufgabe1_result_t1')+"</p>" +
+            "<p>"+LNG.K('aufgabe1_result_t2')+ret+LNG.K('aufgabe1_result_t3')+"</p>" +
+            "<h3>"+LNG.K('algorithm_msg_finish')+"</h3>" +
+            "<button id='ta_button_gotoIdee' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>"+LNG.K('algorithm_btn_more')+"</span></button>" +
+            "<h3>"+LNG.K('algorithm_msg_test')+"</h3>" +
+            "<button id='ta_button_gotoFA2' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>"+LNG.K('algorithm_btn_exe2')+"</span></button>"
         );
 
         $("#tf1_button_gotoIdee").click(function() {
@@ -935,13 +935,13 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
         form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
 
-        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
-            <p><em>Im aktuellen Schritt: '+previousStep+'</em></p>\
-            <p>Welchen Schritt macht der Algorithmus als nächstes?</p>\
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_question')+' #'+(currentQuestion+1)+'</div>\
+            <p><em>'+LNG.K('aufgabe1_currentstep')+' '+previousStep+'</em></p>\
+            <p>'+LNG.K('aufgabe1_qns_1')+'</p>\
             <p>'+form+'</p>\
-            <p><button id="tf1_button_questionClose">Antworten</button></p>\
-            <p id="tf1_questionSolution">Korrekte Antwort:<br /><span class="answer"></span><br /><br />\
-            <button id="tf1_button_questionClose2">Weiter</button>\
+            <p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_vanswer')+'</button></p>\
+            <p id="tf1_questionSolution">'+LNG.K('aufgabe1_correctanswer')+'<br /><span class="answer"></span><br /><br />\
+            <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_next')+'</button>\
             </p>');
 
         $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
@@ -955,17 +955,17 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         
         questions[currentQuestion] = {type: currentQuestionType, rightAnswer: delta};
 
-        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
-            <p>Im aktuellen Schritt wird der Algorithmus die Markierungen verbessern. Dazu benötigt er ein \\(\\Delta\\), welches sich nach folgender Formel berechnet:</p>\
-            <p style="text-align: center;">\\(\\Delta = \\min\\limits_{s \\in S\\ \\wedge\\ y \\in Y \\setminus T}\\{l(s) + l(y) - w(s,y)\\}\\)</p>\
-            <p style="text-align: center;">\\(S = \\{'+$("#tf1_td_setS").html()+'\\},\\ T = \\{'+$("#tf1_td_setT").html()+'\\}\\)</p>\
-            <p>Welchen Wert für \\(\\Delta\\) wird der Algorithmus ermitteln?</p>\
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_question')+' #'+(currentQuestion+1)+'</div>\
+            <p>'+LNG.K('aufgabe1_qd_1')+'</p>\
+            <p style="text-align: center;">'+LNG.K('aufgabe1_qd_2')+'</p>\
+            <p style="text-align: center;">'+LNG.K('aufgabe1_qd_3')+$("#tf1_td_setS").html()+LNG.K('aufgabe1_qd_4')+$("#tf1_td_setT").html()+LNG.K('aufgabe1_qd_5')+'</p>\
+            <p>'+LNG.K('aufgabe1_qd_6')+'</p>\
             <p><form id="question'+currentQuestion+'_form">\
             <input type="text" name="question'+currentQuestion+'" value="" placeholder="0" />\
             </form></p>\
-            <p><button id="tf1_button_questionClose">Antworten</button></p>\
-            <p id="tf1_questionSolution">Korrekte Antwort: <span class="answer"></span><br /><br />\
-            <button id="tf1_button_questionClose2">Weiter</button>\
+            <p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_vanswer')+'</button></p>\
+            <p id="tf1_questionSolution">'+LNG.K('aufgabe1_correctanswer')+' <span class="answer"></span><br /><br />\
+            <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_next')+'</button>\
             </p>');
 
         MathJax.Hub.Queue(["Typeset", MathJax.Hub,"tf1_div_questionModal"]);
@@ -1031,14 +1031,14 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
         form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
 
-        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
-            <p>Im aktuellen Schritt wird der Algorithmus die Markierungen verbessern. Dazu wurde bereits \\(\\Delta = '+delta+'\\) bestimmt.</p>\
-            <p style="text-align: center;">\\(S = \\{'+$("#tf1_td_setS").html()+'\\},\\ T = \\{'+$("#tf1_td_setT").html()+'\\}\\)</p>\
-            <p>Bitte berechne neue Markierungen nach der bekannten Formel für folgende Knoten:</p>\
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_question')+' #'+(currentQuestion+1)+'</div>\
+            <p>'+LNG.K('aufgabe1_qnl_1')+delta+LNG.K('aufgabe1_qnl_2')+'</p>\
+            <p style="text-align: center;">'+LNG.K('aufgabe1_qnl_3')+$("#tf1_td_setS").html()+LNG.K('aufgabe1_qnl_4')+$("#tf1_td_setT").html()+LNG.K('aufgabe1_qnl_5')+'</p>\
+            <p>'+LNG.K('aufgabe1_qnl_6')+'</p>\
             <p>'+form+'</p>\
-            <p><button id="tf1_button_questionClose">Antworten</button></p>\
+            <p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_vanswer')+'</button></p>\
             <p id="tf1_questionSolution">\
-            <button id="tf1_button_questionClose2">Weiter</button>\
+            <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_next')+'</button>\
             </p>');
 
         MathJax.Hub.Queue(["Typeset", MathJax.Hub,"tf1_div_questionModal"]);
@@ -1072,12 +1072,12 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
         questions[currentQuestion] = {type: currentQuestionType, rightAnswer: edgesInEqualityGraph};
 
-        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
-            <p>Im aktuellen Schritt wird der Algorithmus einen neuen Gleichheitsgraph bestimmen. Bitte markiere alle Kanten des neuen Gleichheitsgraphs.</p>\
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_question')+' #'+(currentQuestion+1)+'</div>\
+            <p>'+LNG.K('aufgabe1_qeg_1')+'</p>\
             <p><form id="question'+currentQuestion+'_form">'+inputs+'</form></p>\
-            <p><button id="tf1_button_questionClose">Antworten</button></p>\
+            <p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_vanswer')+'</button></p>\
             <p id="tf1_questionSolution">\
-            <button id="tf1_button_questionClose2">Weiter</button>\
+            <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_next')+'</button>\
             </p>');
 
         MathJax.Hub.Queue(["Typeset", MathJax.Hub,"tf1_div_questionModal"]);
@@ -1108,13 +1108,13 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             <input type="text" id="tf1_input_question'+currentQuestion+'" name="question'+currentQuestion+'" value="" class="question_input_node" /><br style="clear: both;" />';
         form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
 
-        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
-            <p>Im ersten Schritt bestimmt der Algorithmus die initialen Markierungen.</p>\
-            <p>Bitte berechne die initiale Markierung für den Knoten <strong>'+randomNode.getOuterLabel()+'</strong>.</p>\
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_question')+' #'+(currentQuestion+1)+'</div>\
+            <p>'+LNG.K('aufgabe1_qsl_1')+'</p>\
+            <p>'+LNG.K('aufgabe1_qsl_2')+'<strong>'+randomNode.getOuterLabel()+'</strong>.</p>\
             <p>'+form+'</p>\
-            <p><button id="tf1_button_questionClose">Antworten</button></p>\
+            <p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_vanswer')+'</button></p>\
             <p id="tf1_questionSolution">\
-            <button id="tf1_button_questionClose2">Weiter</button>\
+            <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_next')+'</button>\
             </p>');
 
         MathJax.Hub.Queue(["Typeset", MathJax.Hub,"tf1_div_questionModal"]);
@@ -1224,20 +1224,20 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         for(var i = 0; i < questions.length; i++) {
             table = table + '<td style="text-align: center;">#'+(i+1)+'</td>';
             if(questions[i].rightAnswer == questions[i].givenAnswer) {
-                table = table + '<td><span class="ui-icon ui-icon-plusthick"></span> Korrekt</td>';
+                table = table + '<td><span class="ui-icon ui-icon-plusthick"></span> '+LNG.K('aufgabe1_results_correct')+'</td>';
                 correctAnswers++;
             }else{
-                table = table + '<td><span class="ui-icon ui-icon-minusthick"></span> Falsch</td>';
+                table = table + '<td><span class="ui-icon ui-icon-minusthick"></span> '+LNG.K('aufgabe1_results_wrong')+'</td>';
             }
             table = "<tr>"+table+"</tr>";
         }
-        table = '<table class="quizTable"><thead><tr><th>Frage</th><th>Antwort</th></tr></thead><tbody>'+table+'</tbody></table>';
+        table = '<table class="quizTable"><thead><tr><th>'+LNG.K('aufgabe1_question')+'</th><th>'+LNG.K('aufgabe1_answer')+'</th></tr></thead><tbody>'+table+'</tbody></table>';
 
-        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Ergebnisse</div>\
-            <p>Von '+totalQuestions+' Fragen hast du '+correctAnswers+' korrekt beantwortet.</p>\
+        $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_results')+'</div>\
+            <p>'+LNG.K('aufgabe1_qresult_1')+totalQuestions+LNG.K('aufgabe1_qresult_2')+correctAnswers+LNG.K('aufgabe1_qresult_3')+'</p>\
             <p>'+table+'</p>\
             <p></p>\
-            <p><button id="tf1_button_questionClose">Schließen</button></p>');
+            <p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_close')+'</button></p>');
 
         $("#tf1_button_questionClose").button().one("click", function() { algo.closeQuestionModal(); });
 
