@@ -488,7 +488,9 @@ END</code></pre>
                 </ul>
                 <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen. Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus. Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
                 <h2>Laufzeit der Ungarischen Methode</h2>
-                <p>...</p>
+                <p>Zur Implementierung der Ungarischen Methode gibt es mehrere Varianten, die sich in ihrer Laufzeit unterscheiden. Wir betrachten hier die Variante mit der kürzesten Laufzeit.</p>
+                <p>Dazu gehen wir von einem vollständig bipartitem Graphen \(G = (V, E)\) mit \(|V| = n\) und einem leeren initialen Matching \(M\) aus. In jedem Durchgang wird das Matching um einen Knoten ergänzt, d.h. der Algorithmus benötigt maximal \(n\) Durchgänge. Pro Durchgang werden mehrere Berechnungen durchgeführt. Am signifikantesten ist hier die Berechnung eines neuen Gleichheitsgraphs durch Anpassung der Markierungen und Berechnung eines Deltas \(\Delta\). Dieses Vorgang besitzt normalerweise eine Laufzeit von \(O(n^4)\). Durch geschicktes Zwischenspeichern einzelner Werte kann die Berechnung des Deltas aber auf \(O(n^2)\) reduziert werden.</p>
+                <p>Insgesamt besitzt der Algorithmus damit eine kubische Laufzeit von \(O(n^3)\).</p>
             </div>
 
             <h3>Wie beweist man, dass der Algorithmus stets ein korrektes Ergebnis berechnet?</h3>
