@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=9">
     <meta name="author" content="Mark J. Becker">
     <link rel="stylesheet" type="text/css" href="../library/css/tum-theme2/jquery-ui-1.10.1.custom.min.css" />
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="../library/css/style.css" />
     <script src="../library/js/jquery-1.9.1.min.js" type="text/javascript"></script>
     <script src="../library/js/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
     <script src="../library/js/lang.js" type="text/javascript"></script>
@@ -17,6 +17,13 @@
     <script src="js/algorithm.js" type="text/javascript"></script>
     <script src="js/aufgabe1.js" type="text/javascript"></script>
     <script src="js/aufgabe2.js" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            showMathMenu: false,
+            showMathMenuMSIE: false
+        });
+    </script>
+    <script type="text/javascript" src="../library/js/mathjax/MathJax.js?config=TeX-AMS-MML_SVG.js&locale=de"></script>
 
     <title>Der Hierholzer Algorithmus</title>
 </head>
@@ -466,8 +473,8 @@ END</code></pre>
                     </ul>
                     <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen. Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus. Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
                     <h2>Laufzeit des Hierholzer Algorithmus</h2>
-                    <p>Wir gehen von einem Graphen G = (V, E) mit |V| = n und |E| = m aus. Der Algorithmus bestimmt im ersten Schritt eine erste Tour T. Um die nächsten Subtouren zu bestimmen, muss der Algorithmus einen Knoten aus T finden, der noch unbesuchte Kanten besitzt. Dieser Knoten dient als Start für die folgenden Subtouren mit denen die Tour erweitert wird. Ausgehend von einer leeren initialen Tour, kann die Tour maximal um n Knoten erweitert werden. In der Tour müssen nach jeder gefundenen Subtour dann nur noch die Knoten auf unbesuchte Kanten geprüft werden, die vorher noch nicht geprüft wurden. Das führt dazu, dass wir jeden Knoten im Graph nur einmal auf unbesuchte Kanten prüfen müssen. Damit besitzt der Algorithmus eine polynomielle Laufzeit von O(n * m).</p>
-                    <p>Der Algorithmus kann so optimiert werden, dass man eine separate Adjazenzliste speichert, aus der bereits genutzte Kanten gelöscht werden. So muss man zur Überprüfung auf unbesuchte Kanten pro Knoten nicht jedes Mal alle Kanten betrachtet, sondern insgesamt jede Kante nur ein einziges Mal. Damit ist eine lineare Laufzeit von O(n + m) möglich.</p>
+                    <p>Wir gehen von einem Graphen \(G = (V, E)\) mit \(|V| = n\) und \(|E| = m\) aus. Der Algorithmus bestimmt im ersten Schritt eine erste Tour \(T\). Um die nächsten Subtouren zu bestimmen, muss der Algorithmus einen Knoten aus \(T\) finden, der noch unbesuchte Kanten besitzt. Dieser Knoten dient als Start für die folgenden Subtouren mit denen die Tour erweitert wird. Ausgehend von einer leeren initialen Tour, kann die Tour maximal um n Knoten erweitert werden. In der Tour müssen nach jeder gefundenen Subtour dann nur noch die Knoten auf unbesuchte Kanten geprüft werden, die vorher noch nicht geprüft wurden. Das führt dazu, dass wir jeden Knoten im Graph nur einmal auf unbesuchte Kanten prüfen müssen. Damit besitzt der Algorithmus eine polynomielle Laufzeit von \(O(n*m)\).</p>
+                    <p>Der Algorithmus kann so optimiert werden, dass man eine separate Adjazenzliste speichert, aus der bereits genutzte Kanten gelöscht werden. So muss man zur Überprüfung auf unbesuchte Kanten pro Knoten nicht jedes Mal alle Kanten betrachtet, sondern insgesamt jede Kante nur ein einziges Mal. Damit ist eine lineare Laufzeit von \(O(n+m)\) möglich.</p>
                     <p>Die gleiche Laufzeit wird außerdem benötigt, um zu prüfen, ob ein Graph eulersch ist und der Hierholzer Algorithmus überhaupt angewendet werden kann.</p>
                 </div>
                 <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>

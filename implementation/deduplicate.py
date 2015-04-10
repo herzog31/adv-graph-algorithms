@@ -13,14 +13,19 @@ folders = ['library', 'chinese-postman', 'floyd-warshall', 'hierholzer', 'hopcro
 # Identity threshold
 threshold = 0.5
 # Files types to exclude
-exclude = []
+exclude = ['library/js/mathjax']
 # Fill exclude with .gitignore file
 gitignore = open('../.gitignore').read().splitlines()
-f = lambda x: x.replace("*", "")
-gitignore = map(f, gitignore)
 exclude = exclude + gitignore;
 
-def checkExclude(basename, exclude):
+def checkExclude(root, basename, exclude):
+	# Folders
+	for suffix in exclude:
+		if root.startswith(suffix):
+			return True
+	# Files
+	f = lambda x: x.replace("*", "")
+	exclude = map(f, exclude)
 	for suffix in exclude:
 		if basename.endswith(suffix):
 			return True
@@ -36,7 +41,7 @@ for folder in folders:
 	files[folder] = []
 	for root, dirnames, filenames in os.walk(folder):
 		for filename in filenames:
-			if checkExclude(filename, exclude): continue
+			if checkExclude(root, filename, exclude): continue
 			numberOfFiles += 1
 			files[folder].append({'path': os.path.join(root, filename), 'basename': filename, 'ext': os.path.splitext(filename)[1]})
 
