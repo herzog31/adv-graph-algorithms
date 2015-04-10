@@ -105,31 +105,31 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     var labeling = false;
     var augment = false;
 
-    var statusArray = [ {"key": 0, "answer": "Den Graph vervollständigen."},
-                        {"key": 1, "answer": "Initiale Markierungen bestimmen."},
-                        {"key": 2, "answer": "Den initialen Gleichheitsgraph bestimmen."},
-                        {"key": 3, "answer": "Der Algorithmus muss einen neuen Wurzelknoten für einen alternierenden Pfad bestimmen."},
-                        {"key": 4, "answer": "Einen neuen alternierenden Pfad konstruieren."},
-                        {"key": 5, "answer": "Es existiert kein kein augmentierender Pfad im Gleichheitsgraph."},
-                        {"key": 6, "answer": "Markierungen verbessern."},
-                        {"key": 7, "answer": "Gleichheitsgraph mittels neuer Markierungen verbessern."},
-                        {"key": 8, "answer": "Es existiert ein augmentierender Pfad im Gleichheitsgraph."},
-                        {"key": 9, "answer": "Matching verbessern."},
-                        {"key": 10, "answer": "Auf ein perfektes Matching prüfen."},
-                        {"key": 11, "answer": "Das Matching ist perfekt. Der Algorithmus kann das optimales Matching ausgeben."},];
+    var statusArray = [ {"key": 0, "answer": LNG.K('aufgabe1_status0')},
+                        {"key": 1, "answer": LNG.K('aufgabe1_status1')},
+                        {"key": 2, "answer": LNG.K('aufgabe1_status2')},
+                        {"key": 3, "answer": LNG.K('aufgabe1_status3')},
+                        {"key": 4, "answer": LNG.K('aufgabe1_status4')},
+                        {"key": 5, "answer": LNG.K('aufgabe1_status5')},
+                        {"key": 6, "answer": LNG.K('aufgabe1_status6')},
+                        {"key": 7, "answer": LNG.K('aufgabe1_status7')},
+                        {"key": 8, "answer": LNG.K('aufgabe1_status8')},
+                        {"key": 9, "answer": LNG.K('aufgabe1_status9')},
+                        {"key": 10, "answer": LNG.K('aufgabe1_status10')},
+                        {"key": 11, "answer": LNG.K('aufgabe1_status11')}];
 
-    var statusArrayPast = [ {"key": 0, "answer": "Der Graph wurde vervollständigt."},
-                            {"key": 1, "answer": "Die initialen Markierungen wurden bestimmt."},
-                            {"key": 2, "answer": "Der initiale Gleichheitsgraph wurde bestimmt"},
-                            {"key": 3, "answer": "Eine Wurzel für einen alternierenden Pfad wurde bestimmt."},
-                            {"key": 4, "answer": "Es wurde versucht einen alternierenden Pfad zu konstruieren."},
-                            {"key": 5, "answer": "Es konnte kein augmentierender Pfad gefunden werden."},
-                            {"key": 6, "answer": "Die Markierungen wurden verbessert."},
-                            {"key": 7, "answer": "Der Gleichheitsgraph wurde mittels neuer Markierungen verbessert."},
-                            {"key": 8, "answer": "Es wurde ein augmentierender Pfad gefunden."},
-                            {"key": 9, "answer": "Das Matching wurde verbessert."},
-                            {"key": 10, "answer": "Das Algorithmus hat das aktuelle Matching auf Vollständigkeit (perfekt) geprüft."},
-                            {"key": 11, "answer": "Das optimale Matching wurde gezeigt."}];
+    var statusArrayPast = [ {"key": 0, "answer": LNG.K('aufgabe1_statuspast0')},
+                            {"key": 1, "answer": LNG.K('aufgabe1_statuspast1')},
+                            {"key": 2, "answer": LNG.K('aufgabe1_statuspast2')},
+                            {"key": 3, "answer": LNG.K('aufgabe1_statuspast3')},
+                            {"key": 4, "answer": LNG.K('aufgabe1_statuspast4')},
+                            {"key": 5, "answer": LNG.K('aufgabe1_statuspast5')},
+                            {"key": 6, "answer": LNG.K('aufgabe1_statuspast6')},
+                            {"key": 7, "answer": LNG.K('aufgabe1_statuspast7')},
+                            {"key": 8, "answer": LNG.K('aufgabe1_statuspast8')},
+                            {"key": 9, "answer": LNG.K('aufgabe1_statuspast9')},
+                            {"key": 10, "answer": LNG.K('aufgabe1_statuspast10')},
+                            {"key": 11, "answer": LNG.K('aufgabe1_statuspast11')}];
 
     this.run = function() {
 
