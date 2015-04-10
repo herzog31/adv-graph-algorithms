@@ -57,7 +57,7 @@ div.statusWindow {
     padding-left: 15px;
     padding-right: 15px;
     border: 2px groove #78C8FF;
-    overflow: scroll;
+    overflow: scroll; 
 }
 
 div.canvasWrapper {
@@ -68,7 +68,7 @@ div.canvasWrapper {
 
 div.Legende {
     position: absolute;
-    border: 2px groove #78C8FF;
+    border: 2px groove #78C8FF; 
     height: 150px;
     width: 250px;
     background-color: #DDDDDD;
@@ -77,15 +77,15 @@ div.Legende {
 
 div.LegendeMinimized {
     position: absolute;
-    border: 2px groove #78C8FF;
+    border: 2px groove #78C8FF; 
     height: 30px;
     width: 100px;
     background-color: #DDDDDD;
     opacity: .9;
 }
 
-.ui-effects-transfer {
-    border: 2px solid #78C8FF;
+.ui-effects-transfer { 
+    border: 2px solid #78C8FF; 
 }
 
 canvas.graphCanvas {
@@ -175,7 +175,7 @@ p.pseudocode {
     color: #000000;
     margin: 1px;
     white-space: pre;
-}
+} 
 
 table.algoInformationen {
     text-align: center;
@@ -185,7 +185,7 @@ table.algoInformationen {
 }
 
 #tabs li .ui-icon-refresh { float: right; margin: 0.4em 0.2em 0 0; cursor: pointer; }
-#tabs {
+#tabs { 
     min-width: 1140px;
     max-width: 1140px;
 }
@@ -208,10 +208,10 @@ table.algoInformationen {
     box-shadow: 4px 4px 4px #0A5096;
 }
 
-#ta_div_statusErklaerung {
+#ta_div_statusErklaerung, #tf1_div_statusErklaerung, #tf2_div_statusErklaerung {
     text-align: left;
 }
-#ta_div_statusErklaerung ul li {
+#ta_div_statusErklaerung ul li, #tf1_div_statusErklaerung ul li, #tf2_div_statusErklaerung ul li {
     padding: 5px;
 }
 
@@ -229,16 +229,6 @@ table.algoInformationen {
 
 #te_div_beispiel1Container img {
     background-color: #ffffff;
-}
-
-#tf1_div_statusErklaerung {
-    text-align: left;
-    padding-top: 10px;
-}
-
-#tf2_div_statusErklaerung {
-    text-align: left;
-    padding-top: 10px;
 }
 
 #tf1_div_Frage {
@@ -270,30 +260,30 @@ table.algoInformationen {
 }
 
 #ta_div_statusTabs .ui-widget-header {
-    background: transparent;
+    background: transparent; 
     border: none;
-}
-#ta_div_statusTabs .ui-tabs-nav li.ui-state-default {
-    background: transparent;
+} 
+#ta_div_statusTabs .ui-tabs-nav li.ui-state-default { 
+    background: transparent; 
     border: 1px solid #c0c0c0;
-}
+} 
 
-#ta_div_statusTabs .ui-tabs-nav li.ui-state-active {
-    background: transparent;
+#ta_div_statusTabs .ui-tabs-nav li.ui-state-active { 
+    background: transparent; 
     border-bottom: none;
 }
 
 #tf1_div_statusTabs .ui-widget-header {
-    background: transparent;
+    background: transparent; 
     border: none;
-}
-#tf1_div_statusTabs .ui-tabs-nav li.ui-state-default {
-    background: transparent;
+} 
+#tf1_div_statusTabs .ui-tabs-nav li.ui-state-default { 
+    background: transparent; 
     border: 1px solid #c0c0c0;
-}
+} 
 
-#tf1_div_statusTabs .ui-tabs-nav li.ui-state-active {
-    background: transparent;
+#tf1_div_statusTabs .ui-tabs-nav li.ui-state-active { 
+    background: transparent; 
     border-bottom: none;
 }
 
@@ -319,8 +309,8 @@ table.algoInformationen {
 }
 
 .errorIcon {
-    float: left;
-    margin-right: .3em;
+     float: left;
+     margin-right: .3em;
 }
 
 ul.subtourList {
@@ -338,10 +328,10 @@ body {
     margin-right: auto;
 }
 @media screen and (max-width: 1170px) {
-    body {
-        margin-left: 8px;
-        margin-right: 8px;
-    }
+body {
+    margin-left: 8px;
+    margin-right: 8px;
+}
 }
 
 header {
@@ -350,7 +340,7 @@ header {
 }
 
 html {
-    overflow-y: scroll;
+    overflow-y: scroll; 
 }
 .ui-state-error {
     color: white !important;
@@ -366,10 +356,18 @@ html {
 .no-close .ui-dialog-titlebar-close {
     display: none;
 }
-#tf1_div_questionModal {
+#tf1_div_questionModal, #tf2_div_questionModal {
+    text-align: left;
     margin-top: 20px;
     display: block;
     padding-bottom: 10px;
+}
+#tf1_div_questionModal p, #tf2_div_questionModal p {
+    padding: 0 1em 0 1em;
+}
+
+#tf1_div_questionModal form, #tf2_div_questionModal form {
+    margin-left: 1em;
 }
 .quizTable {
     width: 80%;
@@ -391,12 +389,11 @@ html {
 }
 #tf1_questionSolution {
     font-weight: normal;
-    color: green;
 }
 #tf1_questionSolution .answer {
     font-weight: bold;
 }
-#ta_td_euclideanSubtour, #ta_td_euclideanTour, #tf1_td_euclideanSubtour, #tf1_td_euclideanTour {
+.algoInformationen td {
     -ms-word-break: break-all;
     word-break: break-all;
     word-break: break-word;
@@ -405,4 +402,12 @@ html {
     -ms-hyphens: auto;
     hyphens: auto;
     overflow-wrap: break-word;
+}
+.legendePath {
+    display: block;
+    float: left;
+    width: 62px;
+    height: 3px;
+    margin: 9px 0px 9px 0px;
+    background-color: #0000cc;
 }

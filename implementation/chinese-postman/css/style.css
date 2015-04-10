@@ -53,11 +53,11 @@ div.statusWindow {
     text-align: center;
     margin-left: 715px;
     width: 350px;
-    height: 500px;
+    min-height: 500px;
     padding-left: 15px;
     padding-right: 15px;
     border: 2px groove #78C8FF;
-    overflow: hidden; 
+    overflow: scroll;
 }
 
 div.canvasWrapper {
@@ -68,7 +68,7 @@ div.canvasWrapper {
 
 div.Legende {
     position: absolute;
-    border: 2px groove #78C8FF; 
+    border: 2px groove #78C8FF;
     height: 150px;
     width: 250px;
     background-color: #DDDDDD;
@@ -77,15 +77,15 @@ div.Legende {
 
 div.LegendeMinimized {
     position: absolute;
-    border: 2px groove #78C8FF; 
+    border: 2px groove #78C8FF;
     height: 30px;
     width: 100px;
     background-color: #DDDDDD;
     opacity: .9;
 }
 
-.ui-effects-transfer { 
-    border: 2px solid #78C8FF; 
+.ui-effects-transfer {
+    border: 2px solid #78C8FF;
 }
 
 canvas.graphCanvas {
@@ -111,6 +111,9 @@ div.BeispielbildContainer {
     padding-left: 15px;
     width: 330px;
 }
+div.BeispielbildContainer img {
+    background-color: #ffffff;
+}
 
 div.tabIntroDialog {}
 
@@ -118,12 +121,16 @@ div.tabChangeWarningDialog {}
 
 div.Entscheidungsweg {
     width: 400px;
-    height: 100px;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding: 15px;
     border: 2px groove #78C8FF;
     text-align: center;
     vertical-align: middle;
+}
+div.Entscheidungsweg h3 {
+    margin: 0px 0px 5px 0px;
+}
+div.Entscheidungsweg button {
+    margin-bottom: 5px;
 }
 
 div.PseudocodeWrapper {
@@ -168,16 +175,17 @@ p.pseudocode {
     color: #000000;
     margin: 1px;
     white-space: pre;
-} 
+}
 
 table.algoInformationen {
     text-align: center;
     border: 1px solid gray;
     border-collapse:collapse;
+    width: 100%;
 }
 
 #tabs li .ui-icon-refresh { float: right; margin: 0.4em 0.2em 0 0; cursor: pointer; }
-#tabs { 
+#tabs {
     min-width: 1140px;
     max-width: 1140px;
 }
@@ -203,6 +211,9 @@ table.algoInformationen {
 #ta_div_statusErklaerung {
     text-align: left;
 }
+#ta_div_statusErklaerung ul li {
+    padding: 5px;
+}
 
 #te_div_Einfuehrungstext {
     padding-left: 15px;
@@ -214,6 +225,10 @@ table.algoInformationen {
     float: right;
     text-align: center;
     padding-left: 15px;
+}
+
+#te_div_beispiel1Container img {
+    background-color: #ffffff;
 }
 
 #tf1_div_statusErklaerung {
@@ -251,34 +266,34 @@ table.algoInformationen {
 #ti_div_Einfuehrungstext {
     padding-left: 15px;
     padding-right: 15px;
-    width: 1000px;
+    text-align: justify;
 }
 
 #ta_div_statusTabs .ui-widget-header {
-    background: transparent; 
+    background: transparent;
     border: none;
-} 
-#ta_div_statusTabs .ui-tabs-nav li.ui-state-default { 
-    background: transparent; 
+}
+#ta_div_statusTabs .ui-tabs-nav li.ui-state-default {
+    background: transparent;
     border: 1px solid #c0c0c0;
-} 
+}
 
-#ta_div_statusTabs .ui-tabs-nav li.ui-state-active { 
-    background: transparent; 
+#ta_div_statusTabs .ui-tabs-nav li.ui-state-active {
+    background: transparent;
     border-bottom: none;
 }
 
 #tf1_div_statusTabs .ui-widget-header {
-    background: transparent; 
+    background: transparent;
     border: none;
-} 
-#tf1_div_statusTabs .ui-tabs-nav li.ui-state-default { 
-    background: transparent; 
+}
+#tf1_div_statusTabs .ui-tabs-nav li.ui-state-default {
+    background: transparent;
     border: 1px solid #c0c0c0;
-} 
+}
 
-#tf1_div_statusTabs .ui-tabs-nav li.ui-state-active { 
-    background: transparent; 
+#tf1_div_statusTabs .ui-tabs-nav li.ui-state-active {
+    background: transparent;
     border-bottom: none;
 }
 
@@ -291,7 +306,8 @@ table.algoInformationen {
 }
 
 #ti_div_EntscheidungRight {
-    margin-left: 470px;
+    float: left;
+    margin-left: 15px;
 }
 
 #tw_Accordion {
@@ -303,8 +319,17 @@ table.algoInformationen {
 }
 
 .errorIcon {
-     float: left;
-     margin-right: .3em;
+    float: left;
+    margin-right: .3em;
+}
+
+ul.subtourList {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+ul.subtourList li {
+    cursor: pointer;
 }
 
 body {
@@ -313,10 +338,10 @@ body {
     margin-right: auto;
 }
 @media screen and (max-width: 1170px) {
-body {
-    margin-left: 8px;
-    margin-right: 8px;
-}
+    body {
+        margin-left: 8px;
+        margin-right: 8px;
+    }
 }
 
 header {
@@ -325,5 +350,59 @@ header {
 }
 
 html {
-    overflow-y: scroll; 
+    overflow-y: scroll;
+}
+.ui-state-error {
+    color: white !important;
+}
+.result_euleriantour, .result_subtour {
+    font-size: 15px;
+}
+.result_euleriantour span {
+    font-weight: 900;
+    font-size: 24px;
+    vertical-align: bottom;
+}
+.no-close .ui-dialog-titlebar-close {
+    display: none;
+}
+#tf1_div_questionModal {
+    margin-top: 20px;
+    display: block;
+    padding-bottom: 10px;
+}
+.quizTable {
+    width: 80%;
+    margin: 0px auto;
+    border-collapse: collapse;
+}
+.quizTable th {
+    width: 50%;
+    padding: 5px;
+    border-bottom: 2px solid #000000;
+}
+.quizTable td {
+    text-align: left;
+    padding: 3px;
+    border-bottom: 1px dotted #004682;
+}
+.quizTable td span {
+    float: left;
+}
+#tf1_questionSolution {
+    font-weight: normal;
+    color: green;
+}
+#tf1_questionSolution .answer {
+    font-weight: bold;
+}
+#ta_td_euclideanSubtour, #ta_td_euclideanTour, #tf1_td_euclideanSubtour, #tf1_td_euclideanTour {
+    -ms-word-break: break-all;
+    word-break: break-all;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+    overflow-wrap: break-word;
 }

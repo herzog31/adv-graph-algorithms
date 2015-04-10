@@ -1,0 +1,187 @@
+{ 
+  "name": "en",
+  "fields" : {
+    "algorithm_btn_prev": "EN - Zurück",
+    "algorithm_btn_next": "EN - Nächster Schritt",
+    "algorithm_btn_frwd": "EN - Vorspulen",
+    "algorithm_btn_paus": "EN - Pause",
+    "algorithm_msg_finish": "EN - Was nun?",
+    "algorithm_msg_test": "EN - Forschungsaufgaben ausprobieren:",
+    "algorithm_btn_more": "EN - Beschreibung des Algorithmus lesen",
+    "algorithm_btn_exe1": "EN - Wie würde der Algorithmus entscheiden?",
+    "algorithm_btn_exe2": "EN - Algorithmus am gerichteten Graphen",
+
+    "algorithm_legende": "EN - Legende",
+    "algorithm_legende_node": "EN - Knoten",
+    "algorithm_legende_undirectededge": "EN - Ungerichtete Kante",
+    "algorithm_legende_degree2": "EN - Knoten mit geradem Grad 2",
+    "algorithm_legende_degree3": "EN - Knoten mit ungeradem Grad 3",
+    "algorithm_legende_start": "EN - Aktueller Knoten",
+    "algorithm_legende_start2": "EN - Startknoten",
+    "algorithm_legende_edgecolor": "EN - Kante der Eulertour im aktuellen Durchgang",
+
+    "algorithm_status1_head": "EN - Initialisierung",
+    "algorithm_status1_desc": "EN - Der Algorithmus muss bei der Ausführung prüfen können, welche Kanten er schon besucht hat. Dazu markieren wir jede Kante als unbesucht.",
+
+    "algorithm_status2_head": "EN - Graph prüfen",
+    "algorithm_status2_desc1": "EN - Nur wenn unser Graph die folgenden Eigenschaften aufweist, kann der Hierholzer Algorithmus angewendet werden:",
+    "algorithm_status2_desc2": "EN - mind. eine Kante",
+    "algorithm_status2_desc3": "EN - zusammenhängend",
+    "algorithm_status2_desc4": "EN - eulersch oder semi-eulersch",
+    "algorithm_status2_desc5": "EN - Alle Knoten haben einen geraden Grad oder<br />genau zwei Knoten haben einen ungeraden Grad.",
+    "algorithm_status2_desc6": "EN - Dein Graph erfüllt mindestens eine der folgenden Eigenschaften nicht:",
+
+    "algorithm_status3_head": "EN - Subtour bestimmen",
+    "algorithm_status31A_head": "EN - Ersten Startknoten finden",
+    "algorithm_status31A_desc1": "EN - Für die erste Subtour benötigt der Algorithmus einen Startknoten:",
+    "algorithm_status31A_desc2": "EN - Für <strong>eulersche Graphen</strong> kann man einen beliebigen Knoten wählen.",
+    "algorithm_status31A_desc3": "EN - Für <strong>semi-eulersche Graphen</strong> wählt man einen der beiden Knoten mit ungeradem Grad.",
+    "algorithm_status31A_desc4": "EN - Der der Algorithmus hat bereits einen zufälligen Knoten ausgewählt und <span style=\"font-weight: bold; color: #00c532;\">hellgrün</span> markiert. <strong>Alternativ kannst du selbst einen Startknoten durch Klick auf einen beliebigen Knoten aussuchen.</strong>",
+    "algorithm_status31A_desc5": "EN - Der vom Algorithmus ausgewählte Knoten wurde <span style=\"font-weight: bold; color: #00c532;\">hellgrün</span> markiert.",
+
+    "algorithm_status31B_head": "EN - Neuen Startknoten finden",
+    "algorithm_status31B_desc1": "EN - Als Startknoten der nächsten Subtour wählt der Algorithmus einen beliebigen Knoten, der unbesuchte Kanten besitzt.",
+    "algorithm_status31B_desc2": "EN - Dieser Knoten wurde <span style=\"font-weight: bold; color: green;\">grün</span> markiert.",
+
+    "algorithm_status32_head": "EN - Unbesuchten Nachbarn finden",
+    "algorithm_status32_desc1": "EN - Für die nächste Kante unserer aktuellen Tour betrachtet der Algorithmus alle unbesuchten Kanten des aktiven Knotens (<span style=\"font-weight: bold; color: green;\">grün</span>).",
+    "algorithm_status32_desc2": "EN - Aus dieser Kantenmenge wählt der Algorithmus nun eine zufällige Kante ",
+    "algorithm_status32_desc3": "EN - farblich markiert",
+    "algorithm_status32_desc4": "EN -  aus.",
+    "algorithm_status32_desc5": "EN - Wir fügen diese Kante zu unserer Subtour hinzu und markieren sie als besucht. Der Knoten am anderen Ende der Kante wir nun der neue aktive Knoten.",
+    
+    "algorithm_status33_head": "EN - Auf Kreis prüfen",
+    "algorithm_status33_desc1": "EN - Um zu prüfen, ob unsere Subtour abgeschlossen ist, vergleichen wir den aktiven Knoten mit dem ersten Knoten der Subtour. Beide sind <span style=\"font-weight: bold; color: green;\">grün</span> markiert.",
+    "algorithm_status33_desc2": "EN - Abgeschlossen",
+    "algorithm_status33_desc3": "EN - Handelt es sich bei beiden um den selben Knoten, ist unsere Subtour abgeschlossen und wir fahren mit <em>Schritt 4</em> fort.",
+    "algorithm_status33_desc4": "EN - Nicht abgeschlossen",
+    "algorithm_status33_desc5": "EN - Handelt es sich um zwei verschiedene Knoten, ist unsere Subtour unvollständig und wir wiederholen <em>Schritt 3.2</em>.",
+
+    "algorithm_status4_head": "EN - Gesamttour bestimmen",
+    "algorithm_status41_head": "EN - Integriere Subtour in Gesamttour",
+    "algorithm_status41_desc1": "EN - Die Subtour ist abgeschlossen und muss in die Gesamttour integriert werden.",
+    "algorithm_status41_desc2": "EN - Zyklische Subtour",
+    "algorithm_status41_desc3": "EN - Der Algorithmus sucht in der Gesamttour den Start- & Endknoten der Subtour und ersetzt diesen mit der gesamten Subtour.",
+    "algorithm_status41_desc4": "EN - Azyklischer Subweg",
+    "algorithm_status41_desc5": "EN - Es handelt sich hierbei um den Subweg im semi-eulerschen Graph, der mit einem Knoten ungeraden Grads beginnt und bei dem zweiten Knoten mit ungeradem Grad endet. Der Weg muss so integriert werden, dass er am Anfang oder Ende der Gesamttour steht.",
+    
+    "algorithm_status42_head": "EN - Auf Vollständigkeit prüfen",
+    "algorithm_status42_desc1": "EN - Nach jeder Integration einer Subtour in die Gesamttour prüft der Algorithmus ob die Gesamttour eine Eulertour bzw. ein Eulerweg ist.",
+    "algorithm_status42_desc2": "",
+    "algorithm_status42_desc3": "EN - Bei Gleichheit terminiert der Algorithmus und gibt die Gesamttour in <em>Schritt 5</em> zurück.",
+    "algorithm_status42_desc4": "EN - Bei Ungleichheit existiert mindestens eine weitere Subtour, die gefunden werden muss. Wir springen zurück zu <em>Schritt 3</em>.",
+
+    "algorithm_status5_head": "EN - Ergebnis",
+    "algorithm_status5_desc1a": "EN - Der Algorithmus konnte erfolgreich einen Eulerweg bestimmen.",
+    "algorithm_status5_desc1b": "EN - Der Algorithmus konnte erfolgreich eine Eulertour bestimmen.",
+
+    "algorithm_status51a_head": "EN - Eulerweg",
+    "algorithm_status51a_desc1": "EN - Der Eulerweg wird hier als Folge von Knoten dargestellt.",
+    "algorithm_status51a_desc2": "EN - Animiere Eulerweg",
+    "algorithm_status51a_desc3": "EN - Stop",
+    "algorithm_status51a_desc4": "EN - Klicke auf <strong>Animiere Eulerweg</strong> um den kompletten Eulerweg abzulaufen und alle Knoten und Kanten auf dem Weg hervorzuheben.",
+    
+    "algorithm_status51b_head": "EN - Eulertour",
+    "algorithm_status51b_desc1": "EN - Die Eulertour wird hier als Folge von Knoten dargestellt.",
+    "algorithm_status51b_desc2": "EN - Animiere Eulertour",
+    "algorithm_status51b_desc3": "EN - Stop",
+    "algorithm_status51b_desc4": "EN - Klicke auf <strong>Animiere Eulertour</strong> um die komplette Eulertour abzulaufen und alle Knoten und Kanten auf dem Weg hervorzuheben.",
+
+    "algorithm_status52_head": "EN - Subtouren",
+    "algorithm_status52_desc1": "EN - Bewege deinen Mauszeiger über eine der Subtouren, um sie im Graph hervorzuheben.",
+
+    "aufgabe1_btn_next_question": "EN - Zur nächsten Frage vorspulen",
+    "aufgabe1_graph_invalid": "EN - Graph ungültig",
+    "aufgabe1_check_euleriantour": "EN - Gesamttour auf Vollständigkeit prüfen",
+    "aufgabe1_showresults": "EN - Ergebnis zeigen",
+
+    "aufgabe1_qst": "EN - Frage",
+    "aufgabe1_qst_solution": "EN - Lösung",
+    "aufgabe1_qst_answer": "EN - Antworten",
+    "aufgabe1_qst_close": "EN - Schließen",
+    "aufgabe1_qst_correct": "EN - korrekt",
+    "aufgabe1_qst_wrong": "EN - falsch",
+    "aufgabe1_qst_correctanswer": "EN - Die korrekte Antwort ist: ",
+    "aufgabe1_qst_continue": "EN - Weiter",
+    "aufgabe1_qst_degree1": "EN - Welchen Grad hat der Knoten ",
+    "aufgabe1_qst_nextstep1": "EN - Welchen Schritt macht der Algorithmus als nächstes?",
+    "aufgabe1_qst_subtour1": "EN - Welche Knoten befinden sich der der aktuellen ",
+    "aufgabe1_qst_subtour2": "EN - Subtour",
+    "aufgabe1_qst_subtour3": "EN - Antworte in der Form <em>x,y,z</em> und beachte die Reihenfolge.",
+    "aufgabe1_qst_tour1": "EN - In diesem Schritt wird die Subtour ",
+    "aufgabe1_qst_tour2": "EN -  in die Gesamttour ",
+    "aufgabe1_qst_tour3": "EN -  integriert. Wie sieht das Ergebnis aus?",
+    "aufgabe1_qst_tour4": "EN - Hinweis: Es gibt u.U. mehrere Lösungsmöglichkeiten, es ist allerdings nur eine der gegebenen Antwortmöglichkeit korrekt.",
+    "aufgabe1_qst_solution1": "EN - Von insgesamt ",
+    "aufgabe1_qst_solution2": "EN -  Fragen hast du ",
+    "aufgabe1_qst_solution3": "EN -  richtig beantwortet!",
+
+    "aufgabe2_status1_desc": "EN - Der Algorithmus muss bei der Ausführung prüfen können, welche Kanten er schon besucht hat. Dazu markieren wir jede Kante als unbesucht.",
+
+    "aufgabe2_status2_desc1": "EN - Damit der Hierholzer auf einem gerichteten Graphen funktioniert, muss dieser folgende Eigenschaften erfüllen:",
+    "aufgabe2_status2_desc2": "EN - mind. eine Kante",
+    "aufgabe2_status2_desc3": "EN - schwach zusammenhängend",
+    "aufgabe2_status2_desc4": "EN - Man muss von jedem Knoten aus zu jedem anderen Knoten gelangen können, wobei man jede Kante als ungerichtet betrachtet. Wenn der Graph eulersch ist, schließt das diese Bedingung mit ein.",
+    "aufgabe2_status2_desc5": "EN - eulersch oder semi-eulersch",
+    "aufgabe2_status2_desc6": "EN - Diese Voraussetzungen ist <em>strenger</em> als im ungerichteten Fall. Der Grad der Knoten muss gerade sein, zusätzlich muss die Anzahl der eingehenden Kanten mit der Anzahl ausgender Kanten übereinstimmen.<br />Im Falle eine semi-eulerschen dürfen genau ein Knoten eine zusätzliche ausgehende Kante und genau ein anderer Knoten eine zusätzliche eingehende Kante besitzen.",
+    "aufgabe2_status2_desc7": "EN - Dein Graph erfüllt mindestens eine der folgenden Eigenschaften nicht:",
+
+    "aufgabe2_status31A_desc1": "EN - Für die erste Subtour benötigt der Algorithmus einen Startknoten:",
+    "aufgabe2_status31A_desc2": "EN - Für <strong>eulersche Graphen</strong> kann man einen beliebigen Knoten wählen.",
+    "aufgabe2_status31A_desc3": "EN - Für <strong>semi-eulersche Graphen</strong> wählt man <em>genau den Knoten, der mehr ausgehende Kanten besitzt als eingehende</em>.",
+    "aufgabe2_status31A_desc4": "EN - Der vom Algorithmus ausgewählte Knoten wurde <span style=\"font-weight: bold; color: green;\">grün</span> markiert.",
+
+    "aufgabe2_status32_desc1": "EN - Für die nächste Kante unserer aktuellen Tour betrachtet der Algorithmus alle unbesuchten <em>ausgehenden</em> Kanten des aktiven Knotens (<span style=\"font-weight: bold; color: green;\">grün</span>).",
+    "aufgabe2_status32_desc2": "EN - Aus dieser Kantenmenge wählt der Algorithmus nun eine zufällige Kante ",
+    "aufgabe2_status32_desc3": "EN - farblich markiert",
+    "aufgabe2_status32_desc4": "EN -  aus.",
+    "aufgabe2_status32_desc5": "EN - Wir fügen diese Kante zu unserer Subtour hinzu und markieren sie als besucht. Der Knoten am anderen Ende der Kante wir nun der neue aktive Knoten.",
+    
+
+    "aufgabe2_status33_desc1": "EN - Um zu prüfen, ob unsere Subtour abgeschlossen ist, vergleichen wir den aktiven Knoten mit dem ersten Knoten der Subtour. Beide sind <span style=\"font-weight: bold; color: green;\">grün</span> markiert.",
+    "aufgabe2_status33_desc2": "EN - Abgeschlossen",
+    "aufgabe2_status33_desc3": "EN - Handelt es sich bei beiden um den selben Knoten, ist unsere Subtour abgeschlossen und wir fahren mit <em>Schritt 4</em> fort.",
+    "aufgabe2_status33_desc4": "EN - Nicht abgeschlossen",
+    "aufgabe2_status33_desc5": "EN - Handelt es sich um zwei verschiedene Knoten, ist unsere Subtour unvollständig und wir wiederholen <em>Schritt 3.2</em>.",
+
+    "aufgabe2_status41_desc1": "EN - Die Subtour ist abgeschlossen und muss in die Gesamttour integriert werden.",
+    "aufgabe2_status41_desc2": "EN - Zyklische Subtour",
+    "aufgabe2_status41_desc3": "EN - Der Algorithmus sucht in der Gesamttour den Start- & Endknoten der Subtour und ersetzt diesen mit der gesamten Subtour.",
+    "aufgabe2_status41_desc4": "EN - Azyklischer Subweg",
+    "aufgabe2_status41_desc5": "EN - Es handelt sich hierbei um den Subweg im semi-eulerschen Graph, der mit dem Knoten mit einer zusätzlichen ausgehenden Kante beginnt und in den Knoten mit zusätzlicher eingehenden Kante mündet. Der Weg muss so integriert werden, dass er am Anfang oder Ende der Gesamttour steht.",
+
+    "aufgabe2_status42_desc1": "EN - Nach jeder Integration einer Subtour in die Gesamttour prüft der Algorithmus ob die Gesamttour eine Eulertour bzw. ein Eulerweg ist.",
+    "aufgabe2_status42_desc2": "EN - Dazu vergleicht der Algorithmus die Anzahl der Kanten im Graph mit der Anzahl der Kanten in der Gesamttour.",
+    "aufgabe2_status42_desc3": "EN - Bei Gleichheit terminiert der Algorithmus und gibt die Gesamttour in <em>Schritt 5</em> zurück.",
+    "aufgabe2_status42_desc4": "EN - Bei Ungleichheit existiert mindestens eine weitere Subtour, die gefunden werden muss. Wir springen zurück zu <em>Schritt 3</em>.",
+
+    "aufgabe2_status5_desc1a": "EN - Der Algorithmus konnte erfolgreich einen Eulerweg bestimmen.",
+    "aufgabe2_status5_desc1b": "EN - Der Algorithmus konnte erfolgreich eine Eulertour bestimmen.",
+
+    "aufgabe2_status51a_desc1": "EN - Der Eulerweg wird hier als Folge von Knoten dargestellt.",
+    "aufgabe2_status51a_desc2": "EN - Animiere Eulerweg",
+    "aufgabe2_status51a_desc3": "EN - Stop",
+    "aufgabe2_status51a_desc4": "EN - Klicke auf <strong>Animiere Eulerweg</strong> um den kompletten Eulerweg abzulaufen und alle Knoten und Kanten auf dem Weg hervorzuheben.",
+   
+    "aufgabe2_status51b_desc1": "EN - Die Eulertour wird hier als Folge von Knoten dargestellt.",
+    "aufgabe2_status51b_desc2": "EN - Animiere Eulertour",
+    "aufgabe2_status51b_desc3": "EN - Stop",
+    "aufgabe2_status51b_desc4": "EN - Klicke auf <strong>Animiere Eulertour</strong> um die komplette Eulertour abzulaufen und alle Knoten und Kanten auf dem Weg hervorzuheben.",
+
+    "aufgabe2_status52_desc1": "EN - Bewege deinen Mauszeiger über eine der Subtouren, um sie im Graph hervorzuheben.",
+
+    "aufgabe2_status31B_desc1": "EN - Als Startknoten der nächsten Subtour wählt der Algorithmus einen beliebigen Knoten, der unbesuchte <em>ausgehende</em> Kanten besitzt.",
+    "aufgabe2_status31B_desc2": "EN - Dieser Knoten wurde <span style=\"font-weight: bold; color: green;\">grün</span> markiert.",
+
+    "aufgabe2_legende_ingradausgrad": "EN - Knoten mit Ingrad gleich Ausgrad",
+    "aufgabe2_legende_ingradgausgrad": "EN - Knoten mit Ingrad größer Ausgrad",
+
+    "aufgabe2_qst1_1": "EN - Welche Voraussetzungen muss dieser gerichtete Graph erfüllen, damit der Algorithmus eine Eulertour finden kann?",
+    "aufgabe2_qst1_2": "EN - <em>Die Antworten schließen auch implizierte Voraussetzungen ein!</em>",
+    "aufgabe2_qst2_1": "EN - Welche(n) Nachbarn von ",
+    "aufgabe2_qst2_2": "EN -  kommen für den Algorithmus im nächsten Schritt potentiell in Frage?",
+
+    "aufgabe2_qst1_solution1": "EN -  müssen betrachtet werden.",
+    "aufgabe2_qst1_solution2": "EN -  muss betrachtet werden."
+  }
+}
