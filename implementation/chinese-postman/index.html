@@ -17,8 +17,8 @@
     <script src="js/algorithm.js" type="text/javascript"></script>
     <script src="js/aufgabe1.js" type="text/javascript"></script>
     <script src="js/aufgabe2.js" type="text/javascript"></script>
-    <script src="../library/js/floydWarshall.js" type="text/javascript"></script>
-    <script src="../library/js/maxMatching.js" type="text/javascript"></script>
+    <script src="js/floydWarshall.js" type="text/javascript"></script>
+    <script src="js/maxMatching.js" type="text/javascript"></script>
 
     <title>Der Chinese-Postman-Algorithmus</title>
 </head>
@@ -59,11 +59,13 @@
         </ul>
         <div id="tab_te">
             <div id="te_div_Einfuehrungstext">
-                <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="img/intro.png" alt="Beispielproblem." width="300"><p>Welcher ist der günstigste Rundgang?</p></div>
+                <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="img/intro.png" alt="Beispielproblem." height="209"><p>Welcher ist der günstigste Rundgang?</p></div>
                 <h1>Der Weg des Postboten</h1>
-      <!--          <p>In vielen Anwendungen kann es nützlich sein, den kürzesten Weg von a nach b zu berechnen.
-                Dabei muss die Länge eines Weges nicht unbedingt die Länge in Metern sein: Genauso gut kann man die Kosten eines Weges betrachten &ndash; man sucht also den <strong>günstigsten Weg</strong>.</p>
--->                <h2>Hier wird der Chinese-Postman-Algorithmus für gerichtete Graphen vorgestellt, der den günstigsten Kantenzug findet, sodass jede Kante mindestens einmal benutzt wird.</h2>
+                <p>Das Briefträgerproblem ist ein bekanntes Problem aus der Graphentheorie. Ein Postbote soll die Briefe in der Stadt auf dem kürzesten Weg zustellen.
+                    Dabei muss er jede Straße mindestens einmal passieren und wieder zum Ursprung zurückkehren. Das Problem wird mittels eines Graphen modelliert.
+                    Knoten stellen Kreuzungen dar und Kanten sind die Straßen. Die Länge der Straße entspricht dem Gewicht der zugehörigen Kante.
+                </p>
+                <h2>Hier wird der Chinese-Postman-Algorithmus für gerichtete Graphen vorgestellt, der den günstigsten Kantenzug findet, sodass jede Kante mindestens einmal benutzt wird.</h2>
                 <div id ="te_div_Entscheidung">
                     <h2>Was möchtest du zuerst tun?</h2>
                     <button id="te_button_gotoDrawGraph">Den Algorithmus testen!</button> <button id="te_button_gotoIdee">Genauere Beschreibung des Algorithmus lesen</button>
@@ -206,23 +208,32 @@
         </div>
         <div id="tab_ti" style="display: none;">
             <div id="ti_div_Einfuehrungstext">
+                <div class="BeispielbildContainer">
+<!--                    <img id="ti_img_beispiel01" src="img/not_strongly_connected.png" alt="Nicht stark-zusammenhängend" /><p>Nicht stark-zusammenhängend</p><br />
+                    <img id="ti_img_beispiel02" src="img/negative_cycle.png" alt="Negativ" /><p>Negativer Kreis</p><br />-->
+                    <img id="ti_img_beispiel1" src="img/grad.png" alt="Königsberger Brücken" /><p>Ausgangsgraph mit Graddifferenzen</p><br />
+                    <img id="ti_img_beispiel3" src="img/matching.png" alt="Matching" /><p>Das Matching und durch Pfadeinfügungen entstandene Graph</p><br />
+                    <img id="ti_img_beispiel4" src="img/tour.png" alt="Eulertour" /><p>Eulertour</p><br />
+                </div>
                 <h1>Briefträgerproblem</h1>
                 <p>
-                    Gegeben ist ein gerichteter und gewichteter Graph G. Das Briefträgerproblem besteht darin, einen Rundgang im Graphen zu finden, sodass alle Kanten mindesten einmal
-                    benutzt werden und die Summe der Kantengewichte des Rundgangs (Kosten des Rundgangs) minimal ist. Ein Beispiel für dieses Problems ist ein Postbote, der alle Straßen
+                    Gegeben ist ein gerichteter und gewichteter Graph G. Das Briefträgerproblem besteht darin, einen geschlossenen Kantenzug im Graphen zu finden, sodass alle Kanten mindesten einmal
+                    benutzt werden und die Summe der Kantengewichte des Kantenzugs (Kosten des Rundgangs) minimal ist. Ein Beispiel für dieses Problems ist ein Postbote, der alle Straßen
                     einer Stadt ablaufen muss und wieder zum Startpunkt zurückkehrt. Dabei will er eine möglichst kurze Distanz zurücklegen.
                 </p>
                 <h1>Idee des Algorithmen</h1>
                 <p>
-                    Angenommen es existieren keine isolierten Knoten. Das Problem ist genau dann lösbar, wenn der Graph stark zusammenhängend ist (jeder Knoten von jedem Knoten aus erreichbar) und keine negativen Kreise existieren. .
+                    Da isolierte Knoten keinen Einfluss auf die Lösung des Problems haben, können wir annehmen, dass solche Knoten nicht existieren.
+                    Das Problem ist genau dann lösbar, wenn der Graph stark zusammenhängend ist (jeder Knoten von jedem Knoten aus erreichbar) und keine negativen Kreise existieren.
                     Das Problem lässt sich auf das Bestimmen einer Eulertour im Graphen zurückführen. Falls es eine Eulertour im Graphen gibt,
-                    so ist diese Tour das optimale Ergebnis, da jede Kante genau einmal benutzt wird. Im anderen Fall müssen einige Kanten mehrmals benutzt werden. Diese Situation lässt sich modellieren, indem
+                    so ist diese Tour das optimale Ergebnis, da jede Kante genau einmal besucht wird. Im anderen Fall müssen einige Kanten mehrmals besucht werden. Diese Situation lässt sich modellieren, indem
                     wir zusätzliche Kanten in den Graphen einfügen, die mehrmals benutzten Kanten repräsentieren (mit dem gleichen Gewicht wie die originale Kante). Dann besitzt der Rundgang die gleichen Kosten, wie
-                    die Eulertour im neuen Graphen. Das Problem besteht jetzt darin, die mehrfach benutzten Kanten im minimalen Rundgang zu finden.
+                    die Eulertour im neuen Graphen. Das Problem besteht jetzt darin, die mehrfach benutzten Kanten des minimalen Rundgangs zu bestimmen.
                 </p>
                 <p> Ein Theorem der Graphentheorie besagt, dass es genau dann eine Eulertour im Graphen gibt, wenn bei allen Knoten im Graphen der Eingangsgrad mit dem Ausgangsgrad übereinstimmt.
-                    Also reicht es aus, wenn wir zusätzliche Pfade in den Graphen einfügen, sodass bei allen Knoten im Graphen der Eingangsgrad mit dem Ausgangsgrad übereinstimmt.
-                    Welche Pfade genau eingefügt werden, wird im Matching-Schritt des Algorithmen festgestellt. Die Summe der Kantengewichte der Pfade sollte minimal sein.
+                    Also reicht es aus, wenn wir zusätzliche Pfade in den Graphen einfügen, sodass nach dem Einfügen bei allen Knoten im Graphen der Eingangsgrad mit dem Ausgangsgrad übereinstimmt.
+                    Die Summe der Kantengewichte der Pfade sollte minimal sein.
+                    Welche Pfade genau eingefügt werden, wird im Matching-Schritt des Algorithmen festgestellt.
                 </p>
                 <p>
                     Nachdem sichergestellt wurde, dass der Graph eine Eulertour besitzt, muss diese nur gefunden werden. Dies erfolgt mit einem geeigneten Algorithmus, wie z.B. dem Hierholzer-Algorithmus.
@@ -233,28 +244,32 @@
                     Für den Matching-Schritt des Algorithmen benötigt man die Abstände und die kürzesten Wege zwischen je zwei Knoten des Graphen.
                     Um die kürzesten Wege bestimmen, wird der Algorithmus von Floyd-Warshall benutzt.
                     <!--Dieser Algorithmus berechnet im Gegensatz zu Bellman-Ford-Algorithmus die kürzesten Wege zwischen allen Knoten. -->
-                    Weitere Erklärungen zu diesem Algorithmus können hier gefunden werden.
+                    Weitere Erklärungen zu diesem Algorithmen können hier gefunden werden.
                 </p>
                 <h1>Matching</h1>
                 <p>
                     Durch Einfügen zusätzlicher Pfade wollen wir erreichen, dass bei allen Knoten im Graphen der Eingangsgrad mit dem Ausgangsgrad übereinstimmt. Dann existiert eine Eulertour im Graphen.
                     Wir bezeichnen mit der Graddifferenz die Differenz zwischen dem Ausgangs- und dem Eingangsgrad eines Knotens. Um zu bestimmen welche Pfade wir einfügen, muss eine Zuordnung von Knoten
-                    mit negativer Graddifferenz zu den Knoten mir positiver Graddifferenz erfolgen. Dabei bestimmt die Graddifferenz die Anzahl der neuen Pfade, die in diesem Knoten anfangen bzw. enden müssen.
+                    mit negativer Graddifferenz zu den Knoten mit positiver Graddifferenz erfolgen. Dabei bestimmt die Graddifferenz die Anzahl der neuen Pfade, die in diesem Knoten anfangen bzw. enden müssen.
                     Ein Pfad vergrößert die Graddifferenz des Startknotens um eins und verringert die Graddifferenz des Zielknotens um eins.
                 </p>
                 <p>
                     Das Gewicht der zusätzlichen Pfade sollte minimal sein. Um dieses Ziel zu erreichen könnte man einen neuen bipartiten Graphen erstellen.
-                    Knoten mit Graddifferenz ungleich 0 werden in zwei Partitionen geteilt (negative und positive Graddifferenzen).
-                    Abhängig von der Graddifferenz eines Knotens, können mehrere Kopien des Knotens im bipartiten Graph vorkommen. Z.B. existieren von einem Knoten mit Graddifferenz 3 genau 3 Kopien im Graphen.
-                    Das Gewicht einer Kante stellt die Länge des kürzesten Pfades dar. Damit erhalten wir einen vollständigen bipartiten Graph. Wir wenden einen Algorithmus zur Lösung von gewichteten Matchings auf diesen Graphen.
+                    Knoten mit Graddifferenz ungleich 0 werden in zwei Partitionen unterteilt (negative und positive Graddifferenzen).
+                    Die Graddifferenz bestimmt wie viele Exemplare des Knotens im bipartiten Graph vorkommen. Z.B. existieren von einem Knoten mit Graddifferenz 3 genau 3 Kopien im Graphen.
+                    Das Gewicht einer Kante stellt die Länge des kürzesten Pfades von dem Knoten mit positiver Graddifferenz zu dem Knoten mit negativer Graddifferenz dar.
+                    Die Summe der positiven Graddifferenzen ist gleich der negierten Summe der negativen Graddifferenzen.
+                    Damit erhalten wir einen vollständigen bipartiten Graph. Wir wenden einen Algorithmus zur Lösung von gewichteten Matchings auf diesen Graphen.
                     Ein Algorithmus zur Lösung von gewichteten Matchings wird hier vorgestellt. Damit erhalten wir die optimale Zuordnung und können die neuen Pfade einfügen.
                     Die Kanten der Pfade repräsentieren die Kanten des optimalen Rundgangs, die mehrmals benutzt werden.
                 </p>
                 <h1>Eulertour</h1>
                 <p>
                     Nach dem Einfügen von zusätzlichen Pfaden ist sichergestellt, dass es eine Eulertour im Graphen existiert. Um diese zu finden, kann der Algorithmus von Hierholzer verwendet werden.
-                    Dieser startet mit einem beliebigen Knoten und folgt den Kanten bis man wieder an den Startpunkt gelangt. Falls noch unbenutzte Kanten existieren, wiederholt man die Prozedur
-                    mit einem Knoten auf der bereits gefundenen Tour und fügt die neue Tour in die alte ein. Dies wird wiederholt, bis alle Kanten benutzt wurden. Eine detailierte Beschreibung des Algorithmen kann hier gefunden werden.
+<!--                    Dieser startet mit einem beliebigen Knoten und folgt den Kanten bis man wieder an den Startpunkt gelangt. Falls noch unbenutzte Kanten existieren, wiederholt man die Prozedur
+                    mit einem Knoten auf der bereits gefundenen Tour und fügt die neue Tour in die alte ein. Dies wird wiederholt, bis alle Kanten benutzt wurden. -->
+                    Eine detailierte Beschreibung des Algorithmen kann hier gefunden werden.
+                    Die Kosten des optimalen Rundgangs werden durch die Summe aller Kantengewichte der Eulertour bestimmt.
                 </p>
                 <h1>Was nun?</h1>
                 <br style="clear: both;" />
@@ -266,7 +281,7 @@
                 <div class="Entscheidungsweg" id="ti_div_EntscheidungRight">
                     <h3>Sein Wissen an den Forschungsaufgaben testen</h3>
                     <button id="ti_button_gotoFA1">Forschungsaufgabe: Wie würde der Algorithmus entscheiden?</button><br>
-                    <button id="ti_button_gotoFA2">Forschungsaufgabe: Wie ist die optimale Sortierung der Knoten?</button>
+                    <button id="ti_button_gotoFA2">Forschungsaufgabe: Finde selber einen Rundgang</button>
                 </div>
                 <br style="clear: both;" />
             </div>

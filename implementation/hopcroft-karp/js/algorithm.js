@@ -465,7 +465,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         node.setLayout('borderWidth',global_NodeLayout.borderWidth*1.5);
     };
     var highlightEdge = function(edge){
-        edge.setLayout("lineWidth", global_Edgelayout.lineWidth*2.4);
+        edge.setLayout("lineWidth", global_Edgelayout.lineWidth*2.8);
     };
     var highlightFreeNode = function(node){
         node.setLayout('borderWidth',global_NodeLayout.borderWidth * 2);
@@ -648,6 +648,11 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      */
     this.previousStepChoice = function() {
         this.replayStep();
+        if(history.length == 0){
+            $("#ta_button_Zurueck").button("option", "disabled", true);
+        }
+        $("#ta_button_1Schritt").button("option", "disabled", false);
+        $("#ta_button_vorspulen").button("option", "disabled", false);
         this.needRedraw = true;
     };
     
@@ -700,14 +705,6 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
                 graph.edges[key].setLayoutObject(JSON.parse(oldState.edgeProperties[key].edge));
                 //graph.edges[key].setAdditionalLabel(oldState.edgeProperties[key].label);
             }
-        }
-        if(history.length == 0){
-            $("#ta_button_Zurueck").button("option", "disabled", true);
-        }
-        if(end){
-            end = false;
-            $("#ta_button_1Schritt").button("option", "disabled", false);
-            $("#ta_button_vorspulen").button("option", "disabled", false);
         }
     };
 

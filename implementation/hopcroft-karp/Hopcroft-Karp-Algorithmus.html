@@ -17,7 +17,7 @@
     <script src="js/algorithm.js" type="text/javascript"></script>
     <script src="js/aufgabe1.js" type="text/javascript"></script>
     <script src="js/aufgabe2.js" type="text/javascript"></script>
-    <script src="../library/js/BipartiteGraph.js" type="text/javascript"></script>
+    <script src="js/BipartiteGraph.js" type="text/javascript"></script>
 
     <title>Der Hopcroft-Karp-Algorithmus</title>
 </head>
@@ -43,8 +43,8 @@
         LNG.setLanguage('de');
     </script>
     <header>
-        <img src="img/logo1.png" alt="Matching in bipartiten Graphen: Der Hopcroft-Karp-Algorithmus">
-        <img src="img/hk.png" alt="Matching in bipartiten Graphen: Der Hopcroft-Karp-Algorithmus">
+        <img src="img/titel.png" alt="Matching in bipartiten Graphen: Der Hopcroft-Karp-Algorithmus">
+        <!--<img src="img/hk.png" alt="Matching in bipartiten Graphen: Der Hopcroft-Karp-Algorithmus">-->
         <img style="position:absolute; right:0px" src="img/TUMLogo.png" alt="Technische Universität München">
     </header>
     <div id="tabs">
@@ -200,43 +200,53 @@
         <div id="tab_ti" style="display: none;">
             <div id="ti_div_Einfuehrungstext">
                 <div class="BeispielbildContainer">
-                    <img id="ti_img_1" src="img/search.png" alt="Suche" width="370"/><p>Suche</p><br />
-                    <!--<img id="ti_img_2" src="img/koenigsberg_degree.png" alt="Gerade (grün) und ungerade (rot) Grade" /><p>Gerade (grün) und ungerade Grade (rot)</p><br />-->
+                    <img id="ti_img_1" src="img/path.png" alt="Suche" width="300"/><p>Augmentationsweg</p><br />
+                    <img id="ti_img_2" src="img/augment.png" alt="Suche" width="350"/><p>Suche nach kürzesten Augmentationswegen</p><br />
                 </div>
                 <h1>Matching auf bipartiten Graphen</h1>
-                <p>Maximales Matching ist ein bekanntes Problem in der Informatik. Gegeben ist ein ungerichteter Graph G. Es wird eine kardinalitätsmaximale Menge M von Kanten gesucht, sodass kein Knoten zu mehr als einer Kante inzident ist.
-                Ein Graph ist bipartit, falls er aus zwei Knotenpartitionen U und V besteht, sodass innerhalb der Partitionen keine Kanten existieren. D.h. es existieren nur Kanten, die Knoten aus der Partition V mit den Knoten aus der Partition U verbinden.
-                Das zu untersuchende Problem ist das Bestimmen von kardinalitätsmaximale Matchings auf bipartiten Graphen.
+                <p>Gegeben ist ein bipartiter Graph G. Ein Graph ist bipartit, falls er aus zwei Knotenpartitionen U und V besteht, sodass zwischen den Knoten innerhalb der Partitionen keine Kanten existieren.
+                    <!--D.h. es existieren nur Kanten, die Knoten aus der Partition V mit den Knoten aus der Partition U verbinden.-->
+                    Ein Matching ist eine Menge von Kanten, sodass in dem Teilgraph, der nur die Kanten aus dem Matching enthält, alle Knoten maximal zu einer Kante inzident sind.
+                    Das zu untersuchende Problem ist das Bestimmen von kardinalitätsmaximalen Matchings auf bipartiten Graphen.
                 </p>
-                <p>Das Problem lässt sich besser veranschaulichen, wenn man unter Knoten aus U Arbeitnehmer und unter Knoten aus V Arbeitgeber sich vorstellt. Die Kanten repräsentieren mögliche Zuordnungen von Arbeitnehmern zu Arbeitgebern.
-                Das Ziel ist möglicht viele passende Zuordnungen zu finden, wobei der Arbeitnehmer nur einen Arbeitsplatz annehmen kann und der Arbeitgeber nur einen Arbeitsplatz zur Verfügung hat.
+                <p> Zahlreiche Zuordnungsprobleme lassen sich als bipartites Matching-Problem modellieren.
+                    Das Problem lässt sich besser veranschaulichen, wenn man sich unter Knoten der einen Partition Studenten und unter Knoten der anderen Partition Arbeitsstellen vorstellt.
+                    Die Kanten repräsentieren mögliche Zuordnungen bzw. Qualifikationen.
+                    Das Ziel ist möglicht viele passende Zuordnungen zu finden, wobei die Studenten nur eine Stelle annehmen können und die Stellen nur einmal vergeben wird.
                 </p>
                 <h1>Idee des Algorithmen</h1>
                 <p>
-                    Sei M das aktuelle Matching. Eine Kante e aus M heißt Matching-Kante und eine Kante e nicht in M heißt freie Kante. Ein Knoten, der zu einer Matching-Kante inzident ist, heißt besetzt. Anderenfalls ist der Knoten frei.
-                    Ein Augmentationsweg im Graphen G ist ein Weg, der mit einem freien Knoten startet, mit einem freien Knoten endet und alternierend freie Kanten und Matching-Kanten benutzt.
-                    Das Besondere an dem Augmentationsweg ist, dass wenn man die Matching-Kanten des Weges aus M entfernt und stattdessen die freien Kanten des Weges einfügt, das Matching um eins erhöht wird.
-                    Die Eigenschaften des Augmentationswegs stellen sicher, dass die freien Kanten des Weges die Matching-Eigenschaften nicht verletzen. Ein Augmentationsweg vergrößert also das Matching. Ein Theorem aus der
-                    Graphentheorie besagt, dass das Matching genau dann maximal ist, wenn es keinen Augmentationsweg gibt.
+                    Sei M das aktuelle Matching (am Anfang ist es leer). Eine Kante e aus M heißt Matching-Kante und eine Kante e nicht in M heißt freie Kante. Ein Knoten, der zu einer Matching-Kante inzident ist, heißt besetzt. Anderenfalls ist der Knoten frei.
+                    Ein Augmentationsweg im Graphen G ist ein Weg, der
+                    <ul>
+                        <li>mit einem freien Knoten startet,</li>
+                        <li>mit einem freien Knoten endet und </li>
+                        <li>alternierend freie Kanten und Matching-Kanten benutzt.</li>
+                    </ul>
+                    Das Besondere an einem Augmentationsweg ist, dass wenn man die Matching-Kanten des Weges aus M entfernt und stattdessen die freien Kanten des Weges zu den Mathcing hinzufügt, die Kardinalität des Matchings genau um eins erhöht wird.
+                    Die Eigenschaften des Augmentationswegs stellen sicher, dass die freien Kanten des Weges die Matching-Eigenschaften nicht verletzen. Ein Augmentationsweg vergrößert also das Matching.
+                    Ein Theorem aus der Graphentheorie besagt, dass das Matching genau dann maximal ist, wenn es keinen Augmentationsweg gibt.
                 </p>
                 <p>
-                    Ein einfacher Algorithmus zur Bestimmung von maximalen Matchings besteht darin, immer nach einem Augmantationsweg suchen und das Matching vergrößern. Existiert kein Augmentationsweg mehr, so ist das Matching optimal.
-                    Allerdings kann die Laufzeit dieses Algorithmen in bestimmten Fällen lang sein. Der Algorithmus von Hopcroft und Karp verbessert die Laufzeit im Vergleich zu dem einfachen Algorithmus. Die Idee hier besteht darin eine Menge von kürzesten
-                    knotendisjunkten Augmentationswegen zu suchen und das Matching zu verbessern. In jeder Iteration des Algorithmen wird eine maximale Menge von kürzesten
-                    knotendisjunkten Augmentationswegen gesucht. Maximal bedeutet in diesem Kontext, dass es keinen kürzesten Augmentationsweg existiert, der knotendisjunkt bezüglich der bereits gefundenen ist.
-                    D.h. diese Menge muss nicht kardinalitätsmaximal sein. Nach jeder Iteration erhöht sich die Länge des kürzesten Augmentationsweges.
+                    Ein einfacher Algorithmus zur Bestimmung von maximalen Matchings besteht darin, immer nach einem Augmantationsweg zu suchen und das Matching vergrößern. Existiert kein Augmentationsweg mehr, so ist das Matching optimal.
+                    Allerdings kann die Laufzeit dieses Algorithmen in bestimmten Fällen lang sein. Der Algorithmus von Hopcroft und Karp verbessert die Laufzeit im Vergleich zu dem einfachen Algorithmus.
+                    In jeder Iteration des Algorithmen wird eine Menge von kürzesten knotendisjunkten Augmentationswegen gesucht und das Matching mit diesen Augmentationswegen verbessert.
+                    Diese Menge sollte in dem Sinne maximal sein, dass es keinen kürzesten Augmentationsweg existiert, der knotendisjunkt bezüglich der bereits gefundenen ist.
+                    D.h. diese Menge muss nicht kardinalitätsmaximal sein. Nach jeder Iteration erhöht sich die Länge des kürzesten Augmentationsweges. Falls keine Augmentationwege mehr existieren, terminiert der Algorithmus.
                 </p>
                 <h1>Finden von kürzesten Augmentationswegen</h1>
                 <p>
-                    Die kürzesten Augmentationswege lassen sich leicht mit der Breitensuche bestimmen. Dabei startet man mit den freien Knoten einer Partition (erste Schicht). Von diesen Knoten aus folgt man den Kanten zu allen Nachbarn dieser Knoten(zweite Schicht).
+                    Die kürzesten Augmentationswege können mit Breiten- und Tiefensuche gefunden werden.
+                    Man startet mit allen freien Knoten einer Partition und und führt die Breitensuche schrittweise von diesen Knoten aus. Dabei verteilt man die Knoten in mehreren Schichten.
+                    Angefangen mit den freien Knoten einer Partition (erste Schicht) folgt man den Kanten zu allen Nachbarn dieser Knoten, die jetzt die nächte Schicht darstellen.
                     Befindet sich ein freier Knoten in dieser Schicht, so wird die Prozedur gestoppt. Andererseits erweitert man den erstellten Graphen um eine Schicht mit den Matching-Partnern der letzten Schicht.
-                    Von diesen Knoten aus untersucht man wieder Nachbarknoten, wobei Knoten der vorherigen Schichten nicht betrachtet werden. Dies wiederholt man solange bis man einen freien Knoten findet oder alle Knoten untersucht wurden,
-                    was bedeutet, dass es keinen weiteren Augmentationsweg existiert. Am Ende entsteht ein Graph, der alle kürzesten Augmentationswege enthält.
+                    Von diesen Knoten aus untersucht man wieder Nachbarknoten, wobei Knoten der vorherigen Schichten nicht betrachtet werden. Dies wiederholt man solange bis man einen freier Knoten in der aktuellen Schicht existiert oder alle Knoten untersucht wurden,
+                    was bedeutet, dass es keinen weiteren Augmentationsweg existiert. Am Ende entsteht ein Schichtengraph, der alle kürzesten Augmentationswege enthält.
                 </p>
                 <p>
-                    Um eine maximale Menge von knotendisjunkten Augmentationswegen zu finden, benutzt man den Graphen aus dem letzten Schritt. Man startet mit dem freien Knoten der ersten Schicht und wendet die Tiefensuche darauf.
-                    Falls es einen Augmentationsweg gibt, der mit diesem Knoten startet, wird er gefunden. Alle Knoten, die auf diesem Weg vorkommen werden aus dem erstellten Graphen entfernt. Wendet man diese Prozedur auf alle Knoten der
-                    ersten Schicht an, so ist die gefundene Menge der knotendisjunkten kürzesten Wege maximal.
+                    Um eine maximale Menge von knotendisjunkten Augmentationswegen zu finden, nimmt man den Schichtengraph aus dem letzten Schritt. Man startet mit einem freien Knoten der ersten Schicht und wendet die Tiefensuche darauf an.
+                    Falls es einen Augmentationsweg gibt, der mit diesem Knoten startet, wird er gefunden. Alle Knoten, die auf diesem Weg vorkommen, werden aus dem Schichtengraphen entfernt. Wendet man diese Prozedur auf alle Knoten der
+                    ersten Schicht an, so ist die gefundene Menge der kürzesten Augmentationswege knotendisjunkt und nach dem Ende dieser Prozedur existiert kein kürzester Augmentationsweg, der bzgl. der bereits gefundenen knotendisjunkt ist.
                 </p>
                 <h1>Was nun?</h1>
                 <br style="clear: both;" />
@@ -247,8 +257,8 @@
                 </div>
                 <div class="Entscheidungsweg" id="ti_div_EntscheidungRight">
                     <h3>Dein Wissen an den Forschungsaufgaben testen</h3>
-                    <button id="ti_button_gotoFA1">Forschungsaufgabe 1 </button><br>
-                    <button id="ti_button_gotoFA2">Forschungsaufgabe 2 </button>
+                    <button id="ti_button_gotoFA1">Forschungsaufgabe 1: Wie würde der Algorithmus entscheiden?</button><br>
+                    <button id="ti_button_gotoFA2">Forschungsaufgabe 2: Finde die Augmentationswege</button>
                 </div>
                 <br style="clear: both;" />
             </div>
@@ -438,23 +448,30 @@
 
                     <h2>Laufzeit des Hopcroft-Karp-Algorithmus</h2>
                     <p>
-                        Angenommen der Graph enthält n Knoten und m Kanten. In jeder Iteration des Algorithmen wird die
-                        Länge des kürzesten Weges um mindestens eins erhöht. Daraus geht hervor, dass es maximal
-                        2*&radic;<span style="text-decoration:overline;">&nbsp;n&nbsp;</span> Iterationen geben kann.
-                        Den vollständigen Beweis kann der interessierte Leser in der geeigneten Literatur nachlesen.
+                        Angenommen der Graph enthält n Knoten und m Kanten.
+                        Da in jeder Iteration des Algorithmen eine maximale knotendisjunkte Menge von kürzesten Augmentationswegen gefunden wird, erzwingt dies,
+                        dass die Länge des kürzesten Augmentationsweges nach jeder Iteration um mindestens eins erhöht wird.
+                        <!--Sei M ein Matching und M* das optimale Matching. Dann existieren |M*|-|M| knotendisjunkte Augmentationswege bzgl. M.-->
+                        Sei M ein Matching und l die Länge des kürzesten Augmentationsweges bzgl. M. Dann ist die Kardinalität des optimalen Matchings maximal |M| + n/(l+1).
+                        Nach der &radic;<span style="text-decoration:overline;">&nbsp;n&nbsp;</span> Iteration beträgt die Länge des kürzesten Augmentationsweges mindestens &radic;<span style="text-decoration:overline;">&nbsp;n&nbsp;</span>.
+                        Dann existieren maximal n/&radic;<span style="text-decoration:overline;">&nbsp;n&nbsp;</span> = &radic;<span style="text-decoration:overline;">&nbsp;n&nbsp;</span> zusätzliche Augmentationen.
+                        Daraus geht hervor, dass es maximal 2*&radic;<span style="text-decoration:overline;">&nbsp;n&nbsp;</span> Iterationen geben kann.
                     </p>
                     <p> Jede Iteration kann in  O(m) Schritten durchgeführt werden. Dazu wird einmal Breitensuche und einmal Tiefensuche ausgeführt. Ausserdem wird das
                         Matching aktualisiert. Jede dieser Operationen benötigt maximal O(m) Schritte, da jede Kante maximal
                         zweimal betrachtet wird (von beiden inzidenten Knoten aus). Dann ist die Laufzeit des
                         Algorithmen
                         O(m&radic;<span style="text-decoration:overline;">&nbsp;n&nbsp;</span>).
+                        Den vollständigen Beweis kann der interessierte Leser in der geeigneten Literatur nachlesen.
                     </p>
                 </div>
                 <h3>Wie beweist man, dass der Algorithmus stets ein korrekt arbeitet?</h3>
                 <div>
                     <!--<h2>Ein mathematischer Beweis</h2>-->
                     <p>
-                        Nach der letzten Iteration existieren keine Augmentationswege mehr. Dann ist das Matching optimal und der Hopcroft-Karp-Algorithmus berechnet das richtige Ergebnis.
+                        In jeder Iteration des Algorithmen wird nach Augmentationswegen gesucht und das Matching wird verbessert. Es können nur endlich viele Verbesserungen durchgeführt werden, sodass der
+                        Algorithmus terminiert.
+                        Nach der letzten Iteration des Algorithmen existieren keine Augmentationswege mehr. Dann ist das Matching optimal und der Hopcroft-Karp-Algorithmus berechnet das richtige Ergebnis.
                     </p>
                 </div>
                 <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>
@@ -466,7 +483,7 @@
     </div>
     <footer>
         <p class="Disclaimer">
-            IDP Projekt von Ruslan Zabrodin am Lehrstuhl M9 der Technischen Universität München. 2014 | <a href="http://www-m9.ma.tum.de/Allgemeines/Rechtliches">Disclaimer und Rechtshinweise</a> | <a href="http://www-m9.ma.tum.de/Allgemeines/Impressum">Impressum</a>
+            IDP Projekt von Ruslan Zabrodin am Lehrstuhl M9 der Technischen Universität München. 2015 | <a href="http://www-m9.ma.tum.de/Allgemeines/Rechtliches">Disclaimer und Rechtshinweise</a> | <a href="http://www-m9.ma.tum.de/Allgemeines/Impressum">Impressum</a> | <a href="mailto&#58;m&#46;ritter&#64;ma&#46;tum&#46;de&#63;subject&#61;M9&#45;Web&#45;Feedback">Anregungen</a>
         </p>
     </footer>
 </body>

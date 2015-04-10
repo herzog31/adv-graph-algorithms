@@ -23,7 +23,7 @@ function CanvasDrawMethods() {
  * @param {String} label            Text auf dem Pfeil
  * @param {String} additionalLabel  Zusatztext zu dem Pfeil
  */
-CanvasDrawMethods.drawArrow1 = function (ctx, layout, source, target, center) {
+CanvasDrawMethods.drawArrowhead = function (ctx, layout, source, target, center) {
     // Pfeilkopf zeichnen
     var arrowHeadColor = layout.lineColor;
     if (layout.isHighlighted) {
@@ -58,7 +58,7 @@ CanvasDrawMethods.drawArrow = function (ctx, layout, source, target, control, la
     var center;
     if (control == null) center = {x: (target.x + source.x) / 2, y: (target.y + source.y) / 2};
     else center = this.getQuadraticCurvePoint(source.x, source.y, control.x, control.y, target.x, target.y, 0.5);
-    CanvasDrawMethods.drawArrow1(ctx, layout, source, target, center);
+    CanvasDrawMethods.drawArrowhead(ctx, layout, source, target, center);
 /*    if (layout.isHighlighted) {
         var arrowStart = {
             x: center.x + Math.cos(edgeAngle) * layout.arrowHeadLength / 2,
@@ -108,7 +108,7 @@ CanvasDrawMethods.drawCurve = function (ctx, layout, source, target, control, la
         ctx.setLineDash([0]);
     }
     //Zeichne Bechriftungen/Labels
-    if (label || additionalLabel) {
+    if (label !== null || additionalLabel !== null) {
         var s = source;
         var t = target;
         if (control != null){
@@ -122,8 +122,8 @@ CanvasDrawMethods.drawCurve = function (ctx, layout, source, target, control, la
             s = t;
             t = tmp;
         }
-        if (label) CanvasDrawMethods.drawTextOnLine(ctx, layout, s, t, label);
-        if (additionalLabel) CanvasDrawMethods.drawAdditionalTextOnLine(ctx, layout, s, t, additionalLabel);
+        if (label !== null) CanvasDrawMethods.drawTextOnLine(ctx, layout, s, t, label);
+        if (additionalLabel !== null) CanvasDrawMethods.drawAdditionalTextOnLine(ctx, layout, s, t, additionalLabel);
     }
 };
 CanvasDrawMethods.drawLine = function (ctx, layout, source, target) {

@@ -209,29 +209,29 @@ function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
     };
 
     this.setGraphHandler = function() {
-        var selection = $("#tg_select_GraphSelector>option:selected").val();
+        var selection = $("#tg_select_GraphSelector").val();
         switch(selection) {
             case "Standardbeispiel":
                 this.canvas.css("background","");
-                //$("#tg_p_bildlizenz").remove();
-                //this.graph = new BipartiteGraph("graphs/graph1.txt",canvas);
+                $("#tg_p_bildlizenz").remove();
                 $("body").data("graph",new BipartiteGraph("graphs/graph2.txt",canvas));
                 this.graph = new BipartiteGraph("graphs/graph2.txt");
-                this.refresh();
                 break;
             case "Zufallsgraph":
                 this.canvas.css("background","");
-                //$("#tg_p_bildlizenz").remove();
+                $("#tg_p_bildlizenz").remove();
                 this.graph = new BipartiteGraph("random",canvas);
                 $("body").data("graph",this.graph);
-                this.refresh();
                 break;
             case "Selbsterstellter Graph":
                 break;
             default:
             //console.log("Auswahl im Dropdown Menü unbekannt, tue nichts.");
         }
+        this.refresh();
+        $("#tg_select_GraphSelector").val(selection);
     };
+
     this.rightClickHandler = function(e) {
         e.preventDefault();                                 // Kein Kontextmenü
         this.deselectNode();                                // In jedem Fall erstmal den aktuellen Knoten abwählen...

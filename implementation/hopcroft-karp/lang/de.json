@@ -24,7 +24,7 @@
     "textdb_text_iteration": "Phase",
 
     "textdb_msg_init": "Initialisierung",
-    "textdb_msg_init_1": "Am Anfang des Algorithmus besitzen alle Knoten keinen Matching-Partner. Die Menge des Kanten im Matching M ist dementsprechend leer.",
+    "textdb_msg_init_1": "Am Anfang des Algorithmus besitzen alle Knoten keinen Matching-Partner. Die Menge der Kanten im Matching M ist dementsprechend leer.",
     "textdb_msg_init_2": "In jeder Iteration suchen wir eine maximale Menge an kürzesten knotendisjunkten Augmentationswegen.",
     "textdb_msg_init_3": "Maximal heißt hier, dass es zusätzlich zu den gefundenen Pfaden keinen anderen kürzesten knotendisjunkten Augmentationsweg gibt.",
 

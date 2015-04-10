@@ -275,6 +275,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             used[edge.id] -= 1;
             if(used[edge.id] == 0) delete used[edge.id];
             cost -= graph.edges[edge.id].weight;
+            if(tour.length == 1) tour.pop();
             this.replayStep();
         }
         this.needRedraw = true;
