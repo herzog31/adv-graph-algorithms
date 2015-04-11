@@ -1252,20 +1252,20 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("graphs/graph1.txt");
                 break;
-            case "5Knoten":
+            case "Haus vom Nikolaus":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
-                this.graph = new Graph("graphs/5Knoten.txt");
+                this.graph = new Graph("graphs/nikolaus.txt");
                 break;
             case "Kreis":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("graphs/kreis.txt");
                 break;
-            case "Kreis2":
+            case "Koenigsberger Bruecken":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
-                this.graph = new Graph("graphs/kreis2.txt");
+                this.graph = new Graph("graphs/koenigsberg.txt");
                 break;
             case "Großstädte Europas":
                 this.canvas.css("background","url(img/europa.png)");

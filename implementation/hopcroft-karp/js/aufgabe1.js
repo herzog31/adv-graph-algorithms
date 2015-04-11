@@ -530,9 +530,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             edge = path[rand];
         }
         else{
-            var keys = Object.keys(hkAlgo.getGraph().edges);
+            var keys = Object.keys(hkAlgo.graph.edges);
             var rand = Math.floor(Math.random()*keys.length);
-            edge = hkAlgo.getGraph().edges[keys[rand]];
+            edge = hkAlgo.graph.edges[keys[rand]];
         }
         var onPath = false;
         for (var i = 1; i < path.length-1; i = i + 2) {

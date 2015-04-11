@@ -16,10 +16,15 @@
     "algorithm_status4": "Die Kosten des Zielknotens müssen aktualisiert werden.",
     "algorithm_status5": "Die Kosten des Zielknotens können nicht aktualisiert werden.",
 
-    "algorithm_text_oneedge": "eine Kante",
-    "algorithm_text_edges": "Kanten",
     "algorithm_text_phase": "Phase",
     "algorithm_text_of": "von",
+    "algorithm_text_here": "hier",
+    "algorithm_text_floyd_warshall": "Floyd-Warshall-Algorithmus",
+    "algorithm_link_floyd_warshall": "../floyd-warshall/index.html",
+    "algorithm_text_hierholzer": "Hierholzer-Algorithmus",
+    "algorithm_link_hierholzer": "../hierholzer/index.html",
+    "algorithm_text_hungarian": "Ungarische Methode",
+    "algorithm_link_hungarian": "../hungarian/index.html",
     "algorithm_init": "Initialisierung",
     "algorithm_feasibility": "Prüfen ob das Problem lösbar ist.",
     "algorithm_feasible_0": "Als erstes wird geprüft, ob der Graph einen Eulerkreis besitzt und ob es negative Kreise im Graphen gibt.",
@@ -27,7 +32,7 @@
     "algorithm_feasible_2": "Es existieren keine negativen Kreise. Die Kosten eines Rundgangs sind nach unten beschränkt.",
     "algorithm_feasible": "Das Problem ist lösbar.",
     "algorithm_infeasible_1": "Der Graph ist nicht stark zusammenhängend. Es existiert keinen Rundgang, der alle Kanten des Graphen benutzt.",
-    "algorithm_infeasible_2": "Es existiert ein negativer Kreis im Graphen. Die Kosten eines Rundgangs können unendlich werden, indem man unendlich den Kreis abläuft.",
+    "algorithm_infeasible_2": "Es existiert ein negativer Kreis im Graphen. Die Kosten eines Rundgangs können unendlich klein werden, indem man unendlich den Kreis abläuft.",
     "algorithm_infeasible": "Das Problem ist nicht lösbar.",
 
     "algorithm_find_balanced_nodes": "Finden von Knoten mit ungleichem Eingangs- und Ausgangsgrad",
@@ -40,11 +45,12 @@
 
     "algorithm_paths": "Bestimmen von zusätzlichen Pfaden.",
     "algorithm_paths_1": "Es werden nur nicht balancierte Knoten betrachtet. Die Kanten repräsentieren die Längen der kürzesten Pfade von den Knoten mit negativer Graddifferenz zu den Knoten mit positiver Graddifferenz.",
-    "algorithm_paths_2": "Um die kürzesten Pfade zwischen den Knoten zu finden, kann man den Algorithmus von Floyd-Warshall einsetzen. Dieser Algorithmus wird hier vorgestellt:",
+    "algorithm_paths_2": "Um die kürzesten Pfade zwischen den Knoten zu finden, kann man den Algorithmus von Floyd-Warshall einsetzen. Dieser Algorithmus wird hier vorgestellt: ",
     "algorithm_paths_3": "Durch Einfügen eines zusätzlichen Pfades von einem Knoten mit negativer Graddifferenz zu einem Knoten mit positiver Graddifferenz, ändert sich die Graddifferenz an den Endknoten um genau eins. Die Graddifferenz aller anderen Knoten auf diesem Weg ändert sich nicht.",
     "algorithm_paths_4": "Es wird eine Mengen von Pfaden gesucht, sodass alle Knoten balanciert sind und die Länge der Pfade minimal ist.",
+
     "algorithm_matching_1": "Die optimale Menge von Pfaden wird durch die markierten Kanten gezeigt.",
-    "algorithm_matching_2": "Um die optimale Menge von Pfaden zu bestimmen, kann man den Algorithmus zum Finden von maximalen Matchings einsetzen. Die Arbeitsweise dieses Algorithmen wird hier vorgestellt:",
+    "algorithm_matching_2": "Um die optimale Menge von Pfaden zu bestimmen, kann man den Algorithmus zum Finden von maximalen Matchings einsetzen. Die Arbeitsweise dieses Algorithmen wird hier vorgestellt: ",
     "algorithm_matching_3": "Die Graddifferenz der nicht balancierten Knoten wird 0. Alle Knoten auf dem Weg zwischen den markierten Knoten haben die gleiche Graddifferenz wie vorher.",
 
     "algorithm_new_paths": "Einfügen von zusätzlichen Pfaden.",
@@ -56,7 +62,7 @@
     "algorithm_add_path_cost": "Kosten des Weges: ",
 
     "algorithm_tour": "Bestimmen des Eulerkreises",
-    "algorithm_tour_hierholzer": "Zum Auffinden des Eulerkreises wird der Algorithmus von Hierholzer benutzt. Die Funktionsweise dieses Algorithmen wird hier dargestellt:",
+    "algorithm_tour_hierholzer": "Zum Auffinden des Eulerkreises wird der Algorithmus von Hierholzer benutzt. Die Funktionsweise dieses Algorithmen wird hier dargestellt: ",
     "algorithm_start_tour_1": "Bei allen Knoten im Graphen stimmt der Eingangsgrad mit dem Ausgangsgrad überein. Dann existiert ein Eulerkreis im Graphen.",
     "algorithm_start_tour_2": "Wir starten mit einem beliebigen Knoten und folgen den Kanten, bis alle Kanten einmal durchlaufen sind und wir wieder zum Startknoten zurückkehren.",
     "algorithm_start_tour_3": "Zum Auffinden des Eulerkreises wird der Algorithmus von Hierholzer benutzt.",

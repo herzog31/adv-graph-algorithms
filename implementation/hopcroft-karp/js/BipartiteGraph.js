@@ -214,8 +214,8 @@ function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
             case "Standardbeispiel":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
-                $("body").data("graph",new BipartiteGraph("graphs/graph2.txt",canvas));
-                this.graph = new BipartiteGraph("graphs/graph2.txt");
+                $("body").data("graph",new BipartiteGraph("graphs/standard.txt",canvas));
+                this.graph = new BipartiteGraph("graphs/standard.txt");
                 break;
             case "Zufallsgraph":
                 this.canvas.css("background","");
@@ -224,6 +224,12 @@ function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
                 $("body").data("graph",this.graph);
                 break;
             case "Selbsterstellter Graph":
+                break;
+            case "Vollstaendiger Graph":
+                this.canvas.css("background","");
+                $("#tg_p_bildlizenz").remove();
+                $("body").data("graph",new BipartiteGraph("graphs/complete.txt",canvas));
+                this.graph = new BipartiteGraph("graphs/complete.txt");
                 break;
             default:
             //console.log("Auswahl im Dropdown Menü unbekannt, tue nichts.");

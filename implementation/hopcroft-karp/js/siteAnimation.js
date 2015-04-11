@@ -102,7 +102,7 @@ function initializeSiteLayout() {
             }
         }
     });
-    $("body").data("graph",new BipartiteGraph("graphs/graph2.txt"));
+    $("body").data("graph",new BipartiteGraph("graphs/standard.txt"));
 }
 
 /**

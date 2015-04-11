@@ -6,10 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=9">
     <meta name="author" content="Richard Stotz">
     <link rel="stylesheet" type="text/css" href="../library/css/tum-theme2/jquery-ui-1.10.1.custom.min.css" />
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
-    <script src="js/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
-    <script src="js/lang.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="../library/css/style.css" />
+    <script src="../library/js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../library/js/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
+    <script src="../library/js/lang.js" type="text/javascript"></script>
     <script src="js/utilities.js" type="text/javascript"></script>
     <script src="js/siteAnimation.js" type="text/javascript"></script>
     <script src="js/canvasDrawing.js" type="text/javascript"></script>
@@ -114,8 +114,8 @@
                         <option>Zufallsgraph</option>
                         <option>Nicht Zusammenhängend</option>
                         <option>Kreis</option>
-                        <option>Kreis2</option>
-                        <option>5Knoten</option>
+                        <option>Haus vom Nikolaus</option>
+                        <option>Koenigsberger Bruecken</option>
                         <option>Großstädte Europas</option>
                     </select>
                     <p><button id="tg_button_gotoAlgorithmTab">Fertig &ndash; weiter zum Algorithmus!</button></p>
@@ -244,7 +244,7 @@
                     Für den Matching-Schritt des Algorithmen benötigt man die Abstände und die kürzesten Wege zwischen je zwei Knoten des Graphen.
                     Um die kürzesten Wege bestimmen, wird der Algorithmus von Floyd-Warshall benutzt.
                     <!--Dieser Algorithmus berechnet im Gegensatz zu Bellman-Ford-Algorithmus die kürzesten Wege zwischen allen Knoten. -->
-                    Weitere Erklärungen zu diesem Algorithmen können hier gefunden werden.
+                    Weitere Erklärungen zu diesem Algorithmen können <a href="../floyd-warshall/index.html" target="_blank">hier</a> gefunden werden.
                 </p>
                 <h1>Matching</h1>
                 <p>
@@ -260,7 +260,7 @@
                     Das Gewicht einer Kante stellt die Länge des kürzesten Pfades von dem Knoten mit positiver Graddifferenz zu dem Knoten mit negativer Graddifferenz dar.
                     Die Summe der positiven Graddifferenzen ist gleich der negierten Summe der negativen Graddifferenzen.
                     Damit erhalten wir einen vollständigen bipartiten Graph. Wir wenden einen Algorithmus zur Lösung von gewichteten Matchings auf diesen Graphen.
-                    Ein Algorithmus zur Lösung von gewichteten Matchings wird hier vorgestellt. Damit erhalten wir die optimale Zuordnung und können die neuen Pfade einfügen.
+                    Ein Algorithmus zur Lösung von gewichteten Matchings wird <a href="../hungarian/index.html" target="_blank">hier</a> vorgestellt. Damit erhalten wir die optimale Zuordnung und können die neuen Pfade einfügen.
                     Die Kanten der Pfade repräsentieren die Kanten des optimalen Rundgangs, die mehrmals benutzt werden.
                 </p>
                 <h1>Eulertour</h1>
@@ -268,7 +268,7 @@
                     Nach dem Einfügen von zusätzlichen Pfaden ist sichergestellt, dass es eine Eulertour im Graphen existiert. Um diese zu finden, kann der Algorithmus von Hierholzer verwendet werden.
 <!--                    Dieser startet mit einem beliebigen Knoten und folgt den Kanten bis man wieder an den Startpunkt gelangt. Falls noch unbenutzte Kanten existieren, wiederholt man die Prozedur
                     mit einem Knoten auf der bereits gefundenen Tour und fügt die neue Tour in die alte ein. Dies wird wiederholt, bis alle Kanten benutzt wurden. -->
-                    Eine detailierte Beschreibung des Algorithmen kann hier gefunden werden.
+                    Eine detailierte Beschreibung des Algorithmen kann <a href="../hierholzer/index.html" target="_blank">hier</a> gefunden werden.
                     Die Kosten des optimalen Rundgangs werden durch die Summe aller Kantengewichte der Eulertour bestimmt.
                 </p>
                 <h1>Was nun?</h1>
@@ -436,11 +436,11 @@
                 <div>
                     <p>
                         Die Laufzeit des Algorithmen hängt von der Laufzeit der benutzten Unteralgorithmen. Diese sind:
-                    <li>
-                        <ul>Kürzeste-Wege-Algorithmus </ul>
-                        <ul>Algorithmus zur Bestimmung von optimalen zusätzlichen Pfaden (z.B Algorithmus zur Bestimmung von gewichteten Matchings)</ul>
-                        <ul>Algorithmus zur Bestimmung von Eulertouren</ul>
-                    </li>
+                    <ul>
+                        <li>Kürzeste-Wege-Algorithmus </li>
+                        <li>Algorithmus zur Bestimmung von optimalen zusätzlichen Pfaden (z.B Algorithmus zur Bestimmung von gewichteten Matchings)</li>
+                        <li>Algorithmus zur Bestimmung von Eulertouren</li>
+                    </ul>
                     Für alle diese Probleme existieren polynomielle Algorithmen. Demzufolge ist das Briefträgerproblem ebenfalls in polynomieller Zeit lösbar.
                     Die Implementierung auf dieser Seite benutzt den Floyd-Warshall-Algorithmus zur Bestimmung von kürzesten Wegen, ungarische Methode für die Lösung des Matching-Problems
                     und den Hierholzer-Algorithmus zum Finden der Eulertour.

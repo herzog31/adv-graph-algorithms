@@ -91,11 +91,6 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      */
     var iteration = 0;
     /**
-     * Gibt an, ob der Algorithmus am Ende ist.
-     * @type Boolean
-     */
-    var end = false;
-    /**
      * Wird fuer die Anzeige des Matchings am Ende des Algorithmus benoetigt.
      * @type Boolean
      */
@@ -195,7 +190,6 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_button_Zurueck").off(".HKAlgorithm");
     };
 
-    
     /**
      * Wird aufgerufen, wenn der "1 Schritt" Button gedrückt wird.
      * @method
@@ -236,14 +230,6 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     /**
     * In dieser Funktion wird der nächste Schritt des Algorithmus ausgewählt.
     * Welcher das ist, wird über die Variable "statusID" bestimmt.<br>
-    * Mögliche Werte sind:<br>
-    *  0: Initialisierung<br>
-    *  1: Prüfung ob Gewichte aktualisiert werden sollen, und initialierung<br>
-    *  2: Prüfe, ob anhand der aktuellen Kante ein Update vorgenommen wird (Animation)<br>
-    *  3: Update, falls nötig, den Knoten<br>
-    *  4: Untersuche, ob es eine Kante gibt, die auf einen negativen Kreis hinweist.<br>
-    *  5: Finde den negativen Kreis im Graph und beende<br>
-    *  6: Normales Ende, falls kein negativer Kreis gefunden wurde.
     *  @method
     */
     this.nextStepChoice = function () {
@@ -279,19 +265,16 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
 
     /**
      * Initialisiere den Algorithmus.
+     * @method
      */
     this.initialize = function () {
-/*        for (var knotenID in graph.unodes) {
-            superNode[knotenID] = graph.unodes[knotenID];
-        }*/
         this.beginIteration();
         $("#ta_button_Zurueck").button("option", "disabled", false);
-        //$(".marked").removeClass("marked");
-        //$("#ta_p_l2").addClass("marked");
     };
 
     /*
-    * Jede neue Iteration beginnt mit dieser Methode.
+    * Jede neue Iteration beginnt mit dieser Methode. Es werden Breitensuche und Tiefensuche ausgefuehrt, um die kuerzesten Wege zu finden.
+    * @method
     * */
     this.beginIteration = function () {
         iteration++;
@@ -321,7 +304,8 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         }
     };
     /*
-    * Mit Hilfe der Breitensuche wird ein Augmentierungsgraph aufgebaut.
+    * Mit Hilfe der Breitensuche wird ein Augmentierungsgraph aufgebaut, der die kuerzesten Augmentationswege enthaelt.
+    * @method
     * */
     var bfs = function (superNode) {
         //Initialize
@@ -391,7 +375,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     };
 
     /*
-    * Mittels der Tiefensuche wird nach knotendisjunkten verbessernden Pfaden gesucht. Dabei wird der Augmentierungsgraph aus der Bfs-Phase verwendet.
+    * Mittels der Tiefensuche wird nach knotendisjunkten Augmantationswegen gesucht. Dabei wird der Augmentierungsgraph aus der Bfs-Phase verwendet.
     * @method
     * */
    var dfs = function(superNode){
@@ -441,6 +425,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
 
     /*
      * Methoden fuer die Visualisierung.
+     * Das Layout und Aussehen von Knoten und Kanten wird hier festgelegt.
      * */
     var setEdgeMatched = function(edge){
         var MATCHED_EDGE_COLOR = "DarkBlue";
@@ -481,7 +466,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     };
 
     /*
-     * Hebt den Augmentationsweg hervor.
+     * Der aktuelle Augmentationsweg wird hervorgehoben.
      * @method
      * */
     this.highlightPath = function(path){
@@ -508,7 +493,8 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     };
 
     /*
-     * Vertauscht die Kanten auf dem Augmentationsweg.
+     * Das Matching wird durch den aktuellen Augmentationsweg verbessert.
+     * Die Kanten des aktuellen Augmentationsweges werden vertauscht.
      * @method
      * */
     this.augmentMatching = function(path){
@@ -540,7 +526,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     };
 
     /*
-     * Versteckt alle auf dem Augmentationsweg benutzten Knoten und inzidente Kanten.
+     * Die auf dem Augmentationsweg benutzten Knoten und inzidenten Kanten werden ausgeblendet.
      * @method
      * */
     this.hidePath = function(path){
@@ -559,7 +545,6 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
             }
         }
         currentPath++;
-
         //statuserklaerung
         if(currentPath < disjointPaths.length){
             statusID = NEXT_AUGMENTING_PATH;
@@ -594,9 +579,8 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
             + "<p>"+LNG.K('textdb_msg_end_it_1')+"</p>");
     };
 
-    
     /**
-     * Zeigt Texte und Buttons zum Ende des Algorithmus
+     * Zeigt Texte und Buttons zum Ende des Algorithmen
      * @method
      */
     this.endAlgorithm = function() {
@@ -636,13 +620,12 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         if(fastForwardIntervalID != null) {
             this.stopFastForward();
         }
-        end = true;
         $("#ta_button_1Schritt").button("option", "disabled", true);
         $("#ta_button_vorspulen").button("option", "disabled", true);
     };
 
      /**
-     * Ermittelt basierend auf der StatusID und anderen den vorherigen Schritt aus
+     * Ermittelt basierend den vorherigen Schritt
      * und ruft die entsprechende Funktion auf.
      * @method
      */
@@ -655,8 +638,11 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         $("#ta_button_vorspulen").button("option", "disabled", false);
         this.needRedraw = true;
     };
-    
 
+    /**
+     * Erstellt ein history-Objekt, damit Aenderungen eines Schritts rueckgaengiggemacht werden koennen.
+     * @method
+     */
     this.addReplayStep = function() {
         var nodeProperties = {};
         for(var key in graph.nodes) {
@@ -683,6 +669,10 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         //console.log("Current History Step: ", history[history.length-1]);
     };
 
+    /**
+     * Benutzt das letzte history-Objekt, um die Aenderungen des letzten Schritts rueckgaengig zu machen.
+     * @method
+     */
     this.replayStep = function() {
         if(history.length > 0){
             var oldState = history.pop();
@@ -708,21 +698,48 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         }
     };
 
+    /**
+     * Setzt das Ausgabefenster, wo Erklaerungen ausgegeben werden.
+     * @method
+     */
     this.setStatusWindow = function(fenster){
         statusErklaerung = fenster;
     };
+    /**
+     * Gibt die Laenge des kuerzesten Pfades der aktuellen Phase aus.
+     * @method
+     */
     this.getShortestPathLength = function(){
         return shortestPathLength;
     };
+    /**
+     * Gibt zurueck, ob der Knoten gematcht ist.
+     * @method
+     */
     this.isMatched = function (node){
         return (matched[node.getNodeID()] != null);
     };
+    /**
+     * Gibt den Partner des Knoten zurueck, falls er existiert.
+     * @method
+     */
     this.getPartner = function (node){
         return matched[node.getNodeID()];
     };
+    /**
+     * Gibt das aktuelle Matching zurueck.
+     * @method
+     */
     this.getMatching = function(){return matching};
+    /**
+     * Gibt den aktuellen Augmentationsweg zurueck.
+     * @method
+     */
     this.getPath = function () {return disjointPaths[currentPath];};
-    this.getGraph = function () {return graph;};
+    /**
+     * Beendet die aktuelle Iteration und beginnt eine neue.
+     * @method
+     */
     this.startNewIteration = function() {
         this.endIteration();
         this.nextStepChoice();
