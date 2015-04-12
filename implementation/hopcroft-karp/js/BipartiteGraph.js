@@ -209,27 +209,33 @@ function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
     };
 
     this.setGraphHandler = function() {
-        var selection = $("#tg_select_GraphSelector").val();
+        var selection = $("#tg_select_GraphSelector>option:selected").attr("value");
         switch(selection) {
-            case "Standardbeispiel":
+            case "standard":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
                 $("body").data("graph",new BipartiteGraph("graphs/standard.txt",canvas));
                 this.graph = new BipartiteGraph("graphs/standard.txt");
                 break;
-            case "Zufallsgraph":
+            case "random":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new BipartiteGraph("random",canvas);
                 $("body").data("graph",this.graph);
                 break;
-            case "Selbsterstellter Graph":
+            case "empty":
                 break;
-            case "Vollstaendiger Graph":
+            case "complete":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
                 $("body").data("graph",new BipartiteGraph("graphs/complete.txt",canvas));
                 this.graph = new BipartiteGraph("graphs/complete.txt");
+                break;
+            case "uneven":
+                this.canvas.css("background","");
+                $("#tg_p_bildlizenz").remove();
+                $("body").data("graph",new BipartiteGraph("graphs/uneven.txt",canvas));
+                this.graph = new BipartiteGraph("graphs/uneven.txt");
                 break;
             default:
             //console.log("Auswahl im Dropdown Menü unbekannt, tue nichts.");

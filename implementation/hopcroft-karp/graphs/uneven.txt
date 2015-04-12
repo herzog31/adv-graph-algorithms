@@ -1,0 +1,8 @@
+% Automatisch generiert um Sun, 12 Apr 2015 20:42:57 GMT
+5 3
+e 0 7 1
+e 1 7 1
+e 2 6 1
+e 2 5 1
+e 3 7 1
+e 4 7 1

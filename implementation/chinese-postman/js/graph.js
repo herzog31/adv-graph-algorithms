@@ -1240,44 +1240,44 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
      * Hintergrundbilder per CSS hinzu.
      */
     this.setGraphHandler = function() {
-        var selection = $("#tg_select_GraphSelector>option:selected").val();
+        var selection = $("#tg_select_GraphSelector>option:selected").attr("value");
         switch(selection) {
-            case "Standardbeispiel":
+            case "standard":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
-                this.graph = new Graph("graphs/connected.txt");
+                this.graph = new Graph("graphs/standard.txt");
                 break;
-            case "Nicht Zusammenhängend":
+            case "not_connected":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("graphs/graph1.txt");
                 break;
-            case "Haus vom Nikolaus":
+            case "nikolaus":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("graphs/nikolaus.txt");
                 break;
-            case "Kreis":
+            case "cycle":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("graphs/kreis.txt");
                 break;
-            case "Koenigsberger Bruecken":
+            case "koenigsberg":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("graphs/koenigsberg.txt");
                 break;
-            case "Großstädte Europas":
+            case "europa":
                 this.canvas.css("background","url(img/europa.png)");
                 $("#tg_div_Legende").append("<p id=\"tg_p_bildlizenz\">Bild: <a href=\"https://www.cia.gov/library/publications/the-world-factbook/index.html\">CIA World Factbook</a></p>");
-                this.graph = new Graph("graphs/graph3.txt");
+                this.graph = new Graph("graphs/europa.txt");
                 break;
-            case "Zufallsgraph":
+            case "random":
                 this.canvas.css("background","");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("random",canvas);
                 break;
-            case "Selbsterstellter Graph":
+            case "empty":
                 break;
             default:
                 //console.log("Auswahl im Dropdown Menü unbekannt, tue nichts.");

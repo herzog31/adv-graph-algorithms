@@ -1,7 +1,0 @@
-% Graph 5: Fotomodell für beispiel2.png
-n 300 250
-n 360 250
-n 420 300
-n 420 200
-n 480 250
-n 540 250
