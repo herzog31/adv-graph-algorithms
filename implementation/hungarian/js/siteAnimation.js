@@ -94,6 +94,7 @@ function initializeSiteLayout() {
                 $("#tab_tf1").data("algo",algo);
             }
             if(ui.newPanel[0].id == "tab_tf2") {
+                $("body").data("graph", new BipartiteGraph("graphs/graph9.txt"));
                 algo = new Forschungsaufgabe2($("body").data("graph"),$("#tf2_canvas_graph"),$("#tab_tf2"));
                 $("#tab_tf2").data("algo",algo);
             }
@@ -249,7 +250,9 @@ function CanvasDrawer(p_graph,p_canvas,p_tab) {
             
             // Zeichne alle Elemente des Graph
             for(var kantenID in this.graph.edges) {
-                this.graph.edges[kantenID].draw(ctx, Object.keys(this.graph.unodes).length, Object.keys(this.graph.unodes).indexOf("" + this.graph.edges[kantenID].getSourceID()));
+                if(this.graph.edges.hasOwnProperty(kantenID)) {
+                    this.graph.edges[kantenID].draw(ctx, Object.keys(this.graph.unodes).length, Object.keys(this.graph.unodes).indexOf("" + this.graph.edges[kantenID].getSourceID()));
+                }
             }
             for(var knotenID in this.graph.nodes) {
                 this.graph.nodes[knotenID].draw(ctx);

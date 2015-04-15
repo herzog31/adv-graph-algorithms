@@ -19,6 +19,7 @@
     <script src="js/textDB.js" type="text/javascript"></script>
     <script src="js/BipartiteGraph.js" type="text/javascript"></script>
     <script src="js/aufgabe1.js" type="text/javascript"></script>
+    <script src="js/aufgabe2.js" type="text/javascript"></script>
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
             showMathMenu: false,
@@ -394,12 +395,12 @@
                     <div class="LegendeText">
                         <table>
                             <tr>
-                                <td class="LegendeTabelle"><img src="img/matchingKnoten.png" alt="Knoten" class="LegendeIcon"></td>
-                                <td><span>Matching-Knoten.</span></td>
+                                <td class="LegendeTabelle"><img src="img/matchingKnoten.png" alt="MatchedNode" class="LegendeIcon"></td>
+                                <td><span>Matching-Knoten</span></td>
                             </tr>
-                            <tr class="LegendeZeileClickable" id="tf2_tr_LegendeClickable" title="Klicke zum Ein-/Ausblenden">
+                            <tr>
                                 <td class="LegendeTabelle"><img src="img/matchingEdge.png" alt="Knoten" class="LegendeIcon"></td>
-                                <td><span>Matching-Kante.</span></td>
+                                <td><span>Matching-Kante</span></td>
                             </tr>
                         </table>
                     </div>
@@ -409,49 +410,56 @@
                 </div>
             </div>
             <div id="tf2_div_statusWindow" class="statusWindow">
-                <h2>Versuche die Augmentationswege selbst zu finden</h2>
-                <div id="tf2_div_abspielbuttons"></div>
-                <!--                    <select id="tf2_select_aufgabeGraph" name="Wähle einen Graphen">
-                                        <option selected>Selbsterstellter Graph</option>
-                                        <option>Standardbeispiel</option>
-                                    </select>-->
-                <div id="tf2_div_statusErklaerung">
-                    <!--                        <h3>Wähle zuerst den Graphen, mit dem du arbeiten möchtest.</h3>-->
-                    <h3>Klicke auf den Button "Nächter Schritt", um mit der Forschungsaufgabe zu beginnen.</h3>
-                    <p>Klicke auf die Knoten um einen Augmentationsweg einzuzeichnen. Klicke dabei in der Reihenfolge auf die Knoten, wie sie in dem Augmentationsweg vorkommen.</p>
-                    <p>Mit einem Linksklick wählst du die Knoten aus und mit einem Rechtsklich kann du deine Wahl rückgängigmachen.</p>
+                <h2 class="">Prüfe dein Wissen: Wie würde der Algorithmus entscheiden?</h2>
+                <div id="tf2_div_abspielbuttons">
                 </div>
-
-                <!--                <div id="tf2_div_legende">
-                                        <p>Mit einem Linksklick wählst du die Knoten aus und mit einem Rechtsklich kann du deine Wahl rückgängigmachen.</p>
-                                        <p>Klicke in der Reihenfolge auf die Knoten, wie sie in dem Augmentationsweg vorkommen.</p>
-                                    </div>-->
-                <!--                    <div id ="tf2_div_warning" class="ui-widget">
-                                        <div class="ui-state-highlight ui-corner-all" style="padding: .7em;">
-                                            <div class="ui-icon ui-icon-alert errorIcon"></div>
-                                            <div id ="tf2_div_warning_text"></div>
-                                        </div>
-                                    </div>
-                                    <div id ="tf2_div_status" class="ui-widget">
-
-                                        &lt;!&ndash;<div class="ui-state-highlight ui-corner-all" style="padding: .7em;">
-                                            <div class="ui-icon ui-icon-alert errorIcon"></div>
-                                            <div id ="tf2_div_status_text"></div>
-                                        </div>&ndash;&gt;
-                                    </div>-->
+                <div id="tf2_div_questionModal" class="ui-widget ui-widget-content ui-corner-all" style="display: none;">
+                </div>
+                <div id="tf2_div_statusTabs">
+                    <ul>
+                        <li><a href="#tf2_div_statusErklaerung">Erklärung</a></li>
+                        <li><a href="#tf2_div_statusPseudocode">Pseudocode</a></li>
+                    </ul>
+                    <div id="tf2_div_statusErklaerung">
+                        <h3>Die Ungarische Methode</h3>
+                        <p>Bei dieser Aufgabe kannst du zeigen, wie gut du den Algorithmus verstanden hast. Erstelle dir einen beliebigen Graphen und starte den Algorithmus. An manchen Stellen wird der Algorithmus stoppen und dann bist du gefragt.</p>
+                        <p>Du wirst verschiedene Fragen zum Ablauf des Algorithmus bekommen. Am Ende bekommst du dann eine Auswertung, die dir zeigt, wie gut du abgeschnitten hast.</p>
+                        <p>Klicke auf <strong>Nächster Schritt</strong> um den Algorithmus zu starten. Viel Erfolg!</p>
+                    </div>
+                    <div class="PseudocodeWrapper" id="tf2_div_statusPseudocode">
+                        <p class="pseudocode" id="tf2_p_l1">BEGIN</p>
+                        <p class="pseudocode" id="tf2_p_l2">  initialize labels</p>
+                        <p class="pseudocode" id="tf2_p_l3">  WHILE matching is not complete DO</p>
+                        <p class="pseudocode" id="tf2_p_l4">    find a root of an alternating path</p>
+                        <p class="pseudocode" id="tf2_p_l5">    WHILE alternating path not found DO</p>
+                        <p class="pseudocode" id="tf2_p_l6">      try to find alternating path</p>
+                        <p class="pseudocode" id="tf2_p_l7">      in equality graph</p>
+                        <p class="pseudocode" id="tf2_p_l8">      IF alt. path not found</p>
+                        <p class="pseudocode" id="tf2_p_l9">      THEN update labels</p>
+                        <p class="pseudocode" id="tf2_p_l10">    END</p>
+                        <p class="pseudocode" id="tf2_p_l11">    increase matching</p>
+                        <p class="pseudocode" id="tf2_p_l12">  END</p>
+                        <p class="pseudocode" id="tf2_p_l13">END</p>
+                        <h3>Status der Variablen:</h3>
+                        <table class="algoInformationen">
+                            <tr>
+                                <th class="algoInfoTH"><span>Matching</span></th>
+                                <th class="algoInfoTH"><span>S</span></th>
+                                <th class="algoInfoTH"><span>T</span></th>
+                            </tr>
+                            <tr>
+                                <td id="tf2_td_matching" class="algoInfoTD">&#8709;</td>
+                                <td id="tf2_td_setS" class="algoInfoTD">&#8709;</td>
+                                <td id="tf2_td_setT" class="algoInfoTD">&#8709;</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div title="Forschungsaufgabe 2" class="tabIntroDialog">
-            <h2>
-                Versuche die Augmentationswege selbst zu finden.
-            </h2>
-            <p>Der Hopcroft-Karp-Algorithmus nutzt Augmentationswege, um ein maximales Matching zu finden.</p>
-            <p>In dieser Aufgabe kannst du mit Augmentationspfaden selber experimentieren. Der Algorithmus stoppt an einigen Stellen, an denen du einen Augmentationspfad einzeichnen musst.
-                Dabei ist es nicht notwendig den kürzesten Augmentationsweg einzuzeichnen. Du kannst selber entscheiden, welchen Augmentationsweg du nuzten möchtest.</p>
         </div>
         <div id="tf2_div_confirmTabChange" title="Aufgabe abbrechen?" class="tabChangeWarningDialog">
             <h2>Beim Wechsel des Tabs wird die Aufgabe abgebrochen.</h2>
-            <p>Du kannst die Anwendung <a href="#" target="_blank" tabindex=-1> in einem anderen Browserfenster</a> öffnen, um parallel einen anderen Tab zu lesen.</p>
+            <p>Du kannst die Anwendung <a href="#" target="_blank" tabindex="-1">in einem anderen Browserfenster</a> öffnen, um parallel einen anderen Tab zu lesen.</p>
         </div>
     </div>
     <div id="tab_tw">
