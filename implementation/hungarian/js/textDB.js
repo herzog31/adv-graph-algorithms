@@ -49,8 +49,6 @@ function showAugmentingPath(x, y, prev, xy, yx){
         augmentingPath[augmentingPath.length] = cy;
         augmentingPath[augmentingPath.length] = cx;
     }
-    console.log("Augm Path");
-    console.log(augmentingPath);
     for(var i = 1; i < augmentingPath.length; i++){
         for(var edge in $("body").data("graph").edges){
             if((($("body").data("graph").edges[edge].getSourceID() == augmentingPath[i]
