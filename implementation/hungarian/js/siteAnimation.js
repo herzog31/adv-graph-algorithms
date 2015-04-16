@@ -95,6 +95,7 @@ function initializeSiteLayout() {
             }
             if(ui.newPanel[0].id == "tab_tf2") {
                 $("body").data("graph", new BipartiteGraph("graphs/graph9.txt"));
+                $("body").data("graphOrg", $("body").data("graph").getDescriptionAsString());
                 algo = new Forschungsaufgabe2($("body").data("graph"),$("#tf2_canvas_graph"),$("#tab_tf2"));
                 $("#tab_tf2").data("algo",algo);
             }

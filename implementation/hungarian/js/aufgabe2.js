@@ -100,6 +100,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     const EQUALITY_GRAPH_QUESTION = 1;
     const AUGMENTING_PATH_QUESTION = 2;
 
+    /**
+     * Vervollständigt den Graph, damit er komplett und mit der .
+     * @method
+     */
     this.completeGraph = function() {
 
         var uNodes = 0;
@@ -132,7 +136,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                 node.originalBorder = const_Colors.grey;
             }
         }
-        maxKey = maxKey + Math.abs(vNodes - uNodes);
         for(var edge in graph.edges) {
             graph.edges[edge].originalColor = "black";
             graph.edges[edge].originalDashed = false;
@@ -175,7 +178,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                 cnt++;
             }
         }
-        var upperNodes = cnt;
         for(var i in graph.nodes) {
             if (graph.nodes[i].getCoordinates().y == graph_constants.V_POSITION && cnt != i){
                 graph.nodes[cnt] = graph.nodes[i];
@@ -242,8 +244,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         this.initCanvasDrawer();
         this.addNamingLabels();
         // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
-        $("#tf2_div_abspielbuttons").append("<button id=\"tf2_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button>"
-        +"<button id=\"tf2_button_vorspulen\">"+LNG.K('algorithm_btn_frwd')+"</button>"
+        $("#tf2_div_abspielbuttons").html("<button id=\"tf2_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button><br>"
+        +"<button id=\"tf2_button_vorspulen\">"+LNG.K('aufgabe1_btn_next_question')+"</button>"
         +"<button id=\"tf2_button_stoppVorspulen\">"+LNG.K('algorithm_btn_paus')+"</button>");
         $("#tf2_button_stoppVorspulen").hide();
         $("#tf2_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: false});
@@ -251,7 +253,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_button_stoppVorspulen").button({icons:{primary: "ui-icon-pause"}});
         $("#tf2_div_statusTabs").tabs();
         $(".marked").removeClass("marked");
-        //$("#tf2_p_l1").addClass("marked");
         $("#tf2_tr_LegendeClickable").removeClass("greyedOutBackground");
         $(".marked").removeClass("marked");
         $("#tf2_p_l2").addClass("marked");
@@ -278,9 +279,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.refresh = function() {
-        currentDisplayStep = 0;
-        this.replayStep(currentDisplayStep);
-        this.needRedraw = true;
+        this.destroy();
+        var algo = new Forschungsaufgabe2($("body").data("graph"), $("#tf2_canvas_graph"), $("#tab_tf2"));
+        $("#tab_tf2").data("algo", algo);
+        algo.run();
     };
 
     /**
@@ -297,7 +299,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.registerEventHandlers = function() {
-//        canvas.on("mousemove.HungarianMethod",function(e) {algo.canvasMouseMoveHandler(e);});
         $("#tf2_button_1Schritt").on("click.HungarianMethod",function() {algo.singleStepHandler();});
         $("#tf2_button_vorspulen").on("click.HungarianMethod",function() {algo.fastForwardAlgorithm();});
         $("#tf2_button_stoppVorspulen").on("click.HungarianMethod",function() {algo.stopFastForward();});
@@ -310,6 +311,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      */
     this.deregisterEventHandlers = function() {
         canvas.off(".HungarianMethod");
+        canvas.off("click.GraphDrawer");
         $("#tf2_button_1Schritt").off(".HungarianMethod");
         $("#tf2_button_vorspulen").off(".HungarianMethod");
         $("#tf2_button_stoppVorspulen").off(".HungarianMethod");
@@ -362,13 +364,17 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      * In dieser Funktion wird der nächste Schritt des Algorithmus ausgewählt.
      * Welcher das ist, wird über die Variable "statusID" bestimmt.<br>
      * Mögliche Werte sind:<br>
-     *  0: Initialisierung<br>
-     *  1: Prüfung ob Gewichte aktualisiert werden sollen, und initialierung<br>
-     *  2: Prüfe, ob anhand der aktuellen Kante ein Update vorgenommen wird (Animation)<br>
-     *  3: Update, falls nötig, den Knoten<br>
-     *  4: Untersuche, ob es eine Kante gibt, die auf einen negativen Kreis hinweist.<br>
-     *  5: Finde den negativen Kreis im Graph und beende<br>
-     *  6: Normales Ende, falls kein negativer Kreis gefunden wurde.
+     *  BEGIN: Initialisierung<br>
+     *  READY_FOR_SEARCHING: Wähle den Wurzel des Augmentationsweges<br>
+     *  READY_TO_BUILD_TREE: Konstruiere den alternierenden Baum<br>
+     *  AUGMENTING_PATH_NOT_FOUND: Passe die Markierungen an<br>
+     *  LABELS_UPDATED: Zeige den neuen Gleichheitsgraphen<br>
+     *  SHOWED_EQUALITY_GRAPH: Nach der Anpassung von Markierungen beginne die Suche des neuen Augmentationsweges<br>
+     *  MATCHING_INCREASED: Das Matching wurde vergrößert. Prüfe ob es perfekt ist und wenn nicht, dann rufe den Algorithmus noch mal auf.<br>
+     *  READY_TO_BUILD_TREE_AFTER_RELABELING: Konstruiere einen alternierenden Baum nach der Anpassung von Markierungen. <br>
+     *  READY_TO_START: Fange mit dem Algorithmus an. <br>
+     *  AUGMENTING_PATH_FOUND: Zeige den Augmentationsweg. <br>
+     *  READY_TO_INCREASE_MATCHING: Vergrößere das Matching. <br>
      *  @method
      */
     this.nextStepChoice = function () {
@@ -414,9 +420,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             case READY_TO_INCREASE_MATCHING:
                 this.increaseMatching();
                 break;
-            //case FINISHED:
-            //    this.end();
-            //    break;
             default:
                 console.log("Fehlerhafte StatusID.");
                 break;
@@ -446,10 +449,14 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             }
             this.needRedraw = true;
             this.addReplayStep();
-            console.log(history);
         }
     };
 
+
+    /**
+     * Fügt die Labels den Knoten hinzu.
+     * @method
+     */
     this.addNamingLabels = function() {
 
         var nodeCounter = 1;
@@ -461,6 +468,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
     };
 
+    /**
+     * Zeigt die Mengen S und T.
+     * @method
+     */
     this.displayST = function(S, T){
 
         var sField = [];
@@ -489,9 +500,12 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
         $("#tf2_td_setS").html(sField.join(",") || "&#8709;");
         $("#tf2_td_setT").html(tField.join(",") || "&#8709;");
-        //TODO node borders
     }
 
+    /**
+     * Berechnet die ursprüngliche Markierungen.
+     * @method
+     */
     this.initLabels = function(){
         this.setAll(S, false);
         this.setAll(T, false);
@@ -509,7 +523,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         this.showLabels(lx, ly);
         this.showEqualityGraph(lx, ly);
         statusID = READY_TO_START;
-        console.log("READY_TO_START");
         $("#tf2_div_statusErklaerung").html("<h3>Gleichheitsgraph bestimmen</h3>"
         + "<p>Der Algorithmus bestimmt zuerst eine initiale Markierung für jeden Knoten.</p>"
         + "<p>Anhand der Markierungen wird der Gleichheitsgraph ermittelt (<strong>schwarz</strong>).</p>");
@@ -518,15 +531,17 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         return READY_TO_START;
     };
 
+    /**
+     * Fängt den Ablauf des Algorithmus an.
+     * @method
+     */
     this.augment = function() {
         if (maxMatch == cost.length) {
             statusID = FINISHED;
-            console.log("FINISHED");
             this.end();
             this.showQuestionResults();
             $("#tf2_button_1Schritt").button("option", "disabled", true);
             showCurrentMatching(xy, false);
-            //TODO show answer
             $(".marked").removeClass("marked");
             $("#tf2_p_l13").addClass("marked");
             return FINISHED;
@@ -553,7 +568,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
         showTreeRoot(S);
         statusID = READY_FOR_SEARCHING;
-        console.log("READY_FOR_SEARCHING");
         $("#tf2_div_statusErklaerung").html("<h3>Augmentationsweg bestimmen</h3>" +
         "<h3>Wurzel eines alternierenden Pfades finden</h3>" +
         "<p>Der Algorithmus wählt als Wurzel einen Knoten, der noch nicht im Matching vorhanden ist und markiert ihn <span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>.</p>");
@@ -563,11 +577,14 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         return READY_FOR_SEARCHING;
     };
 
+    /**
+     * Wählt den Wurzel des Augmentationsweges aus.
+     * @method
+     */
     this.iterateX = function(){
         if(rd < wr){
             x = q[rd++];
             y = 0;
-            console.log("iterateX: READY_TO_BUILD_TREE");
             if(history[history.length - 1].previousStatusId == READY_TO_BUILD_TREE
                 || history[history.length - 1].previousStatusId == READY_TO_BUILD_TREE_AFTER_RELABELING){
                 goOn = true;
@@ -580,11 +597,9 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             $("#tf2_p_l7").addClass("marked");
             return READY_TO_BUILD_TREE;
         }
-        console.log("AUGMENTING_PATH_NOT_FOUND");
         $("#tf2_div_statusErklaerung").html(
             "<h3>Augmentationsweg bestimmen</h3>" +
             "<p>Der Algorithmus konnte keinen Augmentationsweg mit der gewählten Wurzel (<span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>) im aktuellen Gleichheitsgraph finden.</p>"
-            //TODO the algorithm howto anpassen
         );
         statusID = AUGMENTING_PATH_NOT_FOUND;
         $(".marked").removeClass("marked");
@@ -593,9 +608,12 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         return AUGMENTING_PATH_NOT_FOUND;
     };
 
+    /**
+     * Zeigt den Augmentationsweg.
+     * @method
+     */
     this.markAugmentingPath = function(){
         showAugmentingPath(x, y, prev, xy, yx);
-        console.log("READY_TO_INCREASE_MATCHING");
         $("#tf2_div_statusErklaerung").html(
             "<h3>Augmentationsweg bestimmen</h3>" +
             "<p>Es wurde ein Augmentationsweg (<span style='font-weight: bold; color: red;'>rot</span>) gefunden.</p>"
@@ -604,12 +622,15 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         return READY_TO_INCREASE_MATCHING;
     };
 
+    /**
+     * Konstruiert den alternierenden Baum.
+     * @method
+     */
     this.buildAlternatingTree = function(){
         if(y < n) {
             if (cost[x][y] == lx[x] + ly[y] && !T[y]) {
                 if (yx[y] == -1) {
                     statusID = AUGMENTING_PATH_FOUND;
-                    console.log("AUGMENTING_PATH_FOUND");
                     $(".marked").removeClass("marked");
                     $("#tf2_p_l11").addClass("marked");
                     return AUGMENTING_PATH_FOUND;
@@ -623,7 +644,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                 goOn = true;
             }
             y++;
-            console.log("buildAlternatingTree: READY_TO_BUILD_TREE");
             statusID = READY_TO_BUILD_TREE;
             $(".marked").removeClass("marked");
             $("#tf2_p_l6").addClass("marked");
@@ -631,7 +651,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             return READY_TO_BUILD_TREE;
         }
         goOn = true;
-        console.log("READY_FOR_SEARCHING");
         statusID = READY_FOR_SEARCHING;
         $(".marked").removeClass("marked");
         $("#tf2_p_l6").addClass("marked");
@@ -639,10 +658,13 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         return READY_FOR_SEARCHING;
     };
 
+    /**
+     * Sucht den Augmentationsweg nach der Anpassung von Markierungen.
+     * @method
+     */
     this.findAugmentPathAfterLabeling = function(){
         wr = rd = 0;
         y = 0;
-        console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
         this.displayST(S, T);
         statusID = READY_TO_BUILD_TREE_AFTER_RELABELING;
         $(".marked").removeClass("marked");
@@ -651,18 +673,16 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         return READY_TO_BUILD_TREE_AFTER_RELABELING;
     };
 
+    /**
+     * Konstruiert den alternierenden Baum nach der Anpassung von Markierungen.
+     * @method
+     */
     this.buildTreeAfterRelabeling = function(){
         if(y < n){
             if (!T[y] && slack[y] == 0) {
                 if (yx[y] == -1) {
                     x = slackx[y];
-                    //showAugmentingPath(x, y, prev, xy, yx);
-                    //$("#tf2_div_statusErklaerung").html(
-                    //    "<h3>Augmentationsweg bestimmen</h3>" +
-                    //    "<p>Es wurde ein Augmentationsweg (<span style='font-weight: bold; color: red;'>rot</span>) gefunden.</p>"
-                    //);
                     statusID = AUGMENTING_PATH_FOUND;
-                    console.log("AUGMENTING_PATH_FOUND");
                     $(".marked").removeClass("marked");
                     $("#tf2_p_l11").addClass("marked");
                     return AUGMENTING_PATH_FOUND;
@@ -678,7 +698,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                 goOn = true;
             }
             y++;
-            console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
             statusID = READY_TO_BUILD_TREE_AFTER_RELABELING;
             $(".marked").removeClass("marked");
             $("#tf2_p_l6").addClass("marked");
@@ -686,7 +705,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             return READY_TO_BUILD_TREE_AFTER_RELABELING;
         }
         statusID = READY_FOR_SEARCHING;
-        console.log("READY_FOR_SEARCHING");
         goOn = true;
         $(".marked").removeClass("marked");
         $("#tf2_p_l6").addClass("marked");
@@ -694,6 +712,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         return READY_FOR_SEARCHING;
     };
 
+    /**
+     * Vergrößert das Matching.
+     * @method
+     */
     this.increaseMatching = function(){
         resetNodeLayout();
         this.showEqualityGraph(lx, ly);
@@ -705,7 +727,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
         showCurrentMatching(xy, true);
         statusID = MATCHING_INCREASED;
-        console.log("MATCHING_INCREASED");
         $("#tf2_div_statusErklaerung").html(
             "<h3>Matching vergrößern</h3>" +
             "<p>Mittels des gefundenen Augmentationsweges konnte das Matching (<span style='font-weight: bold; color: green;'>grün</span>) ergänzt werden.</p>"
@@ -721,6 +742,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         return MATCHING_INCREASED;
     };
 
+    /**
+     * Fügt den Knoten dem Baum hinzu.
+     * @method
+     */
     this.add_to_tree = function (x, prevx){
         S[x] = true;
         prev[x] = prevx;
@@ -732,6 +757,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
     };
 
+    /**
+     * Passt die Markierungen an.
+     * @method
+     */
     this.update_labels = function() {
         var x, y, delta = -1;
         for (y = 0; y < n; y++) {
@@ -751,7 +780,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
         statusID = LABELS_UPDATED;
         this.showLabels(lx, ly);
-        console.log("LABELS_UPDATED");
         $("#tf2_div_statusErklaerung").html(
             "<h3>Neuen Gleichheitsgraph bestimmen</h3>" +
             "<p>Zur Bestimmung eines neuen Gleichheitsgraph muss der Algorithmus zunächst die Markierungen aktualisieren.</p>" +
@@ -768,6 +796,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         return LABELS_UPDATED;
     };
 
+    /**
+     * Legt die Werte des Arrays fest.
+     * @method
+     */
     this.setAll = function (arr, val) {
         var i, n = arr.length;
         for (i = 0; i < n; ++i) {
@@ -788,10 +820,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         for (var x = 0; x < n; x++) {
             ret += cost[x][xy[x]];
         }
-        //answer = 0;
-        //for (var x = 0; x < n; x++) {
-        //    answer += cost[x][xy[x]];
-        //}
+
         $("#tf2_div_statusErklaerung").html(
             "<h3>Optimales Matching</h3>" +
             "<p>Die Ungarische Methode hat erfolgreich ein maximales Matching bestimmt.</p>" +
@@ -799,8 +828,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             "<h3>Was nun?</h3>" +
             "<button id='tf2_button_gotoIdee' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>Beschreibung des Algorithmus lesen</span></button>" +
             "<h3>Forschungsaufgaben ausprobieren:</h3>" +
-            "<button id='tf2_button_gotoFA1' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>FA1</span></button>" +
-            "<button id='tf2_button_gotoFA2' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>FA2</span></button>"
+            "<button id='tf2_button_gotoFA1' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>FA1</span></button>"
         );
 
         $("#tf2_button_gotoIdee").click(function() {
@@ -814,20 +842,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         });
     };
 
-    ///**
-    //* Ermittelt basierend auf der StatusID und anderen den vorherigen Schritt aus
-    //* und ruft die entsprechende Funktion auf.
-    //* @method
-    //*/
-    //this.previousStepChoice = function() {
-    //    currentDisplayStep--;
-    //    $("#tf2_button_1Schritt").button("option", "disabled", false);
-    //    $("#tf2_button_vorspulen").button("option", "disabled", false);
-    //    this.replayStep(currentDisplayStep);
-    //    this.needRedraw = true;
-    //};
-
-
+    /**
+     * Fügt den Wiederholungsschritt hinzu.
+     * @method
+     */
     this.addReplayStep = function() {
         var nodeProperties = {};
         for(var key in graph.nodes) {
@@ -846,6 +864,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         });
     };
 
+    /**
+     * Wiederholt den Schritt.
+     * @method
+     */
     this.replayStep = function(current) {
         if(current > 0){
             var oldState = history[current - 1];
@@ -899,12 +921,20 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,"tf2_div_statusErklaerung"]);
     };
 
+    /**
+     * Zeigt das Fragefenster.
+     * @method
+     */
     this.showQuestionModal = function() {
         $("#tf2_div_statusTabs").hide();
         $("#tf2_div_questionModal").show();
         $("#tf2_questionSolution").hide();
     };
 
+    /**
+     * Schließt das Fragefenster.
+     * @method
+     */
     this.closeQuestionModal = function() {
         $("#tf2_div_statusTabs").show();
         $("#tf2_div_questionModal").hide();
@@ -913,6 +943,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_button_vorspulen").button("option", "disabled", false);
     };
 
+    /**
+     * Erzeugt die Frage zum Gleichheitsgraph.
+     * @method
+     */
     this.generateEqualityGraphQuestion = function() {
 
         var edgesInEqualityGraph = [];
@@ -950,6 +984,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
     };
 
+    /**
+     * Erzeugt die Frage zum Augmentationsweg.
+     * @method
+     */
     this.generateAugmentingPathQuestion = function(){
         var nodeLayouts = {};
         for(var node in graph.nodes){
@@ -1000,6 +1038,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         });
     };
 
+    /**
+     * Reagiert auf den Klick auf Canvas.
+     * @method
+     */
     this.clickHandler = function(e, nodeLayouts) {
         for(var node in graph.nodes){
             if(Math.abs(graph.nodes[node].getCoordinates().x - (e.pageX - this.canvas.offset().left)) <= 20
@@ -1025,6 +1067,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
     };
 
+    /**
+     * Setzt die Markierungen von Knoten.
+     * @method
+     */
     this.showLabels = function() {
         for(var i = 0; i < lx.length; i++){
             graph.nodes[i].setLabel(lx[i]);
@@ -1035,6 +1081,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
     };
 
+    /**
+     * Zeigt den Gleichheitsgraph.
+     * @method
+     */
     this.showEqualityGraph = function(lx, ly){
         for (var edge in $("body").data("graph").edges) {
             if (lx[$("body").data("graph").edges[edge].getSourceID()] +
@@ -1051,10 +1101,13 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                 $("body").data("graph").edges[edge].setLayout("lineWidth", 1);
             }
         }
-        console.log("SHOWED_EQUALITY_GRAPH");
         statusID = SHOWED_EQUALITY_GRAPH;
     };
 
+    /**
+     * Speichert die eingegebene Antwort.
+     * @method
+     */
     this.saveAnswer = function() {
         var givenAnswer = "";
 
@@ -1101,17 +1154,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                 questions[currentQuestion].answeredCorrect = false;
             }
         }
-        //
-        //if(questions[currentQuestion].type === EQUALITY_GRAPH_QUESTION) {
-        //    questions[currentQuestion].rightAnswer = questions[currentQuestion].rightAnswer.join(",");
-        //}
-        //
-        //questions[currentQuestion].givenAnswer = givenAnswer;
-        //if(questions[currentQuestion].givenAnswer == questions[currentQuestion].rightAnswer) {
-        //    $("#tf2_questionSolution").css("color", "green");
-        //}else{
-        //    $("#tf2_questionSolution").css("color", "red");
-        //}
 
         currentQuestion++;
 
@@ -1120,6 +1162,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_button_questionClose2").button("option", "disabled", false);
     };
 
+    /**
+     * Findet den Augmentationsweg.
+     * @method
+     */
     this.getAugmentingPath = function(){
         var result = [];
         var xyTemp = xy.slice();
@@ -1144,44 +1190,28 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         return result;
     };
 
+    /**
+     * Stellt die Frage.
+     * @method
+     */
     this.askQuestion = function() {
 
-        var randomVariable = function(min, max) {
-            return Math.random() * (max - min) + min;
-        };
-
-        //if(statusID === INITIAL_LABELS) {
-        //    return START_LABEL_QUESTION;
-        //}
-
         if(statusID === LABELS_UPDATED) {
-            //if(randomVariable(0, 1) > 0.5) {
             return EQUALITY_GRAPH_QUESTION;
-            //}
         }
 
         if(statusID === AUGMENTING_PATH_FOUND){
             return AUGMENTING_PATH_QUESTION;
         }
 
-        //if(statusID === IMPROVE_LABELS) {
-        //    if(randomVariable(0, 1) > 0.7) {
-        //        return DELTA_QUESTION;
-        //    }else if(randomVariable(0, 1) > 0.4) {
-        //        return NEW_LABEL_QUESTION;
-        //    }
-        //}
-        //
-        //if($.inArray(statusID, [CONSTRUCT_ALTERNATING_PATH, PERFECT_MATCHING_CHECK, IMPROVE_MATCHING, NO_AUGMENT_PATH_FOUND, AUGMENT_PATH_FOUND]) > -1) {
-        //    if(randomVariable(0, 1) > 0.8) {
-        //        return NEXT_STEP_QUESTION;
-        //    }
-        //}
-
         return false;
 
     };
 
+    /**
+     * Zeigt die Ergebnisse.
+     * @method
+     */
     this.showQuestionResults = function() {
 
         var correctAnswers = 0;
