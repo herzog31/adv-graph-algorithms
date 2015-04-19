@@ -1255,16 +1255,16 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             return START_LABEL_QUESTION;
         }
 
-        if(statusID === NEW_EQUALITY_GRAPH) {
+        /* if(statusID === NEW_EQUALITY_GRAPH) {
             if(randomVariable(0, 1) > 0.5) {
                 return EQUALITY_GRAPH_QUESTION;
             }
-        }
+        } */
     
         if(statusID === IMPROVE_LABELS) {
-            if(randomVariable(0, 1) > 0.7) {
+            if(randomVariable(0, 1) > 0.5) {
                 return DELTA_QUESTION;
-            }else if(randomVariable(0, 1) > 0.4) {
+            }else{
                 return NEW_LABEL_QUESTION;
             }
         }
