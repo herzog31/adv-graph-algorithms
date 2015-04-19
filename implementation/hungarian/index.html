@@ -513,7 +513,23 @@ END</code></pre>
 
             <h3>Wie beweist man, dass der Algorithmus stets ein korrektes Ergebnis berechnet?</h3>
             <div>
-                ...
+                <p>Maßgeblich für die Korrektheit des Algorithmus ist das Kuhn-Munkres-Theorem. Es besagt, dass perfekte Matchings in einem Gleichheitsgraph im Ursprungsgraph optimal sind, d.h. maximales Gewicht haben.</p>
+                <h2>Formaler Beweis</h2>
+                <p>Wir gehen von zulässigen Markierungen \(l: V \to \mathbb{R}\), einem beliebigen perfekten Matching \(M' \subseteq E\) und einem optimalen Matching \(M \subseteq E\) mit maximalem Gewicht \(w(M)\) aus.</p>
+                <p>
+                \( 
+                    \begin{align}
+                        w(M') 
+                        &= \sum\limits_{(x,y) \in M'} w(x,y)
+                        \\ &\le \sum\limits_{(x,y) \in M'} (l(x) + l(y))    &&\text{(zulässige Markierungen)}
+                        \\ &= \sum\limits_{v \in V} l(v)                    &&\text{(M' perfekt)}
+                        \\ &= \sum\limits_{(x,y) \in M} (l(x) + l(y))       &&\text{(M perfekt)}
+                        \\ &= \sum\limits_{(x,y) \in M} w(x,y)             &&(M \subseteq E_l)
+                        \\ &= w(M)                                          && \square
+                    \end{align}
+                \)
+                </p>
+                <p style="text-align: right;"><i>Quelle: <a href="http://www.tu-ilmenau.de/en/institute-of-theoretical-computer-science/lehre/fruehere-lehrveranstaltungen/lehre-ws-20112012/ea-ii/" target="_blank">Effiziente Algorithmen 2</a>, Prof. Dr. M. Dietzfelbinger, Kap 2, S.16</i></p>
             </div>
 
             <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>
