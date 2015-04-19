@@ -497,7 +497,17 @@ END</code></pre>
                 <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen. Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus. Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
                 <h2>Laufzeit der Ungarischen Methode</h2>
                 <p>Zur Implementierung der Ungarischen Methode gibt es mehrere Varianten, die sich in ihrer Laufzeit unterscheiden. Wir betrachten hier die Variante mit der kürzesten Laufzeit.</p>
-                <p>Dazu gehen wir von einem vollständig bipartitem Graphen \(G = (V, E)\) mit \(|V| = n\) und einem leeren initialen Matching \(M\) aus. In jedem Durchgang wird das Matching um einen Knoten ergänzt, d.h. der Algorithmus benötigt maximal \(n\) Durchgänge. Pro Durchgang werden mehrere Berechnungen durchgeführt. Am signifikantesten ist hier die Berechnung eines neuen Gleichheitsgraphs durch Anpassung der Markierungen und Berechnung eines Deltas \(\Delta\). Dieses Vorgang besitzt normalerweise eine Laufzeit von \(O(n^4)\). Durch geschicktes Zwischenspeichern einzelner Werte kann die Berechnung des Deltas aber auf \(O(n^2)\) reduziert werden.</p>
+                <p>Dazu gehen wir von einem vollständig bipartitem Graphen \(G = (V, E)\) mit \(V = X \cup Y \land X \cap Y = \emptyset\) und einem leeren initialen Matching \(M\) aus. Zur Komplexitätsbestimmung definieren wir außerdem \(|V| = n, |X| = n_1, |Y| = n_2\).</p>
+                <p>Zu Beginn wird der Graph mit neutralen Kanten ergänzt und es wird ein initales Matching bestimmt. Dazu müssen alle Kanten betrachtet werden. In vollständigen bipartien Graphen sind das \(O(n_1 * n_2)\).</p>
+                <p>Der Algorithmus versucht dann, in jedem Durchgang das Matching um einen Knoten zu ergänzen, d.h. er benötigt maximal \(n\) Durchgänge. Pro Durchgang werden mehrere Berechnungen durchgeführt:</p>
+                <ul>
+                    <li>Zur Bestimmung des Gleichheitsgraphs müssen ebenfalls alle Kanten betrachtet werden: \(O(n_1 * n_2)\).</li>
+                    <li>Das Finden einer neuen Wurzel benötigt im schlechtesten Fall \(O(n)\).</li>
+                    <li>Zur Konstruktion eines augmentierenden Pfades werden von der Wurzel ausgehend alle Kanten des Gleichheitsgraphs betrachtet. Dieser enthält im ungünstigsten Fall alle Kanten. Das heißt man erhält hier wieder eine Komplexität von \(O(n_1 * n_2)\).</li>
+                    <li>Der augmentierende Pfad beseitzt maximal die Länge \(n\). Daher benötigt das anschließende Austauschen der Kanten zum verbessern des Matchings \(O(n)\) Schritte.</li>
+                    <li>Die Überprüfung, ob das gefundene Matching perfekt ist, kann durch einen einfachen Vergleich der Anzahl der Kanten bewerkstelligt werden: \(O(1)\).</li>
+                </ul>
+                <p>Die signifikateste Berechnung tritt auf, wenn kein augmentierender Pfad gefunden werden kann. Dann muss ein neuer Gleichheitsgraphs durch Anpassung der Markierungen und Berechnung eines Deltas \(\Delta\) bestimmt werden. Dieses Vorgang besitzt bei trivialer Implementierung eine Laufzeit von \(O(n^4)\). Durch geschicktes Zwischenspeichern einzelner Werte kann die Berechnung des Deltas aber auf \(O(n^2)\) reduziert werden.</p>
                 <p>Insgesamt besitzt der Algorithmus damit eine kubische Laufzeit von \(O(n^3)\).</p>
             </div>
 
