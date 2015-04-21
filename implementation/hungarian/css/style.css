@@ -1,0 +1,11 @@
+.question_label_node {
+	display: block;
+	float: left;
+	width: 10px;
+	padding: 0px 10px 5px 10px;
+}
+.question_input_node {
+	text-align: center;
+	width: 50px;
+	margin-right: 10px;
+}
