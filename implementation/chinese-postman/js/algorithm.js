@@ -602,7 +602,8 @@ function algorithm(p_graph, p_canvas, p_tab) {
         // Erklärung im Statusfenster
         $("#"+st+"_div_statusErklaerung").html("<h3>3. " + LNG.K('algorithm_paths') + "</h3>"
         + "<p>" + LNG.K('algorithm_paths_1') + "</p>"
-        + "<p>" + LNG.K('algorithm_paths_2') + " <a href='"+LNG.K('algorithm_link_floyd_warshall')+"' target='_blank'>"+LNG.K('algorithm_text_floyd_warshall')+"</a>" + "</p>"
+        + "<p>" + LNG.K('algorithm_paths_2')
+            + " <a href='"+LNG.K('algorithm_link_floyd_warshall')+"' target='_blank'>"+LNG.K('algorithm_text_floyd_warshall')+"</a>" + LNG.K('algorithm_paths_2_1') + "</p>"
         + "<p>" + LNG.K('algorithm_paths_3') + "</p>"
         + "<p>" + LNG.K('algorithm_paths_4') + "</p>");
     };
@@ -701,9 +702,10 @@ function algorithm(p_graph, p_canvas, p_tab) {
      *
      * */
     this.addPath = function () {
-        redoPath(next-1); //if the previous animation didnt ended correctly, repare
+        redoPath(next-1); //falls die animation nicht beendet wurde
         var step = 0;
         var current = next;
+        var cost = matching[current].edge.weight;
         next++;
         matching[current].new_edges = [];
         animationId = setInterval(function () {//animate adding of new edges/paths
@@ -732,13 +734,16 @@ function algorithm(p_graph, p_canvas, p_tab) {
             step++;
             algo.needRedraw = true;
         }, 500);
+        $("#"+st+"_div_statusErklaerung").html("<h3>4. " + LNG.K('algorithm_new_paths') + "</h3>"
+            + "<p>" + LNG.K('algorithm_add_path_1') + LNG.K('algorithm_add_path_2') + "</p>"
+            + "<p>" + LNG.K('algorithm_add_path_cost') + cost + "</p>");
         if (next >= matching.length) {
             statusID = START_TOUR;
-            $("#"+st+"_div_statusErklaerung").append(
-                //+ "<p>" + LNG.K('algorithm_add_path_3') + "</p>" +
-                "<p>" + LNG.K('algorithm_balanced_1') + "</p>");
+            $("#"+st+"_div_statusErklaerung").append("<p>" + LNG.K('algorithm_balanced_1') + "</p>");
         }
-        else statusID = ADD_PATHS;
+        else {
+            statusID = ADD_PATHS;
+        }
     };
 
 
@@ -828,11 +833,11 @@ function algorithm(p_graph, p_canvas, p_tab) {
             output_subtours += '</li>';
         }
         // Erklärung im Statusfenster
-        $("#"+st+"_div_statusErklaerung").append('<p class="result_euleriantour">' + output + '</p>\
+        $("#"+st+"_div_statusErklaerung").append('<div id="ta_div_subtours"><p class="result_euleriantour">' + output + '</p>\
             <p>' + LNG.K('algorithm_status51b_desc1') + '</p>\
             <h3>' + LNG.K('algorithm_euler_subtours') + '</h3>\
             <ul class="subtourList result_subtour">' + output_subtours + '</ul>\
-            <p>' + LNG.K('algorithm_status52_desc1') + '</p>');
+            <p>' + LNG.K('algorithm_status52_desc1') + '</p></div>');
         $(".subtourList").on("mouseenter", "li.subtour_hover", {org: this}, this.hoverSubtour).on("mouseleave", "li.subtour_hover", {org: this}, this.dehoverSubtour);
         statusID = END;
     };
@@ -842,12 +847,12 @@ function algorithm(p_graph, p_canvas, p_tab) {
      * @method
      */
     this.endAlgorithm = function () {
+        $( "#ta_div_subtours" ).remove();
         $("#"+st+"_div_statusErklaerung").append("<p></p><h3>" + LNG.K('algorithm_msg_finish') + "</h3>");
         $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoIdee>" + LNG.K('algorithm_btn_more') + "</button>");
         $("#"+st+"_div_statusErklaerung").append("<h3>" + LNG.K('algorithm_msg_test') + "</h3>");
         $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoFA1>" + LNG.K('algorithm_btn_exe1') + "</button>");
         $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoFA2>" + LNG.K('algorithm_btn_exe2') + "</button>");
-        //this.showVariableStatusField(null, null);
         $("#"+st+"_button_gotoIdee").button();
         $("#"+st+"_button_gotoFA1").button();
         $("#"+st+"_button_gotoFA2").button();

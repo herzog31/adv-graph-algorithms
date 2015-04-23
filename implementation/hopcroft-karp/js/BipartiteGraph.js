@@ -3,13 +3,13 @@
  */
 var graph_constants = {
     U_POSITION : 75, //standard 75
-    V_POSITION : 325,//standard 325
+    V_POSITION : 325,//standard 425
     LEFT_POSITION : 60,
     DIFF: 80,
-    MAX_NODES: 20
+    MAX_NODES: 8
 };
 
-function BipartiteGraph(filename,p_canvas){
+function BipartiteGraph(filename,p_canvas,text){
     Graph.call(this);
 
     this.unodes = new Object();
@@ -39,8 +39,8 @@ function BipartiteGraph(filename,p_canvas){
             diffu = diffv = graph_constants.DIFF;
         }
         else{
-            diffu = Math.min((canvas.width()-50)/sizeu,graph_constants.DIFF);
-            diffv = Math.min((canvas.width()-50)/sizev,graph_constants.DIFF);
+            diffu = Math.min((canvas[0].width-50)/sizeu,graph_constants.DIFF);
+            diffv = Math.min((canvas[0].width-50)/sizev,graph_constants.DIFF);
         }
         var i = 0;
         for(var n in this.unodes){
@@ -58,25 +58,22 @@ function BipartiteGraph(filename,p_canvas){
         }
     };
 
-    this.addNode = function (inU) {
-        if(typeof inU == 'boolean'){
-            var numberOfNodes;
-            //inU = my - canvas.offset().top < 0.5 * (graph_constants.V_POSITION + graph_constants.U_POSITION);
-            if(inU) numberOfNodes = Object.keys(this.unodes).length;
-            else numberOfNodes = Object.keys(this.vnodes).length;
+    this.addNode = function (isInU) {
+        var numberOfNodes;
+        if(isInU) numberOfNodes = Object.keys(this.unodes).length;
+        else numberOfNodes = Object.keys(this.vnodes).length;
 
-            if(numberOfNodes < graph_constants.MAX_NODES){
-                var node = this.base_addNode(0,0);
-                if(inU) {
-                    this.unodes[node.getNodeID()] = node;
-                }
-                else{
-                    this.vnodes[node.getNodeID()] = node;
-                }
-                this.reorderNodes();
+        if(numberOfNodes < graph_constants.MAX_NODES){
+            var node = this.base_addNode(0,0);
+            if(isInU) {
+                this.unodes[node.getNodeID()] = node;
             }
-            return node;
+            else{
+                this.vnodes[node.getNodeID()] = node;
+            }
+            this.reorderNodes();
         }
+        return node;
     };
 
     this.removeNode = function(nodeID) {
@@ -94,8 +91,8 @@ function BipartiteGraph(filename,p_canvas){
             return null;
         }
         //Die Richtung der Kanten ist immer von U nach V
-        if(this.unodes[source.getNodeID()]) this.base_addEdge(source,target,weight);
-        else this.base_addEdge(target,source,weight);
+        if(this.unodes[source.getNodeID()]) return this.base_addEdge(source,target,weight);
+        else return this.base_addEdge(target,source,weight);
     };
 
     function parseGraphfromFile(file) {
@@ -105,40 +102,49 @@ function BipartiteGraph(filename,p_canvas){
             dataType: "text"
         });
 
-        request.done(function(text) {
-            var lines=text.split("\n");                     // Nach Zeilen aufteilen
-            var ucard = 0;
-            var vcard = 0;
-            var i;
-            for(i = 0; i < lines.length; i++) {
-                var parameter = lines[i].split(" ");
-                if(!isNaN(parseInt(parameter[0]))){
-                    ucard = parseInt(parameter[0]);
-                    vcard = parseInt(parameter[1]);
-                    for(var j = 0; j < ucard; j++) closure_graph.addNode(true);
-                    for(var j = 0; j < vcard; j++) closure_graph.addNode(false);
-                    i++;
-                    break;
-                }
+        request.done(parseFromText);
+    };
+
+    function parseFromText(text) {
+        var lines = text.split("\n");                     // Nach Zeilen aufteilen
+        var ucard = 0;
+        var vcard = 0;
+        var i;
+        for(i = 0; i < lines.length; i++) {
+            if(lines[i].substring(0,1) === "%") continue;
+            var parameter = lines[i].split(" ");
+            if(!isNaN(parseInt(parameter[0]))) {
+                i++;
+                break;
             }
-            for(; i < lines.length; i++) {
-                var parameter = lines[i].split(" ");     // Nach Parametern aufteilen
-                if(parameter[0] == "e") {
-                    if(!isNaN(parseInt(parameter[1])) && !isNaN(parseInt(parameter[2])) && !isNaN(parseFloat(parameter[3]))) {
-                        var sourceId = parseInt(parameter[1]);
-                        var targetId = parseInt(parameter[2]);
-                        var weight = parseFloat(parameter[3]);
-                        //check if bipartite here
-                        closure_graph.addEdge(closure_graph.nodes[sourceId],closure_graph.nodes[targetId],weight);
+        }
+        for(; i < lines.length; i++) {
+            if(lines[i].substring(0,1) === "%") continue;
+            var parameter = lines[i].split(" ");     // Nach Parametern aufteilen
+            if(parameter[0] === "n") {
+                if(!isNaN(parseInt(parameter[1])) && !isNaN(parseInt(parameter[2]))) {
+                    var positionY = parseInt(parameter[2]);
+                    if(positionY === graph_constants.U_POSITION) {
+                        closure_graph.addNode(true);
+                    }else if(positionY == graph_constants.V_POSITION) {
+                        closure_graph.addNode(false);
                     }
                 }
+            }else if(parameter[0] === "e") {
+                if(!isNaN(parseInt(parameter[1])) && !isNaN(parseInt(parameter[2])) && !isNaN(parseFloat(parameter[3]))) {
+                    var sourceId = parseInt(parameter[1]);
+                    var targetId = parseInt(parameter[2]);
+                    var weight = parseFloat(parameter[3]);
+                    //check if bipartite here
+                    closure_graph.addEdge(closure_graph.nodes[sourceId],closure_graph.nodes[targetId],weight);
+                }
             }
-        });
+        }
     };
 
     function generateRandomGraph(canvas) {
         var NumberOfNodes = 7;
-        var diff = (canvas.width()-100)/NumberOfNodes;
+        var diff = (canvas[0].width-100)/NumberOfNodes;
         // Knoten erstellen
         for(var i = 0;i<NumberOfNodes;i++) {
             closure_graph.addNode(true);
@@ -159,12 +165,29 @@ function BipartiteGraph(filename,p_canvas){
         canvas = can;
     };
 
+    this.getDescriptionAsString = function() {
+        var graphDescription = "";
+        graphDescription += "% Automatisch generiert um " +(new Date).toGMTString() + "\n";
+        var nodeArray = Utilities.arrayOfKeys(this.nodes);
+        graphDescription += Object.keys(this.unodes).length + " "+Object.keys(this.vnodes).length + "\n";
+        for(var i=0; i<nodeArray.length; i++) {
+            graphDescription += "n " +this.nodes[nodeArray[i]].getCoordinates().x + " " +this.nodes[nodeArray[i]].getCoordinates().y + "\n";
+        }
+        for(var edgeID in this.edges) {
+            var u = nodeArray.indexOf(this.edges[edgeID].getSourceID().toString());
+            var v = nodeArray.indexOf(this.edges[edgeID].getTargetID().toString());
+            graphDescription += "e " +u + " " +v + " "+ this.edges[edgeID].weight + "\n";
+        }
+        return graphDescription;
+    };
+
     // Falls ein Dateiname angegeben wurde, parse den entsprechenden Graph
     // Falls das Canvas angegeben wurde, erstelle Zufallsgraph
     if(filename === "random") {
         generateRandomGraph(canvas);
-    }
-    else if(filename != null) {
+    }else if(filename === "text") {
+        parseFromText(text);
+    }else if(filename != null) {
         parseGraphfromFile(filename);
     }
 }

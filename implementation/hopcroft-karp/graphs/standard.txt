@@ -1,5 +1,15 @@
 % Graph 2: Graph mit 6 Knoten und negativem Kreis
 5 5
+n 80 75
+n 160 75
+n 240 75
+n 320 75
+n 400 75
+n 80 325
+n 160 325
+n 240 325
+n 320 325
+n 400 325
 e 0 5 1
 e 0 6 1
 e 0 7 1

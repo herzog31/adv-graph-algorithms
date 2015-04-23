@@ -1,7 +1,4 @@
 /**
- * Created by Ruslan on 15.11.2014.
- */
-/**
  * @author Ruslan Zabrodin
  * Code fuer Forschungsaufgabe 1<br>
  * Basiert auf dem Code für den normalen Algorithmus

@@ -576,7 +576,8 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         //statuserklaerung
         $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
             + "<h3> "+LNG.K('textdb_msg_end_it')+"</h3>"
-            + "<p>"+LNG.K('textdb_msg_end_it_1')+"</p>");
+            + "<p>"+LNG.K('textdb_msg_end_it_1')+shortestPathLength+".</p>"
+            + "<p>"+LNG.K('textdb_msg_end_it_2')+"</p>");
     };
 
     /**

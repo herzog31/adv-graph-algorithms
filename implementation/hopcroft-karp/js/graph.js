@@ -20,7 +20,7 @@ var const_Colors = {NodeFilling:            "#98C6EA",  // Pantone 283, 100%
                     EdgeHighlight3:         "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
                     EdgeHighlight4:         "#007C30",  // Dunkelgrün 100 % aus TUM Styleguide
                     RedText:                "#C4071B",  // Helles Rot 100% aus TUM Styleguide
-                    GreenText:              "#007C30"   // Dunkelgrün 100 % aus TUM Styleguide
+                    GreenText:              "#007C30",  // Dunkelgrün 100 % aus TUM Styleguide
                     };
 
 /**
@@ -1104,11 +1104,11 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
         }
 	// Wir haben nicht auf einem Knoten gestoppt 
 	// -> Falls etwas ausgewählt war, erstelle Knoten und zeichne Kante
-	if (selectedNode) {
+/*	if (selectedNode) {
             var newNode = graph.addNode(mx, my);
             graph.addEdge(selectedNode,newNode,null);
             this.deselectNode();
-	}
+	}*/
     };
     
     /**
