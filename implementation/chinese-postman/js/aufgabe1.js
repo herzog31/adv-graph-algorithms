@@ -301,7 +301,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             "layout": node.getLayout()
         };
         //Knoten hervorheben
-        node.setLayout("borderColor", const_Colors.NodeBorderHighlight);
+        //node.setLayout("borderColor", const_Colors.NodeBorderHighlight);
+        node.setLayout("fillStyle", const_Colors.NodeFillingHighlight);
         //stelle die Frage
         $("#tf1_div_Frage").html(LNG.K('aufgabe1_text_question') + " " + (++frageStats.gestellt));
         $("#tf1_div_Frage").append("<p class=\"frage\">" + LNG.K('aufgabe1_question1') + "</p>");
@@ -360,7 +361,12 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     this.askQuestion3 = function () {
         var match = this.getMatching();
         var dist = this.getDistance();
-        var m = match[Math.floor(Math.random()*match.length)];
+        var rand = Math.floor(Math.random()*match.length);
+        var m = match[rand];
+        for(var i = 0; i <=rand; i++){
+            this.algoNext();
+        }
+        this.previousStepChoice();
         var correctAnswer  = dist[m.s][m.d];
         var AntwortGrund = "<p>" + LNG.K('aufgabe1_answer3_reason1') + "</p>";
         this.addFrageTab();
@@ -375,9 +381,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             "node2": graph.nodes[m.d],
             "layout2": graph.nodes[m.d].getLayout()
         };
-        //Knoten hervorheben
+        //Knoten und Kante hervorheben
         graph.nodes[m.s].setLayout("borderColor", const_Colors.NodeBorderHighlight);
         graph.nodes[m.d].setLayout("borderColor", const_Colors.NodeBorderHighlight);
+        m.edge.setLayout("lineColor", const_Colors.EdgeHighlight1);
         //stelle die Frage
         $("#tf1_div_Frage").html(LNG.K('aufgabe1_text_question') + " " + (++frageStats.gestellt));
         $("#tf1_div_Frage").append("<p class=\"frage\">" + LNG.K('aufgabe1_question3') + "</p>");

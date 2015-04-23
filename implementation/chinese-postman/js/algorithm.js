@@ -777,7 +777,8 @@ function algorithm(p_graph, p_canvas, p_tab) {
         this.addNamingLabels();
         // Erklärung im Statusfenster
         $("#"+st+"_div_statusErklaerung").html('<h3>5. ' + LNG.K('algorithm_euler') + '</h3>\
-            <p>' + LNG.K('algorithm_tour_hierholzer') + " <a href='"+LNG.K('algorithm_link_hierholzer')+"' target='_blank'>"+LNG.K('algorithm_text_hierholzer')+"</a>" + '</p>\
+            <p>' + LNG.K('algorithm_tour_hierholzer_1') + " <a href='"+LNG.K('algorithm_link_hierholzer')+"' target='_blank'>"+LNG.K('algorithm_text_hierholzer')+"</a>" + LNG.K('algorithm_tour_hierholzer_2') + '</p>\
+            <p>' + LNG.K('algorithm_tour_hierholzer_3') + '</p>\
             <p><button id="animateTour">' + LNG.K('algorithm_status51b_desc2') + '</button><button id="animateTourStop">' + LNG.K('algorithm_status51b_desc3') + '</button></p>\
             <p>' + LNG.K('algorithm_status51b_desc4') + '</p>\
             <p>' + LNG.K('algorithm_cost') + cost + '</p>');
