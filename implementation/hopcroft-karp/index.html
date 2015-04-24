@@ -395,9 +395,11 @@
                 <h2>
                     Versuche die Augmentationswege selbst zu finden.
                 </h2>
-                <p>Der Hopcroft-Karp-Algorithmus nutzt Augmentationswege, um ein maximales Matching zu finden.</p>
-                <p>In dieser Aufgabe kannst du selbst mit Augmentationswegen experimentieren. Der Algorithmus stoppt an einigen Stellen, an denen du einen Augmentationsweg einzeichnen musst.
-                    Dabei ist es nicht notwendig den kürzesten Augmentationsweg einzuzeichnen. Du kannst selber entscheiden, welchen Augmentationsweg du nutzen möchtest.</p>
+                <p>Der Hopcroft-Karp-Algorithmus nutzt Augmentationswege, um ein maximales Matching zu finden. In dieser Aufgabe kannst du selbst mit Augmentationswegen experimentieren. </p>
+                <p>
+                    Der Algorithmus stoppt an einigen Stellen, an denen du einen Augmentationsweg einzeichnen musst.
+                    Dabei ist es nicht notwendig den kürzesten Augmentationsweg einzuzeichnen. Du kannst selbst entscheiden, welchen Augmentationsweg du nutzen möchtest.
+                </p>
             </div>
             <div id="tf2_div_confirmTabChange" title="Aufgabe abbrechen?" class="tabChangeWarningDialog">
                 <h2>Beim Wechsel des Tabs wird die Aufgabe abgebrochen.</h2>
@@ -439,29 +441,28 @@
                     <h2>Laufzeit des Hopcroft-Karp-Algorithmus</h2>
                     <p>
                         Angenommen der Graph enthält n Knoten und m Kanten.
-                        Da in jeder Iteration des Algorithmen eine maximale knotendisjunkte Menge von kürzesten Augmentationswegen gefunden wird, erzwingt dies,
-                        dass die Länge des kürzesten Augmentationsweges nach jeder Iteration um mindestens eins erhöht wird.
+                        In jeder Iteration des Algorithmen wird eine nicht erweiterbare knotendisjunkte Menge von kürzesten Augmentationswegen gefunden.
+                        Dies hat zur Folge, dass die Länge des kürzesten Augmentationsweges nach jeder Iteration um mindestens 1 erhöht wird.
                         <!--Sei M ein Matching und M* das optimale Matching. Dann existieren |M*|-|M| knotendisjunkte Augmentationswege bzgl. M.-->
-                        Sei M ein Matching und l die Länge des kürzesten Augmentationsweges bzgl. M. Dann ist die Kardinalität des optimalen Matchings maximal |M| + n/(l+1).
-                        Nach der &radic;<span style="text-decoration:overline;">&nbsp;n&nbsp;</span> Iteration beträgt die Länge des kürzesten Augmentationsweges mindestens &radic;<span style="text-decoration:overline;">&nbsp;n&nbsp;</span>.
-                        Dann existieren maximal n/&radic;<span style="text-decoration:overline;">&nbsp;n&nbsp;</span> = &radic;<span style="text-decoration:overline;">&nbsp;n&nbsp;</span> zusätzliche Augmentationen.
-                        Daraus geht hervor, dass es maximal 2*&radic;<span style="text-decoration:overline;">&nbsp;n&nbsp;</span> Iterationen geben kann.
+                        Sei M ein Matching und l die Länge des kürzesten Augmentationsweges bzgl. M. Dann ist die Kardinalität des optimalen Matchings maximal \( |M| + \frac{n}{(l+1)}\).
+                        Nach der \(\sqrt{n}\) Iteration beträgt die Länge des kürzesten Augmentationsweges mindestens \(\sqrt{n}\).
+                        Dann existieren maximal \(\frac{n}{\sqrt{n}}=\sqrt{n}\) zusätzlichen Augmentationen.
+                        Daraus geht hervor, dass es maximal \(2\sqrt{n}\) Iterationen geben kann.
                     </p>
-                    <p> Jede Iteration kann in  O(m) Schritten durchgeführt werden. Dazu wird einmal Breitensuche und einmal Tiefensuche ausgeführt. Ausserdem wird das
-                        Matching aktualisiert. Jede dieser Operationen benötigt maximal O(m) Schritte, da jede Kante maximal
-                        zweimal betrachtet wird (von beiden inzidenten Knoten aus). Dann ist die Laufzeit des
-                        Algorithmen
-                        O(m&radic;<span style="text-decoration:overline;">&nbsp;n&nbsp;</span>).
+                    <p> Jede Kante wird im Laufe einer Iteration nur konstant viele Male betrachtet und verarbeitet. Es wird die Breitensuche und die Tiefensuche ausgeführt, wo jede Kante nur einmal betrachtet wird.
+                        Ausserdem wird das Matching aktualisiert. Wir können also die Verarbeitung einer Kante während einer Iteration als einen einzigen Verarbeitungsschritt zusammenfassen.
+                        Dann kann jede Iteration in  \(m\) Schritten durchgeführt werden.<br>
+                        Die <b>Gesamtlaufzeit des Algorithmus</b> ist von der Größenordnung \(m\sqrt{n}\).
                         Den vollständigen Beweis kann der interessierte Leser in der geeigneten Literatur nachlesen.
                     </p>
                 </div>
                 <h3>Wie beweist man, dass der Algorithmus stets ein korrekt arbeitet?</h3>
                 <div>
-                    <!--<h2>Ein mathematischer Beweis</h2>-->
                     <p>
                         In jeder Iteration des Algorithmen wird nach Augmentationswegen gesucht und das Matching wird verbessert. Es können nur endlich viele Verbesserungen durchgeführt werden, sodass der
                         Algorithmus terminiert.
-                        Nach der letzten Iteration des Algorithmen existieren keine Augmentationswege mehr. Dann ist das Matching optimal und der Hopcroft-Karp-Algorithmus berechnet das richtige Ergebnis.
+                        Nach der letzten Iteration des Algorithmen existieren keine Augmentationswege mehr. Ein Matching ist genau dann maximal, wenn es keinen Augmentationsweg gibt.
+                        Dann ist das Matching optimal und der Hopcroft-Karp-Algorithmus berechnet das richtige Ergebnis.
                     </p>
                 </div>
                 <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>

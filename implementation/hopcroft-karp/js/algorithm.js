@@ -450,7 +450,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         node.setLayout('borderWidth',global_NodeLayout.borderWidth*1.5);
     };
     var highlightEdge = function(edge){
-        edge.setLayout("lineWidth", global_Edgelayout.lineWidth*2.8);
+        edge.setLayout("lineWidth", global_Edgelayout.lineWidth*2.9);
     };
     var highlightFreeNode = function(node){
         node.setLayout('borderWidth',global_NodeLayout.borderWidth * 2);

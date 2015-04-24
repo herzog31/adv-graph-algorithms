@@ -479,7 +479,8 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
         feasible = strongly_connected && !negative_cycle;
         $("#"+st+"_div_statusErklaerung").html("<h3>1. " + LNG.K('algorithm_feasibility') + "</h3>"
-        + "<p>" + LNG.K('algorithm_feasible_0') + "</p>");
+            + "<p>" + LNG.K('algorithm_feasible_0') + "</p>"
+            + "<p>" + LNG.K('algorithm_feasible_0_1') + "</p>");
         if (feasible) {
             statusID = SHOW_UNBALANCED_NODES;
             $("#"+st+"_div_statusErklaerung").append(

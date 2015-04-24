@@ -39,7 +39,7 @@ var global_Edgelayout = {
     'lineColor': "black",		// Farbe des Pfeils
     'lineWidth': 2,		// Dicke des Pfeils
     'font': 'Arial',		// Schrifart
-    'fontSize': 12,		// Schriftgrösse in Pixeln
+    'fontSize': 14,		// Schriftgrösse in Pixeln
     'isHighlighted': false ,        // Ob die Kante eine besondere Markierung haben soll
     'dashed': false,
     'showLabels': true,
