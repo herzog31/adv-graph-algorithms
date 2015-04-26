@@ -1,5 +1,5 @@
 /**
- * @author Richard Stotz
+ * @author Mark J. Becker
  * Hier wird die Klasse Utilities definiert, die verschiedene 
  * statische Hilfsfunktionen beinhaltet.
  */

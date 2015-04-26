@@ -1,7 +1,6 @@
 /**
- * @author Richard Stotz
- * Code für Forschungsaufgabe 1<br>
- * Basiert auf dem Code für den normalen Algorithmus
+ * @author Mark J. Becker
+ * Code für Forschungsaufgabe 1
  */
 
 /**
@@ -63,27 +62,27 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     var currentQuestionType = 0;
     var questions = new Array();
 
-    var statusArray = [ {"key": 0, "answer": "Graph initialisieren."},
-                        {"key": 1, "answer": "Prüfen ob der Graph gültig ist."},
-                        {"key": 2, "answer": "Den Graph als ungültig markieren und abbrechen."},
-                        {"key": 3, "answer": "Den ersten Startknoten bestimmen."},
-                        {"key": 4, "answer": "Einen unbesuchten Nachbar für die Subtour finden."},
-                        {"key": 5, "answer": "Prüfen ob die Subtour abgeschlossen ist."},
-                        {"key": 6, "answer": "Subtour in die Gesamttour integrieren."},
-                        {"key": 7, "answer": "Prüfen ob Gesamttour eine Eulertour ist."},
-                        {"key": 8, "answer": "Fertige Eulertour anzeigen."},
-                        {"key": 9, "answer": "Startknoten für die nächste Subtour bestimmen."}];
+    var statusArray = [ {"key": 0, "answer": LNG.K('aufgabe1_status0')},
+                        {"key": 1, "answer": LNG.K('aufgabe1_status1')},
+                        {"key": 2, "answer": LNG.K('aufgabe1_status2')},
+                        {"key": 3, "answer": LNG.K('aufgabe1_status3')},
+                        {"key": 4, "answer": LNG.K('aufgabe1_status4')},
+                        {"key": 5, "answer": LNG.K('aufgabe1_status5')},
+                        {"key": 6, "answer": LNG.K('aufgabe1_status6')},
+                        {"key": 7, "answer": LNG.K('aufgabe1_status7')},
+                        {"key": 8, "answer": LNG.K('aufgabe1_status8')},
+                        {"key": 9, "answer": LNG.K('aufgabe1_status9')}];
 
-    var statusArrayPast = [ {"key": 0, "answer": "Der Graph wurde initialisiert."},
-                            {"key": 1, "answer": "Der Graph wurde geprüft und für gültig befunden."},
-                            {"key": 2, "answer": "Der Graph wurde als ungültig markiert."},
-                            {"key": 3, "answer": "Der erste Startknoten wurde bestimmt."},
-                            {"key": 4, "answer": "Es wurde ein unbesuchter Nachbar für die Subtour gefunden."},
-                            {"key": 5, "answer": "Es wurde geprüft ob die Subtour abgeschlossen ist."},
-                            {"key": 6, "answer": "Die Subtour wurde in die Gesamttour integriert."},
-                            {"key": 7, "answer": "Es wurde geprüft ob die Gesamttour eine Eulertour ist."},
-                            {"key": 8, "answer": "Es wurde die fertige Eulertour angezeigt."},
-                            {"key": 9, "answer": "Es wurde ein neuer Startknoten für eine weitere Subtour bestimmt."}];
+    var statusArrayPast = [ {"key": 0, "answer": LNG.K('aufgabe1_statuspast0')},
+                            {"key": 1, "answer": LNG.K('aufgabe1_statuspast1')},
+                            {"key": 2, "answer": LNG.K('aufgabe1_statuspast2')},
+                            {"key": 3, "answer": LNG.K('aufgabe1_statuspast3')},
+                            {"key": 4, "answer": LNG.K('aufgabe1_statuspast4')},
+                            {"key": 5, "answer": LNG.K('aufgabe1_statuspast5')},
+                            {"key": 6, "answer": LNG.K('aufgabe1_statuspast6')},
+                            {"key": 7, "answer": LNG.K('aufgabe1_statuspast7')},
+                            {"key": 8, "answer": LNG.K('aufgabe1_statuspast8')},
+                            {"key": 9, "answer": LNG.K('aufgabe1_statuspast9')}];
     
     /**
      * Startet die Ausführung des Algorithmus.

@@ -1,10 +1,10 @@
 /**
- * @author Richard Stotz
- * Animation des Bellman-Ford-Algorithmus
+ * @author Mark J. Becker
+ * Darstellung des Hierholzer Algorithmus
  */
 
 /**
- * Instanz des Bellmann-Ford Algorithmus, erweitert die Klasse CanvasDrawer
+ * Instanz des Hierholzer Algorithmus, erweitert die Klasse CanvasDrawer
  * @constructor
  * @augments CanvasDrawer
  * @param {Graph} p_graph Graph, auf dem der Algorithmus ausgeführt wird

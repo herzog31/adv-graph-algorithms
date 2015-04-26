@@ -116,6 +116,28 @@
     "aufgabe1_qst_solution2": " Fragen hast du ",
     "aufgabe1_qst_solution3": " richtig beantwortet!",
 
+    "aufgabe1_status0": "Graph initialisieren.",
+    "aufgabe1_status1": "Prüfen ob der Graph gültig ist.",
+    "aufgabe1_status2": "Den Graph als ungültig markieren und abbrechen.",
+    "aufgabe1_status3": "Den ersten Startknoten bestimmen.",
+    "aufgabe1_status4": "Einen unbesuchten Nachbar für die Subtour finden.",
+    "aufgabe1_status5": "Prüfen ob die Subtour abgeschlossen ist.",
+    "aufgabe1_status6": "Subtour in die Gesamttour integrieren.",
+    "aufgabe1_status7": "Prüfen ob Gesamttour eine Eulertour ist.",
+    "aufgabe1_status8": "Fertige Eulertour anzeigen.",
+    "aufgabe1_status9": "Startknoten für die nächste Subtour bestimmen.",
+
+    "aufgabe1_statuspast0": "Der Graph wurde initialisiert.",
+    "aufgabe1_statuspast1": "Der Graph wurde geprüft und für gültig befunden.",
+    "aufgabe1_statuspast2": "Der Graph wurde als ungültig markiert.",
+    "aufgabe1_statuspast3": "Der erste Startknoten wurde bestimmt.",
+    "aufgabe1_statuspast4": "Es wurde ein unbesuchter Nachbar für die Subtour gefunden.",
+    "aufgabe1_statuspast5": "Es wurde geprüft ob die Subtour abgeschlossen ist.",
+    "aufgabe1_statuspast6": "Die Subtour wurde in die Gesamttour integriert.",
+    "aufgabe1_statuspast7": "Es wurde geprüft ob die Gesamttour eine Eulertour ist.",
+    "aufgabe1_statuspast8": "Es wurde die fertige Eulertour angezeigt.",
+    "aufgabe1_statuspast9": "Es wurde ein neuer Startknoten für eine weitere Subtour bestimmt.",
+
     "aufgabe2_status1_desc": "Der Algorithmus muss bei der Ausführung prüfen können, welche Kanten er schon besucht hat. Dazu markieren wir jede Kante als unbesucht.",
 
     "aufgabe2_status2_desc1": "Damit der Hierholzer auf einem gerichteten Graphen funktioniert, muss dieser folgende Eigenschaften erfüllen:",
@@ -182,8 +204,17 @@
     "aufgabe2_qst2_2": " kommen für den Algorithmus im nächsten Schritt potentiell in Frage?",
 
     "aufgabe2_qst1_solution1": " müssen betrachtet werden.",
-    "aufgabe2_qst1_solution2": " muss betrachtet werden."
+    "aufgabe2_qst1_solution2": " muss betrachtet werden.",
 
-    
+    "aufgabe2_reqcorrect0": "schwach zusammenhängend",
+    "aufgabe2_reqcorrect1": "Ingrad gleich Ausgrad",
+    "aufgabe2_reqcorrect2": "Graph besitzt mindestens einen Kreis",
+    "aufgabe2_reqcorrect3": "Knotengrade sind gerade",
+
+    "aufgabe2_reqwrong0": "Graph ist kreisfrei",
+    "aufgabe2_reqwrong1": "Keine negativen Kantengewichte",
+    "aufgabe2_reqwrong2": "Ingrad größer Ausgrad",
+    "aufgabe2_reqwrong3": "Ingrad kleiner Ausgrad"
+ 
   }
 }
