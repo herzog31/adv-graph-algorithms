@@ -104,7 +104,7 @@ function initializeSiteLayout() {
             }
         }
     });
-    $("body").data("graph", new BipartiteGraph("graphs/graph9.txt"));
+    $("body").data("graph", new BipartiteGraph("graphs/graph1.txt"));
 }
 
 /**

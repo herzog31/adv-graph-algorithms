@@ -401,7 +401,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                 this.update_labels();
                 break;
             case LABELS_UPDATED:
-                //this.showEqualityGraph(lx, ly);
                 this.showNewEqualityGraph();
                 break;
             case SHOWED_EQUALITY_GRAPH:
@@ -891,7 +890,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                 var obj = JSON.parse(oldState.edgeProperties[key].edge);
                 graph.edges[key].setLayoutObject(obj);
                 graph.edges[key].hidden = oldState.edgeProperties[key].hidden;
-                //graph.edges[key].setAdditionalLabel(oldState.edgeProperties[key].label);
             }
             if(fastForwardIntervalID == null){
                 $("#tf2_button_1Schritt").button("option", "disabled", false);
@@ -921,7 +919,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             $("#tf2_p_l2").addClass("marked");
         }
         if(end && current == history.length){
-            //end = false;
             this.stopFastForward();
             $("#tf2_button_1Schritt").button("option", "disabled", true);
             $("#tf2_button_vorspulen").button("option", "disabled", true);
@@ -948,8 +945,13 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_div_statusTabs").show();
         $("#tf2_div_questionModal").hide();
         $("#tf2_button_questionClose").off();
-        $("#tf2_button_1Schritt").button("option", "disabled", false);
-        $("#tf2_button_vorspulen").button("option", "disabled", false);
+        if(statusID !== FINISHED) {
+            $("#tf2_button_1Schritt").button("option", "disabled", false);
+            $("#tf2_button_vorspulen").button("option", "disabled", false);
+        }else{
+            $("#tf2_button_1Schritt").button("option", "disabled", true);
+            $("#tf2_button_vorspulen").button("option", "disabled", true);
+        }
     };
 
     /**
@@ -1191,7 +1193,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                     givenAnswer.push(answerId);
                 }
             });
-            //this.showEqualityGraph(lx, ly);
             this.needRedraw = true;
             $('#question'+currentQuestion+'_form').find('label').each(function(i) {
                 if($.inArray(i, questions[currentQuestion].rightAnswer) > -1) {
@@ -1210,7 +1211,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                 questions[currentQuestion].answeredCorrect = false;
             }
             this.canvas.off("click.GraphDrawer");
-            //this.nextStepChoice();
         }else if(currentQuestionType === AUGMENTING_PATH_QUESTION){
             var givenAnswer = $("#tf2_input_question" + currentQuestion).val().split(" ").join("").split(",");
             if($(givenAnswer).not(questions[currentQuestion].rightAnswer).length === 0
@@ -1268,21 +1268,21 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      */
     this.askQuestion = function() {
 
-        //var randomVariable = Math.random();
-        //
-        //if(equalityGraphQuestions < 2 && statusID === LABELS_UPDATED && randomVariable > 0.5) {
-        //    equalityGraphQuestions++;
-        //    return EQUALITY_GRAPH_QUESTION;
-        //}else if(statusID === LABELS_UPDATED && (equalityGraphQuestions >= 2 || randomVariable <= 0.5)){
-        //    this.nextStepChoice();
-        //}
-        //
-        //if(augmentingPathQuestions < 3 && statusID === AUGMENTING_PATH_FOUND && randomVariable > 0.5){
-        //    augmentingPathQuestions++;
-        //    return AUGMENTING_PATH_QUESTION;
-        //}else if(statusID === AUGMENTING_PATH_FOUND && (augmentingPathQuestions >= 3 || randomVariable <= 0.5)){
-        //    this.nextStepChoice();
-        //}
+        var randomVariable = Math.random();
+
+        if(equalityGraphQuestions < 2 && statusID === LABELS_UPDATED && randomVariable > 0.5) {
+            equalityGraphQuestions++;
+            return EQUALITY_GRAPH_QUESTION;
+        }else if(statusID === LABELS_UPDATED && (equalityGraphQuestions >= 2 || randomVariable <= 0.5)){
+            this.nextStepChoice();
+        }
+
+        if(augmentingPathQuestions < 3 && statusID === AUGMENTING_PATH_FOUND && randomVariable > 0.5){
+            augmentingPathQuestions++;
+            return AUGMENTING_PATH_QUESTION;
+        }else if(statusID === AUGMENTING_PATH_FOUND && (augmentingPathQuestions >= 3 || randomVariable <= 0.5)){
+            this.nextStepChoice();
+        }
 
         return false;
 
