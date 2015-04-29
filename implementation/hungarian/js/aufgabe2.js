@@ -1094,7 +1094,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                     if(this.innerHTML === "(" + sourceLabel + ","+targetLabel+")"
                         || this.innerHTML === "(" + targetLabel + "," + sourceLabel + ")") {
                         var idSelector = "#" + $(this).attr("for");
-                        $(idSelector).click();
+                        var box = $(idSelector);
+                        box.prop("checked", !box.prop("checked"));
                     }
                 });
                 if(graph.edges[kantenID].getLayout().lineColor !== "red"){
