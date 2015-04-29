@@ -108,12 +108,7 @@ CanvasDrawMethods.drawTextOnLine = function(ctx,layout,source,target,label,even,
     }else if(sourceNode == 1){
         coefficient = 1;
     }
-    var offset;
-    //if((graph_constants.V_POSITION - graph_constants.U_POSITION - global_NodeLayout.nodeRadius*2)/nodeCount > 45){
-    //    offset = 45;
-    //}else{
-        offset = (graph_constants.V_POSITION - graph_constants.U_POSITION - global_NodeLayout.nodeRadius*2)/(nodeCount*2);
-    //}
+    var offset = (graph_constants.V_POSITION - graph_constants.U_POSITION - global_NodeLayout.nodeRadius*2)/(nodeCount*2);
     if(source.x > target.x){
         center ={
             x: source.x - (0.5*(source.x - target.x) + coefficient*offset/Math.abs(Math.tan(alpha))),
