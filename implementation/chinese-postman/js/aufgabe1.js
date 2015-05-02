@@ -13,7 +13,6 @@
  * @augments CanvasDrawer
  */
 function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
-    //CanvasDrawer.call(this,p_graph,p_canvas,p_tab);
     algorithm.call(this,p_graph,p_canvas,p_tab);
     /**
      * Convenience Objekt, damit man den Graph ohne this ansprechen kann.
@@ -179,6 +178,19 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         this.needRedraw = true;
     };
 
+    this.showQuestionModal = function() {
+        $("#tf1_div_statusTabs").hide();
+        $("#tf1_div_questionModal").show();
+        $("#tf1_questionSolution").hide();
+    };
+
+    this.closeQuestionModal = function() {
+        $("#tf1_div_statusTabs").show();
+        $("#tf1_div_questionModal").hide();
+        $("#tf1_button_questionClose").off();
+        $("#tf1_button_1Schritt").button("option", "disabled", false);
+        $("#tf1_button_vorspulen").button("option", "disabled", false);
+    };
     /**
      * Fügt einen Tab für die Frage hinzu.<br>
      * Deaktiviert außerdem die Buttons zum weitermachen
@@ -186,12 +198,13 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      */
     this.addFrageTab = function() {
         this.stopFastForward();
-        var li = "<li id='tf1_li_FrageTab'><a href='#tf1_div_FrageTab'>"+LNG.K('aufgabe1_text_question')+"</a></li>", id= "tf1_div_FrageTab";
-        $("#tf1_div_statusTabs").find(".ui-tabs-nav").append(li);
-        $("#tf1_div_statusTabs").append("<div id='" + id + "'><div id='tf1_div_Frage'></div><div id='tf1_div_Antworten'></div></div>");
-        $("#tf1_div_statusTabs").tabs("refresh");
-        tabVorFrage = $("#tf1_div_statusTabs").tabs("option","active");
-        $("#tf1_div_statusTabs").tabs("option","active",2);
+        ++frageStats.gestellt;
+        this.showQuestionModal();
+        $("#tf1_div_questionModal").html("<div class='ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all' style='padding: 7px;'>" +
+            LNG.K('aufgabe1_text_question') + ' #'+(frageStats.gestellt) +"</div>");
+        //$("#tf1_div_statusTabs").tabs("refresh");
+        //tabVorFrage = $("#tf1_div_statusTabs").tabs("option","active");
+        //$("#tf1_div_statusTabs").tabs("option","active",2);
         $("#tf1_button_1Schritt").button("option", "disabled", true);
         $("#tf1_button_vorspulen").button("option", "disabled", true);
     };
@@ -201,12 +214,11 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.removeFrageTab = function() {
-        if($("#tf1_div_statusTabs").tabs("option","active") == 2){
+        /*if($("#tf1_div_statusTabs").tabs("option","active") == 2){
             $("#tf1_div_statusTabs").tabs("option","active",tabVorFrage);
-        }
-        $("#tf1_li_FrageTab").remove().attr("aria-controls");
-        $("#tf1_div_FrageTab").remove();
-        $("#tf1_div_statusTabs").tabs( "refresh" );
+        }*/
+        this.closeQuestionModal();
+        //$("#tf1_div_statusTabs").tabs( "refresh" );
     };
 
     /**
@@ -254,16 +266,19 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.handleCorrectAnswer = function() {
-        $("#tf1_button_1Schritt").button("option", "disabled", false);
-        $("#tf1_button_vorspulen").button("option", "disabled", false);
-        $("p.frage").css("color",const_Colors.GreenText);
-        $("#tf1_div_Antworten").html("<h2>"+LNG.K('aufgabe1_text_right_answer')+" " +this.frageParam.Antwort +"</h2>");
-        $("#tf1_div_Antworten").append(this.frageParam.AntwortGrund);
+        //$("#tf1_button_1Schritt").button("option", "disabled", false);
+        //$("#tf1_button_vorspulen").button("option", "disabled", false);
+        //$("p.frage").css("color",const_Colors.GreenText);
+        //$("#tf1_div_Antworten").html("<h2>"+LNG.K('aufgabe1_text_right_answer')+" " +this.frageParam.Antwort +"</h2>");
+        //$("#tf1_div_Antworten").append(this.frageParam.AntwortGrund);
+        $("#tf1_questionSolution").find(".answer").html("<h2>"+this.frageParam.Antwort +"</h2>");
         if(this.frageParam.gewusst) {
             frageStats.richtig++;
+            $("#tf1_questionSolution").css("color", "green");
         }
         else {
             frageStats.falsch++;
+            $("#tf1_questionSolution").css("color", "red");
         }
         if(this.frageParam.qid == 1 || this.frageParam.qid == 2) {
             this.frageParam.node.setLayoutObject(this.frageParam.layout);
@@ -275,6 +290,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         frageStatus = {"aktiv" :false, "warAktiv": true};
         this.algoNext();// Hier wird der nächste Schritt des Algorithmus ausgefuehrt
         this.needRedraw = true;
+        $("#tf1_questionSolution").show();
+        $("#tf1_button_questionClose").hide();
+        $("#tf1_button_questionClose2").button("option", "disabled", false);
     };
 
     this.askQuestion1 = function () {
@@ -294,26 +312,30 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         frageStatus = {"aktiv": true, "warAktiv": false};
         this.frageParam = {
             qid: 1,
-            "Antwort": correctAnswer,
-            "AntwortGrund": AntwortGrund,
+            Antwort: correctAnswer,
+            AntwortGrund: AntwortGrund,
             gewusst: true,
             "node": node,
             "layout": node.getLayout()
         };
         //Knoten hervorheben
-        //node.setLayout("borderColor", const_Colors.NodeBorderHighlight);
+        node.setLayout("borderColor", const_Colors.NodeBorderHighlight);
         node.setLayout("fillStyle", const_Colors.NodeFillingHighlight);
         //stelle die Frage
-        $("#tf1_div_Frage").html(LNG.K('aufgabe1_text_question') + " " + (++frageStats.gestellt));
-        $("#tf1_div_Frage").append("<p class=\"frage\">" + LNG.K('aufgabe1_question1') + "</p>");
-        $("#tf1_div_Antworten").append("<input type=\"radio\" id=\"tf1_input_frage1_0\" name=\"frage1\"/><label id=\"tf1_label_frage1_0\" for=\"tf1_input_frage1_0\"> ja </label><br>");
-        $("#tf1_div_Antworten").append("<input type=\"radio\" id=\"tf1_input_frage1_1\" name=\"frage1\"/><label id=\"tf1_label_frage1_1\" for=\"tf1_input_frage1_1\"> nein </label><br>");
-        var pos = 0;
-        if(correctAnswer == "nein") pos = 1;
-        $("#tf1_input_frage1_" + pos).click(function () { algo.handleCorrectAnswer(); });
-        $("#tf1_input_frage1_" + (1-pos)).click(function () {
-            $("#tf1_label_frage1_" + (1-pos)).addClass("ui-state-error"); algo.frageParam.gewusst = false;
-        });
+        $("#tf1_div_questionModal").append('<p class="frage">' + LNG.K('aufgabe1_question1') + '</p>' +
+                '<form id="question'+frageStats.gestellt+'_form">'+
+                '<input type="radio" id="tf1_input_frage1_0" name="frage1" value="ja"/><label id="tf1_label_frage1_0" for="tf1_input_frage1_0"> ja </label><br>' +
+                '<input type="radio" id="tf1_input_frage1_1" name="frage1" value="nein"/><label id="tf1_label_frage1_1" for="tf1_input_frage1_1"> nein </label><br></form>' +
+                '<p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button></p>' +
+                '<p id="tf1_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />' +
+                '<button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_qst_continue')+'</button></p>');
+        $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
+        $("#tf1_button_questionClose").button({disabled: true}).on("click", function() {
+            var answer = $("#question"+frageStats.gestellt+"_form").find("input[type='radio']:checked").val();
+            if(answer != algo.frageParam.Antwort) algo.frageParam.gewusst = false;
+            algo.handleCorrectAnswer(); });
+        $("#question"+frageStats.gestellt+"_form").find("input[type='radio']").one("change", function() { $("#tf1_button_questionClose").button("option", "disabled", false); });
+        this.showQuestionModal();
     };
 
     var chooseNode = function(){
@@ -347,7 +369,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_div_Antworten").append("<button id=\"tf1_button_questionClose\">"+LNG.K('aufgabe1_btn_answer')+"</button>");
         $("#tf1_input_frage2").one("keyup", function() { $("#tf1_button_questionClose").button("option", "disabled", false); });
         //Pruefe ob korrekte Antwort
-        $("#tf1_button_questionClose").button({disabled: false}).on("click", function() {
+        $("#tf1_button_questionClose").button({disabled: true}).on("click", function() {
             var answer = $("#tf1_input_frage2").val();
             $("#tf1_button_questionClose").hide();
             if(answer != algo.frageParam.Antwort){

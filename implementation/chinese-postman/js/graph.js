@@ -750,7 +750,7 @@ function Graph(filename,canvas) {
      */
     this.addEdge = function(source,target,weight, dir) {
         if(weight == null) {
-            weight = Math.round(Math.random()*100-50);// Zufälliges Gewicht zwischen -50 und 50
+            weight = Math.round(Math.random()*70-20);// Zufälliges Gewicht zwischen -20 und 50
         }
         if(dir == null) dir = directed;
         var edge = new Edge(source,target,weight,edgeIDCounter,dir);
