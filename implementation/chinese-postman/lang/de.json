@@ -66,7 +66,7 @@
     "algorithm_tour": "Bestimmen des Eulerkreises",
     "algorithm_tour_hierholzer_1": "Zum Auffinden des Eulerkreises wird der ",
     "algorithm_tour_hierholzer_2": " benutzt. ",
-    "algorithm_tour_hierholzer_3": "Du kannst den Algorithmus schon jetzt ausführen. Im nächten Schritt werden die Subtouren der Tour gezeigt.",
+    "algorithm_tour_hierholzer_3": "Die Kosten des günstigsten Rundgangs sind genau die Kosten einer Eulertour im Graphen. Die Kosten einer Eulertour stellen die Summe der Kantengewichte aller Kanten im Graphen dar.",
     "algorithm_start_tour_1": "Bei allen Knoten im Graphen stimmt der Eingangsgrad mit dem Ausgangsgrad überein. Dann existiert ein Eulerkreis im Graphen.",
     "algorithm_start_tour_2": "Wir starten mit einem beliebigen Knoten und folgen den Kanten, bis alle Kanten einmal durchlaufen sind und wir wieder zum Startknoten zurückkehren.",
     "algorithm_start_tour_3": "Zum Auffinden des Eulerkreises wird der Algorithmus von Hierholzer benutzt.",

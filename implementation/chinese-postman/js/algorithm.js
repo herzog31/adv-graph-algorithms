@@ -630,10 +630,6 @@ function algorithm(p_graph, p_canvas, p_tab) {
 
     this.startAddingPaths = function () {
         this.graph = graph;
-        //hide normal edges
-/*        for (var e in graph.edges) {
-            hideEdge(graph.edges[e]);
-        }*/
         //insert matching edges
         for (var p in matching) {
             var s = matching[p].s;
@@ -675,16 +671,19 @@ function algorithm(p_graph, p_canvas, p_tab) {
     var redoPath = function(path){//if the animation not yet ended, repare
         var match = matching[path];
         if(next > 0 && graph.edges[match.edge.getEdgeID()]){
+            var s = match.edge.getSourceID();
+            var d = match.edge.getTargetID();
             graph.removeEdge(match.edge.getEdgeID());//remove matching edge
-            /*            for(var e in matching[next-1].new_edges){
-             graph.removeEdge(matching[next-1].new_edges[e].getEdgeID());
-             }*/
             for(var i = match.new_edges.length; i < match.path.length; i++){//add all not yet added
                 var e = match.path[i];
                 var ne = graph.addEdge(graph.nodes[e.getSourceID()], graph.nodes[e.getTargetID()], e.weight);
                 ne.setLayout('dashed', true);
                 match.new_edges.push(ne);
             }
+            graph.nodes[s].setLayout('borderColor', const_Colors.NodeBorder);//unmark the end nodes
+            graph.nodes[d].setLayout('borderColor', const_Colors.NodeBorder);
+            graph.nodes[s].setLabel(graph.nodes[s].getLabel() + 1);
+            graph.nodes[d].setLabel(graph.nodes[d].getLabel() - 1);
         }
     };
     var undoPath = function(path){
@@ -777,12 +776,12 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
         this.addNamingLabels();
         // Erklärung im Statusfenster
-        $("#"+st+"_div_statusErklaerung").html('<h3>5. ' + LNG.K('algorithm_euler') + '</h3>\
-            <p>' + LNG.K('algorithm_tour_hierholzer_1') + " <a href='"+LNG.K('algorithm_link_hierholzer')+"' target='_blank'>"+LNG.K('algorithm_text_hierholzer')+"</a>" + LNG.K('algorithm_tour_hierholzer_2') + '</p>\
-            <p>' + LNG.K('algorithm_tour_hierholzer_3') + '</p>\
-            <p><button id="animateTour">' + LNG.K('algorithm_status51b_desc2') + '</button><button id="animateTourStop">' + LNG.K('algorithm_status51b_desc3') + '</button></p>\
-            <p>' + LNG.K('algorithm_status51b_desc4') + '</p>\
-            <p>' + LNG.K('algorithm_cost') + cost + '</p>');
+        $("#"+st+"_div_statusErklaerung").html('<h3>5. ' + LNG.K('algorithm_euler') + '</h3>' +
+            '<p>' + LNG.K('algorithm_tour_hierholzer_1') + " <a href='"+LNG.K('algorithm_link_hierholzer')+"' target='_blank'>"+LNG.K('algorithm_text_hierholzer')+"</a>" + LNG.K('algorithm_tour_hierholzer_2') + '</p>' +
+            '<p>' + LNG.K('algorithm_tour_hierholzer_3') + '</p>' +
+/*            '<p><button id="animateTour">' + LNG.K('algorithm_status51b_desc2') + '</button><button id="animateTourStop">' + LNG.K('algorithm_status51b_desc3') + '</button></p>' +
+            '<p>' + LNG.K('algorithm_status51b_desc4') + '</p>' +*/
+            '<p>' + LNG.K('algorithm_cost') + cost + '</p>');
         $("#animateTour").button({icons: {primary: "ui-icon-play"}}).click({org: this}, this.animateTour);
         $("#animateTourStop").button({
             icons: {primary: "ui-icon-stop"},
@@ -792,10 +791,10 @@ function algorithm(p_graph, p_canvas, p_tab) {
     };
     this.showTour = function(){
         //color edges
-        for (var e in graph.edges) {
+        /*for (var e in graph.edges) {
             graph.edges[e].setLayout('lineColor', tourColors[color[e]]);
 
-        }
+        }*/
         //create output path and subpaths
         $("#"+st+"_div_statusErklaerung").html('<h3>5. ' + LNG.K('algorithm_euler') + '</h3>\
             <p><button id="animateTour">' + LNG.K('algorithm_status51b_desc2') + '</button><button id="animateTourStop">' + LNG.K('algorithm_status51b_desc3') + '</button></p>\
@@ -805,7 +804,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             icons: {primary: "ui-icon-stop"},
             disabled: true
         }).click({org: this}, this.animateTourStop);
-        this.appendTours();
+        //this.appendTours();
         statusID = END;
     };
 
@@ -844,37 +843,6 @@ function algorithm(p_graph, p_canvas, p_tab) {
         statusID = END;
     };
 
-    /**
-     * Zeigt Texte und Buttons zum Ende des Algorithmus
-     * @method
-     */
-    this.endAlgorithm = function () {
-        $( "#ta_div_subtours" ).remove();
-        $("#"+st+"_div_statusErklaerung").append("<p></p><h3>" + LNG.K('algorithm_msg_finish') + "</h3>");
-        $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoIdee>" + LNG.K('algorithm_btn_more') + "</button>");
-        $("#"+st+"_div_statusErklaerung").append("<h3>" + LNG.K('algorithm_msg_test') + "</h3>");
-        $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoFA1>" + LNG.K('algorithm_btn_exe1') + "</button>");
-        $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoFA2>" + LNG.K('algorithm_btn_exe2') + "</button>");
-        $("#"+st+"_button_gotoIdee").button();
-        $("#"+st+"_button_gotoFA1").button();
-        $("#"+st+"_button_gotoFA2").button();
-        $("#"+st+"_button_gotoIdee").click(function () {
-            $("#"+st+"bs").tabs("option", "active", 3);
-        });
-        $("#"+st+"_button_gotoFA1").click(function () {
-            $("#"+st+"bs").tabs("option", "active", 4);
-        });
-        $("#"+st+"_button_gotoFA2").click(function () {
-            $("#"+st+"bs").tabs("option", "active", 5);
-        });
-        // Falls wir im "Vorspulen" Modus waren, daktiviere diesen
-        if (fastForwardIntervalID != null) {
-            this.stopFastForward();
-        }
-        $("#"+st+"_button_1Schritt").button("option", "disabled", true);
-        $("#"+st+"_button_vorspulen").button("option", "disabled", true);
-    };
-
     this.hoverSubtour = function (event) {
         var tourId = $(event.target).data("tourId");
         $(event.target).css("font-weight", "bold");
@@ -911,6 +879,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
         this.needRedraw = true;
         if (tourAnimationIndex >= tour.length) {
+            this.appendTours();
             this.animateTourStop(event);
             return;
         }
@@ -949,6 +918,37 @@ function algorithm(p_graph, p_canvas, p_tab) {
         $("#animateTour").button("option", "disabled", false);
         $("#animateTourStop").button("option", "disabled", true);
         return;
+    };
+
+    /**
+     * Zeigt Texte und Buttons zum Ende des Algorithmus
+     * @method
+     */
+    this.endAlgorithm = function () {
+        $( "#ta_div_subtours" ).remove();
+        $("#"+st+"_div_statusErklaerung").append("<p></p><h3>" + LNG.K('algorithm_msg_finish') + "</h3>");
+        $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoIdee>" + LNG.K('algorithm_btn_more') + "</button>");
+        $("#"+st+"_div_statusErklaerung").append("<h3>" + LNG.K('algorithm_msg_test') + "</h3>");
+        $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoFA1>" + LNG.K('algorithm_btn_exe1') + "</button>");
+        $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoFA2>" + LNG.K('algorithm_btn_exe2') + "</button>");
+        $("#"+st+"_button_gotoIdee").button();
+        $("#"+st+"_button_gotoFA1").button();
+        $("#"+st+"_button_gotoFA2").button();
+        $("#"+st+"_button_gotoIdee").click(function () {
+            $("#"+st+"bs").tabs("option", "active", 3);
+        });
+        $("#"+st+"_button_gotoFA1").click(function () {
+            $("#"+st+"bs").tabs("option", "active", 4);
+        });
+        $("#"+st+"_button_gotoFA2").click(function () {
+            $("#"+st+"bs").tabs("option", "active", 5);
+        });
+        // Falls wir im "Vorspulen" Modus waren, daktiviere diesen
+        if (fastForwardIntervalID != null) {
+            this.stopFastForward();
+        }
+        $("#"+st+"_button_1Schritt").button("option", "disabled", true);
+        $("#"+st+"_button_vorspulen").button("option", "disabled", true);
     };
 
     this.animateMoveStep = function (node, c, newc, step, aid) {
@@ -994,7 +994,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             nodeProperties[graph.nodes[key].getNodeID()] = {
                 layout: JSON.stringify(graph.nodes[key].getLayout()),
                 label: graph.nodes[key].getLabel(),
-                coordiantes: graph.nodes[key].getCoordinates()
+                //coordiantes: graph.nodes[key].getCoordinates()
             };
         }
         var edgeProperties = {}
@@ -1029,7 +1029,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
                 if (graph.nodes[key]) {
                     graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].layout));
                     graph.nodes[key].setLabel(oldState.nodeProperties[key].label);
-                    graph.nodes[key].setCoordinates(oldState.nodeProperties[key].coordiantes);
+                    //graph.nodes[key].setCoordinates(oldState.nodeProperties[key].coordiantes);
                 }
             }
             for (var key in oldState.edgeProperties) {
