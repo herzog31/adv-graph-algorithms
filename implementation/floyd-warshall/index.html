@@ -22,7 +22,14 @@
     <script src="js/aufgabe1.js" type="text/javascript"></script>
     <script src="js/aufgabe2.js" type="text/javascript"></script>
     <script src="../library/js/lang.js" type="text/javascript"></script>
-    <title>Graphalgorithmen</title>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            showMathMenu: false,
+            showMathMenuMSIE: false
+        });
+    </script>
+    <script type="text/javascript" src="../library/js/mathjax/MathJax.js?config=TeX-AMS-MML_SVG.js&locale=de"></script>
+    <title>Der Floyd-Warshall Algorithmus</title>
 </head>
 <body>
     <script>
@@ -30,7 +37,7 @@
         LNG.setLanguage('de');
     </script>
     <header>
-        <img src="img/dijkstra_kette.png" id="picTitle" alt="Logo">
+        <img src="img/floyd-warshall-logo.png" id="picTitle" alt="Logo">
         <img src="img/title_floyd_warshall.png" id="figTitle" alt="Der Floyd-Warshall Algorithmus">
         <img src="img/TUMLogo_cropped.png" id="tumTitle" alt="Technische Universität München">
         <div></div>
@@ -61,16 +68,19 @@
         </ul>
         <div id="tab_te">
             <div id="te_div_Einfuehrungstext">
-                <div id="te_div_beispiel1Container"><img id="te_img_dijkstraLR" src="img/dijkstraLR.png" alt="Einfacher Graph mit 4 Knoten.">
+                <div id="te_div_beispiel1Container"><img id="te_img_dijkstraLR" src="img/floyd-warshall4.png" alt="Einfacher Graph mit 4 Knoten.">
                     <p>
-                        Wie komme ich am günstigsten von links nach rechts?
+                        Was sind die günstigsten Wege zwischen allen Knotenpaaren?
                     </p>
                 </div>
                 <h1>Kürzeste Pfade zwischen allen Paaren von Knoten</h1>
                 <p>
-                    It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                    Bei der Lösung vieler Problemen muss man die kürzeste Wege zwischen allen Paaren von Knoten eines Graphen bestimmen und deren Länge berechnen. Der Graph kann eine beliebige Struktur haben, wobei es wichtig ist, dass er keine negative Kreise enthält.
                 </p>
-                <h2>Hier wird der Floyd-Warshall-Algorithmus vorgestellt, der günstigste Wege berechnet.</h2>
+                <p>
+                    Solche Aufgaben können zum Beispiel oft im Bereich Logistik vorkommen, wenn man die Distanzen zwischen verschiedenen Orten berücksichtigt. In diesen Situationen werden die Orte als die Knoten im Graph dargestellt, und die Kanten stehen für die Wege zwischen den Standorten.
+                </p>
+                <h2>Hier wird der Floyd-Warshall-Algorithmus vorgestellt, der günstigste Wege zwischen allen Paaren von Knoten berechnet.</h2>
                 <div id ="te_div_Entscheidung">
                     <h2>Was möchtest du zuerst tun?</h2>
                     <button id="te_button_gotoDrawGraph">
@@ -192,9 +202,9 @@
                         </div>
                         <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
                             <p class="pseudocode" id="ta_p_l1">BEGIN</p>
-                            <p class="pseudocode" id="ta_p_l2"> for each vertex v</p>
+                            <p class="pseudocode" id="ta_p_l2"> FOR ALL v ∈ V</p>
                             <p class="pseudocode" id="ta_p_l3">  d[v][v] ← 0</p>
-                            <p class="pseudocode" id="ta_p_l4"> for each edge (u,v)</p>
+                            <p class="pseudocode" id="ta_p_l4"> FOR ALL (u,v) ∈ E</p>
                             <p class="pseudocode" id="ta_p_l5">  d[u][v] ← w(u,v)</p>
                             <p class="pseudocode" id="ta_p_l6"> for k from 1 to |V|</p>
                             <p class="pseudocode" id="ta_p_l7">  for i from 1 to |V|</p>
@@ -226,89 +236,72 @@
         </div>
         <div id="tab_ti">
             <div id="ti_div_Einfuehrungstext">
-                <div class="BeispielbildContainer"><figure><img id="ti_img_beispiel1" src="img/dijkstraLR.png" alt="Einfacher Graph mit 4 Knoten." width="250"></figure>
+                <div class="BeispielbildContainer"><figure><img id="ti_img_beispiel1" src="img/floyd-warshall4.png" alt="Einfacher Graph mit 4 Knoten." width="250"></figure>
                     <p>
-                        Wie komme ich am günstigsten von links nach rechts?
+                        Was sind die günstigsten Wege zwischen allen Knoten?
                     </p>
                 </div>
 
                 <h1>Kürzeste Wege</h1>
                 <p>
-                    Oft möchte man wissen, welches der kürzeste Weg von a nach b ist. Dazu kann man Orte als Knoten in einem Graphen darstellen, welche durch Kanten verbunden sind.
-                    Diese Kanten stellen die Wege zwischen den Orten dar. Sie können Beschriftungen haben wie Weglängen in Metern oder Kilometern, aber auch Fahrzeiten oder Mautgebühren für den Weg.
+                    Gegeben ist ein Graph. Mit dem Algorithmus von Floyd-Warshall kann man kürzeste beziehungsweise günstigste Wege zwischen allen Paaren von Knoten berechnen, wenn der Graph keine negative Kreise enthält.
+                    Ein Kreis in der Graphentheorie ist ein Weg in einem Graphen, bei dem Start- und Endknoten gleich sind. Ein negativer Kreis heißt ein Kreis, wo die Summe der Kantenkosten weniger als 0 ist.
                 <p>
-                    Die Kantenbeschriftungen werden im Allgemeinen als <strong>Kantenkosten</strong> oder -gewichte bezeichnet.
+                    Als Beispiel könnte man das folgende Problem betrachten: es gibt 10 Städte, die miteinander durch verschiedenen Autobahnen verbunden sind. Die Aufgabe besteht darin, die Transportkosten zu minimieren.
                 </p>
                 <p>
-                    Mit dem Algorithmus von Dijkstra kann man kürzeste beziehungsweise kostengünstigste Wege berechnen, sofern alle Kosten positive Zahlen sind.
-                    Falls auch negative Zahlen auftreten, funktioniert der Algorithmus nicht mehr. In diesem Falle sollte man auf den <a href="http://www-m9.ma.tum.de/material/spp/Bellman-Ford-Algorithmus.html">Bellman-Ford-Algorithmus</a> zurückgreifen,
-                    dieser kann auch mit negativen Kantenkosten umgehen.
+                    Dieses Problem kann mithilfe des Floyd-Warshall Algorithmus gelöst werden. Das gesamte Netz, das bei der Aufgabe gegeben ist, kann als ein Graph dargestellt werden. Die Knoten stehen nämlich für die Städte und die Kanten können die Autobahnen repräsentieren.
+                    Jede Kante bekommt eine Kost, die gleich der Entfernung zwichen Nachbarstädten in Metern oder Kilometern ist. Das Ziel ist die kürzesten Wege zwischen allen Städten zu berechnen.
                 </p>
 
                 <h1>Idee des Algorithmus</h1>
-                <div class="BeispielbildContainer">
-                    <figure><img id="ti_img_beispiel4_1" src="img/bsp_4_1.png" alt="Kante vor Update" width="250"><figcaption>Die Kante ist eine Abkürzung:
-                        <br>
-                        Wir wissen, dass es uns 20 kostet, um vom Startknoten zum linken Knoten zu gelangen. Der Weg vom linken zum rechten Knoten kostet 1.</figcaption></figure
-                    <figure><img id="ti_img_beispiel4_2" src="img/bsp_4_2.png" alt="Kante vor Update" width="250"><figcaption>Also kommt man vom Startknoten zum rechten Knoten mit Kosten 21.</figcaption></figure>
+                <p>
+                    Das Prinzip des Floyd-Warshall-Algorithmus ist <strong>dynamische Programmierung</strong>.
+                <p>
+                    Der Algorithmus geht von folgender Beobachtung aus: wenn der kürzeste Weg von u nach v durch w, dann sind die Teilpfade von u nach w und von w nach v auch minimal. Der Floyd-Warshall Algorithmus funktioniert iterativ. Beim Schritt k sei kürzesterWeg(i, j, k)
+                    eine Funktion, die den kürzesten Pfad von i nach j zurückgibt, wobei nur die Knoten aus der Menge {1, 2, ... k} als Zwischenpunkte dieses Weges sein können. Beim nächsten Schritt (k + 1) kann der Weg von i nach j entweder gleich kürzesterWeg(i, j, k) bleiben
+                    oder zu kürzesterWeg(i, k + 1, k) + kürzesterWeg(k + 1, j, k) verbessert werden, je nachdem welche Kost niedriger ist. Das heißt, der Weg zwischen i und j kann gleich wie bem vorigen Schritt bleiben oder einen neuen Knoten k + 1 enthalten. Darin besteht die
+                    Idee der <strong>dynamischen Programmierung</strong>.
+
+                    Bei jeder Iteration werden die aktuelle Pfadkosten zischen allen Paaren von Knoten zugewiesen:<br/>
+                    kürzesterWeg(i, j, k) = min(kürzesterWeg(i, j, k), kürzesterWeg(i, k + 1, k) + kürzesterWeg(k + 1, j, k))
+                </p>
+
+                <div class="BeispielbildContainer"><figure><img id="ti_img_beispiel3" src="img/fw-table.png" alt="Distanzmatrix" width="250"><figcaption>Der weg zwischen Knoten a und d wurde verbessert.</figcaption></figure>
                 </div>
+
+                <h1>Finden von günstigsten Wegen</h1>
                 <p>
-                    Der Dijkstra-Algorithmus berechnet die <strong>Kosten</strong> der günstigsten Wege von einem Startknoten aus zu allen anderen Knoten im Graph.
-                <p>
-                    Der Algorithmus beginnt bei einem Startknoten und wählt schrittweise über die als nächstes erreichbaren Knoten die momentan günstigsten Wege aus.
-                    Dabei kann er auch Verbesserungen vornehmen. Das tut er so lange, bis alle Knoten besucht wurden und kein besserer Weg mehr gefunden wurde.
+                    Um die günstigste Wege zu finden, muss der Algorithmus eine Matrix speichern, die die aktuelle Kosten zwischen allen Paaren von Knoten enthält. Die Zeilen- und Spaltenindexe stellen die Knoten dar und die Werte in der Matrix stehen für die Distanzen
+                    zwischen den entsprechenden Knoten.
                 </p>
                 <p>
-                    Um den Algorithmus auszuführen, braucht man eine Warteschlange. Dort werden alle Knoten, die man bereits gefunden hat, eingefügt.
-                    Der Knoten, zu dem momentan der güstigste Weg vom Startknoten aus führt, steht ganz vorne in dieser Warteschlange.
+                    Angenommen der Graph ist gegeben durch seine Gewichtsmatrix w. Der Matrixeintrag w[i,j] ist das Gewicht der Kante von i nach j, falls eine solche Kante existiert. Falls es keine Kante von i nach j gibt ist w[i,j] unendlich.
                 </p>
                 <p>
                     Zunächst wird der Algorithmus initialisiert:
                 </p>
                 <ul>
                     <li>
-                        <strong>Der Weg zum Startknoten hat Kosten 0</strong>, denn seine Entfernung zu sich selbst ist natürlich 0.
+                        Die Matrix d der kürzesten Distanzen wird mit den gleichen Kosten wie die Gewichtsmatrix w initialisiert.
                     </li>
                     <li>
-                        <strong>Zu den anderen Knoten ist noch kein Weg bekannt</strong>, darum werden ihre <strong>Kosten</strong> zunächst mit <strong>unendlich</strong> bewertet. Im Laufe des Algorithmus sollen diese Kosten verbessert werden, wobei sich der Algorithmus immer den bisher günstigsten gefundenen Weg zu jedem Knoten merkt.
+                        Der Algorithmus führt die Hauptschleife mit k von 1 bis n aus.
                     </li>
                     <li>
-                        Der Startknoten wird in die <strong>Warteschlange</strong> eingefügt.
+                        Bei jeder Iteration werden die Distanzen zwischen allen Paaren von Knoten i, j betrachtet.
+                    </li>
+                    <li>
+                        Falls ob die Distanz zwischen Knoten i, k und k, j kürzer als die aktuelle Distanz ist, dann wird die Distanzkost zwischen Knoten i und j aktualisiert.
                     </li>
                 </ul>
                 <p>
-                    Nun wird der vorderste Knoten aus der Warteschlange entnommen. Zu Beginn kann dies nur der Startknoten sein. Dann werden alle Nachbarknoten
-                    des entnommenen Knotens  mit den jeweiligen Kanten betrachtet und auf folgende Bedingung geprüft:
-                    <strong>Ist der Knoten in der Warteschlange enthalten und sind die Kosten über die neue Kante geringer als die bisherigen Kosten?</strong>
+                    Wenn der Graph einen oder mehrere negative Kreise enthält, dann gibt es keinen kürzesten Weg zwischen beliebigen Knoten, die den Teil des negativen Kreises bilden.
+                    Der Weg zwischen diesen Knoten ist nämlich willkürlich klein (negativ). Damit der Floyd-Warshall Algorithmus richtiges Ergebnis erzeugt, muss es keine negative
+                    Kreise im Graphen geben. Der Algorithmus kann genutzt werdem um die negative Kreise im Graphen zu entdecken. Dafür muss der Algorithmus alle Paaren von Knoten (i, j)
+                    betrachten einschließlich die, wo i = j. Wenn irgendeine Kost (i, i) nach dem Ablauf des Algorithmus in der Distanzmatrix negativ ist, dann enthält der Graph mindestens
+                    einen negativen Kreis.
                 </p>
-                <p>
-                    Falls dies der Fall ist, werden die Kosten für diesen Knoten auf den neuen Wert verringert.
-                    Ansonsten wird auf eine weitere Bedingung geprüft:
-                    <strong>Ist der Knoten bisher noch gar nicht besucht worden?</strong>
-                    Falls ja, wird er nun in die Warteschlange eingefügt,
-                    damit später auch die Kanten, die von ihm aus weggehen, betrachtet werden können.
-                    Außerdem erhält dieser Knoten die Kosten, die sich aus der Summe der Kosten zu seinem Vorgängerknoten
-                    und den Kosten der neuentdeckten Kante zu ihm selbst ergeben.
-                </p>
-                <p>
-                    Es werden nun so lange Knoten aus der Warteschlange entnommen und ihre Nachbarknoten auf diese beiden Bedingungen geprüft, bis keine Knoten mehr in der Warteschlange enthalten sind.
-                    Dann ist der Algorithmus fertig und hat von dem Startknoten ausgehend zu allen anderen Knoten die jeweils günstigsten Wege gefunden.
-                </p>
-
-                <div class="BeispielbildContainer"><figure><img id="ti_img_beispiel3" src="img/bsp3.png" alt="Graph mit eingezeichneten Abstandswerten" width="250"><figcaption>Der grüne Weg vom Startknoten ist der günstigste Weg. Er benutzt 3 Kanten.</figcaption></figure>
-                </div>
-
-                <h1>Konstruktion des günstigsten Weges</h1>
-                <p>
-                    Bei jeder Aktualisierung der Kosten speichert der Algorithmus die Kante, mit deren Hilfe er aktualisiert wurde, als <strong>Vorgängerkante</strong> des Knotens.
-                </p>
-                <p>
-                    Am Ende des Algorithmus kann dann der günstigste Weg für jeden Knoten konstruiert werden, indem man so lange über Vorgängerkanten läuft, bis man am Startknoten angekommen ist.
-                </p>
-                <p>
-                    Wenn es von dem Startknoten aus zu einem Knoten keinen Weg gibt, so bleiben seine Kosten unendlich, was bedeutet, das dieser Knoten niemals erreichbar ist.
-                </p>
-
                 <h1>Was nun?</h1>
                 <div class="Entscheidungsweg" id="ti_div_EntscheidungLeft">
                     <h3>Einen Graph erstellen und den Algorithmus durchspielen</h3>
@@ -322,15 +315,11 @@
                 <div class="Entscheidungsweg" id="ti_div_EntscheidungRight">
                     <h3>Sein Wissen an den Forschungsaufgaben testen</h3>
                     <button id="ti_button_gotoFA1">
-                        Forschungsaufgabe: In welcher Reihenfolge werden die Knoten aus der Warteschlange entnommen?
+                        Forschungsaufgabe: Welche Distanzwerte erhalten die Pfade?
                     </button>
                     <br>
                     <button id="ti_button_gotoFA2">
                         Forschungsaufgabe: Welche Kosten haben die Kanten?
-                    </button>
-                    <br>
-                    <button id="ti_button_gotoFA3">
-                        Forschungsaufgabe: Was passiert bei negativen Kantenkosten?
                     </button>
                 </div>
             </div>
@@ -563,24 +552,21 @@
                 <h3>Wie sieht der (Pseudo-)Code des Algorithmus aus?</h3>
                 <div>
                     <pre><code>Eingabe: Gewichteter, ungerichteter oder gerichteter Graph G=(V,E) mit Gewichtsfunktion l,
-         wobei alle Gewichte positiv sind.
-Ausgabe: Eine Liste {d(v[j]) : j = 1,..,n}, 
-         welche die Distanzen dist(v[1],v[j]) = d(v[j]) enthält.</code></pre>
+         wobei der Graph keine negative Kreise enthält.
+Ausgabe: eine Matrix d, die die kürzesten Distanzen enthält.</code></pre>
                     <hr>
                     <pre><code>
 BEGIN
-    d(v[1]) &larr; 0
-    FOR i = 2,..,n DO
-        d(v[i]) &larr; &#8734;, parent(v[i]) &larr; NULL
-    WHILE queue &ne; &empty; DO
-        u = queue.extractMin()
-        FOR ALL (u,w) &isin; E DO
-            dist &larr; d(u) + l(u,w)
-            IF w &isin; queue AND d(w) > dist DO
-                d(w) = dist, parent(w) = (u,w)
-            ELSE IF parent(w) == NULL THEN
-                d(w) = dist, parent(w) = (u,w)
-                queue.insert(w,dist)
+  FOR ALL v ∈ V
+    d[v][v] ← 0
+  FOR ALL (u,v) ∈ E
+    d[u][v] ← w(u,v)
+  FOR k from 1 to |V|
+    FOR i from 1 to |V|
+      FOR j from 1 to |V|
+        if d[i][j] > d[i][k] + d[k][j]
+          d[i][j] ← d[i][k] + d[k][j]
+        end if
 END</code></pre>
                 </div>
                 <h3>Wie schnell ist der Algorithmus?</h3>
@@ -611,51 +597,38 @@ END</code></pre>
                         Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus.
                         Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.
                     </p>
-                    <h2>Laufzeit des Dijkstra-Algorithmus</h2>
+                    <h2>Laufzeit des Floyd-Warshall Algorithmus</h2>
                     <p>
-                        Nehmen wir an, dass der Dijkstra-Algorithmus auf einem Graph mit <var>n</var> Knoten und <var>m</var> Kanten ausgeführt wird.
+                        Angenommen der Graph besteht aus <strong>n</strong> Knoten. Der Floyd-Warshall Algorithmus vergleicht alle mögliche Pfade im Graphen zwischen jedem Paar von Knoten. Drei inliegende Schleifen enthalten eine Operation, die in konstanter Zeit ausgeführt wird.
                     </p>
                     <p>
-                        Da jeder Knoten des Graphen betrachtet wird, brauchen wir mindestens <var>n</var> Schritte.
+                        Jede Schleife besteht aus n Iterationen. Daher ist die <strong>Gesamtlaufzeit des Algorithmus</strong> \(O(n^3)\) das heißt der Algorithmus läuft in kubischer Zeit.
                     </p>
                     <p>
-                        Um einen Knoten zu behandeln, muss er zuerst aus der Warteschlange entnommen werden. Da wir jedoch immer nur den Knoten, der momentan die geringste Distanz zum Startknoten hat, entnehmen, kann man sich die Warteliste so vorstellen, dass aus allen <var>n</var> Knoten derjenige mit der geringsten Distanz gesucht wird. Um die Knoten auszuwählen braucht der Algorithmus also <var>n &middot; n</var> Einzelschritte.
-                    </p>
-                    <p>
-                        Um neue Knoten in die Warteschlange einzufügen, werden die Nachbarknoten der ausgehenden Kanten dieses Knotens betrachtet und anhand des Gewichts entschieden, ob der Nachbarknoten in die Warteschlange eingereiht wird oder nicht. Somit werden alle erreichbaren Kanten betrachtet, was bedeutet, dass der Algortihmus weitere <var>m</var> Einzelschritte benötigt.
-                    </p>
-                    <p>
-                        Insgesamt liegt die Laufzeit des Algortihmus also in der Größenordnung <var>m + n&sup2;</var>, wenn man die Warteschlange als Liste von Knoten betrachtet.
-                    </p>
-                    <p>
-                        Es ist auch möglich diese Laufzeit weiter zu verbessern, sodass sie nur noch in der Größenordnung <var>m + n &middot; log(n)</var> liegt. Dazu muss man jedoch für die Warteschlange eine andere Datenstruktur, nämlich einen Heap verwenden.
+                        Den vollständigen Beweis kann der interessierte Leser in der geeigneten Literatur nachlesen.
                     </p>
                 </div>
                 <h3>Berechnet der Algorithmus wirklich die kürzesten Wege?</h3>
                 <div>
-                    <h2>Ein Beweis durch Widerspruch</h2>
-                    <p>Da bei diesem Algorithmus die Kantenkosten positiv sein müssen, gilt folgende Aussage: <strong>Alle Teilstrecken, die auf einem kürzesten Weg liegen, sind ebenfalls kürzeste Wege.</strong>
-                    Um diese Aussage zu beweisen, nehmen wir das Gegenteil an: Es gibt eine Teilstrecke, die auf einem kürzesten Weg liegt, die selbst aber kein kürzester Weg ist. Sei dies in unserem Beispiel die Teilstrecke zwischen b und c, die auf dem kürzesten Weg von a nach d liegt.</p>
-                    <p><figure class="fig"><img src="img/graph_korrekt.png" alt="Beispielgraph" height="120"></figure></p>
-                    <p>Wenn diese Teilstrecke nun kein kürzester Weg ist, dann muss es einen anderen kürzeren Weg geben. Dieser Weg ist durch den orangen Pfeil in dem untenstehenden Bild dargestellt. Nun gibt es einen neuen Weg von a nach d, der zwischen b und c den orangenen Weg benutzt und kürzer sein muss als der alte Weg. Dies widerspricht aber unserer Annahme, dass der ursprüngliche Weg von a nach d bereits ein kürzester Weg war.</p>
-                    <p><figure class="fig"><img src="img/graph_korrekt_ggbsp.png" alt="Gegenbeispiel" height="180"><figcaption>Der orangene Weg sei irgendein kürzerer Weg von b nach c</figcaption></figure></p>
-                    <p>Da wir einen Widerspruch zu dem Gegenteil unserer Aussage gefunden haben, gilt unsere eigentliche Aussage, dass alle Teilstrecken, die auf einem kürzesten Weg liegen, ebenfalls kürzeste Wege sind. Damit wissen wir auch, dass alle Wege, die der Algorithmus vom Startknoten aus berechnet, kürzeste Wege sind.</p>
-                </div>
-                <h3>Wie löst man das Problem negativer Kantenkosten?</h3>
-                <div>
-                    <p>In Forschungsaufgabe 3 hast du gesehen, dass negative Kantenkosten beim Dijkstra-Algorithmus nicht erlaubt sind, da andernfalls nicht garantiert werden kann, dass die richtigen kürzesten Wege gefunden werden:
-                    Der Dijkstra-Algorithmus findet vom Startknoten zum Knoten f einen kürzesten Weg mit Kosten 4, obwohl der kürzeste Weg eigentlich Kosten 3 hätte.</p>
-                    <p><figure class="fig"><img src="img/FA3Example.png" alt="Negatives Beispiel aus Forschungsaufgabe 3" height="250"><figcaption>Beispielgraph aus Forschungsaufgabe 3</figcaption></figure></p>
-                    <br clear="all">
-                    <p>Was macht man nun also, wenn eine Kante negative Kosten hat? Eine Möglichkeit wäre es, alle Kantenkosten mit einer Zahl zu addieren, die groß genug ist, um alle Kantenkosten positiv werden zu lassen. Man könnte zum Beispiel alle Kantenkosten um den Betrag der günstigsten Kante vergrößern. Möchte man Kanten mit Kosten 0 vermeiden, addiert man diesen Betrag + 1. Im untenstehenden Beispiel hat die günstigste Kante Kosten -2, also würden wir zu allen Kosten 3 dazuaddieren.
+                    <h2>Ein Beweis durch Induktion</h2>
+                    <p>Induktionshypothese: nach der Iteration <strong>p</strong> der äußeren Schleife werden die kürzesten Wege, die nur Knoten aus <strong>{1, ..., p}</strong> enthalten, gefunden.</p>
+                    <p>Am Anfang, wenn noch keine Iterationen der äußeren Schleife ausgeführt wurden, enthält jeder Eintrag d[i][j] die kürzeste Distanz von i bis j mit 0 Zwischenknoten: das Gewicht der Kante (i,j).</p>
+                    <p>Vor der Iteration <strong>p</strong> gilt, dass der kürzeste Pfad Q von <strong>i</strong> nach <strong>j</strong> nur die Knoten aus der Menge <strong>{1, ..., p-1}</strong> enthält.</p>
+                    <p>Bei der Iteration <strong>p</strong> wird die Länge von Q mit der Länge vom neuen Pfad R verglichen. R besteht aus R1 (der Pfad von <strong>i</strong> nach <strong>p</strong> mit Zwischenknoten aus <strong>{1, ..., p-1}</strong>) und R2 (der Pfad von <strong>p</strong> nach <strong>j</strong> mit Zwischenknoten aus
+                        <strong>{1, ..., p-1}</strong>). Der kürzeste Pfad zwischen Q und R wird ausgewählt.</p>
+                    <p>Also der kürzeste Weg von <strong>i</strong> nach <strong>j</strong>, der nur Knoten aus <strong>{1, ..., p}</strong> enthält:</p>
+                    <ul>
+                        <li>
+                            enthält entweder den Knoten <strong>p</strong> nicht und damit gleich dem Weg aus der vorigen Iteration ist
+                        </li>
+                        <li>
+                            oder enthält den Knoten <strong>p</strong> und damit kann in Pfaden von <strong>i</strong> nach <strong>p</strong> und von <strong>p</strong> nach <strong>j</strong> zerlegt werden kann. Die Pfade von <strong>i</strong> nach <strong>p</strong> und von <strong>p</strong> nach <strong>j</strong> sind gleich wie in der vorigen Iteration, weil die nur Knoten aus
+                            <strong>{1, ..., p-1}</strong> enthalten.
+                        </li>
+                    </ul>
+                    <p>
+                        Daher gilt: nach der Iteration <strong>p</strong> werden die kürzesten Wege, die nur Knoten aus <strong>{1, ..., p}</strong> enthalten, zwischen allen Paaren von Knoten gefunden.
                     </p>
-                    <p><figure class="fig"><img src="img/negativeExample.png" alt="Negatives Beispiel" height="150"><figcaption>Günstigster Weg von a nach g ist a-b-c-d-e-g</figcaption></figure></p>
-                    <br clear="all">
-                    <p>Bevor wir die Kantenkosten positiv gemacht hatten, war der kürzeste Weg von a nach g der Weg a-b-c-d-e-g mit Gesamtkosten -5 gewesen. Nun ist der kürzeste Weg a-f-g mit Gesamtkosten 6. Da wir in erster Linie an dem kürzesten Weg interessiert waren, ist es nicht so schlimm, dass die Gesamtkosten unterschiedlich sind. Es wurde jedoch ein vollkommen anderer Weg als kürzester Weg gefunden. Also hilft es nicht weiter, wenn wir alle Kanten mit einer großen Zahl addieren.
-                    </p>
-                    <p><figure class="fig"><img src="img/negativeExample2.png" alt="Negatives Beispiel mit positiven Kantenkosten" height="150"><figcaption>Günstigster Weg von a nach g ist a-f-g</figcaption></figure></p>
-                    <br clear="all">
-                    <p>Um mit negativen Kantenkosten umgehen zu können, müsste auch jeder bereits abgearbeitete Knoten wieder aktualisiert werden können, falls ein noch kürzerer Weg zu ihnen gefunden wurde. Ein Algorithmus, der das kann, ist der <a href="http://www-m9.ma.tum.de/material/spp/Bellman-Ford-Algorithmus.html">Bellman-Ford-Algorithmus</a></p>
                 </div>
                 <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>
                 <div>
@@ -674,7 +647,7 @@ END</code></pre>
     </div>
     <footer>
         <p class="Disclaimer">
-            IDP Projekt von Lisa Velden am Lehrstuhl M9 der Technischen Universität München. 2014 | <a href="http://www-m9.ma.tum.de/Allgemeines/Rechtliches">Disclaimer und Rechtshinweise</a> | <a href="http://www-m9.ma.tum.de/Allgemeines/Impressum">Impressum</a> | <a href="mailto&#58;m&#46;ritter&#64;ma&#46;tum&#46;de&#63;subject&#61;M9&#45;Web&#45;Feedback">Anregungen</a>
+            IDP Projekt von Aleksejs Voroncovs am Lehrstuhl M9 der Technischen Universität München. 2015 | <a href="http://www-m9.ma.tum.de/Allgemeines/Rechtliches">Disclaimer und Rechtshinweise</a> | <a href="http://www-m9.ma.tum.de/Allgemeines/Impressum">Impressum</a> | <a href="mailto&#58;m&#46;ritter&#64;ma&#46;tum&#46;de&#63;subject&#61;M9&#45;Web&#45;Feedback">Anregungen</a>
         </p>
     </footer>
 </body>
