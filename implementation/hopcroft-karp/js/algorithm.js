@@ -98,7 +98,9 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     /**
      * Gibt das Statusausgabefenster an.
      */
-    var statusErklaerung = "#ta_div_statusErklaerung";
+    var st = "ta";
+
+    var statusErklaerung = "#"+st+"_div_statusErklaerung";
     /*
     * Hier werden die Statuskonstanten definiert
     * */
@@ -117,23 +119,22 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     this.run = function() {
         this.initCanvasDrawer();
         // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
-        $("#ta_div_abspielbuttons").append("<button id=\"ta_button_Zurueck\">"+LNG.K('algorithm_btn_prev')+"</button>"
-                        +"<button id=\"ta_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button>"
-                        +"<button id=\"ta_button_vorspulen\">"+LNG.K('algorithm_btn_frwd')+"</button>"
-                        +"<button id=\"ta_button_stoppVorspulen\">"+LNG.K('algorithm_btn_paus')+"</button>");
-        $("#ta_button_stoppVorspulen").hide();
-        $("#ta_button_Zurueck").button({icons:{primary: "ui-icon-seek-start"}, disabled: true});
-        $("#ta_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: false});
-        $("#ta_button_vorspulen").button({icons:{primary: "ui-icon-seek-next"}, disabled: false});
-        $("#ta_button_stoppVorspulen").button({icons:{primary: "ui-icon-pause"}});
-        $("#ta_div_statusTabs").tabs();
+        $("#"+st+"_div_abspielbuttons").append('<button id="'+st+'_button_Zurueck">'+LNG.K('algorithm_btn_prev')+'</button>'
+                        +'<button id="'+st+'_button_1Schritt">'+LNG.K('algorithm_btn_next')+'</button>'
+                        +'<button id="'+st+'_button_vorspulen">'+LNG.K('algorithm_btn_frwd')+'</button>'
+                        +'<button id="'+st+'_button_stoppVorspulen">'+LNG.K('algorithm_btn_paus')+'</button>');
+        $("#"+st+"_button_stoppVorspulen").hide();
+        $("#"+st+"_button_Zurueck").button({icons:{primary: "ui-icon-seek-start"}, disabled: true});
+        $("#"+st+"_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: false});
+        $("#"+st+"_button_vorspulen").button({icons:{primary: "ui-icon-seek-next"}, disabled: false});
+        $("#"+st+"_button_stoppVorspulen").button({icons:{primary: "ui-icon-pause"}});
+        $("#"+st+"_div_statusTabs").tabs();
         $(".marked").removeClass("marked");
-        //$("#ta_p_l1").addClass("marked");
-        $("#ta_tr_LegendeClickable").removeClass("greyedOutBackground");
+        $("#"+st+"_tr_LegendeClickable").removeClass("greyedOutBackground");
         this.registerEventHandlers();
         this.needRedraw = true;
     };
-    
+
     /**
      * Beendet die Ausführung des Algorithmus.
      * @method
@@ -143,18 +144,18 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         this.destroyCanvasDrawer();
         this.deregisterEventHandlers();
     };
-    
+
     /**
      * Beendet den Tab und startet ihn neu
      * @method
      */
     this.refresh = function() {
         this.destroy();
-        var algo = new HKAlgorithm($("body").data("graph"),$("#ta_canvas_graph"),$("#tab_ta"));
-        $("#tab_ta").data("algo",algo);
+        var algo = new HKAlgorithm($("body").data("graph"),$("#"+st+"_canvas_graph"),$("#tab_"+st));
+        $("#tab_"+st).data("algo",algo);
         algo.run();
     };
-    
+
     /**
      * Zeigt and, in welchem Zustand sich der Algorithmus im Moment befindet.
      * @returns {Number} StatusID des Algorithmus
@@ -162,7 +163,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     this.getStatusID = function() {
         return statusID;
     };
-    
+
     /**
      * Registriere die Eventhandler an Buttons und canvas<br>
      * Nutzt den Event Namespace ".HKAlgorithm"
@@ -170,24 +171,24 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      */
     this.registerEventHandlers = function() {
 //        canvas.on("mousemove.HKAlgorithm",function(e) {algo.canvasMouseMoveHandler(e);});
-        $("#ta_button_1Schritt").on("click.HKAlgorithm",function() {algo.singleStepHandler();});
-        $("#ta_button_vorspulen").on("click.HKAlgorithm",function() {algo.fastForwardAlgorithm();});
-        $("#ta_button_stoppVorspulen").on("click.HKAlgorithm",function() {algo.stopFastForward();});
-        $("#ta_tr_LegendeClickable").on("click.HKAlgorithm",function() {algo.changeVorgaengerVisualization();});
-        $("#ta_button_Zurueck").on("click.HKAlgorithm",function() {algo.previousStepChoice();});
+        $("#"+st+"_button_1Schritt").on("click.HKAlgorithm",function() {algo.singleStepHandler();});
+        $("#"+st+"_button_vorspulen").on("click.HKAlgorithm",function() {algo.fastForwardAlgorithm();});
+        $("#"+st+"_button_stoppVorspulen").on("click.HKAlgorithm",function() {algo.stopFastForward();});
+        $("#"+st+"_tr_LegendeClickable").on("click.HKAlgorithm",function() {algo.changeVorgaengerVisualization();});
+        $("#"+st+"_button_Zurueck").on("click.HKAlgorithm",function() {algo.previousStepChoice();});
     };
-    
+
     /**
      * Entferne die Eventhandler von Buttons und canvas im Namespace ".HKAlgorithm"
      * @method
      */
     this.deregisterEventHandlers = function() {
         canvas.off(".HKAlgorithm");
-        $("#ta_button_1Schritt").off(".HKAlgorithm");
-        $("#ta_button_vorspulen").off(".HKAlgorithm");
-        $("#ta_button_stoppVorspulen").off(".HKAlgorithm");
-        $("#ta_tr_LegendeClickable").off(".HKAlgorithm");
-        $("#ta_button_Zurueck").off(".HKAlgorithm");
+        $("#"+st+"_button_1Schritt").off(".HKAlgorithm");
+        $("#"+st+"_button_vorspulen").off(".HKAlgorithm");
+        $("#"+st+"_button_stoppVorspulen").off(".HKAlgorithm");
+        $("#"+st+"_tr_LegendeClickable").off(".HKAlgorithm");
+        $("#"+st+"_button_Zurueck").off(".HKAlgorithm");
     };
 
     /**
@@ -203,30 +204,30 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.fastForwardAlgorithm = function () {
-        $("#ta_button_vorspulen").hide();
-        $("#ta_button_stoppVorspulen").show();
-        $("#ta_button_1Schritt").button("option", "disabled", true);
-        $("#ta_button_Zurueck").button("option", "disabled", true);
+        $("#"+st+"_button_vorspulen").hide();
+        $("#"+st+"_button_stoppVorspulen").show();
+        $("#"+st+"_button_1Schritt").button("option", "disabled", true);
+        $("#"+st+"_button_Zurueck").button("option", "disabled", true);
         var geschwindigkeit = 200;	// Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
 
         fastForwardIntervalID = window.setInterval(function () {
             algo.nextStepChoice();
         }, geschwindigkeit);
     };
-    
+
     /**
      * Stoppt das automatische Abspielen des Algorithmus
      * @method
      */
     this.stopFastForward = function() {
-        $("#ta_button_vorspulen").show();
-        $("#ta_button_stoppVorspulen").hide();
-        $("#ta_button_1Schritt").button("option", "disabled", false);
-        $("#ta_button_Zurueck").button("option", "disabled", false);
+        $("#"+st+"_button_vorspulen").show();
+        $("#"+st+"_button_stoppVorspulen").hide();
+        $("#"+st+"_button_1Schritt").button("option", "disabled", false);
+        $("#"+st+"_button_Zurueck").button("option", "disabled", false);
         window.clearInterval(fastForwardIntervalID);
         fastForwardIntervalID = null;
     };
-    
+
     /**
     * In dieser Funktion wird der nächste Schritt des Algorithmus ausgewählt.
     * Welcher das ist, wird über die Variable "statusID" bestimmt.<br>
@@ -269,7 +270,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      */
     this.initialize = function () {
         this.beginIteration();
-        $("#ta_button_Zurueck").button("option", "disabled", false);
+        $("#"+st+"_button_Zurueck").button("option", "disabled", false);
     };
 
     /*
@@ -457,7 +458,10 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         node.setLayout('fillStyle',"SteelBlue ");
     };
     var hideEdge = function(edge) {
-        edge.setLayout("lineWidth", global_Edgelayout.lineWidth * 0.3);
+        if(matching[edge.getEdgeID()]){
+            edge.setLayout("lineWidth", global_Edgelayout.lineWidth * 0.6);
+        }
+        else edge.setLayout("lineWidth", global_Edgelayout.lineWidth * 0.3);
     };
     var hideNode = function(node){
         node.setLayout('fillStyle',"DarkGray");
@@ -587,18 +591,16 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     this.endAlgorithm = function() {
         //Button, der das Matching anzeigt
         toggleMatchButton = true;
-        $(statusErklaerung).append("<button id=ta_show_match>"+LNG.K('algorithm_btn_match')+"</button>");
-        $("#ta_show_match").button();
-        //$("#ta_button_1Schritt").on("click.HKAlgorithm",function() {algo.singleStepHandler();});
-        $("#ta_show_match").click(function() {
+        $(statusErklaerung).append("<button id=show_match>"+LNG.K('algorithm_btn_match')+"</button>");
+        $("#show_match").button().click(function() {
             if(toggleMatchButton){
                 //alle Nicht-Matching-Kanten in den Hintergrund
                 for(var e in graph.edges) graph.edges[e].setLayout("lineWidth", global_Edgelayout.lineWidth * 0.3);
-                $("#ta_show_match").button( "option", "label", LNG.K('algorithm_btn_match1') );
+                $("#show_match").button( "option", "label", LNG.K('algorithm_btn_match1') );
             }
             else{
                 for(var e in graph.edges)  graph.edges[e].restoreLayout();
-                $("#ta_show_match").button( "option", "label", LNG.K('algorithm_btn_match') );
+                $("#show_match").button( "option", "label", LNG.K('algorithm_btn_match') );
             }
             //Matching-Kanten formatieren
             for(var e in matching) setEdgeMatched(matching[e]);
@@ -607,22 +609,22 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         });
         //Forschungsaufgabe und Erklaerung
         $(statusErklaerung).append("<p></p><h3>"+LNG.K('algorithm_msg_finish')+"</h3>");
-        $(statusErklaerung).append("<button id=ta_button_gotoIdee>"+LNG.K('algorithm_btn_more')+"</button>");
+        $(statusErklaerung).append("<button id=button_gotoIdee>"+LNG.K('algorithm_btn_more')+"</button>");
         $(statusErklaerung).append("<h3>"+LNG.K('algorithm_msg_test')+"</h3>");
-        $(statusErklaerung).append("<button id=ta_button_gotoFA1>"+LNG.K('algorithm_btn_exe1')+"</button>");
-        $(statusErklaerung).append("<button id=ta_button_gotoFA2>"+LNG.K('algorithm_btn_exe2')+"</button>");
-        $("#ta_button_gotoIdee").button();
-        $("#ta_button_gotoFA1").button();
-        $("#ta_button_gotoFA2").button();
-        $("#ta_button_gotoIdee").click(function() {$("#tabs").tabs("option","active", 3);});
-        $("#ta_button_gotoFA1").click(function() {$("#tabs").tabs("option","active", 4);});
-        $("#ta_button_gotoFA2").click(function() {$("#tabs").tabs("option","active", 5);});
+        $(statusErklaerung).append("<button id=button_gotoFA1>"+LNG.K('algorithm_btn_exe1')+"</button>");
+        $(statusErklaerung).append("<button id=button_gotoFA2>"+LNG.K('algorithm_btn_exe2')+"</button>");
+        $("#button_gotoIdee").button();
+        $("#button_gotoFA1").button();
+        $("#button_gotoFA2").button();
+        $("#button_gotoIdee").click(function() {$("#tabs").tabs("option","active", 3);});
+        $("#button_gotoFA1").click(function() {$("#tabs").tabs("option","active", 4);});
+        $("#button_gotoFA2").click(function() {$("#tabs").tabs("option","active", 5);});
         // Falls wir im "Vorspulen" Modus waren, daktiviere diesen
         if(fastForwardIntervalID != null) {
             this.stopFastForward();
         }
-        $("#ta_button_1Schritt").button("option", "disabled", true);
-        $("#ta_button_vorspulen").button("option", "disabled", true);
+        $("#"+st+"_button_1Schritt").button("option", "disabled", true);
+        $("#"+st+"_button_vorspulen").button("option", "disabled", true);
     };
 
      /**
@@ -633,10 +635,10 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     this.previousStepChoice = function() {
         this.replayStep();
         if(history.length == 0){
-            $("#ta_button_Zurueck").button("option", "disabled", true);
+            $("#"+st+"_button_Zurueck").button("option", "disabled", true);
         }
-        $("#ta_button_1Schritt").button("option", "disabled", false);
-        $("#ta_button_vorspulen").button("option", "disabled", false);
+        $("#"+st+"_button_1Schritt").button("option", "disabled", false);
+        $("#"+st+"_button_vorspulen").button("option", "disabled", false);
         this.needRedraw = true;
     };
 
@@ -687,7 +689,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
             matched = oldState.matched;
             disjointPaths = oldState.disjointPaths;
             currentPath = oldState.currentPath;
-            $("#ta_div_statusErklaerung").html(oldState.htmlSidebar);
+            $("#"+st+"_div_statusErklaerung").html(oldState.htmlSidebar);
             for(var key in oldState.nodeProperties) {
                 graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].edge));
                 //graph.nodes[key].setLabel(oldState.nodeProperties[key].label);
@@ -704,7 +706,8 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.setStatusWindow = function(fenster){
-        statusErklaerung = fenster;
+        st = fenster;
+        statusErklaerung = "#"+st+"_div_statusErklaerung";
     };
     /**
      * Gibt die Laenge des kuerzesten Pfades der aktuellen Phase aus.
@@ -731,14 +734,19 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      * Gibt das aktuelle Matching zurueck.
      * @method
      */
-    this.getMatching = function(){return matching};
+    this.getMatching = function(){
+        return matching
+    };
     /**
      * Gibt den aktuellen Augmentationsweg zurueck.
      * @method
      */
-    this.getPath = function () {return disjointPaths[currentPath];};
+    this.getPath = function () {
+        return disjointPaths[currentPath];
+    };
     /**
      * Beendet die aktuelle Iteration und beginnt eine neue.
+     * Die Methode wird fuer die zweite Forschungsaufgabe benoetigt.
      * @method
      */
     this.startNewIteration = function() {
