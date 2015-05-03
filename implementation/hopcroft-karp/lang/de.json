@@ -29,7 +29,7 @@
     "textdb_msg_init_3": "Maximal heißt hier, dass es zusätzlich zu den gefundenen Pfaden keinen anderen kürzesten knotendisjunkten Augmentationsweg gibt.",
 
     "textdb_msg_begin_it": "Beginn der nächsten Phase",
-    "textdb_msg_begin_it_1": "In dieser Phase werden nur Augmentationswege dieser Länge gesucht. Es wird nach einer maximalen Menge von knotendisjunkten Augmentationswegen gesucht. Wenn kein solcher Augmentationsweg gefunden werden kann, endet diese Phase.",
+    "textdb_msg_begin_it_1": "In dieser Phase werden nur Augmentationswege dieser Länge gesucht. Es wird nach einer inklusions-maximalen Menge von kürzesten knotendisjunkten Augmentationswegen gesucht. Wenn kein solcher Augmentationsweg gefunden werden kann, endet diese Phase.",
     "textdb_msg_end_it": "Ende einer Phase",
     "textdb_msg_end_it_1": "Es gibt keine weiteren knotendisjunkten Augmentationswege der Länge ",
     "textdb_msg_end_it_2": "Falls es weitere Augmentationswege gibt, müssen diese länger sein und werden in den nächsten Phasen gefunden.",
@@ -52,11 +52,19 @@
     "textdb_msg_update_2": "Die Kardinalität des Matchings wird um eins erhöht.",
 
     "textdb_msg_gray": "Ausblenden von benutzten Knoten",
-    "textdb_msg_gray_1": "Die Knoten die im aktuellen Augmentationsweg vorkommen, dürfen nicht in anderen Augmentationswegen der aktuellen Phase vorkommen. Deshalb werden sie ausgeblendet.",
+    "textdb_msg_gray_1": "Die Knoten, die im aktuellen Augmentationsweg vorkommen, dürfen nicht in anderen Augmentationswegen der aktuellen Phase vorkommen. Deshalb werden sie ausgeblendet.",
 
     "textdb_msg_case4_1": "Ergebnis: Algorithmus erfolgreich beendet",
     "textdb_msg_case5_1": "Jetzt kann der Algorithmus beginnen!",
 
+    "aufgabe1_qst": "Frage",
+    "aufgabe1_qst_solution": "Lösung",
+    "aufgabe1_qst_answer": "Antworten",
+    "aufgabe1_qst_close": "Schließen",
+    "aufgabe1_qst_correct": "korrekt",
+    "aufgabe1_qst_wrong": "falsch",
+    "aufgabe1_qst_correctanswer": "Die korrekte Antwort ist: ",
+    "aufgabe1_qst_continue": "Weiter",
     "aufgabe1_btn_next_question": "Zur nächsten Frage vorspulen",
     "aufgabe1_btn_retry": "Nochmal versuchen",
     "aufgabe1_btn_exe2": "Probiere die zweite Forschungaufgabe:",
@@ -66,7 +74,7 @@
     "aufgabe1_answer1_reason1": "Der Algorithmus hat noch keine Berechnungen durchgeführt und es existiert mindesten eine Kante. Dann ist die Länge des kürzesten Augmentationsweges 1.",
     "aufgabe1_answer1_reason2": "Es existiert kein Augmentationsweg mit einer kürzeren Länge. Ein Augmentationsweg mit dieser Länge wird eingeblendet.",
     "aufgabe1_question2": "Wie viele Kanten überdeckt das Matching nach diesem Augmentationsschritt?",
-    "aufgabe1_answer2_reason0": "Nach jedem Augmentationsschritt erhöht sich die Kardinalität des Matchings genau um eins.",
+    "aufgabe1_answer2_reason0": "Nach jedem Augmentationsschritt erhöht sich die Kardinalität des Matchings genau um 1.",
     "aufgabe1_question3": "Ist die gestrichelte Kante nach dem Augmentationsschritt im Matching?",
     "aufgabe1_answer3_reason0": "Die Kante befindet sich auf dem Augmentationsweg, ist aber aktuell im Matching enthalten. Im nächsten Schritt wird sie aus dem Matching entfernt, da die Kanten auf dem Augmentationsweg vertauscht werden.",
     "aufgabe1_answer3_reason1": "Die Kante befindet sich auf dem Augmentationsweg und ist nicht im Matching enthalten. Im nächsten Schritt wird sie zum Matching hinzugefügt, da die Kanten auf dem Augmentationsweg vertauscht werden.",

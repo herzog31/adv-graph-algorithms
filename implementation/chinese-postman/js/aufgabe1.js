@@ -149,7 +149,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             '<p id="tf1_question" class="frage"></p>' +
             '<form id="tf1_question_form"></form>' +
             '<p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button></p>' +
-            '<p id="tf1_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />' +
+            '<p id="tf1_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+
+            '<span id="tf1_question_answer" class="answer"></span><br /><br />' + '<span id="tf1_question_explanation" class="answer"></span><br /><br />' +
             '<button id="tf1_button_modalClose">'+LNG.K('aufgabe1_qst_continue')+'</button></p>');
         //erstelle die buttons und handlers
         $("#tf1_button_modalClose").button({disabled: true}).on("click", function() { algo.removeFrageTab(); });
@@ -202,7 +203,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.handleAnswer = function() {
-        $("#tf1_questionSolution").find(".answer").html("<h2>"+this.frageParam.Antwort +"</h2>");
+        //gebe richtige Antwort und Erklaerung aus
+        $("#tf1_questionSolution").find("#tf1_question_answer").html(this.frageParam.Antwort);
+        $("#tf1_questionSolution").find("#tf1_question_explanation").html(this.frageParam.AntwortGrund);
         //finde die gegebene Antwort
         var answer;
         if(this.frageParam.qid == 1){

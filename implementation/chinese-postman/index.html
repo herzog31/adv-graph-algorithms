@@ -181,8 +181,8 @@
                         </div>
                         <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
                             <p class="pseudocode" id="ta_p_begin">BEGIN</p>
-                            <p class="pseudocode" id="ta_p_l">  1. Prüfen ob der das Problem lösbar ist</p>
-                            <p class="pseudocode" id="ta_p_2">  2. Finden von nicht balancierten Knoten</p>
+                            <p class="pseudocode" id="ta_p_feasible">  1. Auf Lösbarkeit prüfen</p>
+                            <p class="pseudocode" id="ta_p_2">  2. Finden von unbalancierten Knoten</p>
                             <p class="pseudocode" id="ta_p_3">  3. Bestimmen von zusätzlichen Pfaden</p>
                             <p class="pseudocode" id="ta_p_4">  4. Einfügen von zusätzlichen Pfaden</p>
                             <p class="pseudocode" id="ta_p_5">  5. Bestimmen von dem Eulerkreis</p>
@@ -204,10 +204,12 @@
         <div id="tab_ti" style="display: none;">
             <div id="ti_div_Einfuehrungstext">
                 <div class="BeispielbildContainer">
-                    <img id="ti_img_beispiel1" src="img/grad.png" alt="Ausgangsgraph" /><p>Ausgangsgraph. Das Label eines Knoten ist die Differenz zwischen Ausgangsgrad und Eingangsgrad.
+                    <img id="ti_img_beispiel1" src="img/grad.png" alt="Ausgangsgraph" /><p>Ausgangsgraph. <br> Das Label eines Knoten ist die Differenz zwischen Ausgangsgrad und Eingangsgrad.
                     Knoten mit Label ungleich 0 sind unbalanciert.</p><br />
                     <img id="ti_img_beispiel3" src="img/matching.png" alt="Matching" width="350"/><p>Links ist der bipartite Matching-Graph mit allen unbalancierten Knoten.
-                    Hier wird bestimmt zwischen welchen Knoten neue Wege eingefügt werden. Rechts ist der Graph nach den Pfadeinfügungen.</p><br />
+                    Hier wird bestimmt zwischen welchen Knoten neue Wege eingefügt werden. Rechts ist der Graph nach den Pfadeinfügungen.</p><br>
+                    <img id="ti_img_beispiel6" src="img/matching_edge.png" alt="Matching Kante" /><p>Matching-Kante.<br> Die Matching-Kanten geben an, zwischen welchen Knoten Pfade eingefügt werden müssen.</p><br>
+                    <img id="ti_img_beispiel5" src="img/new_edge.png" alt="Neue Kante" /><p>Neu eingefügte Kante.<br> Die gestrichelten Kanten repräsentieren das mehrfache Passieren einer Kante.</p><br>
                     <img id="ti_img_beispiel4" src="img/tour.png" alt="Eulertour" /><p>Eulertour. Die verschiedenen Farben kennzeichnen die unterschiedliche Subtouren des Hierholzer-Algorithmus.</p><br />
                 </div>
                 <h1>Briefträgerproblem</h1>
@@ -215,7 +217,10 @@
                     Ein typisches Beispiel für dieses Problems ist ein Postbote, der alle Straßen einer Stadt ablaufen muss und wieder zum Startpunkt zurückkehrt. Dabei will er eine möglichst kurze Distanz zurücklegen.
                     Das Problem lässt sich mit einem Graphen modellieren.
                     Ein Kantenzug ist eine Folge von Kanten im Graphen, sodass jede nächste Kante als Startknoten den Endknoten der vorherigen Kante besitzt.
-                    Ein Kantenzug ist geschlossen, falls er wieder zum Startknoten der ersten Knotens zurückkehrt. Man nennt einen geschlossenen Kantenzug Eulerkreis (Eulertour), falls er der alle Kanten eines Graphen genau einmal enthält.
+                    Ein Kantenzug ist geschlossen, falls er wieder zum Startknoten der ersten Knotens zurückkehrt.
+                </p>
+                <p>
+                    Man nennt einen geschlossenen Kantenzug Eulerkreis (Eulertour), falls er der alle Kanten eines Graphen genau einmal enthält.
                     Das Briefträgerproblem besteht darin, einen geschlossenen Kantenzug im Graphen zu finden, sodass alle Kanten mindesten einmal
                     benutzt werden und die Summe der Kantengewichte des Kantenzugs (Kosten des Rundgangs) minimal ist.
                 </p>
@@ -223,14 +228,14 @@
                 <p>
                     Da Knoten ohne Eingangs- und Ausgangskanten keinen Einfluss auf die Lösung des Problems haben, können wir annehmen, dass solche isolierten Knoten nicht existieren.
                     Das Problem ist genau dann lösbar, wenn der Graph stark zusammenhängend ist (jeder Knoten von jedem Knoten aus erreichbar) und keine negativen Kreise (geschlossener Kantenzug im Graphen, sodass die Summe der Gewichte der Kanten negativ ist) existieren.
-                    Das Problem lässt sich auf das Bestimmen einer Eulertour im Graphen zurückführen. Falls es eine Eulertour im Graphen gibt,
+                    Das Problem lässt sich auf das Bestimmen einer <b>Eulertour</b> im Graphen zurückführen. Falls es eine Eulertour im Graphen gibt,
                     ist diese Tour das optimale Ergebnis, da jede Kante genau einmal besucht wird. Im anderen Fall müssen einige Kanten mehrmals besucht werden. Diese Situation lässt sich modellieren, indem
-                    wir zusätzliche Kanten in den Graphen einfügen, die mehrmals benutzten Kanten repräsentieren (mit dem gleichen Kantengewicht wie die originale Kante). Dann besitzt der Rundgang die gleichen Kosten, wie
+                    wir <b>zusätzliche Kanten</b> in den Graphen einfügen, die mehrfach benutzten Kanten repräsentieren (mit dem gleichen Kantengewicht wie die originale Kante). Dann besitzt der Rundgang die gleichen Kosten, wie
                     die Eulertour im neuen Graphen. Das Problem besteht jetzt darin, die mehrfach benutzten Kanten des minimalen Rundgangs zu bestimmen.
                 </p>
                 <p> Die Anzahl der Eingangskanten eines Knotens nennt man den Eingangsgrad und die Anzahl der Ausgangskanten den Ausgangsgrad.
-                    Ein Theorem der Graphentheorie besagt, dass es genau dann eine Eulertour im Graphen gibt, wenn bei allen Knoten im Graphen der Eingangsgrad mit dem Ausgangsgrad übereinstimmt.
-                    Also reicht es aus, wenn wir zusätzliche Pfade in den Graphen einfügen, sodass nach dem Einfügen bei allen Knoten im Graphen der Eingangsgrad mit dem Ausgangsgrad übereinstimmt.
+                    <i>Ein Theorem der Graphentheorie besagt, dass es genau dann eine Eulertour im Graphen gibt, wenn bei allen Knoten im Graphen der Eingangsgrad mit dem Ausgangsgrad übereinstimmt.</i>
+                    Also reicht es aus, wenn wir <b>zusätzliche Pfade</b> in den Graphen einfügen, sodass nach dem Einfügen bei allen Knoten im Graphen der Eingangsgrad mit dem Ausgangsgrad übereinstimmt.
                     Die Summe der Kantengewichte der Pfade sollte minimal sein.
                     Welche Pfade genau eingefügt werden, wird im Matching-Schritt des Algorithmen festgestellt.
                 </p>
@@ -240,7 +245,7 @@
                 </p>
                 <h1>Kürzeste Wege</h1>
                 <p>
-                    Von den Knoten mit zu wenigen Ausgangskanten müssen Wege zu den Knoten mit zu wenigen Eingangskanten hinzugefügt werden. Da die Kosten minimal sein sollten, kommen nur die kürzesten Wege in Frage.
+                    Von den Knoten mit zu wenigen Ausgangskanten müssen Wege zu den Knoten mit zu wenigen Eingangskanten hinzugefügt werden. Da die Kosten minimal sein sollten, kommen nur die <b>kürzesten Wege</b> in Frage.
                     <!--Für den Matching-Schritt des Algorithmen benötigt man die Abstände und die kürzesten Wege zwischen je zwei Knoten des Graphen.-->
                     Um die kürzesten Wege bestimmen, wird der Algorithmus von <a href="../floyd-warshall/index.html" target="_blank">Floyd-Warshall</a> benutzt. Die Kosten der kürzesten Wege werden im Matching-Schritt benutzt um die optimale Menge von Wegen zu finden.
                     <!--Weitere Erklärungen zu diesem Algorithmen können <a href="../floyd-warshall/index.html" target="_blank">hier</a> gefunden werden.-->
@@ -248,24 +253,25 @@
                 <h1>Matching</h1>
                 <p>
                     Durch Einfügen zusätzlicher Pfade wollen wir erreichen, dass bei allen Knoten im Graphen der Eingangsgrad mit dem Ausgangsgrad übereinstimmt. Dann existiert eine Eulertour im Graphen.
-                    Wir bezeichnen mit der Graddifferenz die Differenz zwischen dem Ausgangs- und dem Eingangsgrad eines Knotens. Um zu bestimmen welche Pfade wir einfügen, muss eine Zuordnung von Knoten
-                    mit negativer Graddifferenz zu den Knoten mit positiver Graddifferenz erfolgen. Dabei bestimmt die Graddifferenz die Anzahl der neuen Pfade, die in diesem Knoten anfangen bzw. enden müssen.
-                    Ein Pfad vergrößert die Graddifferenz des Startknotens um eins und verringert die Graddifferenz des Zielknotens um eins.
+                    Wir bezeichnen mit \(\delta(v)\) die <b>Differenz zwischen Ausgangs- und Eingangsgrad</b> eines Knotens v. Alle Knoten v mit \(\delta(v) \neq 0 \) werden als unbalanciert bezeichnet.
+                    Um zu bestimmen welche Pfade wir einfügen, muss eine Zuordnung von Knoten
+                    mit negativen \(\delta(v)\) zu den Knoten mit positiven \(\delta(v)\) erfolgen. Dabei bestimmt \(\delta(v)\) die Anzahl der neuen Pfade, die in dem Knoten v anfangen bzw. enden müssen.
+                    Ein Pfad vergrößert die Differenz zwischen Ausgangs- und Eingangsgrad des Startknotens um eins und verringert die des Zielknotens um eins.
                 </p>
                 <p>
-                    Das Gewicht der zusätzlichen Pfade sollte minimal sein. Um dieses Ziel zu erreichen erstellt man einen neuen bipartiten Graphen.
-                    Knoten mit Graddifferenz ungleich 0 werden in zwei Partitionen unterteilt (negative und positive Graddifferenzen).
-                    Die Graddifferenz bestimmt wie viele Exemplare des Knotens im bipartiten Graph vorkommen. Z.B. existieren von einem Knoten mit Graddifferenz 3 genau 3 Kopien im Graphen.
+                    Das Gewicht der zusätzlichen Pfade sollte minimal sein. Um dieses Ziel zu erreichen erstellt man einen neuen <b>bipartiten Graphen</b>, der alle unbalancierten Knoten enthält.
+                    Die unbalancierten Knoten werden in zwei Partitionen unterteilt (negatives und positives \(\delta(v)\)).
+                    \(\delta(v)\) bestimmt wie viele Exemplare des Knotens v im bipartiten Graph vorkommen. Zum Beispiel existieren von einem Knoten v mit \(\delta(v)=3\) genau 3 Kopien im Graphen.
                     Bei der Visualisierung des Algorithmen wurde darauf verzichtet mehrere Exemplare eines Knoten darzustellen, damit die Übersicht nicht verloren geht.
                     Stattdessen wird für einen unbalancierten Knoten genau ein Knoten im Matching-Graphen dargestellt.
-                    Die Knoten im Matching-Graph liegen dann möglicherweise auf mehr als einer Matching-Kante (dies wird durch die Graddifferenz bestimmt).
+                    Die Knoten in der Visualisierung des Matching-Graphs liegen dann möglicherweise auf mehr als einer Matching-Kante (dies wird durch die \(\delta(v)\) bestimmt).
                 </p>
                 <p>
-                    Das Gewicht einer Kante stellt die Länge des kürzesten Pfades von dem Knoten mit positiver Graddifferenz zu dem Knoten mit negativer Graddifferenz dar.
-                    Die Summe der positiven Graddifferenzen ist gleich der negierten Summe der negativen Graddifferenzen.
-                    Damit erhalten wir einen vollständigen bipartiten Graph. Wir wenden einen Algorithmus zur Lösung von gewichteten Matchings auf diesen Graphen, wie z.B. die
+                    Das Gewicht einer Kante stellt die Länge des kürzesten Pfades von dem Knoten mit positiver Differenz zwischen dem Ausgangs- und dem Eingangsgrad zu dem Knoten mit negativer Differenz dar.
+                    Die Summe der positiver \(\delta(v)\) ist gleich der negierten Summe der negativer \(\delta(v)\).
+                    Damit erhalten wir einen vollständigen bipartiten Graph. Wir wenden einen Algorithmus zur Lösung von gewichteten Matchings auf diesen Graphen an, wie zum Beispiel die
                     <a href="../hungarian/index.html" target="_blank">Ungarische Methode</a>. Damit erhalten wir die optimale Zuordnung und können die neuen Pfade einfügen.
-                    Die Kanten der Pfade repräsentieren die Kanten des optimalen Rundgangs, die mehrmals benutzt werden.
+                    Die Kanten der Pfade repräsentieren die Kanten des optimalen Rundgangs, die mehrfach benutzt werden.
                 </p>
                 <h1>Eulertour</h1>
                 <p>
