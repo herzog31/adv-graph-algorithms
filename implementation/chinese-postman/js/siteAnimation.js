@@ -97,7 +97,7 @@ function initializeSiteLayout() {
             }
         }
     });
-    $("body").data("graph",new Graph("graphs/standard.txt"));
+    $("body").data("graph",new Graph("graphs/test.txt"));
 }
 
 /**

@@ -150,18 +150,10 @@
                         <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
                         <div class="LegendeText">
                             <table>
-<!--                                <tr>
-                                    <td class="LegendeTabelle"><img src="img/knoten.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>Knoten</span></td>
-                                </tr>-->
                                 <tr>
                                     <td class="LegendeTabelle"><img src="img/matchingKnoten.png" alt="MatchedNode" class="LegendeIcon"></td>
                                     <td><span>Matching-Knoten</span></td>
                                 </tr>
-<!--                                <tr>
-                                    <td class="LegendeTabelle"><img src="img/kante.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>Kante</span></td>
-                                </tr>-->
                                 <tr>
                                     <td class="LegendeTabelle"><img src="img/matchingEdge.png" alt="Knoten" class="LegendeIcon"></td>
                                     <td><span>Matching-Kante</span></td>
@@ -185,9 +177,9 @@
                         <div id="ta_div_statusErklaerung">
                             <h3>Initialisierung des Algorithmus.</h3>
                             <p>Am Anfang des Algorithmus besitzt kein Knoten einen Matching-Partner. Dementsprechend ist das Matching M leer.</p>
-                            <p>In jeder Iteration suchen wir eine nicht erweiterbare Menge an kürzesten knotendisjunkten Augmentationswegen.</p>
-                            <p>Nicht erweiterbar bedeutet, dass es zusätzlich zu den gefundenen Pfaden keinen anderen kürzesten knotendisjunkten Augmentationsweg gibt.</p>
-                            <p>Ein Augmentationsweg ist ein Weg, der mit einem ungematchten Knoten anfängt, mit einem ungematchten Knoten endet und alternierend Matching-Kanten und Nicht-Matching-Kanten benutzt.</p>
+                            <p>In jeder Iteration suchen wir eine inklusions-maximale Menge von kürzesten knotendisjunkten Augmentationswegen.</p>
+                            <p>Inklusions-maximal bedeutet, dass es zusätzlich zu den gefundenen Wegen keinen zusätzlichen kürzesten Augmentationsweg gibt, der knotendisjunkt bezüglich der bereits gefundenen ist.</p>
+                            <p>Ein Augmentationsweg ist ein Weg, der mit einem ungematchten Knoten anfängt, mit einem ungematchten Knoten endet und abwechlend Matching-Kanten und Nicht-Matching-Kanten benutzt.</p>
                         </div>
                         <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
                             <p class="pseudocode" id="ta_p_l1">BEGIN</p>
@@ -217,53 +209,78 @@
         <div id="tab_ti" style="display: none;">
             <div id="ti_div_Einfuehrungstext">
                 <div class="BeispielbildContainer">
-                    <img id="ti_img_1" src="img/path.png" alt="Suche" width="300"/><p>Augmentationsweg</p><br />
-                    <img id="ti_img_2" src="img/augment.png" alt="Suche" width="350"/><p>Suche nach kürzesten Augmentationswegen</p><br />
+                    <img id="ti_img_0" src="img/matching.png" alt="Suche" width="350"/><p>Matching im bipartiten Graph</p><br />
+                    <img id="ti_img_1" src="img/augmentation.png" alt="Suche" width="300"/><p>Einfacher Graph mit einem Augmentationsweg.<br> Links ist ein Augmentationsweg herhorgehoben.
+                    Rechts ist der Graph nach der Augmentation abgebildet.</p><br />
+                    <img id="ti_img_3" src="img/dfs.png" alt="Suche" width="350"/><p>Kürzeste knotendisjunkte Augmentationswege.<br>
+                    Zuerst wird der Schichtengraph erstellt, der alle kürzesten Augmentationswege enthält. Danach werden die knotendisjunkten Augmentationswege bestimmt. Diese sind auf dem Bild fett markiert. </p><br>
+                    <img id="ti_img_4" src="img/disjoint.png" alt="Suche" /><p>Die grauen Knoten kommen in dieser Iteration bereits in anderen kürzesten Augmentationswegen vor.
+                    Der markierte Augmentationsweg ist knotendisjunkt bezüglich der schon verwendeten grauen Knoten. </p><br>
                 </div>
                 <h1>Matching auf bipartiten Graphen</h1>
-                <p>Gegeben ist ein bipartiter Graph G. Ein Graph ist bipartit, falls er aus zwei Knotenpartitionen U und V besteht, sodass zwischen den Knoten innerhalb der Partitionen keine Kanten existieren.
-                    <!--D.h. es existieren nur Kanten, die Knoten aus der Partition V mit den Knoten aus der Partition U verbinden.-->
-                    Ein Matching ist eine Menge von Kanten, sodass in dem Teilgraph, der nur die Kanten aus dem Matching enthält, alle Knoten maximal zu einer Kante inzident sind.
-                    Das zu untersuchende Problem ist das Bestimmen von kardinalitätsmaximalen Matchings auf bipartiten Graphen.
+                <p>Gegeben ist ein <b>bipartiter Graph</b> \(G=(V,E)\). Ein Graph ist bipartit, falls er aus zwei Knotenpartitionen U und V besteht, sodass zwischen den Knoten innerhalb der Partitionen keine Kanten existieren.
+                    Ein <b>Matching</b> ist eine Menge von Kanten, sodass jeder Knoten auf maximal einer Kante liegt. Das Bild rechts zeigt ein Matching auf einem bipartiten Graphen.
+                    Das zu untersuchende Problem ist das Bestimmen von kardinalitätsmaximalen (maximale Anzahl von Elementen) Matchings auf bipartiten Graphen.
                 </p>
                 <p> Zahlreiche Zuordnungsprobleme lassen sich als bipartites Matching-Problem modellieren.
                     Das Problem lässt sich besser veranschaulichen, wenn man sich unter Knoten der einen Partition Studenten und unter Knoten der anderen Partition Arbeitsstellen vorstellt.
                     Die Kanten repräsentieren mögliche Zuordnungen bzw. Qualifikationen.
-                    Das Ziel ist möglicht viele passende Zuordnungen zu finden, wobei die Studenten nur eine Stelle annehmen können und die Stellen nur einmal vergeben wird.
+                    Das Ziel ist möglichst viele passende Zuordnungen zu finden, wobei die Studenten nur eine Stelle annehmen können und die Stellen nur einmal vergeben werden.
                 </p>
                 <h1>Idee des Algorithmen</h1>
                 <p>
-                    Sei M das aktuelle Matching (am Anfang ist es leer). Eine Kante e aus M heißt Matching-Kante und eine Kante e nicht in M heißt freie Kante. Ein Knoten, der zu einer Matching-Kante inzident ist, heißt besetzt. Anderenfalls ist der Knoten frei.
-                    Ein Augmentationsweg im Graphen G ist ein Weg, der
+                    Sei M das aktuelle Matching (am Anfang ist es leer). Kanten in M heißen Matching-Kanten, alle anderen freie Kanten. Die freien Kanten sind auf den Bildern schwarz gekennzeichnet und die Matching-Kanten blau.
+                    Ein Knoten, der auf einer Matching-Kante liegt, heißt besetzt. Anderenfalls ist der Knoten frei. Die besetzten Knoten besitzen auf den Bildern grüne Farbe und Matching-Knoten blaue Farbe.
+                    Ein <b>Augmentationsweg</b> im Graphen G ist ein Weg, der
                     <ul>
                         <li>mit einem freien Knoten startet,</li>
                         <li>mit einem freien Knoten endet und </li>
-                        <li>alternierend freie Kanten und Matching-Kanten benutzt.</li>
+                        <li>abwechselnd freie Kanten und Matching-Kanten benutzt.</li>
                     </ul>
-                    Das Besondere an einem Augmentationsweg ist, dass wenn man die Matching-Kanten des Weges aus M entfernt und stattdessen die freien Kanten des Weges zu den Mathcing hinzufügt, die Kardinalität des Matchings genau um eins erhöht wird.
-                    Die Eigenschaften des Augmentationswegs stellen sicher, dass die freien Kanten des Weges die Matching-Eigenschaften nicht verletzen. Ein Augmentationsweg vergrößert also das Matching.
-                    Ein Theorem aus der Graphentheorie besagt, dass das Matching genau dann maximal ist, wenn es keinen Augmentationsweg gibt.
+                    Das zweite Bild von oben zeigt einen Graphen, in dem ein Augmentationsweg markiert ist.
                 </p>
                 <p>
-                    Ein einfacher Algorithmus zur Bestimmung von maximalen Matchings besteht darin, immer nach einem Augmantationsweg zu suchen und das Matching vergrößern. Existiert kein Augmentationsweg mehr, so ist das Matching optimal.
+                    Wenn man die Matching-Kanten eines Augmentationsweges aus M entfernt und stattdessen die freien Kanten des Augmentationsweges zu dem Matching hinzufügt, wird die Kardinalität des Matchings genau um 1 erhöht.
+                    Alle Knoten auf dem Augmentationswegs liegen maximal auf einer Matching-Kante. Die Endknoten liegen auf keiner Matching-Kante, sodass nach dem Augmentationsschritt ein gültiges Matching entsteht.
+                    Die Anzahl der freien Kanten ist in einem Augmentationsweg genau um 1 größer als die Anzahl der Matching-Kanten. Nach der Augmentation wird das Matching also vergrößert.
+                    Ein Theorem aus der Graphentheorie besagt, dass das Matching genau dann maximal ist, wenn es keinen Augmentationsweg mehr gibt.
+                </p>
+                <p>
+                    Ein einfacher Algorithmus zur Bestimmung von maximalen Matchings besteht darin, immer nach einem Augmentationsweg zu suchen und das Matching zu vergrößern. Existiert kein Augmentationsweg mehr, so ist das Matching optimal.
                     Allerdings kann die Laufzeit dieses Algorithmen in bestimmten Fällen lang sein. Der Algorithmus von Hopcroft und Karp verbessert die Laufzeit im Vergleich zu dem einfachen Algorithmus.
-                    In jeder Iteration des Algorithmen wird eine Menge von kürzesten knotendisjunkten Augmentationswegen gesucht und das Matching mit diesen Augmentationswegen verbessert.
-                    Diese Menge sollte in dem Sinne maximal sein, dass es keinen kürzesten Augmentationsweg existiert, der knotendisjunkt bezüglich der bereits gefundenen ist.
-                    D.h. diese Menge muss nicht kardinalitätsmaximal sein. Nach jeder Iteration erhöht sich die Länge des kürzesten Augmentationsweges. Falls keine Augmentationwege mehr existieren, terminiert der Algorithmus.
+                    In jeder Iteration des Algorithmen werden nur die <b>kürzesten Augmentationswege</b> betrachtet. Es wird nach einer Menge von knotendisjunkten Augmentationswegen gesucht. Das heißt, jeweils zwei Wege dürfen keinen gemeinsamen Knoten enthalten.
+                </p>
+                <p>
+                    Die Menge von kürzesten knotendisjunkten Augmentationswegen sollte <b>inkusions-maximal</b> sein. Das bedeutet, dass es keinen weiteren kürzesten Augmentationsweg existiert, der knotendisjunkt bezüglich der bereits gefundenen ist.
+                    Nachdem die gesuchte inkusions-maximale Menge von Augmentationswegen bestimmt wurde, wird das Matching augmentiert und es beginnt eine neue Iteration.
+                    Nach jeder Iteration erhöht sich die Länge des kürzesten Augmentationsweges. Falls keine Augmentationwege mehr existieren, terminiert der Algorithmus.
                 </p>
                 <h1>Finden von kürzesten Augmentationswegen</h1>
                 <p>
-                    Die kürzesten Augmentationswege können mit Breiten- und Tiefensuche gefunden werden.
-                    Man startet mit allen freien Knoten einer Partition und und führt die Breitensuche schrittweise von diesen Knoten aus. Dabei verteilt man die Knoten in mehreren Schichten.
-                    Angefangen mit den freien Knoten einer Partition (erste Schicht) folgt man den Kanten zu allen Nachbarn dieser Knoten, die jetzt die nächte Schicht darstellen.
-                    Befindet sich ein freier Knoten in dieser Schicht, so wird die Prozedur gestoppt. Andererseits erweitert man den erstellten Graphen um eine Schicht mit den Matching-Partnern der letzten Schicht.
-                    Von diesen Knoten aus untersucht man wieder Nachbarknoten, wobei Knoten der vorherigen Schichten nicht betrachtet werden. Dies wiederholt man solange bis man einen freier Knoten in der aktuellen Schicht existiert oder alle Knoten untersucht wurden,
-                    was bedeutet, dass es keinen weiteren Augmentationsweg existiert. Am Ende entsteht ein Schichtengraph, der alle kürzesten Augmentationswege enthält.
+                    Die kürzesten Augmentationswege können mit <b>Breiten- und Tiefensuche</b> gefunden werden.
+                    Man startet mit allen freien Knoten einer Partition und fügt diese in die erste Schicht eines Schichtengraphen ein. Schrittweise erzeugt man den Schichtengraphen, bis ein freier Knoten gefunden wurde oder alle Knoten bereits untersucht wurden.
+                    Der <b>Schichtengraph</b> wird mit der folgenden Prozedur aufgebaut:
                 </p>
                 <p>
-                    Um eine maximale Menge von knotendisjunkten Augmentationswegen zu finden, nimmt man den Schichtengraph aus dem letzten Schritt. Man startet mit einem freien Knoten der ersten Schicht und wendet die Tiefensuche darauf an.
-                    Falls es einen Augmentationsweg gibt, der mit diesem Knoten startet, wird er gefunden. Alle Knoten, die auf diesem Weg vorkommen, werden aus dem Schichtengraphen entfernt. Wendet man diese Prozedur auf alle Knoten der
+                    Von den Knoten der aktuellen Partition folgt man den Kanten zu allen noch nicht untersuchten Nachbarn dieser Knoten, die jetzt die nächste Schicht darstellen.
+                    Befindet sich ein freier Knoten in der neuen Schicht, so wird die Prozedur beendet. Ist die Schicht leer, so wird die Prozedur ebenfalls gestoppt und es wird ausgegeben, dass keine Augmentationswege existieren.
+                    Andererseits erweitert man den so erstellten Schichtengraphen um eine weitere Schicht mit den Matching-Partnern der letzten Schicht.
+                    Die Schicht mit den Matchingpartnern wird zur aktuellen Schicht und die Prozedur wird wiederholt. Am Ende entsteht ein Schichtengraph, der alle kürzesten (und nur die kürzesten) Augmentationswege enthält, falls Augmentationswege existieren.
+                </p>
+                <p>
+                    Das dritte Bild zeigt den Schichtengraphen mit vier Schichten. Die erste Schicht besteht aus zwei freien Knoten einer Partition. Alle ihre Nachbarn werden zur zweiten Schicht hinzugefügt.
+                    Da kein freier Knoten unter den Knoten der zweiten Schicht existiert, wird eine dritte Schicht mit den Matching-Partnern der zweiten Schicht ertellt.
+                    Alle noch nicht betrachteten Nachbarn der dritten Schicht werden zur vierten Schicht hinzugefügt. Unter ihnen existieren zwei freie Knoten. Also endet die Prozedur.
+                </p>
+                <p>
+                    Um eine inklusions-maximale Menge von knotendisjunkten Augmentationswegen zu finden, benutzt man den Schichtengraph aus dem letzten Schritt. Man startet mit den freien Knoten der ersten Schicht und wendet die <b>Tiefensuche</b> darauf an.
+                    Falls es einen Augmentationsweg gibt, der mit diesem Knoten anfängt, wird er gefunden. Alle Knoten, die auf diesem Weg vorkommen, werden aus dem Schichtengraphen entfernt oder markiert.
+                    Während der Ausführung des Algorithmen werden diese Knoten grau markiert. Wendet man diese Prozedur auf alle Knoten der
                     ersten Schicht an, so ist die gefundene Menge der kürzesten Augmentationswege knotendisjunkt und nach dem Ende dieser Prozedur existiert kein kürzester Augmentationsweg, der bzgl. der bereits gefundenen knotendisjunkt ist.
+                </p>
+                <p>
+                    Auf dem dritten Bild sind die knotendisjunkten Augmentationswege durch dicke Pfeile hervorgehoben. In dieser Iteration würde also das Matching mit diesen beiden Augmentationswegen augmentiert werden.
+                    Danach würde eine neue Iteration anfangen und ein neuer Schichtengraph erstellt werden.
                 </p>
                 <h1>Was nun?</h1>
                 <br style="clear: both;" />
@@ -290,12 +307,6 @@
                         <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
                         <div class="LegendeText">
                             <table>
-<!--
-                                <tr>
-                                    <td class="LegendeTabelle"><img src="img/knoten.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>Knoten</span></td>
-                                </tr>
--->
                                 <tr>
                                     <td class="LegendeTabelle"><img src="img/matchingKnoten.png" alt="MatchedNode" class="LegendeIcon"></td>
                                     <td><span>Matching-Knoten</span></td>
@@ -314,6 +325,8 @@
                 <div id="tf1_div_statusWindow" class="statusWindow">
                     <h2 class="">Prüfe dein Wissen: Wie würde der Algorithmus entscheiden?</h2>
                     <div id="tf1_div_abspielbuttons">
+                    </div>
+                    <div id="tf1_div_questionModal" class="ui-widget ui-widget-content ui-corner-all" style="display: none;">
                     </div>
                     <div id="tf1_div_statusTabs">
                          <ul>
