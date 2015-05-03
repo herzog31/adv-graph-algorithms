@@ -96,6 +96,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     var questions = [];
     var currentQuestion = 0;
     var currentQuestionType = false;
+    var delta = -1, augmentingPathQuestions = 0, equalityGraphQuestions = 0;
 
     const EQUALITY_GRAPH_QUESTION = 1;
     const AUGMENTING_PATH_QUESTION = 2;
@@ -400,7 +401,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                 this.update_labels();
                 break;
             case LABELS_UPDATED:
-                this.showEqualityGraph(lx, ly);
+                this.showNewEqualityGraph();
                 break;
             case SHOWED_EQUALITY_GRAPH:
                 this.findAugmentPathAfterLabeling();
@@ -450,6 +451,24 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             this.needRedraw = true;
             this.addReplayStep();
         }
+    };
+
+    this.showNewEqualityGraph = function(){
+        this.showEqualityGraph(lx, ly);
+        $("#tf2_div_statusErklaerung").html(
+            "<h3>Neuen Gleichheitsgraph bestimmen</h3>" +
+            "<p>Zur Bestimmung eines neuen Gleichheitsgraph muss der Algorithmus zunächst die Markierungen aktualisieren.</p>" +
+            "<p>Dazu wird ein \\(\\Delta\\) wie folgt bestimmt:</p>"+
+            "<p>\\(\\Delta = \\min\\limits_{s \\in S\\ \\wedge\\ y \\in Y \\setminus T}\\{l(s) + l(y) - w(s,y)\\} = "+delta+"\\)</p>" +
+            "<p>Die Markierungen werden dann nach folgender Formel aktualisiert:</p>" +
+            "<p>\\(\\begin{equation}l^\\prime(v) =\\begin{cases}l(v) - "+delta+" & v \\in S\\\\l(v) + "+delta+" & v \\in T\\\\l(v) & sonst\\end{cases}\\end{equation}\\)</p>" +
+            "<p>Der neue Gleichheitsgraph wurde vom Algorithmus markiert (<strong style='font-weight: bold; color: green;'>grün</strong> und <strong>schwarz</strong>).</p>"
+        );
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub,"tf2_div_statusErklaerung"]);
+        $(".marked").removeClass("marked");
+        $("#tf2_p_l6").addClass("marked");
+        $("#tf2_p_l7").addClass("marked");
+        statusID = SHOWED_EQUALITY_GRAPH;
     };
 
 
@@ -541,6 +560,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             this.end();
             this.showQuestionResults();
             $("#tf2_button_1Schritt").button("option", "disabled", true);
+            $("#tf2_button_vorspulen").button("option", "disabled", true);
             showCurrentMatching(xy, false);
             $(".marked").removeClass("marked");
             $("#tf2_p_l13").addClass("marked");
@@ -762,7 +782,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.update_labels = function() {
-        var x, y, delta = -1;
+        var x, y;
+        delta = -1;
         for (y = 0; y < n; y++) {
             if (!T[y] && (delta == -1 || slack[y] < delta)) {
                 delta = slack[y];
@@ -780,19 +801,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
         statusID = LABELS_UPDATED;
         this.showLabels(lx, ly);
-        $("#tf2_div_statusErklaerung").html(
-            "<h3>Neuen Gleichheitsgraph bestimmen</h3>" +
-            "<p>Zur Bestimmung eines neuen Gleichheitsgraph muss der Algorithmus zunächst die Markierungen aktualisieren.</p>" +
-            "<p>Dazu wird ein \\(\\Delta\\) wie folgt bestimmt:</p>"+
-            "<p>\\(\\Delta = \\min\\limits_{s \\in S\\ \\wedge\\ y \\in Y \\setminus T}\\{l(s) + l(y) - w(s,y)\\} = "+delta+"\\)</p>" +
-            "<p>Die Markierungen werden dann nach folgender Formel aktualisiert:</p>" +
-            "<p>\\(\\begin{equation}l^\\prime(v) =\\begin{cases}l(v) - "+delta+" & v \\in S\\\\l(v) + "+delta+" & v \\in T\\\\l(v) & sonst\\end{cases}\\end{equation}\\)</p>" +
-            "<p>Der neue Gleichheitsgraph wurde vom Algorithmus markiert (<strong style='font-weight: bold; color: green;'>grün</strong> und <strong>schwarz</strong>).</p>"
-        );
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub,"tf2_div_statusErklaerung"]);
-        $(".marked").removeClass("marked");
-        $("#tf2_p_l6").addClass("marked");
-        $("#tf2_p_l7").addClass("marked");
         return LABELS_UPDATED;
     };
 
@@ -882,7 +890,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                 var obj = JSON.parse(oldState.edgeProperties[key].edge);
                 graph.edges[key].setLayoutObject(obj);
                 graph.edges[key].hidden = oldState.edgeProperties[key].hidden;
-                //graph.edges[key].setAdditionalLabel(oldState.edgeProperties[key].label);
             }
             if(fastForwardIntervalID == null){
                 $("#tf2_button_1Schritt").button("option", "disabled", false);
@@ -912,7 +919,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             $("#tf2_p_l2").addClass("marked");
         }
         if(end && current == history.length){
-            //end = false;
             this.stopFastForward();
             $("#tf2_button_1Schritt").button("option", "disabled", true);
             $("#tf2_button_vorspulen").button("option", "disabled", true);
@@ -939,8 +945,13 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_div_statusTabs").show();
         $("#tf2_div_questionModal").hide();
         $("#tf2_button_questionClose").off();
-        $("#tf2_button_1Schritt").button("option", "disabled", false);
-        $("#tf2_button_vorspulen").button("option", "disabled", false);
+        if(statusID !== FINISHED) {
+            $("#tf2_button_1Schritt").button("option", "disabled", false);
+            $("#tf2_button_vorspulen").button("option", "disabled", false);
+        }else{
+            $("#tf2_button_1Schritt").button("option", "disabled", true);
+            $("#tf2_button_vorspulen").button("option", "disabled", true);
+        }
     };
 
     /**
@@ -948,6 +959,13 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.generateEqualityGraphQuestion = function() {
+
+        var edgeLayouts = {};
+        for(var edge in graph.edges){
+            edgeLayouts[edge] = [];
+            edgeLayouts[edge][0] = graph.edges[edge].getLayout().lineColor;
+            edgeLayouts[edge][1] = graph.edges[edge].getLayout().lineWidth;
+        }
 
         var edgesInEqualityGraph = [];
         var correctAnswerForField = [];
@@ -970,18 +988,37 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         questions[currentQuestion] = {type: currentQuestionType, rightAnswer: edgesInEqualityGraph};
 
         $("#tf2_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
-            <p>Im aktuellen Schritt wird der Algorithmus einen neuen Gleichheitsgraph bestimmen. Bitte markiere alle Kanten des neuen Gleichheitsgraphs.</p>\
+            <p>Der Algorithmus hat die Knotengewichte angepasst und wird im aktuellen Schritt einen neuen Gleichheitsgraph bestimmen. Bitte markiere alle Kanten des neuen Gleichheitsgraphs.</p>\
             <p><form id="question'+currentQuestion+'_form">'+inputs+'</form></p>\
             <p><button id="tf2_button_questionClose">Antworten</button></p>\
             <p id="tf2_questionSolution">\
             <button id="tf2_button_questionClose2">Weiter</button>\
             </p>');
 
+        $('#question'+currentQuestion+'_form').children("input:checkbox").on("click", function(){
+            var edgeId = $(this).attr("value");
+            var edge = graph.edges[edgeId];
+            if($(this).prop('checked') === true){
+                graph.edges[$(this).attr("value")].setLayout("lineColor", "red");
+                graph.edges[$(this).attr("value")].setLayout("lineWidth", 3);
+            }else{
+                graph.edges[$(this).attr("value")].setLayout("lineColor", edgeLayouts[edgeId][0]);
+                graph.edges[$(this).attr("value")].setLayout("lineWidth", edgeLayouts[edgeId][1]);
+            }
+            algo.needRedraw = true;
+        });
+
         MathJax.Hub.Queue(["Typeset", MathJax.Hub,"tf2_div_questionModal"]);
 
-        $("#tf2_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
+        $("#tf2_button_questionClose2").button({disabled: true}).on("click", function() {
+            algo.closeQuestionModal();
+            algo.nextStepChoice();
+        });
         $("#tf2_button_questionClose").button({disabled: false}).on("click", function() { algo.saveAnswer(); });
 
+        this.canvas.on("click.GraphDrawer", function(e){
+            algo.edgeClickHandler(e, edgeLayouts);
+        });
     };
 
     /**
@@ -998,8 +1035,14 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         questions[currentQuestion] = {type: currentQuestionType, rightAnswer: augmentingPath};
 
         var input = '<input type="text" id="tf2_input_question' + currentQuestion + '" name="question' + currentQuestion + '"/>';
+        var startNodeLabel;
+        for(var i = 0; i < S.length; i++){
+            if(S[i]){
+                startNodeLabel = graph.nodes[i].getOuterLabel();
+            }
+        }
         $("#tf2_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
-            <p>Im aktuellen Schritt wird der Algorithmus einen Augmentationsweg bestimmen. Bitte klicke auf die Knoten des neuen Augmentationsweges.</p>\
+            <p>Im aktuellen Schritt wird der Algorithmus ausgehend vom <span style="font-weight: bold; color: ' + const_Colors.NodeFillingHighlight + ';">hell grün</span> markierten Knoten einen Augmentationsweg bestimmen. Bitte klicke beginnend bei Knoten <span style="font-weight: bold;">' + startNodeLabel + '</span> auf die Knoten des neuen Augmentationsweges.</p>\
             <p><form id="question'+currentQuestion+'_form">'+input+'</form></p>\
             <p><button id="tf2_button_questionClose">Antworten</button></p>\
             <p id="tf2_questionSolution">\
@@ -1034,15 +1077,45 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             algo.needRedraw = true;
         });
         this.canvas.on("click.GraphDrawer", function(e){
-            algo.clickHandler(e, nodeLayouts);
+            algo.nodeClickHandler(e, nodeLayouts);
         });
     };
 
     /**
-     * Reagiert auf den Klick auf Canvas.
+     * Reagiert auf den Klick auf Canvas um die Kanten zu markieren.
      * @method
      */
-    this.clickHandler = function(e, nodeLayouts) {
+    this.edgeClickHandler = function(e, edgeLayouts) {
+        for(var kantenID in graph.edges) {
+            if (graph.edges[kantenID].contains(e.pageX - canvas.offset().left, e.pageY - canvas.offset().top,this.canvas[0].getContext("2d"))) {
+                var sourceLabel = graph.nodes[graph.edges[kantenID].getSourceID()].getOuterLabel();
+                var targetLabel = graph.nodes[graph.edges[kantenID].getTargetID()].getOuterLabel();
+                $('#question'+currentQuestion+'_form').find('label').each(function(i) {
+                    if(this.innerHTML === "(" + sourceLabel + ","+targetLabel+")"
+                        || this.innerHTML === "(" + targetLabel + "," + sourceLabel + ")") {
+                        var idSelector = "#" + $(this).attr("for");
+                        var box = $(idSelector);
+                        box.prop("checked", !box.prop("checked"));
+                    }
+                });
+                if(graph.edges[kantenID].getLayout().lineColor !== "red"){
+                    graph.edges[kantenID].setLayout("lineColor", "red");
+                    graph.edges[kantenID].setLayout("lineWidth", 3);
+                }else {
+                    graph.edges[kantenID].setLayout("lineColor", edgeLayouts[kantenID][0]);
+                    graph.edges[kantenID].setLayout("lineWidth", edgeLayouts[kantenID][1]);
+                }
+                this.needRedraw = true;
+                break;
+            }
+        }
+    };
+
+    /**
+     * Reagiert auf den Klick auf Canvas um die Knoten zu markieren.
+     * @method
+     */
+    this.nodeClickHandler = function(e, nodeLayouts) {
         for(var node in graph.nodes){
             if(Math.abs(graph.nodes[node].getCoordinates().x - (e.pageX - this.canvas.offset().left)) <= 20
                 && Math.abs(graph.nodes[node].getCoordinates().y - (e.pageY - this.canvas.offset().top)) <= 20){
@@ -1121,7 +1194,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                     givenAnswer.push(answerId);
                 }
             });
-            this.showEqualityGraph(lx, ly);
             this.needRedraw = true;
             $('#question'+currentQuestion+'_form').find('label').each(function(i) {
                 if($.inArray(i, questions[currentQuestion].rightAnswer) > -1) {
@@ -1139,8 +1211,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                 $("#tf2_questionSolution").css("color", "red");
                 questions[currentQuestion].answeredCorrect = false;
             }
-        }else if(currentQuestionType === AUGMENTING_PATH_QUESTION){
             this.canvas.off("click.GraphDrawer");
+        }else if(currentQuestionType === AUGMENTING_PATH_QUESTION){
             var givenAnswer = $("#tf2_input_question" + currentQuestion).val().split(" ").join("").split(",");
             if($(givenAnswer).not(questions[currentQuestion].rightAnswer).length === 0
                 && $(questions[currentQuestion].rightAnswer).not(givenAnswer).length === 0){
@@ -1153,6 +1225,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                 $("#tf2_questionSolution").css("color", "red");
                 questions[currentQuestion].answeredCorrect = false;
             }
+            this.canvas.off("click.GraphDrawer");
         }
 
         currentQuestion++;
@@ -1196,12 +1269,20 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      */
     this.askQuestion = function() {
 
-        if(statusID === LABELS_UPDATED) {
+        var randomVariable = Math.random();
+
+        if(equalityGraphQuestions < 2 && statusID === LABELS_UPDATED && randomVariable > 0.5) {
+            equalityGraphQuestions++;
             return EQUALITY_GRAPH_QUESTION;
+        }else if(statusID === LABELS_UPDATED && (equalityGraphQuestions >= 2 || randomVariable <= 0.5)){
+            this.nextStepChoice();
         }
 
-        if(statusID === AUGMENTING_PATH_FOUND){
+        if(augmentingPathQuestions < 3 && statusID === AUGMENTING_PATH_FOUND && randomVariable > 0.5){
+            augmentingPathQuestions++;
             return AUGMENTING_PATH_QUESTION;
+        }else if(statusID === AUGMENTING_PATH_FOUND && (augmentingPathQuestions >= 3 || randomVariable <= 0.5)){
+            this.nextStepChoice();
         }
 
         return false;

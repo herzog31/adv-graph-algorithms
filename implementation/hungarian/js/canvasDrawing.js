@@ -102,14 +102,13 @@ CanvasDrawMethods.drawTextOnLine = function(ctx,layout,source,target,label,even,
     var labelMeasure = ctx.measureText(label);
     var alpha = Math.atan2(target.y-source.y,target.x-source.x);
     var center;
-    var coefficient = sourceNode % 2 == 0 ? 0.5*(sourceNode-1) : -0.5*sourceNode;
-    if(sourceNode == 0) coefficient = 0;
-    var offset;
-    if((graph_constants.V_POSITION - graph_constants.U_POSITION - global_NodeLayout.nodeRadius*2)/nodeCount > 45){
-        offset = 45;
-    }else{
-        offset = (graph_constants.V_POSITION - graph_constants.U_POSITION - global_NodeLayout.nodeRadius*2)/nodeCount;
+    var coefficient = sourceNode % 2 == 0 ? -(sourceNode/2) : (sourceNode+1)/2;
+    if(sourceNode == 0) {
+        coefficient = 0;
+    }else if(sourceNode == 1){
+        coefficient = 1;
     }
+    var offset = (graph_constants.V_POSITION - graph_constants.U_POSITION - global_NodeLayout.nodeRadius*2)/(nodeCount*2);
     if(source.x > target.x){
         center ={
             x: source.x - (0.5*(source.x - target.x) + coefficient*offset/Math.abs(Math.tan(alpha))),
@@ -118,26 +117,11 @@ CanvasDrawMethods.drawTextOnLine = function(ctx,layout,source,target,label,even,
     }else{
         center ={
             x: source.x + (0.5*(target.x - source.x) + coefficient*offset/(Math.tan(alpha))),
-            //y: Math.min(target.y, source.y) + (0.5*Math.abs(target.y - source.y) + coefficient*sourceNode*offset*Math.sin(alpha))
             y: source.y + (0.5*(target.y - source.y) + coefficient*offset)
         };
     }
     ctx.translate(center.x, center.y);
     ctx.rotate(alpha - Math.PI / 2);
-    if(label == "77"){
-        console.log(Math.sin(alpha - Math.PI / 2));
-        console.log(Math.cos(alpha - Math.PI / 2));
-    //    console.log(alpha);
-    //    ctx.rotate(Math.PI/2);
-    //}else{
-    //
-    //    ctx.fillText(label, 0, 0);
-    }
-    //if(Math.abs(alpha)>Math.PI/2) {
-    //    ctx.fillText(label, 0, layout.fontSize*Math.tan(alpha));
-    //}else{
-    //    ctx.fillText(label, 0, layout.fontSize*Math.tan(alpha - Math.PI / 2));
-    //}
     if(Math.abs(alpha)>Math.PI/2) {
         ctx.fillText(label, 3, -layout.fontSize * Math.sin(Math.abs(alpha - Math.PI / 2)));
     }else{
