@@ -48,7 +48,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     var currentQuestion = 0;
     var currentQuestionType = false;
     var questions = new Array();
-    var debugConsole = true;
+    var debugConsole = false;
     var previousStatusId = 0;
     var currentPseudoCodeLine = [1];
 
@@ -886,6 +886,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_div_statusTabs").hide();
         $("#tf1_div_questionModal").show();
         $("#tf1_questionSolution").hide();
+        $("#tf1_div_questionModal").find("form").one("keyup", function() { algo.triggerClick(); });
     };
 
     this.closeQuestionModal = function() {
@@ -894,8 +895,15 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_button_questionClose").off();
         $("#tf1_button_1Schritt").button("option", "disabled", false);
         $("#tf1_button_vorspulen").button("option", "disabled", false);
+        $("#tf1_div_questionModal").off("keyup");
     };
 
+    this.triggerClick = function(event) {
+        if(event.keyCode == 13) {
+            $("#tf1_button_questionClose2").click();
+            $("#tf1_button_questionClose").click();
+        }
+    }
 
     this.generateNextStepQuestion = function() {
         // Question Type 1
@@ -933,16 +941,17 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             form += '<input type="radio" id="tf1_input_question'+currentQuestion+'_'+i+'" name="question'+currentQuestion+'" value="'+answers[i].key+'" />\
             <label for="tf1_input_question'+currentQuestion+'_'+i+'">'+answers[i].answer+'</label><br />';
         }
-        form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
 
         $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_question')+' #'+(currentQuestion+1)+'</div>\
             <p><em>'+LNG.K('aufgabe1_currentstep')+' '+previousStep+'</em></p>\
             <p>'+LNG.K('aufgabe1_qns_1')+'</p>\
+            <form id="question'+currentQuestion+'_form" onsubmit="return false">\
             <p>'+form+'</p>\
             <p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_vanswer')+'</button></p>\
             <p id="tf1_questionSolution">'+LNG.K('aufgabe1_correctanswer')+'<br /><span class="answer"></span><br /><br />\
             <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_next')+'</button>\
-            </p>');
+            </p>\
+            </form>');
 
         $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
         $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
@@ -960,13 +969,14 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             <p style="text-align: center;">'+LNG.K('aufgabe1_qd_2')+'</p>\
             <p style="text-align: center;">'+LNG.K('aufgabe1_qd_3')+$("#tf1_td_setS").html()+LNG.K('aufgabe1_qd_4')+$("#tf1_td_setT").html()+LNG.K('aufgabe1_qd_5')+'</p>\
             <p>'+LNG.K('aufgabe1_qd_6')+'</p>\
-            <p><form id="question'+currentQuestion+'_form">\
+            <p><form id="question'+currentQuestion+'_form" onsubmit="return false">\
             <input type="text" name="question'+currentQuestion+'" value="" placeholder="0" />\
-            </form></p>\
+            </p>\
             <p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_vanswer')+'</button></p>\
             <p id="tf1_questionSolution">'+LNG.K('aufgabe1_correctanswer')+' <span class="answer"></span><br /><br />\
             <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_next')+'</button>\
-            </p>');
+            </p>\
+            </form>');
 
         MathJax.Hub.Queue(["Typeset", MathJax.Hub,"tf1_div_questionModal"]);
 
@@ -1029,17 +1039,18 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             form += '<label for="tf1_input_question'+currentQuestion+'_'+i+'" class="question_label_node">'+changedNodesOuter[i]+'</label>\
             <input type="text" id="tf1_input_question'+currentQuestion+'_'+i+'" name="question'+currentQuestion+'_'+i+'" value="" placeholder="'+currentValue[i]+'" class="question_input_node" /><br style="clear: both;" />';
         }
-        form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
 
         $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_question')+' #'+(currentQuestion+1)+'</div>\
             <p>'+LNG.K('aufgabe1_qnl_1')+delta+LNG.K('aufgabe1_qnl_2')+'</p>\
             <p style="text-align: center;">'+LNG.K('aufgabe1_qnl_3')+$("#tf1_td_setS").html()+LNG.K('aufgabe1_qnl_4')+$("#tf1_td_setT").html()+LNG.K('aufgabe1_qnl_5')+'</p>\
             <p>'+LNG.K('aufgabe1_qnl_6')+'</p>\
+            <form id="question'+currentQuestion+'_form" onsubmit="return false">\
             <p>'+form+'</p>\
             <p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_vanswer')+'</button></p>\
             <p id="tf1_questionSolution">\
             <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_next')+'</button>\
-            </p>');
+            </p>\
+            </form>');
 
         MathJax.Hub.Queue(["Typeset", MathJax.Hub,"tf1_div_questionModal"]);
 
@@ -1074,11 +1085,12 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
         $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_question')+' #'+(currentQuestion+1)+'</div>\
             <p>'+LNG.K('aufgabe1_qeg_1')+'</p>\
-            <p><form id="question'+currentQuestion+'_form">'+inputs+'</form></p>\
+            <p><form id="question'+currentQuestion+'_form" onsubmit="return false">'+inputs+'</p>\
             <p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_vanswer')+'</button></p>\
             <p id="tf1_questionSolution">\
             <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_next')+'</button>\
-            </p>');
+            </p>\
+            </form>');
 
         MathJax.Hub.Queue(["Typeset", MathJax.Hub,"tf1_div_questionModal"]);
 
@@ -1100,29 +1112,36 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         var randomNode = graph.nodes[randomKey];
 
         randomNode.setLabel("?");
+        randomNode.setLayout("fillStyle", const_Colors.NodeFillingHighlight);
         this.needRedraw = true;
 
         questions[currentQuestion] = {type: currentQuestionType, rightAnswer: answer};
 
         var form = '<label for="tf1_input_question'+currentQuestion+'" class="question_label_node">'+randomNode.getOuterLabel()+'</label>\
             <input type="text" id="tf1_input_question'+currentQuestion+'" name="question'+currentQuestion+'" value="" class="question_input_node" /><br style="clear: both;" />';
-        form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
 
         $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_question')+' #'+(currentQuestion+1)+'</div>\
             <p>'+LNG.K('aufgabe1_qsl_1')+'</p>\
             <p>'+LNG.K('aufgabe1_qsl_2')+'<strong>'+randomNode.getOuterLabel()+'</strong>.</p>\
+            <form id="question'+currentQuestion+'_form" onsubmit="return false">\
             <p>'+form+'</p>\
             <p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_vanswer')+'</button></p>\
             <p id="tf1_questionSolution">\
             <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_next')+'</button>\
-            </p>');
+            </p>\
+            </form>');
 
         MathJax.Hub.Queue(["Typeset", MathJax.Hub,"tf1_div_questionModal"]);
 
-        $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
+        $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); algo.setNodeColorToNormal(algo, randomNode); });
         $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
         $("#question"+currentQuestion+"_form").find("input[type='text']").one("keyup", function() { algo.activateAnswerButton(); });
 
+    };
+
+    this.setNodeColorToNormal = function(algo, node) {
+        node.setLayout("fillStyle", const_Colors.NodeFilling);
+        algo.needRedraw = true;
     };
 
     this.saveAnswer = function() {
@@ -1209,6 +1228,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_questionSolution").show();
         $("#tf1_button_questionClose").hide();
         $("#tf1_button_questionClose2").button("option", "disabled", false);
+        $("#tf1_button_questionClose2").focus();
+        $("#tf1_div_questionModal").find("form").one("keyup", function() { algo.triggerClick(); });
+
     };
 
     this.activateAnswerButton = function() {
