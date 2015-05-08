@@ -471,10 +471,6 @@ td.summand-cell{
     background-color: rgb(174, 174, 174);
 }
 
-#ta_div_completeMatrix{
-    max-width: 500px;
-}
-
 .matrix-cell.node_label{
     width: 16px;
     overflow: hidden;

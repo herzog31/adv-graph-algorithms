@@ -23,7 +23,8 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
     distanceMatrix = distance;
     switch(statusID) {
         case 1:
-            $("#" + tabprefix + "_div_statusText").html("<h3>" + LNG.K('textdb_msg_can_start') + "</h3>");
+            $("#" + tabprefix + "_div_statusText").html("<p>" + LNG.K("textdb_msg_the") + " <strong>" + distance.length + "×"
+                + distance.length + "</strong> " + LNG.K('textdb_msg_can_start') + "</p><p> " + LNG.K("textdb_msg_hover") + "</p>");
             table = displayMatrix(distance, contextNew, nodes, false);
             if(distance.length > 11){
                 tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, 10);
@@ -42,14 +43,20 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
             break;
 
         case 2:
+            console.log(contextNew);
             table = displayMatrix(distance, contextNew, nodes,  true);
             var formula = "<p>" + contextNew.formula + "</p>";
+            $("#" + tabprefix + "_div_statusText").html("<p>" + LNG.K("textdb_msg_this_step") + "<strong>" + nodes[contextNew.i].getLabel() + "</strong> "
+                + LNG.K("textdb_msg_and") + "<strong>" + nodes[contextNew.j].getLabel() + "</strong>" + LNG.K("textdb_msg_improved")
+                + LNG.K("textdb_msg_new_path") + "<strong>(" + nodes[contextNew.i].getLabel() + ", " + nodes[contextNew.k].getLabel() + ")</strong>"
+                + LNG.K("textdb_msg_and") + "<strong>(" + nodes[contextNew.k].getLabel() + ", " + nodes[contextNew.j].getLabel() + ")</strong>" + LNG.K("textdb_msg_cheaper")
+                + "<strong>(" + nodes[contextNew.i].getLabel() + ", " + nodes[contextNew.j].getLabel() + ")</strong>." + "</p><p>" + LNG.K("textdb_msg_hover") + "</p>");
             if(distance.length > 11){
                 tableSmall = displayMatrixSmall(distance, contextNew, nodes,  true);
-                $("#" + tabprefix + "_div_statusText").html("<table id='matrix'>" + tableSmall + "</table>");
+                $("#" + tabprefix + "_div_statusText").append("<table id='matrix'>" + tableSmall + "</table>");
                 $("#" + tabprefix + "_div_statusText").append(formula);
             }else{
-                $("#" + tabprefix + "_div_statusText").html("<table id='matrix'>" + table + "</table>");
+                $("#" + tabprefix + "_div_statusText").append("<table id='matrix'>" + table + "</table>");
                 $("#" + tabprefix + "_div_statusText").append(formula);
             }
             $(".marked").removeClass("marked");
@@ -77,12 +84,21 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
                 $(".not-number-cell").css("color", "black");
             $(".marked").removeClass("marked");
             $("#" + tabprefix + "_p_l13").addClass("marked");
+            $("#" + tabprefix + "_td_i").html(distance.length);
+            $("#" + tabprefix + "_td_j").html(distance.length);
+            $("#" + tabprefix + "_td_k").html(distance.length);
             break;
 
         default:
             console.log("Fehlerhafte StatusID.");
     }
-};
+
+    if(contextNew) {
+        $("#" + tabprefix + "_td_i").html(contextNew.i + 1);
+        $("#" + tabprefix + "_td_j").html(contextNew.j + 1);
+        $("#" + tabprefix + "_td_k  ").html(contextNew.k + 1);
+    }
+}
 
 function displayMatrix(distance, contextNew, nodes, markChanged){
     var table = "<tr><td></td>";
@@ -128,7 +144,7 @@ function displayMatrix(distance, contextNew, nodes, markChanged){
     }
 
     return table;
-};
+}
 
 function displayMatrixCorner(distance, contextNew, nodes, markChanged, limit){
     var table = "<tr><td></td>";
@@ -179,7 +195,7 @@ function displayMatrixCorner(distance, contextNew, nodes, markChanged, limit){
     table += "</tr>";
 
     return table;
-};
+}
 
 function displayMatrixSmall(distance, contextNew, nodes, markChanged){
     var cols = new Array();
@@ -321,9 +337,15 @@ function displayMatrixSmall(distance, contextNew, nodes, markChanged){
     }
     table += "</tr>";
     return table;
-};
+}
 
 function markPath(object){
+    var sourceNode = algo.graph.nodes[$(object).attr("i")],
+        targetNode = algo.graph.nodes[$(object).attr("j")];
+    sourceNode.setLayout("borderColor", "green");
+    sourceNode.setLayout("borderWidth", 5);
+    targetNode.setLayout("borderColor", "green");
+    targetNode.setLayout("borderWidth", 5);
     $(object).css("background-color", "#007C30");
     if(algo.paths[$(object).attr("i")][$(object).attr("j")]){
         var edges = algo.paths[$(object).attr("i")][$(object).attr("j")].split(",");
@@ -332,40 +354,39 @@ function markPath(object){
         }
         algo.needRedraw = true;
     }
-};
+}
 
 function unmarkPath(object){
+    var sourceNode = algo.graph.nodes[$(object).attr("i")],
+        targetNode = algo.graph.nodes[$(object).attr("j")];
+    sourceNode.setLayout("borderColor", const_Colors.NodeBorder);
+    sourceNode.setLayout("borderWidth", 3);
+    targetNode.setLayout("borderColor", const_Colors.NodeBorder);
+    targetNode.setLayout("borderWidth", 3);
     $(object).css("background-color", "");
     for(var edge in algo.graph.edges){
         algo.graph.edges[edge].setLayout("lineColor", "black");
     }
     algo.needRedraw = true;
-};
+}
 
 //function to support scrolling of title and first column
 fnScroll = function(){
     $('#divHeader').scrollLeft($('#table_div').scrollLeft());
     $('#firstcol').scrollTop($('#table_div').scrollTop());
-};
+}
 
 function showMatrixPopup(){
+    algo.stopFastForward();
     $("#" + prefix + "_div_completeMatrix").dialog("open");
     $("#" + prefix + "_div_completeMatrix").html("<table id='matrix-display'>" + table + "</table>");
     $("#" + prefix + "_div_completeMatrix").css("width", (distanceMatrix.length + 1)*18 + "px");
-    $("#" + prefix + "_div_completeMatrix").css("max-width", "476px");
-    $("#" + prefix + "_div_completeMatrix").css("margin-bottom", "-10px");
-    $("#matrix-display").css("width", (distanceMatrix.length + 1)*18 + "px");
-    $("#matrix-display").css("max-width", "476px");
-    $("[aria-describedby='ta_div_completeMatrix']").css("width", (24+(distanceMatrix.length + 1)*18) + "px");
-    $("[aria-describedby='ta_div_completeMatrix']").css("height", (106+(distanceMatrix.length + 1)*18) + "px");
-    $("[aria-describedby='ta_div_completeMatrix']").css("max-width", "500px");
-    if((distanceMatrix.length + 1)*18 < 500){
-        $("[aria-describedby='ta_div_completeMatrix']").css("left", $( document ).width()-(24+(distanceMatrix.length + 1)*18) + "px");
-    }else{
-        $("[aria-describedby='ta_div_completeMatrix']").css("left", $( document ).width()-500 + "px");
-    }
-    $("[aria-describedby='ta_div_completeMatrix']").css("top", "0px");
+    $( "[aria-describedby='ta_div_completeMatrix']").resizable({ handles: 'w, s' });
+    $("[aria-describedby='ta_div_completeMatrix']").css("overflow", "auto");
+    $("[aria-describedby='ta_div_completeMatrix']").css("width", (44+(distanceMatrix.length + 1)*18) + "px");
+    $("[aria-describedby='ta_div_completeMatrix']").css("left", $( document ).width()-(64+(distanceMatrix.length + 1)*18) + "px");
+    $("[aria-describedby='ta_div_completeMatrix']").css("top", "20px");
     $("#matrix-display td").removeAttr("onmouseover onmouseout").removeClass("not-number-cell candidate-cell summand-cell updated-cell");
     $(window).scrollTop(0);
     return;
-};
+}
