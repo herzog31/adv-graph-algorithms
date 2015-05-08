@@ -42,7 +42,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      */
     var algo = this;
     
-    var debugConsole = true;
+    var debugConsole = false;
     var tourStartVertex = null;
     var tourStartOddVertex = null;
     var tourCurrentVertex = null;
@@ -1046,6 +1046,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_div_statusTabs").hide();
         $("#tf1_div_questionModal").show();
         $("#tf1_questionSolution").hide();
+        $("#tf1_div_questionModal").find("form").one("keyup", function() { algo.triggerClick(); });
     };
 
     this.closeQuestionModal = function() {
@@ -1054,6 +1055,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_button_questionClose").off();
         $("#tf1_button_1Schritt").button("option", "disabled", false);
         $("#tf1_button_vorspulen").button("option", "disabled", false);
+        $("#tf1_div_questionModal").off("keyup");
     };
 
     this.saveAnswer = function() {
@@ -1092,6 +1094,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_questionSolution").show();
         $("#tf1_button_questionClose").hide();
         $("#tf1_button_questionClose2").button("option", "disabled", false);
+        $("#tf1_button_questionClose2").focus();
+        $("#tf1_div_questionModal").find("form").one("keyup", function() { algo.triggerClick(); });
     };
 
     this.activateAnswerButton = function() {
@@ -1122,21 +1126,29 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             form += '<input type="radio" id="tf1_input_question'+currentQuestion+'_'+i+'" name="question'+currentQuestion+'" value="'+answers[i]+'" />\
             <label for="tf1_input_question'+currentQuestion+'_'+i+'">'+answers[i]+'</label><br />';
         }
-        form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
 
         $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_qst')+' #'+(currentQuestion+1)+'</div>\
             <p>'+LNG.K('aufgabe1_qst_degree1')+'<strong>'+randomNode.getLabel()+'</strong>?</p>\
+            <form id="question'+currentQuestion+'_form" onsubmit="return false">\
             <p>'+form+'</p>\
             <p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button></p>\
             <p id="tf1_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />\
             <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_qst_continue')+'</button>\
-            </p>');
+            </p>\
+            </form>');
 
         $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); algo.setNodeColorToNormal(algo, randomNode); });
         $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
         $("#question"+currentQuestion+"_form").find("input[type='radio']").one("change", function() { algo.activateAnswerButton(); });
 
     };
+
+    this.triggerClick = function(event) {
+        if(event.keyCode == 13) {
+            $("#tf1_button_questionClose2").click();
+            $("#tf1_button_questionClose").click();
+        }
+    }
 
     this.setNodeColorToNormal = function(algo, node) {
         node.setLayout("fillStyle", const_Colors.NodeFilling);
@@ -1176,16 +1188,17 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             form += '<input type="radio" id="tf1_input_question'+currentQuestion+'_'+i+'" name="question'+currentQuestion+'" value="'+answers[i].key+'" />\
             <label for="tf1_input_question'+currentQuestion+'_'+i+'">'+answers[i].answer+'</label><br />';
         }
-        form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
 
         $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_qst')+' #'+(currentQuestion+1)+'</div>\
             <p><em>Im aktuellen Schritt: '+previousStep+'</em></p>\
             <p>'+LNG.K('aufgabe1_qst_nextstep1')+'</p>\
+            <form id="question'+currentQuestion+'_form" onsubmit="return false">\
             <p>'+form+'</p>\
             <p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button></p>\
             <p id="tf1_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<br /><span class="answer"></span><br /><br />\
             <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_qst_continue')+'</button>\
-            </p>');
+            </p>\
+            </form>');
 
         $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
         $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
@@ -1197,13 +1210,14 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_qst')+' #'+(currentQuestion+1)+'</div>\
             <p>'+LNG.K('aufgabe1_qst_subtour1')+'<strong style="color: '+tourColors[tourColorIndex]+';">'+LNG.K('aufgabe1_qst_subtour2')+'</strong>?</p>\
             <p>'+LNG.K('aufgabe1_qst_subtour3')+'</p>\
-            <p><form id="question'+currentQuestion+'_form">\
+            <p><form id="question'+currentQuestion+'_form" onsubmit="return false">\
             <input type="text" name="question'+currentQuestion+'" value="" placeholder="x,y,z" />\
-            </form></p>\
+            </p>\
             <p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button></p>\
             <p id="tf1_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />\
             <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_qst_continue')+'</button>\
-            </p>');
+            </p>\
+            </form>');
 
         var result = "";
         for(var i = 0; i < eulerianSubTour.length; i++) {
@@ -1271,18 +1285,19 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             form += '<input type="radio" id="tf1_input_question'+currentQuestion+'_'+i+'" name="question'+currentQuestion+'" value="'+answers[i]+'" />\
             <label for="tf1_input_question'+currentQuestion+'_'+i+'">'+answers[i].replace(prevSubtour, '<span style="color: '+tourColors[subtourColor]+'">'+prevSubtour+'</span>')+'</label><br />';
         }
-        form = '<form id="question'+currentQuestion+'_form">'+form+'</form>';
 
         questions[currentQuestion] = {type: currentQuestionType, rightAnswer: currentTour};
 
         $("#tf1_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_qst')+' #'+(currentQuestion+1)+'</div>\
             <p>'+LNG.K('aufgabe1_qst_tour1')+'(<strong style="color: '+tourColors[subtourColor]+'">'+prevSubtour+'</strong>)'+LNG.K('aufgabe1_qst_tour2')+'(<strong>'+prevTour+'</strong>)'+LNG.K('aufgabe1_qst_tour3')+'</p>\
             <p><em>'+LNG.K('aufgabe1_qst_tour4')+'</em></p>\
+            <form id="question'+currentQuestion+'_form" onsubmit="return false">\
             <p>'+form+'</p>\
             <p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button></p>\
             <p id="tf1_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />\
             <button id="tf1_button_questionClose2">'+LNG.K('aufgabe1_qst_continue')+'</button>\
-            </p>');
+            </p>\
+            </form>');
 
         $("#tf1_button_questionClose2").button({disabled: true}).on("click", function() { algo.closeQuestionModal(); });
         $("#tf1_button_questionClose").button({disabled: true}).on("click", function() { algo.saveAnswer(); });
