@@ -42,7 +42,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      */
     var algo = this;
     
-    var debugConsole = true;
+    var debugConsole = false;
     var tourStartVertex = null;
     var tourStartOddVertex = null;
     var tourCurrentVertex = null;
@@ -982,6 +982,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_div_statusTabs").hide();
         $("#tf2_div_questionModal").show();
         $("#tf2_questionSolution").hide();
+        $("#tf2_div_questionModal").find("form").one("keyup", function() { algo.triggerClick(); });
     };
 
     this.closeQuestionModal = function() {
@@ -990,7 +991,15 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_button_questionClose").off();
         $("#tf2_button_1Schritt").button("option", "disabled", false);
         $("#tf2_button_vorspulen").button("option", "disabled", false);
+        $("#tf2_div_questionModal").off("keyup");
     };
+
+    this.triggerClick = function(event) {
+        if(event.keyCode == 13) {
+            $("#tf2_button_questionClose").click();
+            $("#tf2_button_questionClose2").click();
+        }
+    }
 
     this.saveAnswer = function() {
 
@@ -1053,6 +1062,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_questionSolution").show();
         $("#tf2_button_questionClose").hide();
         $("#tf2_button_questionClose2").button("option", "disabled", false);
+        $("#tf2_button_questionClose2").focus();
+        $("#tf2_div_questionModal").find("form").one("keyup", function() { algo.triggerClick(); });
     };
 
     this.activateAnswerButton = function() {
@@ -1118,11 +1129,13 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_qst')+' #'+(currentQuestion+1)+'</div>\
             <p>'+LNG.K('aufgabe2_qst1_1')+'</p>\
             <p>'+LNG.K('aufgabe2_qst1_2')+'</p>\
-            <p><form id="question'+currentQuestion+'_form">'+inputs+'</form></p>\
+            <form id="question'+currentQuestion+'_form" onsubmit="return false">\
+            <p>'+inputs+'</p>\
             <p><button id="tf2_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button></p>\
             <p id="tf2_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />\
             <button id="tf2_button_questionClose2">'+LNG.K('aufgabe1_qst_continue')+'</button>\
-        </p>');
+            </p>\
+            </form>');
 
         var result = [];
         for(var i = 0; i < reqChoosen.length; i++) {
@@ -1167,11 +1180,13 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
         $("#tf2_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">'+LNG.K('aufgabe1_qst')+' #'+(currentQuestion+1)+'</div>\
             <p>'+LNG.K('aufgabe2_qst2_1')+'<strong>'+graph.nodes[tourCurrentVertex].getLabel()+'</strong>'+LNG.K('aufgabe2_qst2_2')+'</p>\
-            <p><form id="question'+currentQuestion+'_form">'+inputs+'</form></p>\
+            <form id="question'+currentQuestion+'_form" onsubmit="return false">\
+            <p>'+inputs+'</p>\
             <p><button id="tf2_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button></p>\
             <p id="tf2_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />\
             <button id="tf2_button_questionClose2">'+LNG.K('aufgabe1_qst_continue')+'</button>\
-        </p>');
+            </p>\
+            </form>');
 
         var result = [];
         for(var i = 0; i < allNodes.length; i++) {

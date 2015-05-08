@@ -43,7 +43,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     var algo = this;
     
     var replayHistory = new Array();
-    var debugConsole = true;
+    var debugConsole = false;
     var tourStartVertex = null;
     var tourStartOddVertex = null;
     var tourCurrentVertex = null;
