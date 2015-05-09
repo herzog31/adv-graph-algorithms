@@ -102,15 +102,32 @@ questions[5] = {
 };
 
 questions[6] = {
-    "question": "Ist Knoten a von Knoten c erreichber?",
+    "question": "Ist Knoten a von Knoten c erreichbar?",
     "answers" : [
         {
             "answer" : "ja"
         },
         {
             "answer" : "nein",
-            "explanation" : "Es gibt keine Kanten Menge, mit der man Knoten a von Knoten c erreichen kann."
+            "explanation" : "Es gibt keine Menge von Kanten, mit der man Knoten a von Knoten c erreichen kann."
         }
     ],
     "correctAnswerIndex" : 1
+};
+
+questions[7] = {
+    "question": "Welchen Distanzwert erhält Pfad (c, e)?",
+    "answers" : [
+        {
+            "answer" : "6",
+            "explanation" : "Die Pfade (c, b) und (b, e) sind zusammen länger als der aktuelle Pfad (c, e)."
+        },
+        {
+            "answer" : "15"
+        },
+        {
+            answer: "10"
+        }
+    ],
+    "correctAnswerIndex" : 0
 };

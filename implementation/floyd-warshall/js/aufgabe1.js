@@ -94,7 +94,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
      * @type Object
      */
     var questionStats = {
-        numQuestions : 7,
+        numQuestions : 8,
         correct : 0,
         wrong : 0,
         gestellt : 0
@@ -113,6 +113,8 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
     this.paths = paths;
 
     this.contextStack = contextStack;
+
+    var extraQuestionAsked = false;
 
     /******************************************************************************************************************************************/
     /***************************************************** Funktionen aller Tabs **************************************************************/
@@ -314,14 +316,25 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
             this.poseQuestion(0);
         }else if(contextStack.length == 10){
             this.poseQuestion(1);
-        }else if(contextStack.length == 35){
+        }else if(contextStack.length == 37){
+            $(".summand-cell").removeClass("summand-cell");
+            $(".updated-cell").removeClass("updated-cell");
+            $("#formula").hide();
             this.poseQuestion(2);
-        }else if(contextStack.length == 20){
+        }else if(contextStack.length == 22){
             this.poseQuestion(3);
         }else if(contextStack.length == 2){
             this.poseQuestion(4);
-        }else if(contextStack.length == 28){
+        }else if(contextStack.length == 30){
             this.poseQuestion(5);
+        }else if(contextStack.length == 15){
+            $(".summand-cell").removeClass("summand-cell");
+            $(".updated-cell").removeClass("updated-cell");
+            $("#matrix").find("td[j='1'][i='2']").addClass("candidate-cell");
+            $("#matrix").find("td[j='4'][i='1']").addClass("candidate-cell");
+            $("#matrix").find("td[j='4'][i='2']").addClass("candidate-cell");
+            $("#formula").html("d(c, e) = min{<span>d(c, e)</span>, <span>d(c, b)</span> + <span>d(b, e)</span>}</p>");
+            this.poseQuestion(7);
         }
 
         if (questionStatus.aktiv) {
@@ -354,11 +367,6 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
      * @param {Context} context
      */
     this.visualise = function(context) {
-        // for (var nID in graph.nodes) {
-        //     graph.nodes[nID].setLabel(context.nodeLabels[nID]);
-        //     graph.nodes[nID].setLayout("fillStyle", context.nodeColors[nID]);
-        // }
-
         for (var eID in graph.edges) {
             if (context.edgeColors[eID] == const_Colors.ShortestPathColor) {
                 // use small arrows for shortest path
@@ -572,7 +580,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
                     }
 
                     algo.needRedraw = true;
-                    if(algo.contextStack.length == 35 && !algo.finished){
+                    if(algo.contextStack.length == 37 && !algo.finished){
                         algo.finished = true;
                         algo.poseQuestion(6);
                     }else {
@@ -667,6 +675,9 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
     };
 
     this.findShortestPaths = function(context){
+        if(contextStack.length == 15 && !extraQuestionAsked){
+            return true;
+        }
         var isStepMade = false;
         while(!isStepMade && (context.i < distance.length - 1 || context.j < distance.length - 1 
             || context.k < distance.length - 1)){

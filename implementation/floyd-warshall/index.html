@@ -70,7 +70,7 @@
             <div id="te_div_Einfuehrungstext">
                 <div id="te_div_beispiel1Container"><img id="te_img_dijkstraLR" src="img/floyd-warshall4.png" alt="Einfacher Graph mit 4 Knoten.">
                     <p>
-                        Was sind die günstigsten Wege zwischen allen Knotenpaaren?
+                        Was sind die günstigsten Wege zwischen Knotenpaaren?
                     </p>
                 </div>
                 <h1>Kürzeste Pfade zwischen allen Paaren von Knoten</h1>
@@ -213,6 +213,19 @@
                             <p class="pseudocode" id="ta_p_l10">     d[i][j] ← d[i][k] + d[k][j]</p>
                             <p class="pseudocode" id="ta_p_l12">    end if</p>
                             <p class="pseudocode" id="ta_p_l13">END</p>
+                            <h3>Status der Variablen:</h3>
+                            <table border="1" cellpadding="0" cellspacing="0" width="200px" style="border-collapse:collapse;text-align:center">
+                                <tr>
+                                    <td><strong>i</strong></td>
+                                    <td><strong>j</strong></td>
+                                    <td><strong>k</strong></td>
+                                </tr>
+                                <tr>
+                                    <td id="ta_td_i"></td>
+                                    <td id="ta_td_j"></td>
+                                    <td id="ta_td_k"></td>
+                                </tr>
+                            </table>
                         </div>
                         <div id="ta_div_PQ">
                             <button id='tg_button_showMatrix' onclick='showMatrixPopup();' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button' aria-disabled='false'>
@@ -236,10 +249,10 @@
         </div>
         <div id="tab_ti">
             <div id="ti_div_Einfuehrungstext">
-                <div class="BeispielbildContainer"><figure><img id="ti_img_beispiel1" src="img/floyd-warshall4.png" alt="Einfacher Graph mit 4 Knoten." width="250"></figure>
-                    <p>
-                        Was sind die günstigsten Wege zwischen allen Knoten?
-                    </p>
+                <div class="BeispielbildContainer">
+                    <figure>
+                        <img id="ti_img_beispiel2" src="img/long-path1.png" alt="Distanzmatrix" width="250"><figcaption>Der <strong>(a, e)</strong> Weg ist optimal, denn die Wege <strong>(a, c)</strong> und <strong>(c, e)</strong> sind auch optimal.</figcaption>
+                    </figure>
                 </div>
 
                 <h1>Kürzeste Wege</h1>
@@ -255,22 +268,37 @@
                 </p>
 
                 <h1>Idee des Algorithmus</h1>
+                <div class="BeispielbildContainer">
+                    <figure>
+                        <img id="ti_img_beispiel1" src="img/long-path.png" alt="Einfacher Graph mit 4 Knoten." width="250">
+                    </figure>
+                    <p>
+                        Der Pfad (a, c) wurde verbessert.
+                    </p>
+                </div>
                 <p>
                     Das Prinzip des Floyd-Warshall-Algorithmus ist <strong>dynamische Programmierung</strong>.
                 <p>
-                    Der Algorithmus geht von folgender Beobachtung aus: wenn der kürzeste Weg von u nach v durch w, dann sind die Teilpfade von u nach w und von w nach v auch minimal. Der Floyd-Warshall Algorithmus funktioniert iterativ. Beim Schritt k sei kürzesterWeg(i, j, k)
-                    eine Funktion, die den kürzesten Pfad von i nach j zurückgibt, wobei nur die Knoten aus der Menge {1, 2, ... k} als Zwischenpunkte dieses Weges sein können. Beim nächsten Schritt (k + 1) kann der Weg von i nach j entweder gleich kürzesterWeg(i, j, k) bleiben
-                    oder zu kürzesterWeg(i, k + 1, k) + kürzesterWeg(k + 1, j, k) verbessert werden, je nachdem welche Kost niedriger ist. Das heißt, der Weg zwischen i und j kann gleich wie bem vorigen Schritt bleiben oder einen neuen Knoten k + 1 enthalten. Darin besteht die
-                    Idee der <strong>dynamischen Programmierung</strong>.
+                    Der Algorithmus geht von folgender Beobachtung aus: wenn der kürzeste Weg von u nach v durch w, dann sind die Teilpfade von u nach w und von w nach v auch minimal. Die Richtigkeit des Ergebnisses kann durch Induktion bewiesen werden. Der Floyd-Warshall Algorithmus funktioniert iterativ.
 
-                    Bei jeder Iteration werden die aktuelle Pfadkosten zischen allen Paaren von Knoten zugewiesen:<br/>
-                    kürzesterWeg(i, j, k) = min(kürzesterWeg(i, j, k), kürzesterWeg(i, k + 1, k) + kürzesterWeg(k + 1, j, k))
+                </p>
+                <p>
+                    Beim Schritt <strong>k</strong> sei <strong>kürzesterWeg(i, j, k)</strong>
+                    eine Funktion, die den kürzesten Pfad von <strong>i</strong> nach <strong>j</strong> zurückgibt, wobei nur die Knoten aus der Menge <strong>{1, 2, ... k}</strong> als Zwischenpunkte dieses Weges sein können. Beim nächsten Schritt <strong>(k + 1)</strong> kann der Weg von <strong>i</strong> nach <strong>j</strong> entweder gleich <strong>kürzesterWeg(i, j, k)</strong> bleiben
+                    oder zu <strong>kürzesterWeg(i, k + 1, k) + kürzesterWeg(k + 1, j, k)</strong> verbessert werden, je nachdem welche Kost niedriger ist. Das heißt, der Weg zwischen <strong>i</strong> und <strong>j</strong> kann gleich wie beim vorigen Schritt bleiben oder einen neuen Knoten <strong>k + 1</strong> enthalten.
+                </p>
+                <p>
+                    Darin besteht die Idee der <strong>dynamischen Programmierung</strong>.
+                    Bei jeder Iteration werden die aktuelle Pfadkosten zwischen allen Paaren von Knoten zugewiesen:<br/><br/>
+                    <strong>kürzesterWeg(i, j, k) = min(kürzesterWeg(i, j, k), kürzesterWeg(i, k + 1, k) + kürzesterWeg(k + 1, j, k))</strong>
+                </p>
+                <p>
+                    Am Ende des Ablaufs von Floyd-Warshall darf jeder Pfad beliebigen Zwischenknoten enthalten, aber der Algorithmus speichert nur den günstigsten Wert für jedes Knotenpaar. Alle Werte sind optimal, weil der Algorithmus beim jeden Schritt den Wert ändert, falls die neue Kost niedriger ist.
                 </p>
 
-                <div class="BeispielbildContainer"><figure><img id="ti_img_beispiel3" src="img/fw-table.png" alt="Distanzmatrix" width="250"><figcaption>Der weg zwischen Knoten a und d wurde verbessert.</figcaption></figure>
-                </div>
-
                 <h1>Finden von günstigsten Wegen</h1>
+                <div class="BeispielbildContainer"><figure><img id="ti_img_beispiel3" src="img/fw-table.png" alt="Distanzmatrix" width="250"><figcaption>Der Weg zwischen Knoten a und d wurde verbessert.</figcaption></figure>
+                </div>
                 <p>
                     Um die günstigste Wege zu finden, muss der Algorithmus eine Matrix speichern, die die aktuelle Kosten zwischen allen Paaren von Knoten enthält. Die Zeilen- und Spaltenindexe stellen die Knoten dar und die Werte in der Matrix stehen für die Distanzen
                     zwischen den entsprechenden Knoten.
@@ -295,11 +323,12 @@
                         Falls ob die Distanz zwischen Knoten i, k und k, j kürzer als die aktuelle Distanz ist, dann wird die Distanzkost zwischen Knoten i und j aktualisiert.
                     </li>
                 </ul>
+                <h1>Graphen mit negativen Kreisen</h1>
                 <p>
-                    Wenn der Graph einen oder mehrere negative Kreise enthält, dann gibt es keinen kürzesten Weg zwischen beliebigen Knoten, die den Teil des negativen Kreises bilden.
-                    Der Weg zwischen diesen Knoten ist nämlich willkürlich klein (negativ). Damit der Floyd-Warshall Algorithmus richtiges Ergebnis erzeugt, muss es keine negative
-                    Kreise im Graphen geben. Der Algorithmus kann genutzt werdem um die negative Kreise im Graphen zu entdecken. Dafür muss der Algorithmus alle Paaren von Knoten (i, j)
-                    betrachten einschließlich die, wo i = j. Wenn irgendeine Kost (i, i) nach dem Ablauf des Algorithmus in der Distanzmatrix negativ ist, dann enthält der Graph mindestens
+                    Wenn der Graph einen oder mehrere negative Kreise enthält, dann gibt es keinen kürzesten Weg zwischen Knoten, die den Teil des negativen Kreises bilden.
+                    Der Weg zwischen diesen Knoten ist beliebig klein (negativ). Damit der Floyd-Warshall Algorithmus richtiges Ergebnis erzeugt, muss es keine negative
+                    Kreise im Graphen geben. Der Algorithmus kann genutzt werden um die negative Kreise im Graphen zu entdecken. Dafür muss der Algorithmus alle Paaren von Knoten <strong>(i, j)</strong>
+                    betrachten einschließlich die, wo <strong>i = j</strong>. Wenn irgendeine Kost <strong>(i, i)</strong> nach dem Ablauf des Algorithmus in der Distanzmatrix negativ ist, dann enthält der Graph mindestens
                     einen negativen Kreis.
                 </p>
                 <h1>Was nun?</h1>
@@ -385,6 +414,19 @@
                             <p class="pseudocode" id="tf1_p_l10">     d[i][j] ← d[i][k] + d[k][j]</p>
                             <p class="pseudocode" id="tf1_p_l12">    end if</p>
                             <p class="pseudocode" id="tf1_p_l13">END</p>
+                            <h3>Status der Variablen:</h3>
+                            <table border="1" cellpadding="0" cellspacing="0" width="200px" style="border-collapse:collapse;text-align:center">
+                                <tr>
+                                    <td><strong>i</strong></td>
+                                    <td><strong>j</strong></td>
+                                    <td><strong>k</strong></td>
+                                </tr>
+                                <tr>
+                                    <td id="tf1_td_i"></td>
+                                    <td id="tf1_td_j"></td>
+                                    <td id="tf1_td_k"></td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -424,6 +466,9 @@
                 <div id="tf2_div_statusWindow" class="statusWindow">
                     <h2 class="">Welche Kosten haben die Kanten?</h2>
                     <div id="tf2_div_statusErklaerung">
+                        <p>
+                            Hier ist die Adjazenzmatrix, die die günstigste Pfadkosten zwischen allen Paaren von Knoten im gegebenen Graphen darstellt. In dieser Aufgabe musst du die fehlende Kosten von Kanten bestimmen. Um die Kantenkost einzugeben, klicke doppelt auf die Kante und tippe den Wert, dann klicke "Speichern".
+                        </p>
                         <h3>Entfernungen der Knoten:</h3>
                         <table id="matrix">
                         <tbody>

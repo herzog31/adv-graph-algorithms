@@ -394,14 +394,7 @@ function CanvasDrawer(p_graph, p_canvas, p_tab) {
                 completeMatrixDialog.dialog({
                     autoOpen : false,
                     resizable : false,
-                    modal : true,
-                    buttons : {
-                        "Ok" : function() {
-                            $("#tabs").removeData("requestedTab");
-                            $("#tabs").removeData("tabChangeDialogOpen");
-                            $(this).dialog("close");
-                        }
-                    }
+                    modal : true
                 });
             });
         }

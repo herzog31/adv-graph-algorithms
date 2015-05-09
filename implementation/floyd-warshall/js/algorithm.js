@@ -51,6 +51,8 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 	this.paths = paths;
 
 	this.finished = false;
+    this.startHorizontal = 0;
+    this.startVertical = 0;
 
     var actualContext;
 

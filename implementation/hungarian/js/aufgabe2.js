@@ -970,8 +970,11 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         var edgesInEqualityGraph = [];
         var correctAnswerForField = [];
 
-        var inputs = "", source, target, edgeLabel;
+        var inputs = "<table cellspacing='20' cellpadding='0'><tr><td>", source, target, edgeLabel;
         for(var i in graph.edges) {
+            if(i === "8"){
+                inputs += "</td><td>";
+            }
             source = graph.edges[i].getSourceID();
             target = graph.edges[i].getTargetID();
             edgeLabel = '('+graph.nodes[source].getOuterLabel()+','+graph.nodes[target].getOuterLabel()+')';
@@ -984,18 +987,19 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             inputs += '<input type="checkbox" id="tf2_input_question'+currentQuestion+'_'+i+'" data-answer-id="'+i+'" name="question'+currentQuestion+'_'+i+'" value="'+i+'" />\
             <label for="tf2_input_question'+currentQuestion+'_'+i+'">'+edgeLabel+'</label><br />';
         }
+        inputs += "</td></tr></table>";
 
         questions[currentQuestion] = {type: currentQuestionType, rightAnswer: edgesInEqualityGraph};
 
         $("#tf2_div_questionModal").html('<div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="padding: 7px;">Frage #'+(currentQuestion+1)+'</div>\
-            <p>Der Algorithmus hat die Knotengewichte angepasst und wird im aktuellen Schritt einen neuen Gleichheitsgraph bestimmen. Bitte markiere alle Kanten des neuen Gleichheitsgraphs.</p>\
+            <p>Der Algorithmus hat die Knotengewichte angepasst und wird im aktuellen Schritt einen neuen Gleichheitsgraph bestimmen. Bitte markiere alle Kanten des neuen Gleichheitsgraphs. Dafür kannst du entweder auf die Kanten im Graphen klicken oder entsprechenden Checkboxen markieren.</p>\
             <p><form id="question'+currentQuestion+'_form">'+inputs+'</form></p>\
             <p><button id="tf2_button_questionClose">Antworten</button></p>\
             <p id="tf2_questionSolution">\
             <button id="tf2_button_questionClose2">Weiter</button>\
             </p>');
 
-        $('#question'+currentQuestion+'_form').children("input:checkbox").on("click", function(){
+        $('#question'+currentQuestion+'_form').find("input:checkbox").on("click", function(){
             var edgeId = $(this).attr("value");
             var edge = graph.edges[edgeId];
             if($(this).prop('checked') === true){

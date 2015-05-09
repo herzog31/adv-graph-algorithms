@@ -67,7 +67,7 @@ div.statusWindow {
     text-align: center;
     margin-left: 715px;
     width: 350px;
-    height: 500px;
+    min-height: 500px;
     padding-left: 15px;
     padding-right: 15px;
     border: 2px groove #78C8FF;
@@ -469,10 +469,6 @@ td.summand-cell{
 
 .candidate-cell{
     background-color: rgb(174, 174, 174);
-}
-
-#ta_div_completeMatrix{
-    max-width: 500px;
 }
 
 .matrix-cell.node_label{
