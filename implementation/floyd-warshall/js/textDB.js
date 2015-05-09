@@ -27,7 +27,7 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
                 + distance.length + "</strong> " + LNG.K('textdb_msg_can_start') + "</p><p> " + LNG.K("textdb_msg_hover") + "</p>");
             table = displayMatrix(distance, contextNew, nodes, false);
             if(distance.length > 11){
-                tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, 10);
+                tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, 0, 0, 10, true);
                 $("#" + tabprefix + "_div_statusText").append("<table id='matrix'>" + tableSmall + "</table>");
                 $("#tg_button_showMatrix").show();
             }else{
@@ -43,9 +43,8 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
             break;
 
         case 2:
-            console.log(contextNew);
             table = displayMatrix(distance, contextNew, nodes,  true);
-            var formula = "<p>" + contextNew.formula + "</p>";
+            var formula = "<p id='formula'>" + contextNew.formula + "</p>";
             $("#" + tabprefix + "_div_statusText").html("<p>" + LNG.K("textdb_msg_this_step") + "<strong>" + nodes[contextNew.i].getLabel() + "</strong> "
                 + LNG.K("textdb_msg_and") + "<strong>" + nodes[contextNew.j].getLabel() + "</strong>" + LNG.K("textdb_msg_improved")
                 + LNG.K("textdb_msg_new_path") + "<strong>(" + nodes[contextNew.i].getLabel() + ", " + nodes[contextNew.k].getLabel() + ")</strong>"
@@ -74,8 +73,9 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
                 $("#" + tabprefix + "_div_statusText").append("<p>" + LNG.K('textdb_msg_paths_computed') + "</p>");
                 table = displayMatrix(distance, contextNew, nodes, false);
                 if(distance.length > 11){
-                    tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, 10);
-                    $("#" + tabprefix + "_div_statusText").append("<table id='matrix'>" + tableSmall + "</table>");
+                    tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, algo.startVertical, algo.startHorizontal, 10, false);
+                    $("#" + tabprefix + "_div_statusText").append("<table id='tableWrapper' style='margin-left: -20px;'><tr><td></td><td align='center'><div id='up' style='background-image: url(img/up.png);width: 60px;height: 30px;'></div></td><td></td></tr><tr><td><div id='left' style='background-image: url(img/left.png);width: 30px;height: 60px;'></div></td><td><table id='matrix'>" + tableSmall + "</table></td><td><div id='right' style='background-image: url(img/right.png); width: 30px; height: 60px'></div></td></tr><tr><td></td><td align='center'><div id='down' style='background-image: url(img/down.png);width: 60px;height: 30px;'></div></td><td></td></tr></table>");
+                    $("#tg_button_showMatrix").hide();
                 }else{
                     $("#" + tabprefix + "_div_statusText").append("<h3>" + LNG.K('textdb_msg_endmatrix') + "</h3><table id='matrix'>" + table + "</table>");
                 }
@@ -87,6 +87,42 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
             $("#" + tabprefix + "_td_i").html(distance.length);
             $("#" + tabprefix + "_td_j").html(distance.length);
             $("#" + tabprefix + "_td_k").html(distance.length);
+            $("#right").on("click", function(){
+                if(algo.startHorizontal + 20 < algo.distance.length) {
+                    algo.startHorizontal += 10;
+                }else{
+                    algo.startHorizontal = algo.distance.length - 10;
+                }
+                tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, algo.startVertical, algo.startHorizontal, 10, false);
+                $("#matrix").html(tableSmall);
+            });
+            $("#left").on("click", function(){
+                if(algo.startHorizontal - 10 >= 0) {
+                    algo.startHorizontal -= 10;
+                }else{
+                    algo.startHorizontal = 0;
+                }
+                tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, algo.startVertical, algo.startHorizontal, 10, false);
+                $("#matrix").html(tableSmall);
+            });
+            $("#down").on("click", function(){
+                if(algo.startVertical + 20 < algo.distance.length) {
+                    algo.startVertical += 10;
+                }else{
+                    algo.startVertical = algo.distance.length - 10;
+                }
+                tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, algo.startVertical, algo.startHorizontal, 10, false);
+                $("#matrix").html(tableSmall);
+            });
+            $("#up").on("click", function(){
+                if(algo.startVertical - 10 >= 0) {
+                    algo.startVertical -= 10;
+                }else{
+                    algo.startVertical = 0;
+                }
+                tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, algo.startVertical, algo.startHorizontal, 10, false);
+                $("#matrix").html(tableSmall);
+            });
             break;
 
         default:
@@ -146,16 +182,20 @@ function displayMatrix(distance, contextNew, nodes, markChanged){
     return table;
 }
 
-function displayMatrixCorner(distance, contextNew, nodes, markChanged, limit){
+function displayMatrixCorner(distance, contextNew, nodes, markChanged, startVertical,
+                             startHorizontal, limit, displayDots){
     var table = "<tr><td></td>";
-    for(var key = 0; key < limit; key++){
+    for(var key = startHorizontal; key < startHorizontal + limit; key++){
         table += "<td class='node_label unimportant-cell'>" + nodes[key].getLabel() + "</td>";
     }
-    table += "<td>...</td></tr>";
+    if(displayDots){
+        table += "<td>...</td>";
+    }
+    table += "</tr>";
     var finalI, finalJ;
-    for(var i = 0; i < limit; i++){
+    for(var i = startVertical; i < startVertical + limit; i++){
         var trContent = "<td class='node_label unimportant-cell'>" + nodes[i].getLabel() + "</td>";
-        for(var j = 0; j < limit; j++){
+        for(var j = startHorizontal; j < startHorizontal + limit; j++){
             if(contextNew && markChanged && i == contextNew.changedRow && j == contextNew.changedColumn){
                 finalJ = j; finalI = i;
                 trContent += "<td class='";
@@ -186,13 +226,19 @@ function displayMatrixCorner(distance, contextNew, nodes, markChanged, limit){
                     " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "</td>";
             }
         }
-        table += "<tr class='table-row'>" + trContent + "<td>...</td></tr>";
+        table += "<tr class='table-row'>" + trContent;
+        if(displayDots){
+            table += "<td>...</td>";
+        }
+        table += "</tr>";
     }
-    table += "<tr class='table-row'>";
-    for(var i = 0; i < limit + 1; i++){
-        table += "<td>...</td>";
+    if(displayDots) {
+        table += "<tr class='table-row'>";
+        for (var i = 0; i < limit + 1; i++) {
+            table += "<td>...</td>";
+        }
+        table += "</tr>";
     }
-    table += "</tr>";
 
     return table;
 }
