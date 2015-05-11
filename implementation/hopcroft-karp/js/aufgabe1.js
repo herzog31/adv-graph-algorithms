@@ -144,9 +144,11 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_div_statusTabs").show();
         $("#tf1_div_questionModal").hide();
         $("#tf1_button_questionClose").off();
+        $("#tf1_div_questionModal").off();
         $("#tf1_button_1Schritt").button("option", "disabled", false);
         $("#tf1_button_vorspulen").button("option", "disabled", false);
     };
+
     /**
      * Fügt einen Tab für die Frage hinzu.<br>
      * Deaktiviert außerdem die Buttons zum weitermachen
@@ -161,7 +163,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_div_questionModal").html("<div class='ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all' style='padding: 7px;'>" +
             LNG.K('aufgabe1_text_question') + ' #'+(frageStats.gestellt) + '</div>' +
             '<p id="tf1_question" class="frage"></p>' +
-            '<form id="tf1_question_form"></form>' +
+            '<form id="tf1_question_form" onsubmit="return false"></form>' +
             '<p><button id="tf1_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button></p>' +
             '<p id="tf1_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+
             '<span id="tf1_question_answer" class="answer"></span><br /><br />' + '<span id="tf1_question_explanation" class="answer"></span><br /><br />' +
@@ -169,6 +171,11 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         //erstelle die buttons und handlers
         $("#tf1_button_modalClose").button({disabled: true}).on("click", function() { algo.removeFrageTab(); });
         $("#tf1_button_questionClose").button({disabled: true}).on("click", function() {algo.handleAnswer(); });
+        $("#tf1_div_questionModal").find("form").on("keyup", function (event) { //enter-button handler
+            if (event.which == 13) {
+                $("#tf1_button_questionClose").click();
+            }
+        });
         //verstecke AlgoStatusTab und zeige das Frage-Fenster
         $("#tf1_div_statusTabs").hide();
         $("#tf1_div_questionModal").show();
@@ -243,6 +250,12 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_questionSolution").show();
         $("#tf1_button_questionClose").hide();
         $("#tf1_button_modalClose").button("option", "disabled", false);
+        $("#tf1_button_modalClose").focus();
+        $("#tf1_div_questionModal").find("form").one("keyup", function(event) {//enter button handler
+            if (event.which == 13) {
+                $("#tf1_button_modalClose").click();
+            }
+        });
     };
 
 
