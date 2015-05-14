@@ -15,7 +15,7 @@ jedes Tab
 Besonderheiten Visualisierung
 Forschungsfragen
 
-\section{Algorithmus von Hierholzer}
+\section{Algorithmus von Hierholzer (Mark)}
 Besonderheiten Visualisierung
 Forschungsfragen
 
@@ -33,10 +33,24 @@ Forschungsfragen
 
 \chapter{Implementierung}
 
-\section{Installation}
-Wie klont man das Github Repo, welche Dependencies etc.
+\section{Installation (Mark)}
+Zur Installation sind keine speziellen Anforderungen zu erfüllen. Die Webapplikationen wurden vollständig mittels HTML5, JavaScript und CSS implementiert, sodass keine zusätzliche serverseitige Software benötigt wird. Zum Aufrufen der Anwendungen wird ein moderner Webbrowser benötigt.
 
-\section{MathJAX}
+Die Bereitstellung erfolgt über den Online Dienst GitHub, der das verteile Versionskontrollsystem Git benutzt. 
+Alle Anwendungen liegen in einem gemeinsamen Repository, welches unter \url{https://github.com/herzog31/adv-graph-algorithms} erreichbar ist. Zur Installation kann man entweder auf der Repository Seite die letzte freigegebene Version (Release) als Zip oder Tar Archiv herunterladen oder die aktuellste Version des Repositories mittels folgendem Befehl in das aktuelle Verzeichnis kopieren.
+
+\begin{figure}[htb]
+	\begin{lstlisting}[language=Bash]
+    git clone -b master https://github.com/herzog31/adv-graph-algorithms.git
+  	\end{lstlisting}
+  	\caption[Repository Kopieren]{Befehl zum Kopieren des GitHub Repositories}\label{fig:sample-listing}
+\end{figure}
+
+Um die Anwendungen als Webanwendungen online bereitzustellen wird ein Webserver benötigt. Hier emfiehlt sich die Installation des Apache oder nginx  HTTP Servers.
+
+Die lokale Ausführung ist ohne einen Webserver möglich. Verschiedene Webbrowser besitzen allerdings eine Sicherheitsrichtlinie, die das Öffnen von lokalen Dateien über JavaScript verbieten. Diese Sicherheitsrichtline kann jedoch durch spezielle Einstellungen umgangen werden. Für Google Chrome ist dies über den Start Parameter \texttt{--allow-file-access-from-files} möglich.
+
+\section{MathJAX (Mark)}
 Motivation
 Beispiel
 
@@ -48,11 +62,11 @@ Beispiel
 Motivation
 Beispiel
 
-\section{Zufällig generierte Fragen}
+\section{Zufällig generierte Fragen (Mark)}
 Motivation
 Beispiel
 
-\section{Gemeinsam genutzte Dateien}
+\section{Gemeinsam genutzte Dateien (Mark)}
 Motivation
 Beispiel
 
