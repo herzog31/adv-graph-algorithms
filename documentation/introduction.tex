@@ -51,7 +51,7 @@ Um die Anwendungen als Webanwendungen online bereitzustellen wird ein Webserver 
 Die lokale Ausführung ist ohne einen Webserver möglich. Verschiedene Webbrowser besitzen allerdings eine Sicherheitsrichtlinie, die das Öffnen von lokalen Dateien über JavaScript verbieten. Diese Sicherheitsrichtline kann jedoch durch spezielle Einstellungen umgangen werden. Für Google Chrome ist dies über den Start Parameter \texttt{--allow-file-access-from-files} möglich.
 
 \section{MathJAX (Mark)}
-Unter den Tabs "Beschreibung des Algorithmus" werden die komplizierte Algorithmen, wie bspw. die Ungarische Methode, in möglichst einfachen Worten als Fließtext erklärt. Wir gehen davon aus, dass der Nutzer während der Bearbeitung der Forschungsaufgaben, verschiedene Sachverhalte in der Algorithmenbeschreibung nachschlagen muss. Das wiederholte Lesen von vollständigen Absätzen wollten wir allerdings vermeiden.
+Unter den Tabs \enquote{Beschreibung des Algorithmus} werden die komplizierten Algorithmen, wie bspw. die Ungarische Methode, in möglichst einfachen Worten als Fließtext erklärt. Wir gehen davon aus, dass der Nutzer während der Bearbeitung der Forschungsaufgaben, verschiedene Sachverhalte in der Algorithmenbeschreibung nachschlagen muss. Das wiederholte Lesen von vollständigen Absätzen wollten wir allerdings vermeiden.
 
 Dazu haben wir zusätzlich zur textuellen Beschreibung, wichtige Punkte der Algorithmen auch als mathematische Formeln dargestellt. Der Nutzer erlangt so durch das erste Lesen der Beschreibung ein Grundverständnis der Algorithmen und kann während der Bearbeitung aufkommende Fragen durch die dargestellten Formeln schneller erschließen.
 
@@ -80,13 +80,13 @@ Nach der Einbindung werden sämtliche LaTeX Ausdrücke welche sich zwischen den 
 	\(\Delta = \min\limits_{s \in S\ \wedge\ y \in Y \setminus T}\{l(s) + l(y) - w(s,y)\}\)
 </p>
 \end{lstlisting}
-\caption[MathJAX Beispiel]{MathJAX Beispiel: HTML Code}\label{fig:listing-mathjax-example-html}
+\caption[MathJAX Beispiel Code]{MathJAX Beispiel: HTML Code}\label{fig:listing-mathjax-example-html}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth]{figures/mathjax-example}
-	\caption[MathJAX Beispiel]{MathJAX Beispiel: Darstellung im Browser}\label{fig:mathjax-example-img}
+	\caption[MathJAX Beispiel Browser]{MathJAX Beispiel: Darstellung im Browser}\label{fig:mathjax-example-img}
 \end{figure}
 
 Werden Ausdrücke zur Laufzeit in das DOM mittels JavaScript eingefügt, so müssen diese separat übersetzt werden (vgl. Abbildung~\ref{fig:listing-mathjax-render}).
@@ -95,7 +95,7 @@ Werden Ausdrücke zur Laufzeit in das DOM mittels JavaScript eingefügt, so müs
 \begin{lstlisting}[language=JavaScript]
 MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
 \end{lstlisting}
-\caption[MathJAX Rendern]{Befehl zum erneuten Rendern von Ausdrücken im HTML Dokument}\label{fig:listing-mathjax-render}
+\caption[MathJAX Render Befehl]{Befehl zum erneuten Rendern von Ausdrücken im HTML Dokument}\label{fig:listing-mathjax-render}
 \end{figure}
 
 \section{Bipartite Graphen}
@@ -111,8 +111,32 @@ Motivation
 Beispiel
 
 \section{Gemeinsam genutzte Dateien (Mark)}
-Motivation
-Beispiel
+Im Rahmen dieses interdisziplinären Projekts wurden Webapplikationen für insgesamt fünf Algorithmen entwickelt. Jede Applikation liegt in einem von den anderen Algorithmen unabhängigen Projektordner, der jeweils auch das Graph Framework aus früheren Projekten enthält. Daher lagen im gesamten Repository viele Dateien mehrfach vor. Dies war insofern problematisch, da Änderungen, die alle Anwendungen betreffen in mehreren Dateien vorgenommen werden mussten.
+
+Unser Ziel war es daher, gemeinsam genutzte Dateien auszulagern. Wir beschränken uns hier auf Dateien, welche das Layout und Design der Anwendungen definieren sowie universelle Programmbibliotheken (bspw. MathJAX). Diese Beschränkung ist notwendig, um die Flexibilität im Entwicklungsprozess zu gewährleisten. Es existieren weitere Dateien, die sich zum aktuellen Zeitpunkt anwendungsübergreifend nicht signifikant unterscheiden. Diese sind allerdings algorithmenspezifisch und könnten in zukünftigen Entwicklungsphasen weiter verändert werden.
+
+Zur Auslagerung legten wir zunächst einen \texttt{library} Ordner an. Das Finden von Dateiduplikaten übernimmt ein Python Skript (vgl. \texttt{deduplicate.py}), welches mittels der \texttt{difflib} Bibliothek alle Dateien in den Projektordnern paarweise miteinander vergleicht und einen Ähnlichkeitsquotienten bestimmt. Das Skript zeigt dann alle Dateien, die einen festgelegten Änhlichkeitsgrenzwert überschreiten an (vgl. Abbildungen \ref{fig:shared-files-1} und \ref{fig:shared-files-2}). Anhand des Quotienten lässt sich ablesen, ob Dateien im Gesamten oder in Teilen ausgelagert werden können. Das Verschieben in den \texttt{library} Ordner und die Anpassung der Pfade in den Anwendungen erfolgt dann manuell.
+
+\begin{figure}[h!]
+\noindent\texttt{chinese-postman/img/TUMLogo.png \\
+-> 100.00\% identical to floyd-warshall/img/TUMLogo.png \\
+-> 100.00\% identical to hierholzer/img/TUMLogo.png \\
+-> 100.00\% identical to hopcroft-karp/img/TUMLogo.png \\
+-> 100.00\% identical to hungarian/img/TUMLogo.png
+}
+\caption[Gemeinsame Dateien, Beispiel 1]{Vollständige Übereinstimmung bei der Datei \texttt{TUMLogo.png}}\label{fig:shared-files-1}
+\end{figure}
+
+\begin{figure}[h!]
+\noindent\texttt{chinese-postman/js/siteAnimation.js \\
+-> 67.01\% identical to hierholzer/js/siteAnimation.js \\
+-> 91.49\% identical to hopcroft-karp/js/siteAnimation.js \\
+-> 71.13\% identical to hungarian/js/siteAnimation.js
+}
+\caption[Gemeinsame Dateien, Beispiel 2]{Mäßige Übereinstimmungen bei der Datei \texttt{siteAnimation.js}}\label{fig:shared-files-2}
+\end{figure}
+
+Für zukünftige Projekte können die Parameter des Skripts angepasst werden. Weitere Informationen hierzu sind der Inline-Dokumentation zu entnehmen.
 
 \chapter{Zusammenfassung}
 Zusammenfassung der wesentlichen Punkte
