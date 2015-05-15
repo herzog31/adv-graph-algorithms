@@ -1,4 +1,32 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: algorithm.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: algorithm.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * @author Mark J. Becker
  * Darstellung des Hierholzer Algorithmus
  */
@@ -31,7 +59,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     var fastForwardIntervalID = null;
     /**
      * Der Algorithmus kann in verschiedenen Zuständen sein, diese Variable 
-     * speichert die ID des aktuellen Zustands.<br>
+     * speichert die ID des aktuellen Zustands.&lt;br>
      * Siehe Dokumentation bei der Funktion nextStepChoice
      * @type Number
      */
@@ -125,10 +153,10 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
         this.initCanvasDrawer();
 
         // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
-        $("#ta_div_abspielbuttons").append("<button id=\"ta_button_Zurueck\">"+LNG.K('algorithm_btn_prev')+"</button>"
-                        +"<button id=\"ta_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"</button>"
-                        +"<button id=\"ta_button_vorspulen\">"+LNG.K('algorithm_btn_frwd')+"</button>"
-                        +"<button id=\"ta_button_stoppVorspulen\">"+LNG.K('algorithm_btn_paus')+"</button>");
+        $("#ta_div_abspielbuttons").append("&lt;button id=\"ta_button_Zurueck\">"+LNG.K('algorithm_btn_prev')+"&lt;/button>"
+                        +"&lt;button id=\"ta_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"&lt;/button>"
+                        +"&lt;button id=\"ta_button_vorspulen\">"+LNG.K('algorithm_btn_frwd')+"&lt;/button>"
+                        +"&lt;button id=\"ta_button_stoppVorspulen\">"+LNG.K('algorithm_btn_paus')+"&lt;/button>");
         $("#ta_button_stoppVorspulen").hide();
         $("#ta_button_Zurueck").button({icons:{primary: "ui-icon-seek-start"}, disabled: true});
         $("#ta_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: false});
@@ -175,7 +203,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     };
     
     /**
-     * Registriere die Eventhandler an Buttons und canvas<br>
+     * Registriere die Eventhandler an Buttons und canvas&lt;br>
      * Nutzt den Event Namespace ".HAlgorithm"
      * @method
      */
@@ -326,7 +354,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
         $(event.target).css("font-weight", "bold");
         var curSubtour = subtours[tourId]['tour'];
 
-        for(var i = 0; i < curSubtour.length; i++) {
+        for(var i = 0; i &lt; curSubtour.length; i++) {
             if(curSubtour[i].type == "edge") {
                 graph.edges[curSubtour[i].id].setLayout("lineWidth", 6);
             }
@@ -346,7 +374,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
         $(event.target).css("font-weight", "normal");
         var curSubtour = subtours[tourId]['tour'];
 
-        for(var i = 0; i < curSubtour.length; i++) {
+        for(var i = 0; i &lt; curSubtour.length; i++) {
             if(curSubtour[i].type == "edge") {
                 graph.edges[curSubtour[i].id].setLayout("lineWidth", 3);
             }
@@ -372,7 +400,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
             return;
         }
 
-        if(tourAnimationIndex > 0 && eulerianTour[previousEdge].type === "edge") {
+        if(tourAnimationIndex > 0 &amp;&amp; eulerianTour[previousEdge].type === "edge") {
             graph.edges[eulerianTour[previousEdge].id].setLayout("progressArrow", false);
         }
         this.needRedraw = true;
@@ -399,7 +427,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     this.animateTour = function(event) {
         $("#animateTour").button("option", "disabled", true);
         $("#animateTourStop").button("option", "disabled", false);
-        for(var i = 0; i < eulerianTour.length; i++) {
+        for(var i = 0; i &lt; eulerianTour.length; i++) {
             if(eulerianTour[i].type === "edge") {
                 var sourceNode = null;
                 var targetNode = null;
@@ -425,7 +453,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
      */
     this.animateTourStop = function(event) {
         var previousEdge = Math.floor((tourAnimationIndex - 1)/30);
-        if(tourAnimationIndex > 0 && eulerianTour[previousEdge].type === "edge") {
+        if(tourAnimationIndex > 0 &amp;&amp; eulerianTour[previousEdge].type === "edge") {
             graph.edges[eulerianTour[previousEdge].id].setLayout("progressArrow", false);
         }
         event.data.org.needRedraw = true;
@@ -471,7 +499,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
                 visitedEdges.push(kantenID);
             }
 
-            for (var i = 0; i < edges.length; i++) {
+            for (var i = 0; i &lt; edges.length; i++) {
                 if(graph.edges[edges[i]].getSourceID() == currentNode) {
                     queue.push(graph.edges[edges[i]].getTargetID());
                 }else{
@@ -493,7 +521,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     this.markPseudoCodeLine = function(lineArray) {
         currentPseudoCodeLine = lineArray;
         $(".marked").removeClass('marked');
-        for(var i = 0; i < lineArray.length; i++) {
+        for(var i = 0; i &lt; lineArray.length; i++) {
             $("#ta_p_l"+lineArray[i]).addClass('marked');
         }
     };
@@ -517,10 +545,10 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
         }
         // Subtour
         if(eulerianSubTour.length == 0) {
-            $("#ta_td_eulerianSubTour").html("&#8709;");
+            $("#ta_td_eulerianSubTour").html("&amp;#8709;");
         }else{
             var subtour = new Array();
-            for(var i = 0; i < eulerianSubTour.length; i++) {
+            for(var i = 0; i &lt; eulerianSubTour.length; i++) {
                 if(eulerianSubTour[i].type == "vertex") {
                     subtour.push(graph.nodes[eulerianSubTour[i].id].getLabel());
                 }
@@ -529,10 +557,10 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
         }
         // Eulertour
         if(eulerianTour.length == 0) {
-            $("#ta_td_eulerianTour").html("&#8709;");
+            $("#ta_td_eulerianTour").html("&amp;#8709;");
         }else{
             var tour = new Array();
-            for(var i = 0; i < eulerianTour.length; i++) {
+            for(var i = 0; i &lt; eulerianTour.length; i++) {
                 if(eulerianTour[i].type == "vertex") {
                     tour.push(graph.nodes[eulerianTour[i].id].getLabel());
                 }
@@ -679,8 +707,8 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     this.initializeGraph = function() {
         this.markPseudoCodeLine([1]);
 
-        $("#ta_div_statusErklaerung").html('<h3>1 '+LNG.K('algorithm_status1_head')+'</h3>\
-            <p>'+LNG.K('algorithm_status1_desc')+'</p>');
+        $("#ta_div_statusErklaerung").html('&lt;h3>1 '+LNG.K('algorithm_status1_head')+'&lt;/h3>\
+            &lt;p>'+LNG.K('algorithm_status1_desc')+'&lt;/p>');
 
         this.addNamingLabels();
 
@@ -706,14 +734,14 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
      */
     this.checkGraph = function() {
         this.markPseudoCodeLine([2]);
-        $("#ta_div_statusErklaerung").html('<h3>2 '+LNG.K('algorithm_status2_head')+'</h3>\
-            <p>'+LNG.K('algorithm_status2_desc1')+'</p>\
-            <ul>\
-            <li><strong>'+LNG.K('algorithm_status2_desc2')+'</strong></li>\
-            <li><strong>'+LNG.K('algorithm_status2_desc3')+'</strong></li>\
-            <li><strong>'+LNG.K('algorithm_status2_desc4')+'</strong><br />'+LNG.K('algorithm_status2_desc5')+'</li>\
-            </ul>');
-        $("#tab_ta").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/knoten_even.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_degree2')+'</span></td></tr><tr><td class="LegendeTabelle"><img src="img/knoten_odd.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_degree3')+'</span></td></tr></table>');
+        $("#ta_div_statusErklaerung").html('&lt;h3>2 '+LNG.K('algorithm_status2_head')+'&lt;/h3>\
+            &lt;p>'+LNG.K('algorithm_status2_desc1')+'&lt;/p>\
+            &lt;ul>\
+            &lt;li>&lt;strong>'+LNG.K('algorithm_status2_desc2')+'&lt;/strong>&lt;/li>\
+            &lt;li>&lt;strong>'+LNG.K('algorithm_status2_desc3')+'&lt;/strong>&lt;/li>\
+            &lt;li>&lt;strong>'+LNG.K('algorithm_status2_desc4')+'&lt;/strong>&lt;br />'+LNG.K('algorithm_status2_desc5')+'&lt;/li>\
+            &lt;/ul>');
+        $("#tab_ta").find(".LegendeText").html('&lt;table>&lt;tr>&lt;td class="LegendeTabelle">&lt;img src="img/knoten_even.png" alt="Knoten" class="LegendeIcon">&lt;/td>&lt;td>&lt;span>'+LNG.K('algorithm_legende_degree2')+'&lt;/span>&lt;/td>&lt;/tr>&lt;tr>&lt;td class="LegendeTabelle">&lt;img src="img/knoten_odd.png" alt="Knoten" class="LegendeIcon">&lt;/td>&lt;td>&lt;span>'+LNG.K('algorithm_legende_degree3')+'&lt;/span>&lt;/td>&lt;/tr>&lt;/table>');
         this.maximizeLegend();
 
         var numberOfOddVertices = 0;
@@ -722,7 +750,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
         this.needRedraw = true;
 
         // Mindestgröße
-        if(Object.keys(graph.nodes).length < 2) {
+        if(Object.keys(graph.nodes).length &lt; 2) {
             statusID = 2;
             validGraph = false;
             if(debugConsole) console.log("Invalid graph: Graph too small");
@@ -787,13 +815,13 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
      */
     this.invalidGraph = function() {
         this.markPseudoCodeLine([15]);
-        $("#ta_div_statusErklaerung").html('<h3 style="color: white;">2 '+LNG.K('algorithm_status2_head')+'</h3>\
-            <p style="color: white;">'+LNG.K('algorithm_status2_desc6')+'</p>\
-            <ul style="color: white;">\
-            <li>'+LNG.K('algorithm_status2_desc2')+'</li>\
-            <li>'+LNG.K('algorithm_status2_desc3')+'</li>\
-            <li>'+LNG.K('algorithm_status2_desc4')+'</li>\
-            </ul>').addClass("ui-state-error");
+        $("#ta_div_statusErklaerung").html('&lt;h3 style="color: white;">2 '+LNG.K('algorithm_status2_head')+'&lt;/h3>\
+            &lt;p style="color: white;">'+LNG.K('algorithm_status2_desc6')+'&lt;/p>\
+            &lt;ul style="color: white;">\
+            &lt;li>'+LNG.K('algorithm_status2_desc2')+'&lt;/li>\
+            &lt;li>'+LNG.K('algorithm_status2_desc3')+'&lt;/li>\
+            &lt;li>'+LNG.K('algorithm_status2_desc4')+'&lt;/li>\
+            &lt;/ul>').addClass("ui-state-error");
 
         if(fastForwardIntervalID != null) {
             this.stopFastForward();
@@ -859,27 +887,27 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     this.findStartingVertex = function() {
         this.markPseudoCodeLine([3, 4, 6, 7]);
         if(!semiEulerianGraph) {
-            $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
-            <h3>3.1a '+LNG.K('algorithm_status31A_head')+'</h3>\
-            <p>'+LNG.K('algorithm_status31A_desc1')+'</p>\
-            <p>'+LNG.K('algorithm_status31A_desc2')+'</p>\
-            <p>'+LNG.K('algorithm_status31A_desc4')+'</p>');
+            $("#ta_div_statusErklaerung").html('&lt;h3>3 '+LNG.K('algorithm_status3_head')+'&lt;/h3>\
+            &lt;h3>3.1a '+LNG.K('algorithm_status31A_head')+'&lt;/h3>\
+            &lt;p>'+LNG.K('algorithm_status31A_desc1')+'&lt;/p>\
+            &lt;p>'+LNG.K('algorithm_status31A_desc2')+'&lt;/p>\
+            &lt;p>'+LNG.K('algorithm_status31A_desc4')+'&lt;/p>');
 
             // Erlaube Auswahl der Startknotens im eulerschen Fall
             canvas.on("click.HAlgorithm", function(e) { algo.canvasClickHandler(e); });
         }else{
-            $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
-            <h3>3.1a '+LNG.K('algorithm_status31A_head')+'</h3>\
-            <p>'+LNG.K('algorithm_status31A_desc1')+'</p>\
-            <p>'+LNG.K('algorithm_status31A_desc3')+'</p>\
-            <p>'+LNG.K('algorithm_status31A_desc5')+'</p>');  
+            $("#ta_div_statusErklaerung").html('&lt;h3>3 '+LNG.K('algorithm_status3_head')+'&lt;/h3>\
+            &lt;h3>3.1a '+LNG.K('algorithm_status31A_head')+'&lt;/h3>\
+            &lt;p>'+LNG.K('algorithm_status31A_desc1')+'&lt;/p>\
+            &lt;p>'+LNG.K('algorithm_status31A_desc3')+'&lt;/p>\
+            &lt;p>'+LNG.K('algorithm_status31A_desc5')+'&lt;/p>');  
         }
         
-        $("#tab_ta").find(".LegendeText").html('<table>\
-            <tr><td class="LegendeTabelle"><img src="img/startknoten2.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start2')+'</span></td></tr>\
-            <tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start')+'</span></td></tr>\
-            <tr><td class="LegendeTabelle"><div class="legendePath" style="background-color:'+tourColors[tourColorIndex]+'"></div></td><td><span>'+LNG.K('algorithm_legende_edgecolor')+'</span></td></tr>\
-        </table>');
+        $("#tab_ta").find(".LegendeText").html('&lt;table>\
+            &lt;tr>&lt;td class="LegendeTabelle">&lt;img src="img/startknoten2.png" alt="Knoten" class="LegendeIcon">&lt;/td>&lt;td>&lt;span>'+LNG.K('algorithm_legende_start2')+'&lt;/span>&lt;/td>&lt;/tr>\
+            &lt;tr>&lt;td class="LegendeTabelle">&lt;img src="img/startknoten.png" alt="Knoten" class="LegendeIcon">&lt;/td>&lt;td>&lt;span>'+LNG.K('algorithm_legende_start')+'&lt;/span>&lt;/td>&lt;/tr>\
+            &lt;tr>&lt;td class="LegendeTabelle">&lt;div class="legendePath" style="background-color:'+tourColors[tourColorIndex]+'">&lt;/div>&lt;/td>&lt;td>&lt;span>'+LNG.K('algorithm_legende_edgecolor')+'&lt;/span>&lt;/td>&lt;/tr>\
+        &lt;/table>');
         this.maximizeLegend();
 
         // Setze Knotennamen
@@ -911,11 +939,11 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
         this.markPseudoCodeLine([9, 10, 11]);
         canvas.off(".HAlgorithm");
 
-        $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
-            <h3>3.2 '+LNG.K('algorithm_status32_head')+'</h3>\
-            <p>'+LNG.K('algorithm_status32_desc1')+'</p>\
-            <p>'+LNG.K('algorithm_status32_desc2')+'(<span style="font-weight: bold; color: '+tourColors[tourColorIndex]+';">'+LNG.K('algorithm_status32_desc3')+'</span>)'+LNG.K('algorithm_status32_desc4')+'</p>\
-            <p>'+LNG.K('algorithm_status32_desc5')+'</p>');
+        $("#ta_div_statusErklaerung").html('&lt;h3>3 '+LNG.K('algorithm_status3_head')+'&lt;/h3>\
+            &lt;h3>3.2 '+LNG.K('algorithm_status32_head')+'&lt;/h3>\
+            &lt;p>'+LNG.K('algorithm_status32_desc1')+'&lt;/p>\
+            &lt;p>'+LNG.K('algorithm_status32_desc2')+'(&lt;span style="font-weight: bold; color: '+tourColors[tourColorIndex]+';">'+LNG.K('algorithm_status32_desc3')+'&lt;/span>)'+LNG.K('algorithm_status32_desc4')+'&lt;/p>\
+            &lt;p>'+LNG.K('algorithm_status32_desc5')+'&lt;/p>');
 
         var outEdges = graph.nodes[tourCurrentVertex].getOutEdges();
         var inEdges = graph.nodes[tourCurrentVertex].getInEdges();
@@ -991,17 +1019,17 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
         this.markPseudoCodeLine([12]);
 
         if(tourStartVertex == tourCurrentVertex) {
-            $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
-            <h3>3.3 '+LNG.K('algorithm_status33_head')+'</h3>\
-            <p>'+LNG.K('algorithm_status33_desc1')+'</p>\
-            <h3>3.3.1 '+LNG.K('algorithm_status33_desc2')+'</h3>\
-            <p>'+LNG.K('algorithm_status33_desc3')+'</p>');
+            $("#ta_div_statusErklaerung").html('&lt;h3>3 '+LNG.K('algorithm_status3_head')+'&lt;/h3>\
+            &lt;h3>3.3 '+LNG.K('algorithm_status33_head')+'&lt;/h3>\
+            &lt;p>'+LNG.K('algorithm_status33_desc1')+'&lt;/p>\
+            &lt;h3>3.3.1 '+LNG.K('algorithm_status33_desc2')+'&lt;/h3>\
+            &lt;p>'+LNG.K('algorithm_status33_desc3')+'&lt;/p>');
         }else{
-            $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
-            <h3>3.3 '+LNG.K('algorithm_status33_head')+'</h3>\
-            <p>'+LNG.K('algorithm_status33_desc1')+'</p>\
-            <h3>3.3.2 '+LNG.K('algorithm_status33_desc4')+'</h3>\
-            <p>'+LNG.K('algorithm_status33_desc5')+'</p>');
+            $("#ta_div_statusErklaerung").html('&lt;h3>3 '+LNG.K('algorithm_status3_head')+'&lt;/h3>\
+            &lt;h3>3.3 '+LNG.K('algorithm_status33_head')+'&lt;/h3>\
+            &lt;p>'+LNG.K('algorithm_status33_desc1')+'&lt;/p>\
+            &lt;h3>3.3.2 '+LNG.K('algorithm_status33_desc4')+'&lt;/h3>\
+            &lt;p>'+LNG.K('algorithm_status33_desc5')+'&lt;/p>');
         }
 
         //graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
@@ -1028,18 +1056,18 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
 
         if(JSON.stringify(eulerianSubTour[0]) !== JSON.stringify(eulerianSubTour[(eulerianSubTour.length - 1)])) {
             // Subweg
-            $("#ta_div_statusErklaerung").html('<h3>4 '+LNG.K('algorithm_status4_head')+'</h3>\
-            <h3>4.1 '+LNG.K('algorithm_status41_head')+'</h3>\
-            <p>'+LNG.K('algorithm_status41_desc1')+'</p>\
-            <h3>4.1.2 '+LNG.K('algorithm_status41_desc4')+'</h3>\
-            <p>'+LNG.K('algorithm_status41_desc5')+'</p>');
+            $("#ta_div_statusErklaerung").html('&lt;h3>4 '+LNG.K('algorithm_status4_head')+'&lt;/h3>\
+            &lt;h3>4.1 '+LNG.K('algorithm_status41_head')+'&lt;/h3>\
+            &lt;p>'+LNG.K('algorithm_status41_desc1')+'&lt;/p>\
+            &lt;h3>4.1.2 '+LNG.K('algorithm_status41_desc4')+'&lt;/h3>\
+            &lt;p>'+LNG.K('algorithm_status41_desc5')+'&lt;/p>');
         }else{
             // Subtour
-            $("#ta_div_statusErklaerung").html('<h3>4 '+LNG.K('algorithm_status4_head')+'</h3>\
-            <h3>4.1 '+LNG.K('algorithm_status41_head')+'</h3>\
-            <p>'+LNG.K('algorithm_status41_desc1')+'</p>\
-            <h3>4.1.1 '+LNG.K('algorithm_status41_desc2')+'</h3>\
-            <p>'+LNG.K('algorithm_status41_desc3')+'</p>');
+            $("#ta_div_statusErklaerung").html('&lt;h3>4 '+LNG.K('algorithm_status4_head')+'&lt;/h3>\
+            &lt;h3>4.1 '+LNG.K('algorithm_status41_head')+'&lt;/h3>\
+            &lt;p>'+LNG.K('algorithm_status41_desc1')+'&lt;/p>\
+            &lt;h3>4.1.1 '+LNG.K('algorithm_status41_desc2')+'&lt;/h3>\
+            &lt;p>'+LNG.K('algorithm_status41_desc3')+'&lt;/p>');
         }
 
         // Füge fertige Subtour in die Liste der Subtouren ein
@@ -1066,15 +1094,15 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
             var newTour = new Array();
             var specialLast = null;
 
-            for(var i = 0; i < eulerianTour.length; i++) {
+            for(var i = 0; i &lt; eulerianTour.length; i++) {
                 if(JSON.stringify(eulerianTour[i]) === JSON.stringify(startOfSubTour)) {
                     specialLast = i;
                 }
             }
 
-            for(var i = 0; i < eulerianTour.length; i++) {
+            for(var i = 0; i &lt; eulerianTour.length; i++) {
                 if(specialLast == i) {
-                    for(var j = 0; j < eulerianSubTour.length; j++) {
+                    for(var j = 0; j &lt; eulerianSubTour.length; j++) {
                         newTour.push(eulerianSubTour[j]);
                     }
                     replaced = true;
@@ -1090,9 +1118,9 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
             var startOfSubTour = eulerianSubTour[0];
             var newTour = new Array();
 
-            for(var i = 0; i < eulerianTour.length; i++) {
-                if(JSON.stringify(eulerianTour[i]) == JSON.stringify(startOfSubTour) && !replaced) {
-                    for(var j = 0; j < eulerianSubTour.length; j++) {
+            for(var i = 0; i &lt; eulerianTour.length; i++) {
+                if(JSON.stringify(eulerianTour[i]) == JSON.stringify(startOfSubTour) &amp;&amp; !replaced) {
+                    for(var j = 0; j &lt; eulerianSubTour.length; j++) {
                         /* if(eulerianSubTour[j].type == "edge") {
                             graph.edges[eulerianSubTour[j].id].setLayout("lineColor", tourColors[0]);
                         } */
@@ -1123,23 +1151,23 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
      */
     this.checkForeulerianTour = function() {
         this.markPseudoCodeLine([14]);
-        $("#ta_div_statusErklaerung").html('<h3>4 '+LNG.K('algorithm_status4_head')+'</h3>\
-            <h3>4.2 '+LNG.K('algorithm_status42_head')+'</h3>\
-            <p>'+LNG.K('algorithm_status42_desc1')+'</p>\
-            <p>'+LNG.K('algorithm_status42_desc2')+'</p>\
-            <p>'+LNG.K('algorithm_status42_desc3')+'</p>\
-            <p>'+LNG.K('algorithm_status42_desc4')+'</p>');
-        $("#tab_ta").find(".LegendeText").html('<table>\
-            <tr><td class="LegendeTabelle"><img src="img/startknoten2.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start2')+'</span></td></tr>\
-            <tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start')+'</span></td></tr>\
-            <tr><td class="LegendeTabelle"><div class="legendePath" style="background-color:'+tourColors[tourColorIndex]+'"></div></td><td><span>'+LNG.K('algorithm_legende_edgecolor')+'</span></td></tr>\
-        </table>');
+        $("#ta_div_statusErklaerung").html('&lt;h3>4 '+LNG.K('algorithm_status4_head')+'&lt;/h3>\
+            &lt;h3>4.2 '+LNG.K('algorithm_status42_head')+'&lt;/h3>\
+            &lt;p>'+LNG.K('algorithm_status42_desc1')+'&lt;/p>\
+            &lt;p>'+LNG.K('algorithm_status42_desc2')+'&lt;/p>\
+            &lt;p>'+LNG.K('algorithm_status42_desc3')+'&lt;/p>\
+            &lt;p>'+LNG.K('algorithm_status42_desc4')+'&lt;/p>');
+        $("#tab_ta").find(".LegendeText").html('&lt;table>\
+            &lt;tr>&lt;td class="LegendeTabelle">&lt;img src="img/startknoten2.png" alt="Knoten" class="LegendeIcon">&lt;/td>&lt;td>&lt;span>'+LNG.K('algorithm_legende_start2')+'&lt;/span>&lt;/td>&lt;/tr>\
+            &lt;tr>&lt;td class="LegendeTabelle">&lt;img src="img/startknoten.png" alt="Knoten" class="LegendeIcon">&lt;/td>&lt;td>&lt;span>'+LNG.K('algorithm_legende_start')+'&lt;/span>&lt;/td>&lt;/tr>\
+            &lt;tr>&lt;td class="LegendeTabelle">&lt;div class="legendePath" style="background-color:'+tourColors[tourColorIndex]+'">&lt;/div>&lt;/td>&lt;td>&lt;span>'+LNG.K('algorithm_legende_edgecolor')+'&lt;/span>&lt;/td>&lt;/tr>\
+        &lt;/table>');
         this.maximizeLegend();
 
         var numberOfEdgesInGraph = Object.keys(graph.edges).length;
         var numberOfEdgesInTour = 0;
 
-        for(var i = 0; i < eulerianTour.length; i++) {
+        for(var i = 0; i &lt; eulerianTour.length; i++) {
             if(eulerianTour[i].type == "edge") {
                 numberOfEdgesInTour++;
             }
@@ -1165,73 +1193,73 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     this.returnTour = function() {
         this.markPseudoCodeLine([15]);
         if(semiEulerianGraph) {
-            $("#ta_div_statusErklaerung").html('<h3>5 '+LNG.K('algorithm_status5_head')+'</h3>\
-            <p>'+LNG.K('algorithm_status5_desc1a')+'</p>');
+            $("#ta_div_statusErklaerung").html('&lt;h3>5 '+LNG.K('algorithm_status5_head')+'&lt;/h3>\
+            &lt;p>'+LNG.K('algorithm_status5_desc1a')+'&lt;/p>');
         }else{
-           $("#ta_div_statusErklaerung").html('<h3>5 '+LNG.K('algorithm_status5_head')+'</h3>\
-            <p>'+LNG.K('algorithm_status5_desc1b')+'</p>'); 
+           $("#ta_div_statusErklaerung").html('&lt;h3>5 '+LNG.K('algorithm_status5_head')+'&lt;/h3>\
+            &lt;p>'+LNG.K('algorithm_status5_desc1b')+'&lt;/p>'); 
         }
 
         var output = "";
 
-        for(var i = 0; i < eulerianTour.length; i++) {
+        for(var i = 0; i &lt; eulerianTour.length; i++) {
             if(eulerianTour[i].type == "vertex") {
                 output += graph.nodes[eulerianTour[i].id].getLabel();
             }
             if(eulerianTour[i].type == "edge") {
                 var layout = graph.edges[eulerianTour[i].id].getLayout();
-                output += ' <span style="color: '+layout.lineColor+';">&#8211;</span> ';
+                output += ' &lt;span style="color: '+layout.lineColor+';">&amp;#8211;&lt;/span> ';
             }
         }
 
         var output_subtours = "";
 
-        for(var i = 0; i < subtours.length; i++) {
+        for(var i = 0; i &lt; subtours.length; i++) {
             var cur = subtours[i];
-            output_subtours += '<li class="subtour_hover" data-tour-id="'+i+'" style="color: '+tourColors[cur['color']]+';">';
-            for(var j = 0; j < cur['tour'].length; j++) {
-                if(cur['tour'][j].type == "vertex" && j == 0) {
+            output_subtours += '&lt;li class="subtour_hover" data-tour-id="'+i+'" style="color: '+tourColors[cur['color']]+';">';
+            for(var j = 0; j &lt; cur['tour'].length; j++) {
+                if(cur['tour'][j].type == "vertex" &amp;&amp; j == 0) {
                     output_subtours += graph.nodes[cur['tour'][j].id].getLabel();
                 }else if(cur['tour'][j].type == "vertex") {
-                    output_subtours += "&#8211;"+graph.nodes[cur['tour'][j].id].getLabel();
+                    output_subtours += "&amp;#8211;"+graph.nodes[cur['tour'][j].id].getLabel();
                 }
             }
-            output_subtours += '</li>';
+            output_subtours += '&lt;/li>';
         }
 
         if(semiEulerianGraph) {
             if(debugConsole) console.log("Complete Eulerian Trail: ", eulerianTour);
 
-            $("#ta_div_statusErklaerung").append('<h3>5.1 '+LNG.K('algorithm_status51a_head')+'</h3>\
-            <p class="result_euleriantour">' + output + '</p>\
-            <p>'+LNG.K('algorithm_status51a_desc1')+'</p>\
-            <p><button id="animateTour">'+LNG.K('algorithm_status51a_desc2')+'</button><button id="animateTourStop">'+LNG.K('algorithm_status51a_desc3')+'</button></p>\
-            <p>'+LNG.K('algorithm_status51a_desc4')+'</p>\
-            <h3>5.2 '+LNG.K('algorithm_status52_head')+'</h3>\
-            <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
-            <p>'+LNG.K('algorithm_status52_desc1')+'</p>\
-            <p></p><h3>'+LNG.K('algorithm_msg_finish')+'</h3>\
-            <button id="ta_button_gotoIdee">'+LNG.K('algorithm_btn_more')+'</button>\
-            <h3>'+LNG.K('algorithm_msg_test')+'</h3>\
-            <button id="ta_button_gotoFA1">'+LNG.K('algorithm_btn_exe1')+'</button>\
-            <button id="ta_button_gotoFA2">'+LNG.K('algorithm_btn_exe2')+'</button>');
+            $("#ta_div_statusErklaerung").append('&lt;h3>5.1 '+LNG.K('algorithm_status51a_head')+'&lt;/h3>\
+            &lt;p class="result_euleriantour">' + output + '&lt;/p>\
+            &lt;p>'+LNG.K('algorithm_status51a_desc1')+'&lt;/p>\
+            &lt;p>&lt;button id="animateTour">'+LNG.K('algorithm_status51a_desc2')+'&lt;/button>&lt;button id="animateTourStop">'+LNG.K('algorithm_status51a_desc3')+'&lt;/button>&lt;/p>\
+            &lt;p>'+LNG.K('algorithm_status51a_desc4')+'&lt;/p>\
+            &lt;h3>5.2 '+LNG.K('algorithm_status52_head')+'&lt;/h3>\
+            &lt;ul class="subtourList result_subtour">'+output_subtours+'&lt;/ul>\
+            &lt;p>'+LNG.K('algorithm_status52_desc1')+'&lt;/p>\
+            &lt;p>&lt;/p>&lt;h3>'+LNG.K('algorithm_msg_finish')+'&lt;/h3>\
+            &lt;button id="ta_button_gotoIdee">'+LNG.K('algorithm_btn_more')+'&lt;/button>\
+            &lt;h3>'+LNG.K('algorithm_msg_test')+'&lt;/h3>\
+            &lt;button id="ta_button_gotoFA1">'+LNG.K('algorithm_btn_exe1')+'&lt;/button>\
+            &lt;button id="ta_button_gotoFA2">'+LNG.K('algorithm_btn_exe2')+'&lt;/button>');
 
         }else{
             if(debugConsole) console.log("Complete Eulerian Circle: ", eulerianTour);
 
-            $("#ta_div_statusErklaerung").append('<h3>5.1 '+LNG.K('algorithm_status51b_head')+'</h3>\
-            <p class="result_euleriantour">' + output + '</p>\
-            <p>'+LNG.K('algorithm_status51b_desc1')+'</p>\
-            <p><button id="animateTour">'+LNG.K('algorithm_status51b_desc2')+'</button><button id="animateTourStop">'+LNG.K('algorithm_status51b_desc3')+'</button></p>\
-            <p>'+LNG.K('algorithm_status51b_desc4')+'</p>\
-            <h3>5.2 '+LNG.K('algorithm_status52_head')+'</h3>\
-            <ul class="subtourList result_subtour">'+output_subtours+'</ul>\
-            <p>'+LNG.K('algorithm_status52_desc1')+'</p>\
-            <p></p><h3>'+LNG.K('algorithm_msg_finish')+'</h3>\
-            <button id="ta_button_gotoIdee">'+LNG.K('algorithm_btn_more')+'</button>\
-            <h3>'+LNG.K('algorithm_msg_test')+'</h3>\
-            <button id="ta_button_gotoFA1">'+LNG.K('algorithm_btn_exe1')+'</button>\
-            <button id="ta_button_gotoFA2">'+LNG.K('algorithm_btn_exe2')+'</button>');
+            $("#ta_div_statusErklaerung").append('&lt;h3>5.1 '+LNG.K('algorithm_status51b_head')+'&lt;/h3>\
+            &lt;p class="result_euleriantour">' + output + '&lt;/p>\
+            &lt;p>'+LNG.K('algorithm_status51b_desc1')+'&lt;/p>\
+            &lt;p>&lt;button id="animateTour">'+LNG.K('algorithm_status51b_desc2')+'&lt;/button>&lt;button id="animateTourStop">'+LNG.K('algorithm_status51b_desc3')+'&lt;/button>&lt;/p>\
+            &lt;p>'+LNG.K('algorithm_status51b_desc4')+'&lt;/p>\
+            &lt;h3>5.2 '+LNG.K('algorithm_status52_head')+'&lt;/h3>\
+            &lt;ul class="subtourList result_subtour">'+output_subtours+'&lt;/ul>\
+            &lt;p>'+LNG.K('algorithm_status52_desc1')+'&lt;/p>\
+            &lt;p>&lt;/p>&lt;h3>'+LNG.K('algorithm_msg_finish')+'&lt;/h3>\
+            &lt;button id="ta_button_gotoIdee">'+LNG.K('algorithm_btn_more')+'&lt;/button>\
+            &lt;h3>'+LNG.K('algorithm_msg_test')+'&lt;/h3>\
+            &lt;button id="ta_button_gotoFA1">'+LNG.K('algorithm_btn_exe1')+'&lt;/button>\
+            &lt;button id="ta_button_gotoFA2">'+LNG.K('algorithm_btn_exe2')+'&lt;/button>');
         }  
 
 
@@ -1258,14 +1286,14 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
      */
     this.findNewStartingVertex = function() {
         this.markPseudoCodeLine([6, 7]);
-        $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
-            <h3>3.1b '+LNG.K('algorithm_status31B_head')+'</h3>\
-            <p>'+LNG.K('algorithm_status31B_desc1')+'</p>\
-            <p>'+LNG.K('algorithm_status31B_desc2')+'</p>');
+        $("#ta_div_statusErklaerung").html('&lt;h3>3 '+LNG.K('algorithm_status3_head')+'&lt;/h3>\
+            &lt;h3>3.1b '+LNG.K('algorithm_status31B_head')+'&lt;/h3>\
+            &lt;p>'+LNG.K('algorithm_status31B_desc1')+'&lt;/p>\
+            &lt;p>'+LNG.K('algorithm_status31B_desc2')+'&lt;/p>');
 
         eulerianSubTour = new Array();
 
-        for(var i = 0; i < eulerianTour.length; i++) {
+        for(var i = 0; i &lt; eulerianTour.length; i++) {
             
             if(eulerianTour[i].type == "vertex") {
                 if(graph.nodes[eulerianTour[i].id].getUnvisitedDegree() > 0) {
@@ -1292,4 +1320,26 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
 
 // Vererbung realisieren
 HAlgorithm.prototype = new CanvasDrawer;
-HAlgorithm.prototype.constructor = HAlgorithm;
+HAlgorithm.prototype.constructor = HAlgorithm;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CanvasDrawer.html">CanvasDrawer</a></li><li><a href="CanvasDrawMethods.html">CanvasDrawMethods</a></li><li><a href="Edge.html">Edge</a></li><li><a href="Forschungsaufgabe1.html">Forschungsaufgabe1</a></li><li><a href="Forschungsaufgabe2.html">Forschungsaufgabe2</a></li><li><a href="Graph.html">Graph</a></li><li><a href="GraphDrawer.html">GraphDrawer</a></li><li><a href="GraphNode.html">GraphNode</a></li><li><a href="HAlgorithm.html">HAlgorithm</a></li><li><a href="Utilities.html">Utilities</a></li></ul><h3>Global</h3><ul><li><a href="global.html#const_Colors">const_Colors</a></li><li><a href="global.html#global_Edgelayout">global_Edgelayout</a></li><li><a href="global.html#global_KnotenRadius">global_KnotenRadius</a></li><li><a href="global.html#global_NodeLayout">global_NodeLayout</a></li><li><a href="global.html#initializeSiteLayout">initializeSiteLayout</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0</a> on Fri May 15 2015 14:53:20 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

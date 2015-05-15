@@ -40,6 +40,11 @@ Utilities.objectSize = function(obj) {
     return size;
 };
 
+/**
+ * Mische Array
+ * @param  {Array} array Array mit Zahlen
+ * @return {Array}       Gemischter Array mit Zahlen
+ */
 Utilities.shuffleArray = function(array) {
     var counter = array.length, temp, index;
 

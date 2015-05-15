@@ -1,4 +1,32 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: graph.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: graph.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * @author Mark J. Becker
  * Hier wird der Graph und alle zugehörigen Fuktionen definiert.
  * Außerdem wird die Klasse GraphDrawer definiert, die es ermöglicht auf das Canvas zu zeichnen
@@ -288,7 +316,7 @@ GraphNode.prototype.draw = function(ctx) {
 GraphNode.prototype.contains = function(mx, my) {
     var coord = this.getCoordinates();
     var radius = this.getLayout().nodeRadius;
-    return (mx-coord.x)*(mx-coord.x) + (my-coord.y)*(my-coord.y)<radius*radius;
+    return (mx-coord.x)*(mx-coord.x) + (my-coord.y)*(my-coord.y)&lt;radius*radius;
 };
 
 /**
@@ -445,7 +473,7 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
      */
     this.setSourceCoordinates = function(coord,noShift) {
         sourceCoordinates = coord;
-        if(oppositeEdge && !noShift) {
+        if(oppositeEdge &amp;&amp; !noShift) {
             this.shift();
         }
     };
@@ -457,7 +485,7 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
      */
     this.setTargetCoordinates = function(coord,noShift) {
         targetCoordinates = coord;
-        if(oppositeEdge && !noShift) {
+        if(oppositeEdge &amp;&amp; !noShift) {
             this.shift();
         }
     };
@@ -620,7 +648,7 @@ Edge.prototype.contains = function(mx,my,ctx) {
     var targetShift = {x:targetC.x-sourceC.x,y:targetC.y-sourceC.y};
     var targetShiftRot = {x:targetShift.x*Math.cos(-alpha) - targetShift.y*Math.sin(-alpha),
                 y:targetShift.x*Math.sin(-alpha) + targetShift.y*Math.cos(-alpha)};
-    if(MouseShiftRot.x>=0 && MouseShiftRot.x<=targetShiftRot.x && Math.abs(MouseShiftRot.y)<=toleranz) {
+    if(MouseShiftRot.x>=0 &amp;&amp; MouseShiftRot.x&lt;=targetShiftRot.x &amp;&amp; Math.abs(MouseShiftRot.y)&lt;=toleranz) {
         return true;
     }
     
@@ -641,7 +669,7 @@ Edge.prototype.contains = function(mx,my,ctx) {
     var rotatedMouseOld = {x:mx-c0.x,y:my-c0.y};
     var rotatedMouse = {x: rotatedMouseOld.x*Math.cos(-alpha) - rotatedMouseOld.y*Math.sin(-alpha),
                 y: rotatedMouseOld.x*Math.sin(-alpha) + rotatedMouseOld.y*Math.cos(-alpha)};
-    if(rotatedMouse.x<=0 && rotatedMouse.x>= upperCorner.x && rotatedMouse.y<=0 && rotatedMouse.y>= upperCorner.y) {
+    if(rotatedMouse.x&lt;=0 &amp;&amp; rotatedMouse.x>= upperCorner.x &amp;&amp; rotatedMouse.y&lt;=0 &amp;&amp; rotatedMouse.y>= upperCorner.y) {
         return true;
     }
     return false;
@@ -823,13 +851,13 @@ function Graph(filename, canvas, directed) {
     };
     
     /**
-     * Liest den Graph aus einer externen Datei ein.<br>
-     * Graphen werden in Textdateien gespeichert und folgen einem einfachen Format:<br>
-     * Die Datei wird zeilenweise gelesen <br>
-     * Zeilen die mit % beginnen sind Kommentare<br>
-     * Zeilen der Form n Zahl1 Zahl2 beschreiben einen Knoten mit den Koordinaten (x,y) = (Zahl1,Zahl2)<br>
+     * Liest den Graph aus einer externen Datei ein.&lt;br>
+     * Graphen werden in Textdateien gespeichert und folgen einem einfachen Format:&lt;br>
+     * Die Datei wird zeilenweise gelesen &lt;br>
+     * Zeilen die mit % beginnen sind Kommentare&lt;br>
+     * Zeilen der Form n Zahl1 Zahl2 beschreiben einen Knoten mit den Koordinaten (x,y) = (Zahl1,Zahl2)&lt;br>
      * Zeilen der Form e id1 id2 g beschreiben eine Kante zwischen den Knoten mit IDs id1 und id2
-     * mit Gewicht g.<br><br>
+     * mit Gewicht g.&lt;br>&lt;br>
      * 
      * Siehe auch Beispiele im Ordner graphs.
      * @param {String} file Dateiname
@@ -851,12 +879,12 @@ function Graph(filename, canvas, directed) {
                     continue;
                 }
                 if(parameter[0] == "n") {
-                    if(!isNaN(parseFloat(parameter[1])) && !isNaN(parseFloat(parameter[2]))) {
+                    if(!isNaN(parseFloat(parameter[1])) &amp;&amp; !isNaN(parseFloat(parameter[2]))) {
                         closure_graph.addNode(parseFloat(parameter[1]),parseFloat(parameter[2]));
                     }
                 }
                 if(parameter[0] == "e") {
-                    if(!isNaN(parseInt(parameter[1])) && !isNaN(parseInt(parameter[2])) && !isNaN(parseFloat(parameter[3]))) {
+                    if(!isNaN(parseInt(parameter[1])) &amp;&amp; !isNaN(parseInt(parameter[2])) &amp;&amp; !isNaN(parseFloat(parameter[3]))) {
                         var sourceId = parseInt(parameter[1]);
                         var targetId = parseInt(parameter[2]);
                         var weight = parseFloat(parameter[3]);
@@ -877,7 +905,7 @@ function Graph(filename, canvas, directed) {
     	var NumberOfNodes = 7;
     	
     	// Knoten erstellen
-    	for(var i = 0;i<NumberOfNodes;i++) {
+    	for(var i = 0;i&lt;NumberOfNodes;i++) {
                 var x = Math.random()*(canvas.width()-100) +50;     // Knoten nicht zu nah am Rand
                 var y = Math.random()*(canvas.height()-100) +50;
                 x = Math.round(x/10)*10;                            // Knoten ein bisschen gleichmäßiger verteilt.
@@ -886,9 +914,9 @@ function Graph(filename, canvas, directed) {
     	}
     	
     	// Kanten erstellen, mit WSKeit 30 %
-    	for(var i = 0;i<NumberOfNodes;i++) {
-                for(var j = 0;j<NumberOfNodes;j++) {
-                    if(i != j && Math.random() < 0.3) {
+    	for(var i = 0;i&lt;NumberOfNodes;i++) {
+                for(var j = 0;j&lt;NumberOfNodes;j++) {
+                    if(i != j &amp;&amp; Math.random() &lt; 0.3) {
                         closure_graph.addEdge(closure_graph.nodes[i],closure_graph.nodes[j],null);
                     }
                 }
@@ -905,7 +933,7 @@ function Graph(filename, canvas, directed) {
         var graphDescription = "";
         graphDescription += "% Automatisch generiert um " +(new Date).toGMTString() + "\n";
         var nodeArray = Utilities.arrayOfKeys(this.nodes);
-        for(var i=0;i<nodeArray.length;i++) {
+        for(var i=0;i&lt;nodeArray.length;i++) {
             graphDescription += "n " +this.nodes[nodeArray[i]].getCoordinates().x + " " +this.nodes[nodeArray[i]].getCoordinates().y + "\n";
         }
         for(var edgeID in this.edges) {
@@ -921,7 +949,7 @@ function Graph(filename, canvas, directed) {
     if(canvas != null) {
         generateRandomGraph(canvas);
     }
-    if(canvas == null && filename != null) {
+    if(canvas == null &amp;&amp; filename != null) {
         parseGraphfromFile(filename);
     }
 }
@@ -937,7 +965,7 @@ function Graph(filename, canvas, directed) {
 Graph.prototype.getEdgeBetween= function(source,target) {
     for(var edgeID in this.edges) {
         if(this.edges[edgeID].getSourceID() == source.getNodeID() 
-                && this.edges[edgeID].getTargetID() == target.getNodeID()) {
+                &amp;&amp; this.edges[edgeID].getTargetID() == target.getNodeID()) {
             return edgeID;
         }
     }
@@ -1068,7 +1096,7 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
     };
     
     /**
-     * Behandelt Mausbewegungen im Canvas<br>
+     * Behandelt Mausbewegungen im Canvas&lt;br>
      * Falls ein Knoten ausgewählt ist und die Maus gezogen wird, wird er verschoben
      * Falls ein Knoten ausgewählt ist und die Maus nicht gedrückt, so wird eine neue Kante gezeichnet
      * @param {jQuery.Event} e jQuery Event Objekt, enthält insbes. die Koordinaten des Mauszeigers.
@@ -1091,7 +1119,7 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
     };
     
     /**
-     * Behandelt Doppelklicks im Canvas<br>
+     * Behandelt Doppelklicks im Canvas&lt;br>
      * Bei einem Doppelklick auf eine Kante kann deren Gewicht verändert werden,
      * bei einem Doppelklick in die freie Landschaft wird ein neuer Knoten erstellt.
      * @param {jQuery.Event} e jQuery Event Objekt, enthält insbes. die Koordinaten des Mauszeigers.
@@ -1114,7 +1142,7 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
     };
     
     /**
-     * Behandelt Rechtsklicks im Canvas<br>
+     * Behandelt Rechtsklicks im Canvas&lt;br>
      * Bei einem Rechtsklick auf einen Knoten oder eine Kante wird diese gelöscht.
      * @param {jQuery.Event} e jQuery Event Objekt, enthält insbes. die Koordinaten des Mauszeigers.
      * @method
@@ -1148,7 +1176,7 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
     };
     
     /**
-     * Behandelt Linksklicks im Canvas<br>
+     * Behandelt Linksklicks im Canvas&lt;br>
      * Es wird entweder ein Knoten ausgewählt, oder ein neuer erstellt, oder eine Kante zwischen Knoten erstellt.
      * @param {jQuery.Event} e jQuery Event Objekt, enthält insbes. die Koordinaten des Mauszeigers.
      * @method
@@ -1274,4 +1302,26 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
 
 // Vererbung realisieren
 GraphDrawer.prototype = new CanvasDrawer;
-GraphDrawer.prototype.constructor = GraphDrawer;
+GraphDrawer.prototype.constructor = GraphDrawer;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CanvasDrawer.html">CanvasDrawer</a></li><li><a href="CanvasDrawMethods.html">CanvasDrawMethods</a></li><li><a href="Edge.html">Edge</a></li><li><a href="Forschungsaufgabe1.html">Forschungsaufgabe1</a></li><li><a href="Forschungsaufgabe2.html">Forschungsaufgabe2</a></li><li><a href="Graph.html">Graph</a></li><li><a href="GraphDrawer.html">GraphDrawer</a></li><li><a href="GraphNode.html">GraphNode</a></li><li><a href="HAlgorithm.html">HAlgorithm</a></li><li><a href="Utilities.html">Utilities</a></li></ul><h3>Global</h3><ul><li><a href="global.html#const_Colors">const_Colors</a></li><li><a href="global.html#global_Edgelayout">global_Edgelayout</a></li><li><a href="global.html#global_KnotenRadius">global_KnotenRadius</a></li><li><a href="global.html#global_NodeLayout">global_NodeLayout</a></li><li><a href="global.html#initializeSiteLayout">initializeSiteLayout</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0</a> on Fri May 15 2015 14:53:20 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
