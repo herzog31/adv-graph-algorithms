@@ -12,8 +12,17 @@ funktionale Beschreibung der Apps
 jedes Tab
 
 \section{Algorithmus von Floyd-Warshall}
-Besonderheiten Visualisierung
-Forschungsfragen
+Da die Implementierung des Floyd-Warshall Algorithmus nicht kompliziert ist, war es wichtig zu zeigen, was genau während dem Ablauf schrittweise passiert. Der Algorithmus wurde in Schritte so unterteilt, dass jeder Schritt eine Verbesserung der Distanz zwischen zwei Knoten darstellt. Um die Verbesserungen anschaulich zu machen, wurde die Adjazenzmatrix implementiert. In jeder Zelle der Adjazenzmatrix wird der aktuelle Distanzwert zwischen zwei entsprechenden Knoten gespeichert. Wenn man die Maus über eine Zelle in der Matrix bewegt, dann wird der Pfad, der diesem Distanzwert entspricht, im Graphen markiert (vgl. Abbildung~\ref{fig:fw-matrix}).
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{figures/fw-matrix}
+	\caption[Floyd-Warshall Matrix]{Visualisierung des verbesserten Pfades}\label{fig:fw-matrix}
+\end{figure}
+
+Die erste Forschungsaufgabe prüft, ob der Nutzer die Logik des Algorithmus verstanden hat. Während des Ablaufs von Floyd-Warshall auf dem bestimmten Graphen werden die Fragen über die vom Algorithmus getroffenen Entscheidungen gestellt.
+
+In der zweiten Forschungsaufgabe soll der Nutzer die fehlende Kantengewichte bestimmen. Ein Teil der Kantenkosten sowie die Adjazenzmatrix sind am Anfang gegeben. Diese Information muss genutzt werden um die fehlende Gewichte zu bestimmen.
 
 \section{Algorithmus von Hierholzer (Mark)}
 Beim Algorithmus von Hierholzer war es uns wichtig, die resultierende Eulertour verständlich zu visualisieren. Dazu werden zunächst alle Subtouren in unterschiedlichen Farben dargestellt. Einzelne Subtouren können auf der Ergebnisseite einzeln hervorgehoben werden. Der Benutzer erkennt mittels der Farben außerdem, welcher Teil der Tour aus welcher Subtour stammt. Die Tour kann durch eine Animation (vgl. Abbildung~\ref{fig:hierholzer-animation}) in der richtigen Reihenfolge abgelaufen werden, sodass der Nutzer verifizieren kann, dass es sich wirklich um eine Eulertour handelt.
@@ -33,8 +42,16 @@ Besonderheiten Visualisierung
 Forschungsfragen
 
 \section{Ungarische Methode}
-Besonderheiten Visualisierung
-Forschungsfragen
+Obwohl es mehrere Implementierungen der Ungarischen Methode gibt, die Idee bleibt bei allen gleich. Die Applikation geht nicht tief in die Einzelheiten der konkreten Implementierung, sondern erklärt das generelle Prinzip der Ungarischen Methode. Dafür war der Einsatz des bipartiten gewichteten Graphs notwendig. Als die Ungarische Methode perfektes Matching im bipartiten Graphen sucht, wird eingegebener Graph in der Anwendung bis zum kompletten Graphen vervollständigt falls der Nutzer das nicht gemacht hat. Um die genutzte Begriffe (wie z. B. Matching oder Augmentationsweg) verständlich zu machen, werden unterschiedliche Farben für Knoten und Kanten während des Ablaufs verwendet (vgl. Abbildung~\ref{fig:hungarian-colors}).
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{figures/hungarian-colors}
+	\caption[Ungarische Methode]{Augmentationsweg wird rot markiert}\label{fig:hungarian-colors}
+\end{figure}
+
+Die erste Forschungsaufgabe prüft, wie gut der Nutzer den Aufbau des Algorithmus verstanden hat. Dazu werden die Fragen während des Ablaufs auf dem beliebigen Graphen gestellt. Der Nutzer muss beantworten, wie der Algorithmus die Markierungen zuweist und welche Schritte macht der Algorithmus als weitere. 
+
+Bei der zweiten Forschungsaufgabe werden auch die Fragen während des Ablaufs der Ungarischen Methode gestellt. Der Graph ist in diesem Fall bestimmt und die Fragen fassen den Aufbau des Augmentationsweges und Gleichheitsgraphs um.
 
 \section{Chinese Postman Problem}
 Besonderheiten Visualisierung
@@ -108,8 +125,19 @@ MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
 \end{figure}
 
 \section{Bipartite Graphen}
-Motivation
-Beispiel
+Zwei Algorithmen, die im Rahmen des Projekts implementiert wurden, nämlich Hopcroft \& Karp Algorithmus und die Ungarische Methode, müssen auf bipartiten Graphen ausgeführt werden. Dafür haben wir das Konzept des bipartiten Graphen im existierenden Framework entwickelt. Um die Darstellung des Matching-Problems und dessen Lösung möglichst anschaulich zu machen, haben wir die Knoten im Graphen in zwei Gruppen geteilt (vgl. Abbildung~\ref{fig:hungarian-bipartite}). Die Kanten können nur zwischen den Knotengruppen erstellt werden. Bei der Ungarischen Methode war es wichtig den Graph mit extra Knoten und Kanten zu vervollständigen, wenn der ursprüngliche Graph nicht komplett war. Das ist notwendig, weil die Ungarische Methode perfektes Matching sucht.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{figures/hungarian-bipartite}
+	\caption[Ungarische Methode]{Bipartiter Graph}\label{fig:hungarian-bipartite}
+\end{figure}
+
+In der Abbildung~\ref{fig:hungarian-complete} kann man sehen, was passiert, wenn man bei der Ungarischen Methode einen nicht kompletten Graphen eingibt. Falls eine Kante zwischen beliebigen zwei Knoten fehlt, wird eine zusätzliche graue Kante mit dem Gewicht 0 hinzugefügt. Wenn die Knotengruppen ungleiche Anzahl der Knoten enthalten, dann werden zusätzliche Knoten dem Graphen hinzugefügt. Alle Nachbarkanten bei diesen zusätzlichen Knoten haben das Gewicht 0.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{figures/hungarian-complete}
+	\caption[Ungarische Methode]{Der Graph wird mit fehlenden Knoten und Kanten erweitert}\label{fig:hungarian-complete}
+\end{figure}
 
 \section{Multigraphen}
 Motivation
