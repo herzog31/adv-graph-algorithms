@@ -8,8 +8,30 @@ Aufbau der Dokumentation, inkl. Benennung wer hat was gemacht (Benotung)
 % Keine Beschreibung der Algorithmen an sich!
 
 \chapter{Aufbau der Webanwendungen}
-funktionale Beschreibung der Apps
-jedes Tab
+\section{Aufbau der Anwendungen}
+Jede Applikation ist in mehreren Teile aufgeteilt. Die Struktur von jeder Applikation ist gleich. Alle Anwendungen bestehen aus mehreren Tabs, von denen jeder eine bestimmte Fuktion hat (vgl. Abbildung~\ref{fig:tabs}).
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{figures/tabs}
+	\caption[Tabs]{Tabs der Anwendung}\label{fig:tabs}
+\end{figure}
+
+Die Tabs ``Einführung'', ``Beschreibung des Algorithmus'' und ``Weiteres'' enthalten nur den statischen Text mit Bildern und sind deswegen nicht interaktiv. Alle weiteren Tabs bieten dem Nutzer die Eingabemöglichkeiten um die Funktionen der Algorithmen zu erläutern oder seine Kentnisse zu prüfen. 
+
+\subsection{Aufbau der Tabs}
+\textbf{Einführung:} das Ziel des Tabs ist, eine allgemeine Vorstellung über die Anwendung dem Nutzer zu geben. Der statische Text in diesem Tab enthält einige relevante Informationen zum Problem für jeweiligen Algorithmus, ein diesem Problem entsprechendes Bild sowie zwei Tasten, die zur Erstellung des Graphs und zur Beschreibung des Algorithmus führen. Außer diesen zwei Tasten ist der Tab mit keiner weiteren Interaktivität ausgestattet.
+
+
+\noindent\textbf{Graph erstellen:} in diesem Tab kann der Nutzer einen Graph erstellen, auf dem der Algorithmus später ausgeführt wird. Hier stehen zwei Möglichkeiten zur Verfügung: entweder den Graph selbst mit der Maus zu erstellen oder einen fertigen Graph aus der vorgegebenen Liste zu wählen. Falls der Algorithmus einen gewichteten Graph voraussetzt, kann der Nutzer die Gewichte nach dem Doppelklick auf der Kante selbst eingeben. Wenn der Algorithmus einen bipartiten Graph erfordert, dann wird die Erstellung des Graph beschränkt, damit alle Eigenschaften des bipartiten Graphs erfüllt sind. 
+
+\noindent\textbf{Algorithmus ausführen:} hier wird der Ablauf des Algorithmus dargestellt. Der Algorithmus läuft auf dem Graph, der im vorigen Tab erstellt wurde. Man kann sowohl schrittweise den Algorithmus ausführen als auch den vorspulen. Außerdem kann der Nutzer den Schnellvorlauf pausieren, in diesem Fall wird der Ablauf im aktuellen Schritt gestoppt. Bei jedem Schritt wird die entsprechende Information zum Status des Algorithmus aufgezeigt und der Stand des Pseudocodes wird im separaten Fenster abgebildet.
+
+\noindent\textbf{Beschreibung des Algorithmus:} dieser Tab stellt die ausführliche Informationen zum jeweiligen Algorithmus dar. Der Tab enthält statischen Text mit Bildern, der die Logik des Algorithmus erklärt. Im unteren Teil des Tabs stehen die Tasten, die auf anderen Tabs verweisen.
+
+\noindent\textbf{Forschungsaufgaben:} bei jeder Anwendung stehen zwei Tabs zur Verfügung, wo der Nutzer die Aufgaben lösen muss. Der Zweck der Forschungsaufgaben ist zu prüfen, wie gut der Nutzer die Algorithmen verstanden hat. In den Aufgaben wird gefragt, welche Entscheidungen der Algorithmus trifft. Am Ende der Aufgabe sieht man die Statistik, die die Antworten des Nutzers erfasst. Danach wird vorgeschlagen zu weiteren Tabs der Applikation zu gehen.
+
+\noindent\textbf{Weiteres:} im letzten Tab kann der Nutzer weitere Informationen zum Algorithmus lesen. Es handelt sich um den Pseudocode, die Laufzeit der Algorithmen, den Beweis der Korrektheit und die Links zu sonstigen Quellen.
 
 \section{Algorithmus von Floyd-Warshall}
 Da die Implementierung des Floyd-Warshall Algorithmus nicht kompliziert ist, war es wichtig zu zeigen, was genau während dem Ablauf schrittweise passiert. Der Algorithmus wurde in Schritte so unterteilt, dass jeder Schritt eine Verbesserung der Distanz zwischen zwei Knoten darstellt. Um die Verbesserungen anschaulich zu machen, wurde die Adjazenzmatrix implementiert. In jeder Zelle der Adjazenzmatrix wird der aktuelle Distanzwert zwischen zwei entsprechenden Knoten gespeichert. Wenn man die Maus über eine Zelle in der Matrix bewegt, dann wird der Pfad, der diesem Distanzwert entspricht, im Graphen markiert (vgl. Abbildung~\ref{fig:fw-matrix}).
