@@ -1,3 +1,4 @@
+% !TeX spellcheck = de_DE
 \chapter{Einleitung}
 Einleitung
 Motivation
@@ -8,7 +9,6 @@ Aufbau der Dokumentation, inkl. Benennung wer hat was gemacht (Benotung)
 % Keine Beschreibung der Algorithmen an sich!
 
 \chapter{Aufbau der Webanwendungen}
-\section{Aufbau der Anwendungen}
 Jede Applikation ist in mehreren Teile aufgeteilt. Die Struktur von jeder Applikation ist gleich. Alle Anwendungen bestehen aus mehreren Tabs, von denen jeder eine bestimmte Fuktion hat (vgl. Abbildung~\ref{fig:tabs}).
 
 \begin{figure}[h!]
@@ -19,7 +19,7 @@ Jede Applikation ist in mehreren Teile aufgeteilt. Die Struktur von jeder Applik
 
 Die Tabs ``Einführung'', ``Beschreibung des Algorithmus'' und ``Weiteres'' enthalten nur den statischen Text mit Bildern und sind deswegen nicht interaktiv. Alle weiteren Tabs bieten dem Nutzer die Eingabemöglichkeiten um die Funktionen der Algorithmen zu erläutern oder seine Kentnisse zu prüfen. 
 
-\subsection{Aufbau der Tabs}
+\section{Aufbau der Tabs(Aleksejs)}
 \textbf{Einführung:} das Ziel des Tabs ist, eine allgemeine Vorstellung über die Anwendung dem Nutzer zu geben. Der statische Text in diesem Tab enthält einige relevante Informationen zum Problem für jeweiligen Algorithmus, ein diesem Problem entsprechendes Bild sowie zwei Tasten, die zur Erstellung des Graphs und zur Beschreibung des Algorithmus führen. Außer diesen zwei Tasten ist der Tab mit keiner weiteren Interaktivität ausgestattet.
 
 
@@ -33,7 +33,7 @@ Die Tabs ``Einführung'', ``Beschreibung des Algorithmus'' und ``Weiteres'' enth
 
 \noindent\textbf{Weiteres:} im letzten Tab kann der Nutzer weitere Informationen zum Algorithmus lesen. Es handelt sich um den Pseudocode, die Laufzeit der Algorithmen, den Beweis der Korrektheit und die Links zu sonstigen Quellen.
 
-\section{Algorithmus von Floyd-Warshall}
+\section{Algorithmus von Floyd-Warshall(Aleksejs)}
 Da die Implementierung des Floyd-Warshall Algorithmus nicht kompliziert ist, war es wichtig zu zeigen, was genau während dem Ablauf schrittweise passiert. Der Algorithmus wurde in Schritte so unterteilt, dass jeder Schritt eine Verbesserung der Distanz zwischen zwei Knoten darstellt. Um die Verbesserungen anschaulich zu machen, wurde die Adjazenzmatrix implementiert. In jeder Zelle der Adjazenzmatrix wird der aktuelle Distanzwert zwischen zwei entsprechenden Knoten gespeichert. Wenn man die Maus über eine Zelle in der Matrix bewegt, dann wird der Pfad, der diesem Distanzwert entspricht, im Graphen markiert (vgl. Abbildung~\ref{fig:fw-matrix}).
 
 \begin{figure}[h!]
@@ -63,7 +63,7 @@ In einer weiteren Forschungsaufgabe werden die Besonderheiten des Algorithmus be
 Besonderheiten Visualisierung
 Forschungsfragen
 
-\section{Ungarische Methode}
+\section{Ungarische Methode(Aleksejs)}
 Obwohl es mehrere Implementierungen der Ungarischen Methode gibt, die Idee bleibt bei allen gleich. Die Applikation geht nicht tief in die Einzelheiten der konkreten Implementierung, sondern erklärt das generelle Prinzip der Ungarischen Methode. Dafür war der Einsatz des bipartiten gewichteten Graphs notwendig. Als die Ungarische Methode perfektes Matching im bipartiten Graphen sucht, wird eingegebener Graph in der Anwendung bis zum kompletten Graphen vervollständigt falls der Nutzer das nicht gemacht hat. Um die genutzte Begriffe (wie z. B. Matching oder Augmentationsweg) verständlich zu machen, werden unterschiedliche Farben für Knoten und Kanten während des Ablaufs verwendet (vgl. Abbildung~\ref{fig:hungarian-colors}).
 \begin{figure}[h!]
 	\centering
@@ -146,7 +146,7 @@ MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
 \caption[MathJAX Render Befehl]{Befehl zum erneuten Rendern von Ausdrücken im HTML Dokument}\label{fig:listing-mathjax-render}
 \end{figure}
 
-\section{Bipartite Graphen}
+\section{Bipartite Graphen(Aleksejs)}
 Zwei Algorithmen, die im Rahmen des Projekts implementiert wurden, nämlich Hopcroft \& Karp Algorithmus und die Ungarische Methode, müssen auf bipartiten Graphen ausgeführt werden. Dafür haben wir das Konzept des bipartiten Graphen im existierenden Framework entwickelt. Um die Darstellung des Matching-Problems und dessen Lösung möglichst anschaulich zu machen, haben wir die Knoten im Graphen in zwei Gruppen geteilt (vgl. Abbildung~\ref{fig:hungarian-bipartite}). Die Kanten können nur zwischen den Knotengruppen erstellt werden. Bei der Ungarischen Methode war es wichtig den Graph mit extra Knoten und Kanten zu vervollständigen, wenn der ursprüngliche Graph nicht komplett war. Das ist notwendig, weil die Ungarische Methode perfektes Matching sucht.
 \begin{figure}[h!]
 	\centering
