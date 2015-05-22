@@ -142,7 +142,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     var reqWrong = [    LNG.K('aufgabe2_reqwrong0'),
                         LNG.K('aufgabe2_reqwrong1'),
                         LNG.K('aufgabe2_reqwrong2'),
-                        LNG.K('aufgabe2_reqwrong3')];
+                        LNG.K('aufgabe2_reqwrong3'),
+                        LNG.K('aufgabe2_reqwrong4')];
     
     /**
      * Startet die Ausführung des Algorithmus.
@@ -893,13 +894,13 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.3 '+LNG.K('algorithm_status33_head')+'</h3>\
             <p>'+LNG.K('aufgabe2_status33_desc1')+'</p>\
-            <h3>3.3.1 '+LNG.K('aufgabe2_status33_desc2')+'</h3>\
+            <h3>'+LNG.K('aufgabe2_status33_desc2')+'</h3>\
             <p>'+LNG.K('aufgabe2_status33_desc3')+'</p>');
         }else{
             $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.3 '+LNG.K('algorithm_status33_head')+'</h3>\
             <p>'+LNG.K('aufgabe2_status33_desc1')+'</p>\
-            <h3>3.3.2 '+LNG.K('aufgabe2_status33_desc4')+'</h3>\
+            <h3>'+LNG.K('aufgabe2_status33_desc4')+'</h3>\
             <p>'+LNG.K('aufgabe2_status33_desc5')+'</p>');
         } 
 
@@ -927,7 +928,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_div_statusErklaerung").html('<h3>4 '+LNG.K('algorithm_status4_head')+'</h3>\
             <h3>4.1 '+LNG.K('algorithm_status41_head')+'</h3>\
             <p>'+LNG.K('aufgabe2_status41_desc1')+'</p>\
-            <h3>4.1.1 '+LNG.K('aufgabe2_status41_desc2')+'</h3>\
+            <h3>'+LNG.K('aufgabe2_status41_desc2')+'</h3>\
             <p>'+LNG.K('aufgabe2_status41_desc3')+'</p>');
         /* <h3>4.1.2 '+LNG.K('aufgabe2_status41_desc4')+'</h3>\
             <p>'+LNG.K('aufgabe2_status41_desc5')+'</p> */

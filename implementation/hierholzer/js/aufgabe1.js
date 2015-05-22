@@ -891,6 +891,12 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
         // Merge Tour if stuck
         if(nextEdge === null) {
+
+            $("#tf1_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
+            <h3>3.2 '+LNG.K('algorithm_status32_head')+'</h3>\
+            <p>'+LNG.K('algorithm_status32_desc1')+' (<strong>'+graph.nodes[tourCurrentVertex].getLabel()+'</strong>).</p>\
+            <p>'+LNG.K('algorithm_status32_desc6')+'</p>');
+
             statusID = 6;
             return false;
         }
@@ -932,13 +938,13 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             $("#tf1_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.3 '+LNG.K('algorithm_status33_head')+'</h3>\
             <p>'+LNG.K('algorithm_status33_desc1')+'</p>\
-            <h3>3.3.1 '+LNG.K('algorithm_status33_desc2')+'</h3>\
+            <h3>'+LNG.K('algorithm_status33_desc2')+'</h3>\
             <p>'+LNG.K('algorithm_status33_desc3')+'</p>');
         }else{
             $("#tf1_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.3 '+LNG.K('algorithm_status33_head')+'</h3>\
             <p>'+LNG.K('algorithm_status33_desc1')+'</p>\
-            <h3>3.3.2 '+LNG.K('algorithm_status33_desc4')+'</h3>\
+            <h3>'+LNG.K('algorithm_status33_desc4')+'</h3>\
             <p>'+LNG.K('algorithm_status33_desc5')+'</p>'); 
         }
 
@@ -968,13 +974,13 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             $("#tf1_div_statusErklaerung").html('<h3>4 '+LNG.K('algorithm_status4_head')+'</h3>\
             <h3>4.1 '+LNG.K('algorithm_status41_head')+'</h3>\
             <p>'+LNG.K('algorithm_status41_desc1')+'</p>\
-            <h3>4.1.2 '+LNG.K('algorithm_status41_desc4')+'</h3>\
+            <h3>'+LNG.K('algorithm_status41_desc4')+'</h3>\
             <p>'+LNG.K('algorithm_status41_desc5')+'</p>');
         }else{
             $("#tf1_div_statusErklaerung").html('<h3>4 '+LNG.K('algorithm_status4_head')+'</h3>\
             <h3>4.1 '+LNG.K('algorithm_status41_head')+'</h3>\
             <p>'+LNG.K('algorithm_status41_desc1')+'</p>\
-            <h3>4.1.1 '+LNG.K('algorithm_status41_desc2')+'</h3>\
+            <h3>'+LNG.K('algorithm_status41_desc2')+'</h3>\
             <p>'+LNG.K('algorithm_status41_desc3')+'</p>');
         }
         
