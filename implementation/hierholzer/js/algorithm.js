@@ -859,7 +859,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
         this.markPseudoCodeLine([3, 4, 6, 7]);
         if(!semiEulerianGraph) {
             $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
-            <h3>3.1a '+LNG.K('algorithm_status31A_head')+'</h3>\
+            <h3>3.1 '+LNG.K('algorithm_status31A_head')+'</h3>\
             <p>'+LNG.K('algorithm_status31A_desc1')+'</p>\
             <p>'+LNG.K('algorithm_status31A_desc2')+'</p>\
             <p>'+LNG.K('algorithm_status31A_desc4')+'</p>');
@@ -868,7 +868,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
             canvas.on("click.HAlgorithm", function(e) { algo.canvasClickHandler(e); });
         }else{
             $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
-            <h3>3.1a '+LNG.K('algorithm_status31A_head')+'</h3>\
+            <h3>3.1 '+LNG.K('algorithm_status31A_head')+'</h3>\
             <p>'+LNG.K('algorithm_status31A_desc1')+'</p>\
             <p>'+LNG.K('algorithm_status31A_desc3')+'</p>\
             <p>'+LNG.K('algorithm_status31A_desc5')+'</p>');  
@@ -911,7 +911,7 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
 
         $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.2 '+LNG.K('algorithm_status32_head')+'</h3>\
-            <p>'+LNG.K('algorithm_status32_desc1')+'</p>\
+            <p>'+LNG.K('algorithm_status32_desc1')+' (<strong>'+graph.nodes[tourCurrentVertex].getLabel()+'</strong>).</p>\
             <p>'+LNG.K('algorithm_status32_desc2')+'(<span style="font-weight: bold; color: '+tourColors[tourColorIndex]+';">'+LNG.K('algorithm_status32_desc3')+'</span>)'+LNG.K('algorithm_status32_desc4')+'</p>\
             <p>'+LNG.K('algorithm_status32_desc5')+'</p>');
 
@@ -1043,10 +1043,6 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
         // Füge fertige Subtour in die Liste der Subtouren ein
         subtours.push({color: tourColorIndex, tour: eulerianSubTour});
         if(debugConsole) console.log("Subtours", subtours);
-
-        // Wähle nächste Subtourfarbe
-        tourColorIndex++;
-        tourColorIndex = tourColorIndex % tourColors.length;
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
         graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFilling);
@@ -1256,11 +1252,16 @@ function HAlgorithm(p_graph,p_canvas,p_tab) {
     this.findNewStartingVertex = function() {
         this.markPseudoCodeLine([6, 7]);
         $("#ta_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
-            <h3>3.1b '+LNG.K('algorithm_status31B_head')+'</h3>\
+            <h3>3.1 '+LNG.K('algorithm_status31B_head')+'</h3>\
             <p>'+LNG.K('algorithm_status31B_desc1')+'</p>\
             <p>'+LNG.K('algorithm_status31B_desc2')+'</p>');
 
         eulerianSubTour = new Array();
+
+        // Wähle nächste Subtourfarbe
+        tourColorIndex++;
+        tourColorIndex = tourColorIndex % tourColors.length;
+        $(".legendePath").css("background-color", tourColors[tourColorIndex]);
 
         for(var i = 0; i < eulerianTour.length; i++) {
             
