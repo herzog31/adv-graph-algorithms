@@ -72,8 +72,8 @@
 
                 <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="img/beispiel1.png" alt="Einfacher Graph mit 4 Knoten."><p>Kantenzüge ohne doppelte Kanten</p></div>
                 <h1>Das Eulertour Problem</h1>
-                <p>Nicht immer ist die Länge eines Weges entscheidend, oft reicht es schon aus, einen passenden Weg zu kennen. Du möchtest beim Zeitungsaustragen den optimalen Weg wissen, sodass du keine Straße doppelt abgehen musst. Analog dazu nennt man das Finden eines Kantenzugs im Graphen ohne doppelte Kanten das Eulertour Problem.</p>
-                <h2>Der hier vorgestellte Hierholzer Algorithmus löst das Eulertour Problem für passenden Graphen.</h2>
+                <p>Du möchtest beim Zeitungsaustragen die optimalen Route kennen, sodass du keine Straße doppelt abgehen musst? In der Mathematik bezeichnet man das Finden eines Kantenzugs im Graphen ohne doppelte Kanten als das Eulertour Problem. Es ist nach dem Mathematiker Leonhard Euler, der 1736 das s.g. Königsberger Brücken Problem löste, benannt.</p>
+                <h2>Der hier vorgestellte Hierholzer Algorithmus löst das Eulertour Problem für Graphen, die eine Eulertour enthalten.</h2>
                 <div id ="te_div_Entscheidung">
                     <h2>Was möchtest du zuerst tun?</h2>
                     <button id="te_button_gotoDrawGraph">Den Algorithmus testen!</button> <button id="te_button_gotoIdee">Genauere Beschreibung des Algorithmus lesen</button>
@@ -218,10 +218,10 @@
             <div id="ti_div_Einfuehrungstext">
                 <div class="BeispielbildContainer">
                     <img id="ti_img_beispiel1" src="img/koenigsberg.png" alt="Königsberger Brücken" /><p>Königsberger Brücken <sup>1</sup></p><br />
-                    <img id="ti_img_beispiel1" src="img/koenigsberg_degree.png" alt="Gerade (grün) und ungerade (rot) Grade" /><p>Gerade (grün) und ungerade Grade (rot)</p><br />
+                    <img id="ti_img_beispiel1" src="img/koenigsberg_degree.png" alt="Gerade (grün) und ungerade (rot) Grade" /><p>Gerade (<span style="color: green;">grün</span>) und ungerade Grade (<span style="color: red;">rot</span>)</p><br />
                     <img id="ti_img_beispiel1" src="img/graph1.png" alt="Eulerscher Graph" /><p>Eulerscher Graph</p><br />
-                    <img id="ti_img_beispiel1" src="img/graph2.png" alt="Der erste gefundene Kreis (blau)" /><p>Der erste gefundene Kreis (blau)</p><br />
-                    <img id="ti_img_beispiel1" src="img/graph3.png" alt="Zweiter Kreis (grün) und komplette Eulertour (a - c - e - f - c - d - b - a)" /><p>Zweiter Kreis (grün) und komplette Eulertour<br />(a - c - e - f - c - d - b - a)</p>
+                    <img id="ti_img_beispiel1" src="img/graph2.png" alt="Der erste gefundene Kreis (blau)" /><p>Der erste gefundene Kreis (<span style="color: #0000cc">blau</span>)</p><br />
+                    <img id="ti_img_beispiel1" src="img/graph3.png" alt="Zweiter Kreis (grün) und komplette Eulertour (a - c - e - f - c - d - b - a)" /><p>Zweiter Kreis (<span style="color: green;">grün</span>) und komplette Eulertour<br />(a - c - e - f - c - d - b - a)</p>
                 </div>
                 <h1>Das Eulertour Problem</h1>
                 <p>Das Eulertour Problem kam das erste mal im 18. Jahrhundert auf. In der Stadt Königsberg (heute Kaliningrad) gab es zu der Zeit genau sieben Brücken und es stellte sich die Frage, ob man einen Weg oder sogar einen Rundweg finden kann, sodass man alle Brücken genau einmal überquert. Das gleiche Problem ergibt sich auch beim "Haus vom Nikolaus", bei dem man ein Haus in einem Zug, ohne Absetzen des Stiftes zeichnen muss.</p>
@@ -236,7 +236,7 @@
                 <p><strong>Gerichtete Graphen</strong><br />
                 Für gerichtete Graphen gelten die die o.g. Regeln weiterhin, man muss nur zusätzlich zwischen eingehenden und ausgehenden Kanten unterscheiden. Hierfür teilt man den Grad eines Knotens in Ingrad und Ausgrad auf. Der Ingrad beschreibt die Anzahl der eingehenden Kanten und der Ausgrad die Anzahl der ausgehenden Kanten. Für einen gerichteten eulerschen Graph muss dann neben dem geraden Grad auch Ingrad gleich Ausgrad für jeden Knoten gelten.</p>
                 <p>Bei semi-eulerschen Graphen benötigt man weiterhin einen Startknoten mit einer zusätzlichen ausgehenden Kante und einen Zielknoten mit einer zusätzlichen eingehenden Kante.</p>
-                <p>Betrachtet man nun das Königsberger Brückenproblem unter den von Euler gefunden Voraussetzungen, stellt man fest, dass es dort weder eine Eulertour noch einen Eulerweg gibt. Hat man aber einen geeigneten Graphen vorliegen, kann man seine Eulertouren bzw. -wege schließlich mittels des Algorithmus von Hierholzer finden.</p>
+                <p>Betrachtet man nun das Königsberger Brückenproblem unter den von Euler gefunden Voraussetzungen, stellt man fest, dass der passende Graph vier Knoten mit einem ungeraden Grad (<span style="color: red">rot</span>) enthält, sodass es dort weder eine Eulertour noch einen Eulerweg geben kann. Hat man aber einen geeigneten Graphen vorliegen, kann man seine Eulertouren bzw. -wege schließlich mittels des Algorithmus von Hierholzer finden.</p>
                 <p>&nbsp;</p>
 
                 <h1>Idee des Algorithmus</h1>
@@ -448,15 +448,15 @@ Ausgabe: Eulertour/-weg als Liste von Knoten</code></pre>
     subtour &larr; &empty;
     tour &larr; {start}
     REPEAT
-        akt = start &larr;  Knoten aus tour mit unbesuchten Kanten
+        start &larr;  Knoten aus tour mit unbesuchten Kanten
         subtour &larr; {start}
+        akt = start
         DO
-            {akt, u} &larr; Suche unbesuchte Kante
+            {akt, u} &larr; Suche unbesuchte Kante von akt aus
             subtour &larr; subtour &#8746; {u}
             akt &larr; u
         WHILE start &#8800; akt
         Integriere subtour in tour
-        subtour &larr; &empty;
     UNTIL tour ist Eulerweg/-tour
 END</code></pre>
             </div>
@@ -473,8 +473,8 @@ END</code></pre>
                     </ul>
                     <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen. Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus. Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
                     <h2>Laufzeit des Hierholzer Algorithmus</h2>
-                    <p>Wir gehen von einem Graphen \(G = (V, E)\) mit \(|V| = n\) und \(|E| = m\) aus. Der Algorithmus bestimmt im ersten Schritt eine erste Tour \(T\). Um die nächsten Subtouren zu bestimmen, muss der Algorithmus einen Knoten aus \(T\) finden, der noch unbesuchte Kanten besitzt. Dieser Knoten dient als Start für die folgenden Subtouren mit denen die Tour erweitert wird. Ausgehend von einer leeren initialen Tour, kann die Tour maximal um n Knoten erweitert werden. In der Tour müssen nach jeder gefundenen Subtour dann nur noch die Knoten auf unbesuchte Kanten geprüft werden, die vorher noch nicht geprüft wurden. Das führt dazu, dass wir jeden Knoten im Graph nur einmal auf unbesuchte Kanten prüfen müssen. Damit besitzt der Algorithmus eine polynomielle Laufzeit von \(O(n*m)\).</p>
-                    <p>Der Algorithmus kann so optimiert werden, dass man eine separate Adjazenzliste speichert, aus der bereits genutzte Kanten gelöscht werden. So muss man zur Überprüfung auf unbesuchte Kanten pro Knoten nicht jedes Mal alle Kanten betrachtet, sondern insgesamt jede Kante nur ein einziges Mal. Damit ist eine lineare Laufzeit von \(O(n+m)\) möglich.</p>
+                    <p>Wir gehen von einem Graphen \(G = (V, E)\) mit \(|V| = n\) und \(|E| = m\) aus. Der Algorithmus bestimmt im ersten Schritt eine erste Tour \(T\). Um die nächsten Subtouren zu bestimmen, muss der Algorithmus einen Knoten aus \(T\) finden, der noch unbesuchte Kanten besitzt. Dieser Knoten dient als Start für die folgenden Subtouren mit denen die Tour erweitert wird. Ausgehend von einer leeren initialen Tour, kann die Tour maximal um n Knoten erweitert werden. Nach jeder vollständigen Subtour wird ein neuer Startknoten für folgende Subtouren bestimmt. Bei der Prüfung auf unbesuchte Kanten müssen im ungünstigsten Fall m Kanten betrachtet werden. Damit besitzt der Algorithmus eine polynomielle Laufzeit von \(O(n*m)\).</p>
+                    <p>Der Algorithmus kann weiter optimiert werden, indem man eine separate Adjazenzliste speichert, aus der bereits genutzte Kanten gelöscht werden. So muss man zur Überprüfung auf unbesuchte Kanten pro Knoten nicht jedes Mal alle Kanten betrachtet, sondern insgesamt jede Kante nur ein einziges Mal. Damit ist eine lineare Laufzeit von \(O(n+m)\) möglich.</p>
                     <p>Die gleiche Laufzeit wird außerdem benötigt, um zu prüfen, ob ein Graph eulersch ist und der Hierholzer Algorithmus überhaupt angewendet werden kann.</p>
                 </div>
                 <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>

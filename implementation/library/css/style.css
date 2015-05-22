@@ -88,6 +88,11 @@ div.LegendeMinimized {
     border: 2px solid #78C8FF; 
 }
 
+canvas {
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+}
+
 canvas.graphCanvas {
     border: 1px dashed black;
 }

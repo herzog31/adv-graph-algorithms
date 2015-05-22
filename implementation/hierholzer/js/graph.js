@@ -1220,37 +1220,37 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
         var selection = $("#tg_select_GraphSelector>option:selected").val();
         switch(selection) {
             case "Viele Touren":
-                this.canvas.css("background","");
+                this.canvas.css("background-image","");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("graphs/vieleTouren.txt", null, false);
                 break;
             case "Eine Tour":
-                this.canvas.css("background","");
+                this.canvas.css("background-image","");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("graphs/eulerschEineTour.txt", null, false);
                 break;
             case "Semi Eulerscher Graph":
-                this.canvas.css("background","");
+                this.canvas.css("background-image","");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("graphs/semiEulersch.txt", null, false);
                 break;
             case "Blume":
-                this.canvas.css("background","");
+                this.canvas.css("background-image","");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("graphs/gerichtet1.txt", null, false);
                 break;
             case "Haus vom Nikolaus":
-                this.canvas.css("background","");
+                this.canvas.css("background-image","");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("graphs/nikolaus.txt", null, false);
                 break;
             case "Königsberger Brücken":
-                this.canvas.css("background","");
+                this.canvas.css("background-image", "url(img/koenigsberg_bg.png)");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("graphs/koenigsberg.txt", null, false);
                 break;
             case "Zufallsgraph":
-                this.canvas.css("background","");
+                this.canvas.css("background-image","");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("random", canvas, false);
                 break;

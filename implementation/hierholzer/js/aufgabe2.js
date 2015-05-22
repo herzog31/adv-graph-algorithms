@@ -142,7 +142,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     var reqWrong = [    LNG.K('aufgabe2_reqwrong0'),
                         LNG.K('aufgabe2_reqwrong1'),
                         LNG.K('aufgabe2_reqwrong2'),
-                        LNG.K('aufgabe2_reqwrong3')];
+                        LNG.K('aufgabe2_reqwrong3'),
+                        LNG.K('aufgabe2_reqwrong4')];
     
     /**
      * Startet die Ausführung des Algorithmus.
@@ -325,7 +326,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
 
         this.updatePseudoCodeValues();
-
+        this.fixPositionLegend();
         this.needRedraw = true;
     };
 
@@ -635,9 +636,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             <li><strong>'+LNG.K('aufgabe2_status2_desc3')+'</strong><br />'+LNG.K('aufgabe2_status2_desc4')+'</li>\
             <li><strong>'+LNG.K('aufgabe2_status2_desc5')+'</strong><br />'+LNG.K('aufgabe2_status2_desc6')+'</li>\
             </ul>');
-        $("#tab_tf2").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/knoten_even_gerichtet.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('aufgabe2_legende_ingradausgrad')+'</span></td></tr><tr><td class="LegendeTabelle"><img src="img/knoten_odd_gerichtet.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('aufgabe2_legende_ingradgausgrad')+'</span></td></tr></table>');
-        this.minimizeLegend();
-        this.maximizeLegend();
+        $("#tab_tf2").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/knoten_even_gerichtet.png" alt="Knoten" class="LegendeIcon" width="22" height="22"></td><td><span>'+LNG.K('aufgabe2_legende_ingradausgrad')+'</span></td></tr><tr><td class="LegendeTabelle"><img src="img/knoten_odd_gerichtet.png" alt="Knoten" class="LegendeIcon" width="22" height="22"></td><td><span>'+LNG.K('aufgabe2_legende_ingradgausgrad')+'</span></td></tr></table>');
 
         var numberOfOddVertices = 0;
         var firstOddVertex = null;
@@ -786,26 +785,24 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         this.markPseudoCodeLine([3, 4, 6, 7]);
         if(!semiEulerianGraph) {
             $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
-            <h3>3.1a '+LNG.K('algorithm_status31A_head')+'</h3>\
+            <h3>3.1 '+LNG.K('algorithm_status31A_head')+'</h3>\
             <p>'+LNG.K('aufgabe2_status31A_desc1')+'</p>\
             <p>'+LNG.K('aufgabe2_status31A_desc2')+'</p>\
             <p>'+LNG.K('aufgabe2_status31A_desc4')+'</p>');
             canvas.on("click.Forschungsaufgabe2", function(e) { algo.canvasClickHandler(e); });
         }else{
             $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
-            <h3>3.1a '+LNG.K('algorithm_status31A_head')+'</h3>\
+            <h3>3.1 '+LNG.K('algorithm_status31A_head')+'</h3>\
             <p>'+LNG.K('aufgabe2_status31A_desc1')+'</p>\
             <p>'+LNG.K('aufgabe2_status31A_desc3')+'</p>\
             <p>'+LNG.K('aufgabe2_status31A_desc4')+'</p>');  
         }
         
         $("#tab_tf2").find(".LegendeText").html('<table>\
-            <tr><td class="LegendeTabelle"><img src="img/startknoten2.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start2')+'</span></td></tr>\
-            <tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start')+'</span></td></tr>\
+            <tr><td class="LegendeTabelle"><img src="img/startknoten2.png" alt="Knoten" class="LegendeIcon" width="22" height="22"></td><td><span>'+LNG.K('algorithm_legende_start2')+'</span></td></tr>\
+            <tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon" width="22" height="22"></td><td><span>'+LNG.K('algorithm_legende_start')+'</span></td></tr>\
             <tr><td class="LegendeTabelle"><div class="legendePath" style="background-color:'+tourColors[tourColorIndex]+'"></div></td><td><span>'+LNG.K('algorithm_legende_edgecolor')+'</span></td></tr>\
         </table>');
-        this.minimizeLegend();
-        this.maximizeLegend();
 
         // Restore Naming
         this.addNamingLabels();
@@ -833,7 +830,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
         $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.2 '+LNG.K('algorithm_status32_head')+'</h3>\
-            <p>'+LNG.K('aufgabe2_status32_desc1')+'</p>\
+            <p>'+LNG.K('aufgabe2_status32_desc1')+' (<strong>'+graph.nodes[tourCurrentVertex].getLabel()+'</strong>).</p>\
             <p>'+LNG.K('aufgabe2_status32_desc2')+'(<span style="font-weight: bold; color: '+tourColors[tourColorIndex]+';">'+LNG.K('aufgabe2_status32_desc3')+'</span>)'+LNG.K('aufgabe2_status32_desc4')+'</p>\
             <p>'+LNG.K('aufgabe2_status32_desc5')+'</p>');
 
@@ -897,13 +894,13 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.3 '+LNG.K('algorithm_status33_head')+'</h3>\
             <p>'+LNG.K('aufgabe2_status33_desc1')+'</p>\
-            <h3>3.3.1 '+LNG.K('aufgabe2_status33_desc2')+'</h3>\
+            <h3>'+LNG.K('aufgabe2_status33_desc2')+'</h3>\
             <p>'+LNG.K('aufgabe2_status33_desc3')+'</p>');
         }else{
             $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
             <h3>3.3 '+LNG.K('algorithm_status33_head')+'</h3>\
             <p>'+LNG.K('aufgabe2_status33_desc1')+'</p>\
-            <h3>3.3.2 '+LNG.K('aufgabe2_status33_desc4')+'</h3>\
+            <h3>'+LNG.K('aufgabe2_status33_desc4')+'</h3>\
             <p>'+LNG.K('aufgabe2_status33_desc5')+'</p>');
         } 
 
@@ -931,16 +928,13 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_div_statusErklaerung").html('<h3>4 '+LNG.K('algorithm_status4_head')+'</h3>\
             <h3>4.1 '+LNG.K('algorithm_status41_head')+'</h3>\
             <p>'+LNG.K('aufgabe2_status41_desc1')+'</p>\
-            <h3>4.1.1 '+LNG.K('aufgabe2_status41_desc2')+'</h3>\
+            <h3>'+LNG.K('aufgabe2_status41_desc2')+'</h3>\
             <p>'+LNG.K('aufgabe2_status41_desc3')+'</p>');
         /* <h3>4.1.2 '+LNG.K('aufgabe2_status41_desc4')+'</h3>\
             <p>'+LNG.K('aufgabe2_status41_desc5')+'</p> */
 
         subtours.push({color: tourColorIndex, tour: eulerianSubTour});
         if(debugConsole) console.log("Subtours", subtours);
-
-        tourColorIndex++;
-        tourColorIndex = tourColorIndex % tourColors.length;
 
         graph.nodes[tourStartVertex].setLayout("fillStyle", const_Colors.NodeFilling);
         graph.nodes[tourCurrentVertex].setLayout("fillStyle", const_Colors.NodeFilling);
@@ -990,12 +984,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             <p>'+LNG.K('aufgabe2_status42_desc3')+'</p>\
             <p>'+LNG.K('aufgabe2_status42_desc4')+'</p>');
         $("#tab_tf2").find(".LegendeText").html('<table>\
-            <tr><td class="LegendeTabelle"><img src="img/startknoten2.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start2')+'</span></td></tr>\
-            <tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start')+'</span></td></tr>\
+            <tr><td class="LegendeTabelle"><img src="img/startknoten2.png" alt="Knoten" class="LegendeIcon" width="22" height="22"></td><td><span>'+LNG.K('algorithm_legende_start2')+'</span></td></tr>\
+            <tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon" width="22" height="22"></td><td><span>'+LNG.K('algorithm_legende_start')+'</span></td></tr>\
             <tr><td class="LegendeTabelle"><div class="legendePath" style="background-color:'+tourColors[tourColorIndex]+'"></div></td><td><span>'+LNG.K('algorithm_legende_edgecolor')+'</span></td></tr>\
         </table>');
-        this.minimizeLegend();
-        this.maximizeLegend();
 
         var numberOfEdgesInGraph = Object.keys(graph.edges).length;
         var numberOfEdgesInTour = 0;
@@ -1117,11 +1109,16 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     this.findNewStartingVertex = function() {
         this.markPseudoCodeLine([6, 7]);
         $("#tf2_div_statusErklaerung").html('<h3>3 '+LNG.K('algorithm_status3_head')+'</h3>\
-            <h3>3.1b '+LNG.K('algorithm_status31B_head')+'</h3>\
+            <h3>3.1 '+LNG.K('algorithm_status31B_head')+'</h3>\
             <p>'+LNG.K('aufgabe2_status31B_desc1')+'</p>\
             <p>'+LNG.K('aufgabe2_status31B_desc2')+'</p>');
 
         eulerianSubTour = new Array();
+
+        // Wähle nächste Subtourfarbe
+        tourColorIndex++;
+        tourColorIndex = tourColorIndex % tourColors.length;
+        $(".legendePath").css("background-color", tourColors[tourColorIndex]);
 
         for(var i = 0; i < eulerianTour.length; i++) {
             
@@ -1191,45 +1188,48 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         if(currentQuestionType === 5) {
             // Graph Req Question
 
-            var givenAnswer = [];
-            var questionSolution = [];
+            givenAnswer = [];
             $('#question'+currentQuestion+'_form').find("input[type='checkbox']").each(function() {
                 $(this).attr("disabled", true);
                 var isChecked = $(this).prop('checked');
                 var answerId = parseInt($(this).data("answerId"));
-                givenAnswer.push(isChecked);
-                if(questions[currentQuestion].rightAnswer[answerId]) {
-                    questionSolution.push("Korrekt");
-                }else{
-                    questionSolution.push("Falsch");
+                if(isChecked) {
+                    givenAnswer.push(answerId);
                 }
             });
+            givenAnswer = givenAnswer.join(",");
 
-            givenAnswer = givenAnswer.join("");
-            questions[currentQuestion].rightAnswer = questions[currentQuestion].rightAnswer.join("");
-
-            $("#tf2_questionSolution").find(".answer").html(questionSolution.join(", "));
+            $('#question'+currentQuestion+'_form').find('label').each(function(i) {
+                if($.inArray(i, questions[currentQuestion].rightAnswer) > -1) {
+                    $(this).css("color", "green");
+                }else{
+                    $(this).css("color", "red");
+                }
+            });
+            questions[currentQuestion].rightAnswer = questions[currentQuestion].rightAnswer.join(",");
 
         }else if(currentQuestionType === 6) {
             // Neighbor Question
-
-            var givenAnswer = [];
-            var questionSolution = [];
+            
+            givenAnswer = [];
             $('#question'+currentQuestion+'_form').find("input[type='checkbox']").each(function() {
                 $(this).attr("disabled", true);
                 var isChecked = $(this).prop('checked');
                 var answerId = parseInt($(this).data("answerId"));
-                givenAnswer.push(isChecked);
+                if(isChecked) {
+                    givenAnswer.push(answerId);
+                }
             });
+            givenAnswer = givenAnswer.join(",");
 
-            givenAnswer = givenAnswer.join("");
-            questions[currentQuestion].rightAnswer = questions[currentQuestion].rightAnswer.join("");
-
-            if(questions[currentQuestion].rightAnswerShow.length > 1) {
-                $("#tf2_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswerShow.join(", ")+LNG.K('aufgabe2_qst1_solution1'));
-            }else{
-                $("#tf2_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswerShow.join(", ")+LNG.K('aufgabe2_qst1_solution2'));
-            }
+            $('#question'+currentQuestion+'_form').find('label').each(function(i) {
+                if($.inArray(i, questions[currentQuestion].rightAnswer) > -1) {
+                    $(this).css("color", "green");
+                }else{
+                    $(this).css("color", "red");
+                }
+            });
+            questions[currentQuestion].rightAnswer = questions[currentQuestion].rightAnswer.join(",");
 
         }
 
@@ -1334,7 +1334,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             <form id="question'+currentQuestion+'_form" onsubmit="return false">\
             <p>'+inputs+'</p>\
             <p><button id="tf2_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button></p>\
-            <p id="tf2_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />\
+            <p id="tf2_questionSolution">\
             <button id="tf2_button_questionClose2">'+LNG.K('aufgabe1_qst_continue')+'</button>\
             </p>\
             </form>');
@@ -1342,9 +1342,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         var result = [];
         for(var i = 0; i < reqChoosen.length; i++) {
             if(reqCorrect.indexOf(reqChoosen[i]) !== -1) {
-                result.push(true);
-            }else{
-                result.push(false);
+                result.push(i);
             }
         }
 
@@ -1389,7 +1387,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             <form id="question'+currentQuestion+'_form" onsubmit="return false">\
             <p>'+inputs+'</p>\
             <p><button id="tf2_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button></p>\
-            <p id="tf2_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />\
+            <p id="tf2_questionSolution">\
             <button id="tf2_button_questionClose2">'+LNG.K('aufgabe1_qst_continue')+'</button>\
             </p>\
             </form>');
@@ -1397,9 +1395,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         var result = [];
         for(var i = 0; i < allNodes.length; i++) {
             if(neighbors.indexOf(allNodes[i]) !== -1) {
-                result.push(true);
-            }else{
-                result.push(false);
+                result.push(i);
             }
         }
 

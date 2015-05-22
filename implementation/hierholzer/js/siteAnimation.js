@@ -274,18 +274,30 @@ function CanvasDrawer(p_graph,p_canvas,p_tab) {
     };
 
     /**
-     * Minimiert die Legende und positioniert sie korrekt.
+     * Aktualisiere die Position der Legende
      * @method
      */
-    this.minimizeLegend = function() {
-        legendeMax.hide();
-        legendeMin.show();
+    this.fixPositionLegend = function() {
         var parentPosition = this.canvas.offset();
         // Ziehe 1 ab wegen Breite des Rands des Canvas
         legendeMin.offset({
             top: (parentPosition.top + this.canvas.height() - legendeMin.height()-1),
             left: (parentPosition.left + this.canvas.width() - legendeMin.width()-1)
         });
+        legendeMax.offset({
+            top: (parentPosition.top + this.canvas.height() - legendeMax.height()-1),
+            left: (parentPosition.left + this.canvas.width() - legendeMax.width()-1)
+        });
+    }
+
+    /**
+     * Minimiert die Legende und positioniert sie korrekt.
+     * @method
+     */
+    this.minimizeLegend = function() {
+        legendeMax.hide();
+        legendeMin.show();
+        this.fixPositionLegend();
     };
 
     /**
@@ -295,12 +307,7 @@ function CanvasDrawer(p_graph,p_canvas,p_tab) {
     this.maximizeLegend = function() {
         legendeMax.show();
         legendeMin.hide();
-        var parentPosition = this.canvas.offset();
-        // Ziehe 1 ab wegen Breite des Rands des Canvas
-        legendeMax.offset({
-            top: (parentPosition.top + this.canvas.height() - legendeMax.height()-1),
-            left: (parentPosition.left + this.canvas.width() - legendeMax.width()-1)
-        });
+        this.fixPositionLegend();
     };
     
     /**
