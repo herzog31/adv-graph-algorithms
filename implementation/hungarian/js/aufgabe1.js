@@ -714,9 +714,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             "<p>"+LNG.K('aufgabe1_result_t1')+"</p>" +
             "<p>"+LNG.K('aufgabe1_result_t2')+ret+LNG.K('aufgabe1_result_t3')+"</p>" +
             "<h3>"+LNG.K('algorithm_msg_finish')+"</h3>" +
-            "<button id='ta_button_gotoIdee' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>"+LNG.K('algorithm_btn_more')+"</span></button>" +
+            "<button id='tf1_button_gotoIdee' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>"+LNG.K('algorithm_btn_more')+"</span></button>" +
             "<h3>"+LNG.K('algorithm_msg_test')+"</h3>" +
-            "<button id='ta_button_gotoFA2' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>"+LNG.K('algorithm_btn_exe2')+"</span></button>"
+            "<button id='tf1_button_gotoFA2' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>"+LNG.K('algorithm_btn_exe2')+"</span></button>"
         );
 
         $("#tf1_button_gotoIdee").click(function() {

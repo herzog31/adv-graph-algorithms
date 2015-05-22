@@ -9,7 +9,7 @@
     "algorithm_msg_test": "Forschungsaufgaben ausprobieren:",
     "algorithm_btn_more": "Beschreibung des Algorithmus lesen",
     "algorithm_btn_exe1": "Wie würde der Algorithmus entscheiden?",
-    "algorithm_btn_exe2": "Forschungsaufgabe2",
+    "algorithm_btn_exe2": "Augmentationswege und Gleichheitsgraphen",
 
     "aufgabe1_btn_next_question": "Zur nächsten Frage vorspulen",
     "aufgabe1_btn_retry": "Nochmal versuchen",
@@ -82,7 +82,7 @@
     "aufgabe1_status2": "Den initialen Gleichheitsgraph bestimmen.",
     "aufgabe1_status3": "Der Algorithmus muss einen neuen Wurzelknoten für einen alternierenden Pfad bestimmen.",
     "aufgabe1_status4": "Einen neuen alternierenden Pfad konstruieren.",
-    "aufgabe1_status5": "Es existiert kein kein augmentierender Pfad im Gleichheitsgraph.",
+    "aufgabe1_status5": "Es existiert kein augmentierender Pfad im Gleichheitsgraph.",
     "aufgabe1_status6": "Markierungen verbessern.",
     "aufgabe1_status7": "Gleichheitsgraph mittels neuer Markierungen verbessern.",
     "aufgabe1_status8": "Es existiert ein augmentierender Pfad im Gleichheitsgraph.",

@@ -72,8 +72,8 @@
         <div id="te_div_Einfuehrungstext">
             <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="img/beispiel1.png" alt="Bipartiter Graph mit Kantengewichten"><p>Wie sieht das optimale Matching aus?</p></div>
             <h1>Matchings optimalen Gewichts</h1>
-            <p>Das Finden von Kombinationen bzw. Matchings von Elementen unterschiedlicher Klassen ist ein häufig auftretendes Problem. Meistens reicht es jedoch nicht aus, einfach nur ein Matching zu finden, sondern man möchte das Matching mit dem höchsten Nutzen oder den niedrigsten Kosten finden.</p>
-            <p>Als Beispiel ist hierfür die Arbeit einer Jobvermittlung zu nennen. Diese muss Arbeitssuchende anhand ihrer Eignung optimal auf die verfügbaren Arbeitsplätze verteilen. Dieses Problem lässt sich als bipartiter Graph darstellen.</p>
+            <p>Wir erweitern das das Beispiel einer Zuordnung von Studenten zu passenden Arbeitsstellen durch die Einführung einer Präferenz. Es wird nun eine Zuordnung gesucht, die möglichst die Präferenzen jeden Studenten erfüllt bzw. maximiert.</p>
+            <p>In der Mathematik ist das Finden von Matchings zwischen Elementen unterschiedlicher Klassen ein häufig auftretendes Problem. In diesem Fall betrachten wir gewichtete Matchingprobleme, d.h. wir suchen Matchings mit optimalen Kantengewichten.</p>
             <h2>Die hier vorgestellte Ungarische Methode findet dann optimale Matchings in bipartiten Graphen.</h2>
             <div id ="te_div_Entscheidung">
                 <h2>Was möchtest du zuerst tun?</h2>
@@ -235,12 +235,12 @@
             <h1>Das Finden von optimalen Matchings</h1>
 
             <p>Im Alltag kann man viele Zuordnungsprobleme finden, die mittels Matchings auf bipartiten Graphen modelliert werden könnnen. Hier möchten wir uns speziell mit gewichteten Zuordnungsproblemen beschäftigen.</p>
-            <p>Als Beispiel betrachten wir folgende Problemstellung: Ein Unternehmer hat in seinem Betrieb eine Menge von Aufgaben, die bearbeitet werden müssen. Seine Mitarbeiter sind aufgrund verschiedener Qualifikationen aber nicht alle gleichermaßen für jede Aufgabe geeignet. Das bedeutet, dass jeder Mitarbeiter eine andere Anzahl von Stunden zur Bearbeitung einer Aufgabe benötigt. Weil der Unternehmer effizient wirtschaften möchte, muss er die Aufgaben so verteilen, dass die Gesamtanzahl der Arbeitsstunden möglichst gering ist.</p>
-            <p>Wir können dieses Problem als bipartiten Graphen mit Knotenmengen \(X\) für die Mitarbeiter und \(Y\) für die Aufgaben darstellen. Die gewichteten Kanten zwischen den Mengen definieren dann die Anzahl der Stunden, die ein Mitarbeiter \(x\) für Aufgabe \(y\) benötigt. Jetzt gilt es ein perfektes Matching zu finden, bei dem die Summe aller Kantengewichte minimal ist.</p>
+            <p>Als Beispiel betrachten wir folgende Problemstellung: Ein Unternehmer hat in seinem Betrieb eine Menge von Aufgaben, die bearbeitet werden müssen. Seine Mitarbeiter sind aufgrund verschiedener Qualifikationen aber nicht alle gleichermaßen für jede Aufgabe geeignet. Das bedeutet, dass alle Mitarbeiter bei der Bearbeitung der Aufgaben jeweils unterschiedliche Effizienzsgrade aufweisen. Weil der Unternehmer möglichst effizient wirtschaften möchte, muss er die Aufgaben so verteilen, dass der Effizienzgrad pro Aufgabe möglichst maximal ist.</p>
+            <p>Wir können dieses Problem als bipartiten Graphen mit Knotenmengen \(X\) (<strong style="color: orange;">orange</strong>) für die Mitarbeiter und \(Y\) (<strong style="color: red;">rot</strong>) für die Aufgaben darstellen (vgl. Bild 1). In folgenden Darstellungen werden wir die Knotenmengen nicht erneut kennzeichnen. Die gewichteten Kanten zwischen den Mengen definieren dann die Anzahl der Stunden, die ein Mitarbeiter \(x\) für Aufgabe \(y\) benötigt. Jetzt gilt es ein perfektes Matching zu finden, bei dem die Summe aller Kantengewichte maximal ist.</p>
             <p>&nbsp;</p>
             
             <h1>Die Ungarische Methode</h1>
-            <p>Das Problem kann mittels der Ungarischen Methode gelöst werden, die 1955 von Harold W. Kuhn auf Grundlage der Ideen zweier ungarische Mathematiker entwickelt wurde. Der Algorithmus wurde später von James Munkres verbessert und basiert auf einem zentralen Theorem für dessen Verständnis wir aber ein paar Begriffe benötigen:</p>
+            <p>Das Problem kann mittels der Ungarischen Methode gelöst werden, die 1955 von Harold W. Kuhn auf Grundlage der Ideen zweier ungarische Mathematiker (Dénes Kőnig und Jenő Egerváry) entwickelt wurde. Der Algorithmus wurde später von James Munkres verbessert und basiert auf einem zentralen Theorem für dessen Verständnis wir aber ein paar Begriffe benötigen:</p>
 
             <p><strong>Markierung</strong><br />
             Wir führen eine einfache Hilfsfunktion oder Markierung \(l\) ein, die jedem Knoten im Graph eine reelle Zahl so zuordnet, dass die Summe der Markierungen zweier Knoten mindestens so groß ist, wie das Kantengewicht \(w\) der Kante, die diese Knoten verbindet (vgl. Bild 2).</p>
@@ -271,7 +271,7 @@
 
             <p>Um das bestehende noch leere Matching zu verbessern, sucht sich der Algorithmus einen Knoten aus \(X\), der noch keinen Matchingpartner besitzt. Ausgehend von diesem, versucht der Algorithmus einen augmentierenden Pfad zu finden. Dazu baut der Algorithmus schrittweise einen alternierenden Pfad, solange bis dieser augmentierend wird oder es keine weitere Kante mehr gibt. Die dabei besuchten Knoten teilen wir in die Mengen \(S\) für besuchte Knoten aus \(X\) und die Menge \(T\) für besuchte Knoten aus \(Y\) ein.</p>
 
-            <p>Es lässt sich nicht immer ein augmentierender Pfad finden. Dann muss der Algorithmus die Markierungen verbessern, indem er zunächst ein \(\Delta\) bestimmt. Der Algorithmus betrachtet alle Paare aus besuchten Knoten \(s \in S\) und unbesuchten Knoten \(y \in Y \setminus T\) und bildet das Minimum aus der Summe ihrer Markierungen abzüglich des Gewichts der Kante zwischen beiden Knoten.</p>
+            <p>Es lässt sich nicht immer ein augmentierender Pfad finden. Dann muss der Algorithmus die Markierungen verbessern. Die Verbesserung muss so erfolgen, dass das aktuelle Matching im Gleichheitsgraph enthalten bleibt. Außerdem muss der Gleichheitsgraph durch neue Kanten so erweitert werden, dass ein neuer alternierender Pfad konstruiert werden kann. Dies geschieht, indem zunächst ein \(\Delta\) bestimmt wird. Der Algorithmus betrachtet alle Paare aus besuchten Knoten \(s \in S\) und unbesuchten Knoten \(y \in Y \setminus T\) und bildet das Minimum aus der Summe ihrer Markierungen abzüglich des Gewichts der Kante zwischen beiden Knoten.</p>
 
             <p style="text-align: center;">\(\Delta = \min\limits_{s \in S\ \wedge\ y \in Y \setminus T}\{l(s) + l(y) - w(s,y)\}\)</p>
 
@@ -472,11 +472,13 @@
                 <hr>
                 <pre><code>BEGIN
     Initialisiere Markierungen
+    Konstruiere Gleichheitsgraph
     WHILE Matching nicht optimal DO
         Finde freien Knoten als Wurzel eines alternierenden Pfades
         WHILE Pfad ist nicht augmentierend DO
             Konstruiere alternierenden Pfad in Gleichheitsgraph
-            IF Kein alternierender Pfad gefunden THEN Verbessere Markierungen
+            IF Kein alternierender Pfad gefunden 
+            THEN Verbessere Markierungen und konstruiere neuen Gleichheitsgraph
         END
         Verbessere Matching
     END
@@ -507,7 +509,7 @@ END</code></pre>
                     <li>Der augmentierende Pfad beseitzt maximal die Länge \(n\). Daher benötigt das anschließende Austauschen der Kanten zum verbessern des Matchings \(O(n)\) Schritte.</li>
                     <li>Die Überprüfung, ob das gefundene Matching perfekt ist, kann durch einen einfachen Vergleich der Anzahl der Kanten bewerkstelligt werden: \(O(1)\).</li>
                 </ul>
-                <p>Die signifikateste Berechnung tritt auf, wenn kein augmentierender Pfad gefunden werden kann. Dann muss ein neuer Gleichheitsgraphs durch Anpassung der Markierungen und Berechnung eines Deltas \(\Delta\) bestimmt werden. Dieses Vorgang besitzt bei trivialer Implementierung eine Laufzeit von \(O(n^4)\). Durch geschicktes Zwischenspeichern einzelner Werte kann die Berechnung des Deltas aber auf \(O(n^2)\) reduziert werden.</p>
+                <p>Die signifikateste Berechnung tritt auf, wenn kein augmentierender Pfad gefunden werden kann. Dann muss ein neuer Gleichheitsgraphs durch Anpassung der Markierungen und Berechnung eines Deltas \(\Delta\) bestimmt werden. Durch die Bestimmung eines neuen Gleichheitsgraph besteht jedoch keine Garantie, dass ein augmentierender Pfad konstruiert werden kann. Ingesamt können dem Gleichheitsgraph durch Verbesserungen der Markierungen aber nur \(O(n)\) Kanten hinzugefügt werden. Dieser Vorgang besitzt bei trivialer Implementierung eine Laufzeit von \(O(n^4)\). Durch geschicktes Zwischenspeichern einzelner Werte kann die Berechnung des Deltas aber auf \(O(n^2)\) reduziert werden.</p>
                 <p>Insgesamt besitzt der Algorithmus damit eine kubische Laufzeit von \(O(n^3)\).</p>
             </div>
 
@@ -520,16 +522,15 @@ END</code></pre>
                 \( 
                     \begin{align}
                         w(M') 
-                        &= \sum\limits_{(x,y) \in M'} w(x,y)
-                        \\ &\le \sum\limits_{(x,y) \in M'} (l(x) + l(y))    &&\text{(zulässige Markierungen)}
-                        \\ &= \sum\limits_{v \in V} l(v)                    &&\text{(M' perfekt)}
-                        \\ &= \sum\limits_{(x,y) \in M} (l(x) + l(y))       &&\text{(M perfekt)}
-                        \\ &= \sum\limits_{(x,y) \in M} w(x,y)             &&(M \subseteq E_l)
+                        &= \sum\limits_{(x,y) \in M'} w(x,y)                &&\text{(Gesamtgewicht ist gleich der Summe der Kantengewichte)}
+                        \\ &\le \sum\limits_{(x,y) \in M'} (l(x) + l(y))    &&\text{(Einsetzen der Markierungs Formel)}
+                        \\ &= \sum\limits_{v \in V} l(v)                    &&\text{(Da M' perfekt, ist jede Markierung genau einmal in der Summe enthalten)}
+                        \\ &= \sum\limits_{(x,y) \in M} (l(x) + l(y))       &&\text{(Da M auch perfekt, gilt das gleiche)}
+                        \\ &= \sum\limits_{(x,y) \in M} w(x,y)             &&\text{(Alle Kanten aus M sind im Gleichheitsgraph enthalten)}
                         \\ &= w(M)                                          && \square
                     \end{align}
                 \)
                 </p>
-                <p style="text-align: right;"><i>Quelle: <a href="http://www.tu-ilmenau.de/en/institute-of-theoretical-computer-science/lehre/fruehere-lehrveranstaltungen/lehre-ws-20112012/ea-ii/" target="_blank">Effiziente Algorithmen 2</a>, Prof. Dr. M. Dietzfelbinger, Kap 2, S.16</i></p>
             </div>
 
             <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>
