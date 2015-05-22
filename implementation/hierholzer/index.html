@@ -448,15 +448,15 @@ Ausgabe: Eulertour/-weg als Liste von Knoten</code></pre>
     subtour &larr; &empty;
     tour &larr; {start}
     REPEAT
-        akt = start &larr;  Knoten aus tour mit unbesuchten Kanten
+        start &larr;  Knoten aus tour mit unbesuchten Kanten
         subtour &larr; {start}
+        akt = start
         DO
-            {akt, u} &larr; Suche unbesuchte Kante
+            {akt, u} &larr; Suche unbesuchte Kante von akt aus
             subtour &larr; subtour &#8746; {u}
             akt &larr; u
         WHILE start &#8800; akt
         Integriere subtour in tour
-        subtour &larr; &empty;
     UNTIL tour ist Eulerweg/-tour
 END</code></pre>
             </div>
@@ -473,8 +473,8 @@ END</code></pre>
                     </ul>
                     <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen. Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus. Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
                     <h2>Laufzeit des Hierholzer Algorithmus</h2>
-                    <p>Wir gehen von einem Graphen \(G = (V, E)\) mit \(|V| = n\) und \(|E| = m\) aus. Der Algorithmus bestimmt im ersten Schritt eine erste Tour \(T\). Um die nächsten Subtouren zu bestimmen, muss der Algorithmus einen Knoten aus \(T\) finden, der noch unbesuchte Kanten besitzt. Dieser Knoten dient als Start für die folgenden Subtouren mit denen die Tour erweitert wird. Ausgehend von einer leeren initialen Tour, kann die Tour maximal um n Knoten erweitert werden. In der Tour müssen nach jeder gefundenen Subtour dann nur noch die Knoten auf unbesuchte Kanten geprüft werden, die vorher noch nicht geprüft wurden. Das führt dazu, dass wir jeden Knoten im Graph nur einmal auf unbesuchte Kanten prüfen müssen. Damit besitzt der Algorithmus eine polynomielle Laufzeit von \(O(n*m)\).</p>
-                    <p>Der Algorithmus kann so optimiert werden, dass man eine separate Adjazenzliste speichert, aus der bereits genutzte Kanten gelöscht werden. So muss man zur Überprüfung auf unbesuchte Kanten pro Knoten nicht jedes Mal alle Kanten betrachtet, sondern insgesamt jede Kante nur ein einziges Mal. Damit ist eine lineare Laufzeit von \(O(n+m)\) möglich.</p>
+                    <p>Wir gehen von einem Graphen \(G = (V, E)\) mit \(|V| = n\) und \(|E| = m\) aus. Der Algorithmus bestimmt im ersten Schritt eine erste Tour \(T\). Um die nächsten Subtouren zu bestimmen, muss der Algorithmus einen Knoten aus \(T\) finden, der noch unbesuchte Kanten besitzt. Dieser Knoten dient als Start für die folgenden Subtouren mit denen die Tour erweitert wird. Ausgehend von einer leeren initialen Tour, kann die Tour maximal um n Knoten erweitert werden. Nach jeder vollständigen Subtour wird ein neuer Startknoten für folgende Subtouren bestimmt. Bei der Prüfung auf unbesuchte Kanten müssen im ungünstigsten Fall m Kanten betrachtet werden. Damit besitzt der Algorithmus eine polynomielle Laufzeit von \(O(n*m)\).</p>
+                    <p>Der Algorithmus kann weiter optimiert werden, indem man eine separate Adjazenzliste speichert, aus der bereits genutzte Kanten gelöscht werden. So muss man zur Überprüfung auf unbesuchte Kanten pro Knoten nicht jedes Mal alle Kanten betrachtet, sondern insgesamt jede Kante nur ein einziges Mal. Damit ist eine lineare Laufzeit von \(O(n+m)\) möglich.</p>
                     <p>Die gleiche Laufzeit wird außerdem benötigt, um zu prüfen, ob ein Graph eulersch ist und der Hierholzer Algorithmus überhaupt angewendet werden kann.</p>
                 </div>
                 <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>
