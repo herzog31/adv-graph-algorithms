@@ -288,7 +288,6 @@ function CanvasDrawer(p_graph,p_canvas,p_tab) {
             top: (parentPosition.top + this.canvas.height() - legendeMax.height()-1),
             left: (parentPosition.left + this.canvas.width() - legendeMax.width()-1)
         });
-        console.log(parentPosition, this.canvas.height(), this.canvas.width(), parentPosition.top,  legendeMax.height());
     }
 
     /**

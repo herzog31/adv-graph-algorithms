@@ -1188,45 +1188,48 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         if(currentQuestionType === 5) {
             // Graph Req Question
 
-            var givenAnswer = [];
-            var questionSolution = [];
+            givenAnswer = [];
             $('#question'+currentQuestion+'_form').find("input[type='checkbox']").each(function() {
                 $(this).attr("disabled", true);
                 var isChecked = $(this).prop('checked');
                 var answerId = parseInt($(this).data("answerId"));
-                givenAnswer.push(isChecked);
-                if(questions[currentQuestion].rightAnswer[answerId]) {
-                    questionSolution.push("Korrekt");
-                }else{
-                    questionSolution.push("Falsch");
+                if(isChecked) {
+                    givenAnswer.push(answerId);
                 }
             });
+            givenAnswer = givenAnswer.join(",");
 
-            givenAnswer = givenAnswer.join("");
-            questions[currentQuestion].rightAnswer = questions[currentQuestion].rightAnswer.join("");
-
-            $("#tf2_questionSolution").find(".answer").html(questionSolution.join(", "));
+            $('#question'+currentQuestion+'_form').find('label').each(function(i) {
+                if($.inArray(i, questions[currentQuestion].rightAnswer) > -1) {
+                    $(this).css("color", "green");
+                }else{
+                    $(this).css("color", "red");
+                }
+            });
+            questions[currentQuestion].rightAnswer = questions[currentQuestion].rightAnswer.join(",");
 
         }else if(currentQuestionType === 6) {
             // Neighbor Question
-
-            var givenAnswer = [];
-            var questionSolution = [];
+            
+            givenAnswer = [];
             $('#question'+currentQuestion+'_form').find("input[type='checkbox']").each(function() {
                 $(this).attr("disabled", true);
                 var isChecked = $(this).prop('checked');
                 var answerId = parseInt($(this).data("answerId"));
-                givenAnswer.push(isChecked);
+                if(isChecked) {
+                    givenAnswer.push(answerId);
+                }
             });
+            givenAnswer = givenAnswer.join(",");
 
-            givenAnswer = givenAnswer.join("");
-            questions[currentQuestion].rightAnswer = questions[currentQuestion].rightAnswer.join("");
-
-            if(questions[currentQuestion].rightAnswerShow.length > 1) {
-                $("#tf2_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswerShow.join(", ")+LNG.K('aufgabe2_qst1_solution1'));
-            }else{
-                $("#tf2_questionSolution").find(".answer").html(questions[currentQuestion].rightAnswerShow.join(", ")+LNG.K('aufgabe2_qst1_solution2'));
-            }
+            $('#question'+currentQuestion+'_form').find('label').each(function(i) {
+                if($.inArray(i, questions[currentQuestion].rightAnswer) > -1) {
+                    $(this).css("color", "green");
+                }else{
+                    $(this).css("color", "red");
+                }
+            });
+            questions[currentQuestion].rightAnswer = questions[currentQuestion].rightAnswer.join(",");
 
         }
 
@@ -1331,7 +1334,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             <form id="question'+currentQuestion+'_form" onsubmit="return false">\
             <p>'+inputs+'</p>\
             <p><button id="tf2_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button></p>\
-            <p id="tf2_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />\
+            <p id="tf2_questionSolution">\
             <button id="tf2_button_questionClose2">'+LNG.K('aufgabe1_qst_continue')+'</button>\
             </p>\
             </form>');
@@ -1339,9 +1342,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         var result = [];
         for(var i = 0; i < reqChoosen.length; i++) {
             if(reqCorrect.indexOf(reqChoosen[i]) !== -1) {
-                result.push(true);
-            }else{
-                result.push(false);
+                result.push(i);
             }
         }
 
@@ -1386,7 +1387,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             <form id="question'+currentQuestion+'_form" onsubmit="return false">\
             <p>'+inputs+'</p>\
             <p><button id="tf2_button_questionClose">'+LNG.K('aufgabe1_qst_answer')+'</button></p>\
-            <p id="tf2_questionSolution">'+LNG.K('aufgabe1_qst_correctanswer')+'<span class="answer"></span><br /><br />\
+            <p id="tf2_questionSolution">\
             <button id="tf2_button_questionClose2">'+LNG.K('aufgabe1_qst_continue')+'</button>\
             </p>\
             </form>');
@@ -1394,9 +1395,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         var result = [];
         for(var i = 0; i < allNodes.length; i++) {
             if(neighbors.indexOf(allNodes[i]) !== -1) {
-                result.push(true);
-            }else{
-                result.push(false);
+                result.push(i);
             }
         }
 
