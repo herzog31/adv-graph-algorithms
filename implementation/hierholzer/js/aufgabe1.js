@@ -346,6 +346,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
 
         this.updatePseudoCodeValues();
+        this.fixPositionLegend();
         this.needRedraw = true;
 
     };
@@ -652,9 +653,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             <li><strong>'+LNG.K('algorithm_status2_desc3')+'</strong></li>\
             <li><strong>'+LNG.K('algorithm_status2_desc4')+'</strong><br />'+LNG.K('algorithm_status2_desc5')+'</li>\
             </ul>');
-        $("#tab_tf1").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/knoten_even.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_degree2')+'</span></td></tr><tr><td class="LegendeTabelle"><img src="img/knoten_odd.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_degree3')+'</span></td></tr></table>');
-        this.minimizeLegend();
-        this.maximizeLegend();
+        $("#tab_tf1").find(".LegendeText").html('<table><tr><td class="LegendeTabelle"><img src="img/knoten_even.png" alt="Knoten" class="LegendeIcon" width="22" height="22"></td><td><span>'+LNG.K('algorithm_legende_degree2')+'</span></td></tr><tr><td class="LegendeTabelle"><img src="img/knoten_odd.png" alt="Knoten" class="LegendeIcon" width="22" height="22"></td><td><span>'+LNG.K('algorithm_legende_degree3')+'</span></td></tr></table>');
 
         var numberOfOddVertices = 0;
         var firstOddVertex = null;
@@ -814,12 +813,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
 
         $("#tab_tf1").find(".LegendeText").html('<table>\
-            <tr><td class="LegendeTabelle"><img src="img/startknoten2.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start2')+'</span></td></tr>\
-            <tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start')+'</span></td></tr>\
+            <tr><td class="LegendeTabelle"><img src="img/startknoten2.png" alt="Knoten" class="LegendeIcon" width="22" height="22"></td><td><span>'+LNG.K('algorithm_legende_start2')+'</span></td></tr>\
+            <tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon" width="22" height="22"></td><td><span>'+LNG.K('algorithm_legende_start')+'</span></td></tr>\
             <tr><td class="LegendeTabelle"><div class="legendePath" style="background-color:'+tourColors[tourColorIndex]+'"></div></td><td><span>'+LNG.K('algorithm_legende_edgecolor')+'</span></td></tr>\
         </table>');
-        this.minimizeLegend();
-        this.maximizeLegend();
 
         // Restore Naming
         this.addNamingLabels();
@@ -1062,12 +1059,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             <p>'+LNG.K('algorithm_status42_desc3')+'</p>\
             <p>'+LNG.K('algorithm_status42_desc4')+'</p>');
         $("#tab_tf1").find(".LegendeText").html('<table>\
-            <tr><td class="LegendeTabelle"><img src="img/startknoten2.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start2')+'</span></td></tr>\
-            <tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_start')+'</span></td></tr>\
+            <tr><td class="LegendeTabelle"><img src="img/startknoten2.png" alt="Knoten" class="LegendeIcon" width="22" height="22"></td><td><span>'+LNG.K('algorithm_legende_start2')+'</span></td></tr>\
+            <tr><td class="LegendeTabelle"><img src="img/startknoten.png" alt="Knoten" class="LegendeIcon" width="22" height="22"></td><td><span>'+LNG.K('algorithm_legende_start')+'</span></td></tr>\
             <tr><td class="LegendeTabelle"><div class="legendePath" style="background-color:'+tourColors[tourColorIndex]+'"></div></td><td><span>'+LNG.K('algorithm_legende_edgecolor')+'</span></td></tr>\
         </table>');
-        this.minimizeLegend();
-        this.maximizeLegend();
 
         var numberOfEdgesInGraph = Object.keys(graph.edges).length;
         var numberOfEdgesInTour = 0;
