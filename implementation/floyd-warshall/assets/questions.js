@@ -72,7 +72,7 @@ questions[4] = {
     "answers" : [
         {
             "answer" : "8",
-            "explanation" : "Der Knoten b kann von Knoten a über die Kanten (a, c) und (c, b) erreicht werden. Die Gesamtkost ist 3 + 6 = 8 bzw. billiger als derzeitige Kost 9."
+            "explanation" : "Der Knoten b kann von Knoten a über die Kanten (a, c) und (c, b) erreicht werden. Die Gesamtkost ist 3 + 5 = 8 bzw. billiger als derzeitige Kost 9."
         },
         {
             "answer" : "5"
