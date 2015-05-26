@@ -264,46 +264,6 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         this.needRedraw = true;
     };
 
-    /**
-     * Initialisiere den Algorithmus.
-     * @method
-     */
-    this.initialize = function () {
-        this.beginIteration();
-        $("#"+st+"_button_Zurueck").button("option", "disabled", false);
-    };
-
-    /*
-    * Jede neue Iteration beginnt mit dieser Methode. Es werden Breitensuche und Tiefensuche ausgefuehrt, um die kuerzesten Wege zu finden.
-    * @method
-    * */
-    this.beginIteration = function () {
-        iteration++;
-        disjointPaths = [];
-        currentPath = 0;
-        shortestPathLength = 0;
-        // finde alle freien Knoten in der U-Partition
-        var superNode = {};
-        for (var n in graph.unodes) {
-            var node = graph.unodes[n];
-            if(!this.isMatched(node))superNode[node.getNodeID()] = node;
-        }
-        //fuehre Breiten- und Tiefensuche aus
-        bfs(superNode);
-        dfs(superNode);
-        if(shortestPathLength > 0){
-            statusID = NEXT_AUGMENTING_PATH;
-            $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
-                + "<h3> "+LNG.K('textdb_msg_begin_it')+"</h3>"
-                + "<p>"+LNG.K('textdb_msg_path_shortest')+ shortestPathLength + "</p>"
-                + "<p>"+LNG.K('textdb_msg_begin_it_1')+"<p>");
-        }
-        else{
-            statusID = END_ALGORITHM;
-            $(statusErklaerung).html("<h3> "+LNG.K('textdb_msg_end_algo')+"</h3>"
-                + "<p>"+LNG.K('textdb_msg_end_algo_1')+"</p>");
-        }
-    };
     /*
     * Mit Hilfe der Breitensuche wird ein Augmentierungsgraph aufgebaut, der die kuerzesten Augmentationswege enthaelt.
     * @method
@@ -429,8 +389,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      * Das Layout und Aussehen von Knoten und Kanten wird hier festgelegt.
      * */
     var setEdgeMatched = function(edge){
-        var MATCHED_EDGE_COLOR = "DarkBlue";
-        edge.setLayout("lineColor", MATCHED_EDGE_COLOR);
+        edge.setLayout("lineColor", "green");
         edge.setLayout("lineWidth", global_Edgelayout.lineWidth*1.3);
     };
     var setEdgeNotMatched = function(edge){
@@ -438,8 +397,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         edge.setLayout("lineWidth", global_Edgelayout.lineWidth);
     };
     var setNodeMatched = function(node){
-        var MATCHED_NODE_COLOR = const_Colors.NodeFillingHighlight;
-        node.setLayout('fillStyle',MATCHED_NODE_COLOR);
+        node.setLayout('fillStyle', const_Colors.NodeFillingHighlight);
         node.setLayout('borderColor',global_NodeLayout.borderColor);
     };
     var setNodeNotMatched = function(node){
@@ -469,6 +427,58 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         node.setLayout('borderColor',"Gray");
     };
 
+    /**
+     * Initialisiere den Algorithmus.
+     * @method
+     */
+    this.initialize = function () {
+        this.beginIteration();
+        $("#"+st+"_button_Zurueck").button("option", "disabled", false);
+    };
+
+    /*
+     * Jede neue Iteration beginnt mit dieser Methode. Es werden Breitensuche und Tiefensuche ausgefuehrt, um die kuerzesten Wege zu finden.
+     * @method
+     * */
+    this.beginIteration = function () {
+        iteration++;
+        disjointPaths = [];
+        currentPath = 0;
+        shortestPathLength = 0;
+        // finde alle freien Knoten in der U-Partition
+        var superNode = {};
+        for (var n in graph.unodes) {
+            var node = graph.unodes[n];
+            if(!this.isMatched(node))superNode[node.getNodeID()] = node;
+        }
+        //fuehre Breiten- und Tiefensuche aus
+        bfs(superNode);
+        dfs(superNode);
+        //restore Layouts
+        for(var n in graph.nodes){
+            var node = graph.nodes[n];
+            if(this.isMatched(node)) setNodeMatched(node);
+            else setNodeNotMatched(node);
+        }
+        for(var e in graph.edges){
+            setEdgeNotMatched(graph.edges[e]);
+        }
+        for(var e in matching){
+            setEdgeMatched(graph.edges[e]);
+        }
+        if(shortestPathLength > 0){
+            statusID = NEXT_AUGMENTING_PATH;
+            $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
+                + "<h3> "+LNG.K('textdb_msg_begin_it')+"</h3>"
+                + "<p>"+LNG.K('textdb_msg_path_shortest')+ shortestPathLength + "</p>"
+                + "<p>"+LNG.K('textdb_msg_begin_it_1')+"<p>");
+        }
+        else{
+            statusID = END_ALGORITHM;
+            $(statusErklaerung).html("<h3> "+LNG.K('textdb_msg_end_algo')+"</h3>"
+                + "<p>"+LNG.K('textdb_msg_end_algo_1')+"</p>");
+        }
+    };
     /*
      * Der aktuelle Augmentationsweg wird hervorgehoben.
      * @method
@@ -565,18 +575,6 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     * */
     this.endIteration = function(){
         statusID = BEGIN_ITERATION;
-        //restore Layouts
-        for(var n in graph.nodes){
-            var node = graph.nodes[n];
-            if(this.isMatched(node)) setNodeMatched(node);
-            else setNodeNotMatched(node);
-        }
-        for(var e in graph.edges){
-            setEdgeNotMatched(graph.edges[e]);
-        }
-        for(var e in matching){
-            setEdgeMatched(graph.edges[e]);
-        }
         //statuserklaerung
         $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
             + "<h3> "+LNG.K('textdb_msg_end_it')+"</h3>"

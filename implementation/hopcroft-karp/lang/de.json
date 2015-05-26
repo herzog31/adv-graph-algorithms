@@ -30,7 +30,7 @@
 
     "textdb_msg_begin_it": "Beginn der nächsten Phase",
     "textdb_msg_begin_it_1": "In dieser Phase werden nur Augmentationswege dieser Länge gesucht. Es wird nach einer inklusions-maximalen Menge von kürzesten knotendisjunkten Augmentationswegen gesucht. Wenn kein solcher Augmentationsweg gefunden werden kann, endet diese Phase.",
-    "textdb_msg_end_it": "Ende einer Phase",
+    "textdb_msg_end_it": "Ende der Phase",
     "textdb_msg_end_it_1": "Es gibt keine weiteren knotendisjunkten Augmentationswege der Länge ",
     "textdb_msg_end_it_2": "Falls es weitere Augmentationswege gibt, müssen diese länger sein und werden in den nächsten Phasen gefunden.",
 
@@ -48,8 +48,8 @@
     "textdb_msg_path_highlight_1": "Der hervorgehobene Augmentationsweg besitzt die minimale Länge und benutzt nur Knoten, die in dieser Iteration noch nicht benutzt wurden.",
 
     "textdb_msg_update": "Aktualisieren des Matchings",
-    "textdb_msg_update_1": "Die alternierenden Kanten des gefundenen Augmentationsweges werden vertauscht.",
-    "textdb_msg_update_2": "Die Kardinalität des Matchings wird um eins erhöht.",
+    "textdb_msg_update_1": "Das Matching wird mit dem gefundenen Augmentationsweg augmentiert. Die ungematchten Kanten des Augmentationsweges werden zum Mathcing hinzugefügt und die Matching-Kanten des Weges werden aus dem Matching entfernt.",
+    "textdb_msg_update_2": "Die Anzahl der ungematchten Kanten betrug vor der Augmentation um eins höher als die Anzal der Matching-Kanten des Weges. Deshalb erhöht sich die Kardinalität des Matchings genau um eins.",
 
     "textdb_msg_gray": "Ausblenden von benutzten Knoten",
     "textdb_msg_gray_1": "Die Knoten, die im aktuellen Augmentationsweg vorkommen, dürfen nicht in anderen Augmentationswegen der aktuellen Phase vorkommen. Deshalb werden sie ausgeblendet.",
