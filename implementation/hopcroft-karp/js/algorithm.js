@@ -470,8 +470,10 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
             statusID = NEXT_AUGMENTING_PATH;
             $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
                 + "<h3> "+LNG.K('textdb_msg_begin_it')+"</h3>"
+                + "<p>"+LNG.K('textdb_msg_begin_it_1')+"<p>"
                 + "<p>"+LNG.K('textdb_msg_path_shortest')+ shortestPathLength + "</p>"
-                + "<p>"+LNG.K('textdb_msg_begin_it_1')+"<p>");
+                + "<p>"+LNG.K('textdb_msg_begin_it_2')+"<p>"
+                + "<p>"+LNG.K('textdb_msg_begin_it_3')+"<p>");
         }
         else{
             statusID = END_ALGORITHM;
@@ -501,8 +503,10 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
 
         //statuserklaerung
         $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
-        + "<h3> "+LNG.K('textdb_msg_path_highlight')+"</h3>"
-        + "<p> "+LNG.K('textdb_msg_path_highlight_1')+"<p>");
+            + "<h3> "+LNG.K('textdb_msg_path_highlight')+"</h3>"
+            + "<p>"+LNG.K('textdb_msg_path_shortest')+ shortestPathLength + "</p>"
+            + "<p> "+LNG.K('textdb_msg_path_highlight_1')+"<p>"
+            + "<p> "+LNG.K('textdb_msg_path_highlight_2')+"<p>");
         statusID = UPDATE_MATCHING;
     };
 
