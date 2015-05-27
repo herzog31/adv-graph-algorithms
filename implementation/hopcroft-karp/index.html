@@ -138,7 +138,9 @@
             </div>
             <div title="Graph erstellen" class="tabIntroDialog">
                 <h2>Auf welchem Graph soll der Algorithmus ausgeführt werden?</h2>
-                <p>Um einen Knoten in einer Partition zu erstellen, mache einen Doppelklick in der Nähe dieser Partition.</p>
+                <p>Um einen Knoten in einer Partition zu erstellen, mache einen Doppelklick in der Nähe dieser Partition.
+                    Es können maximal 8 Knoten in einer Partition erstellt werden.
+                </p>
                 <p>Um eine Kante zu erstellen, klicke zunächst auf den Ausgangsknoten und dann auf den Zielknoten.</p>
                 <p>Du kannst nur Kanten zwischen verschiedenen Partitionen einfügen.</p>
                 <p>Ein Rechtsklick löscht Kanten und Knoten.</p>
@@ -191,11 +193,11 @@
                             <p class="pseudocode" id="ta_p_l3">  REPEAT </p>
                             <p class="pseudocode" id="ta_p_l4">    l &larr; Länge des kürzesten</p>
                             <p class="pseudocode" id="ta_p_l5">             Augmentationsweges </p>
-                            <p class="pseudocode" id="ta_p_l6">    Sei &Rho; = {P1,P2,...,Pk} inklusions-maximale</p>
+                            <p class="pseudocode" id="ta_p_l6">    &Rho; &larr; {P1,P2,...,Pk} inklusions-maximale</p>
                             <p class="pseudocode" id="ta_p_l7">    Menge knotendisjunkter kürzester </p>
                             <p class="pseudocode" id="ta_p_l8">    Augmentationswege bezüglich M</p>
                             <p class="pseudocode" id="ta_p_l9">    M &larr; M &oplus; (P1 &cup; P2 &cup; ... &cup; Pk)</p>
-                            <p class="pseudocode" id="ta_p_20">  UNTIL &Rho; == &empty;</p>
+                            <p class="pseudocode" id="ta_p_20">  UNTIL &Rho; = &empty;</p>
                             <p class="pseudocode" id="ta_p_return">RETURN M</p>
                             <p class="pseudocode" id="ta_p_end">END</p>
                         </div>
@@ -219,7 +221,7 @@
                     <img id="ti_img_1" src="img/augmentation.png" alt="Suche" width="300"/><p>Bild 2<br> Einfacher Graph mit einem Augmentationsweg.<br> Links ist ein Augmentationsweg herhorgehoben.
                     Rechts ist der Graph nach der Augmentation abgebildet.</p><br />
                     <img id="ti_img_3" src="img/dfs.png" alt="Suche" width="350"/><p>Bild 3<br> Kürzeste knotendisjunkte Augmentationswege.<br>
-                    Zuerst wird der Schichtengraph erstellt, der alle kürzesten Augmentationswege enthält. Danach werden die knotendisjunkten Augmentationswege bestimmt. Diese sind auf dem Bild fett markiert. </p><br>
+                    Zuerst wird der Schichtgraph erstellt, der alle kürzesten Augmentationswege enthält. Danach werden die knotendisjunkten Augmentationswege bestimmt. Diese sind auf dem Bild fett markiert. </p><br>
                     <img id="ti_img_4" src="img/disjoint.png" alt="Suche" /><p>Bild 4<br> Die grauen Knoten kommen in dieser Iteration bereits in anderen kürzesten Augmentationswegen vor.
                     Der markierte Augmentationsweg ist knotendisjunkt bezüglich der schon verwendeten grauen Knoten. </p><br>
                 </div>
@@ -274,32 +276,32 @@
                 <h1>Finden von kürzesten Augmentationswegen</h1>
                 <p>
                     Die kürzesten Augmentationswege können mit <b><a href="http://de.wikipedia.org/wiki/Breitensuche">Breiten-</a> und <a href="http://de.wikipedia.org/wiki/Tiefensuche">Tiefensuche</a></b> gefunden werden.
-                    Man startet mit allen freien Knoten einer Partition und fügt diese in die erste Schicht eines Schichtgraphen ein, der im Folgenden erklärt wird. Schrittweise erzeugt man den Schichtengraphen, bis ein freier Knoten gefunden wurde oder alle Knoten bereits untersucht wurden.
-                    Der <b>Schichtengraph</b> wird mit der folgenden Prozedur aufgebaut:
+                    Man startet mit allen freien Knoten einer Partition und fügt diese in die erste Schicht eines Schichtgraphen ein, der eine Zerlegung von V in mehrere Schichten darstellt und im Folgenden genauer erklärt wird. Schrittweise erzeugt man den Schichtgraphen, bis ein freier Knoten gefunden wurde oder alle Knoten bereits untersucht wurden.
+                    Der <b>Schichtgraph</b> wird mit der folgenden Prozedur aufgebaut:
                 </p>
                 <p>
                     Von den Knoten der aktuellen Partition folgt man den Kanten zu allen noch nicht untersuchten Nachbarn dieser Knoten, die jetzt die nächste Schicht darstellen.
                     Befindet sich ein freier Knoten in der neuen Schicht, so wird die Prozedur beendet. Ist die Schicht leer, so wird die Prozedur ebenfalls gestoppt und es wird ausgegeben, dass keine Augmentationswege existieren.
-                    Andererseits erweitert man den so erstellten Schichtengraphen um eine weitere Schicht mit den Matching-Partnern der letzten Schicht.
-                    Die Schicht mit den Matchingpartnern wird zur aktuellen Schicht und die Prozedur wird wiederholt. Am Ende entsteht ein Schichtengraph, der alle kürzesten (und nur die kürzesten) Augmentationswege enthält, falls Augmentationswege existieren.
+                    Andererseits erweitert man den so erstellten Schichtgraphen um eine weitere Schicht mit den Matching-Partnern der letzten Schicht.
+                    Die Schicht mit den Matchingpartnern wird zur aktuellen Schicht und die Prozedur wird wiederholt. Am Ende entsteht ein Schichtgraph, der alle kürzesten (und nur die kürzesten) Augmentationswege enthält, falls Augmentationswege existieren.
                 </p>
                 <p>
-                    Das dritte Bild zeigt den Schichtengraphen mit vier Schichten. Die erste Schicht besteht aus zwei freien Knoten einer Partition. Alle ihre Nachbarn werden zur zweiten Schicht hinzugefügt.
+                    Das dritte Bild zeigt den Schichtgraphen mit vier Schichten. Die erste Schicht besteht aus zwei freien Knoten einer Partition. Alle ihre Nachbarn werden zur zweiten Schicht hinzugefügt.
                     Da kein freier Knoten unter den Knoten der zweiten Schicht existiert, wird eine dritte Schicht mit den Matching-Partnern der zweiten Schicht ertellt.
                     Alle noch nicht betrachteten Nachbarn der dritten Schicht werden zur vierten Schicht hinzugefügt. Unter ihnen existieren zwei freie Knoten. Also endet die Prozedur.
                 </p>
                 <p>
-                    Um eine inklusions-maximale Menge von knotendisjunkten Augmentationswegen zu finden, benutzt man den Schichtengraph aus dem letzten Schritt. Man startet mit den freien Knoten der ersten Schicht und wendet die <b>Tiefensuche</b> darauf an.
-                    Falls es einen Augmentationsweg gibt, der mit diesem Knoten anfängt, wird er gefunden. Alle Knoten, die auf diesem Weg vorkommen, werden aus dem Schichtengraphen entfernt oder markiert.
+                    Um eine inklusions-maximale Menge von knotendisjunkten Augmentationswegen zu finden, benutzt man den Schichtgraphen aus dem letzten Schritt. Man startet mit den freien Knoten der ersten Schicht und wendet die <b>Tiefensuche</b> darauf an.
+                    Falls es einen Augmentationsweg gibt, der mit diesem Knoten anfängt, wird er gefunden. Alle Knoten, die auf diesem Weg vorkommen, werden aus dem Schichtgraphen entfernt oder markiert.
                     Während der Ausführung des Algorithmen werden diese Knoten grau markiert. Wendet man diese Prozedur auf alle Knoten der
                     ersten Schicht an, so ist die gefundene Menge der kürzesten Augmentationswege knotendisjunkt und nach dem Ende dieser Prozedur existiert kein kürzester Augmentationsweg, der bzgl. der bereits gefundenen knotendisjunkt ist.
                 </p>
                 <p>
                     Auf dem dritten Bild sind die knotendisjunkten Augmentationswege durch dicke Pfeile hervorgehoben. In dieser Iteration würde also das Matching mit diesen beiden Augmentationswegen augmentiert werden.
-                    Danach würde eine neue Iteration anfangen und ein neuer Schichtengraph erstellt werden.
+                    Danach würde eine neue Iteration anfangen und ein neuer Schichtgraph erstellt werden.
                 </p>
                 <p>
-                    Der Vorteil des Schichtgraphen ist, dass die Suche nach allen kürzesten Augmentationswegen auf einmal erfolgen kann.
+                    Der Vorteil des Schichtgraphen ist, dass alle kürzesten Augmentationswege auf einmal gefunden werden.
                     Für die Bestimmung der inklusions-maximalen Menge von kürzesten knotendisjunkten Augmentationswegen müssen im schlimmsten Fall alle Kanten untersucht werden.
                 </p>
                 <h1>Was nun?</h1>
@@ -365,9 +367,9 @@
                             <p class="pseudocode" id="tf_p_l1">BEGIN</p>
                             <p class="pseudocode" id="tf_p_l2">  M &larr; &empty;</p>
                             <p class="pseudocode" id="tf_p_l3">  REPEAT </p>
-                            <p class="pseudocode" id="tf_p_l4">    let &Rho; = {P1,P2,...,Pk} be a maximal</p>
-                            <p class="pseudocode" id="tf_p_l5">    set of vertex-disjoint shortest </p>
-                            <p class="pseudocode" id="tf_p_l6">    augmenting paths with respect to M</p>
+                            <p class="pseudocode" id="tf_p_l4">    &Rho; &larr; {P1,P2,...,Pk} inklusions-maximale</p>
+                            <p class="pseudocode" id="tf_p_l5">    Menge knotendisjunkter kürzester </p>
+                            <p class="pseudocode" id="tf_p_l6">    Augmentationswege</p>
                             <p class="pseudocode" id="tf_p_l7">    M &larr; M &oplus; (P1 &cup; P2 &cup; ... &cup; Pk)</p>
                             <p class="pseudocode" id="tf_p_l8">  UNTIL &Rho; == &empty;</p>
                             <p class="pseudocode" id="tf_p_l9">RETURN M</p>
@@ -443,8 +445,8 @@
             <div id="tw_Accordion">
                 <h3>Wie sieht der (Pseudo-)Code des Algorithmus aus?</h3>
                 <div><pre><code>
-                Eingabe: Bipartiter ungewichteter Graph G=(U &cup; V, E).
-                Ausgabe: Eine Menge M &sube; E, sodass M ein Matching auf G darstellt.
+                Eingabe: Bipartiter ungewichteter Graph G=(U &cup; V, E)
+                Ausgabe: Matching M &sube; E
 
                 BEGIN
                    M &larr; &empty;
@@ -493,9 +495,13 @@
                 <div>
                     <p>
                         In jeder Iteration des Algorithmen wird nach Augmentationswegen gesucht und das Matching wird verbessert. Es können nur endlich viele Verbesserungen durchgeführt werden, sodass der
-                        Algorithmus terminiert.
-                        Nach der letzten Iteration des Algorithmen existieren keine Augmentationswege mehr. Ein Matching ist genau dann maximal, wenn es keinen Augmentationsweg gibt.
+                        Algorithmus terminiert. Nach der letzten Iteration des Algorithmen existieren keine Augmentationswege mehr.
                         Dann ist das Matching optimal und der Hopcroft-Karp-Algorithmus berechnet das richtige Ergebnis.
+                    </p>
+                    <p>
+                        Ein Theorem aus der Graphentheorie besagt:<br>
+                        <i>Ein Matching M in G(V,E) ist genau dann kardinalitäts-maximal, wenn es keinen Augmentationsweg gibt.</i> <br>
+                        Nach der letzten Iteration des Hopcroft-Karp-Algorithmen existieren keine Augmentationswege mehr. Dann ist das gefundene Matching optimal und der Hopcroft-Karp-Algorithmus berechnet das richtige Ergebnis.
                     </p>
                 </div>
                 <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>

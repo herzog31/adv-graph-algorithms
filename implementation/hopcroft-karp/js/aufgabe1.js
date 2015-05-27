@@ -74,6 +74,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     this.base_run = this.run;
 
     this.algoNext = this.nextStepChoice;
+
+    var min_questions = 3;
+    var max_questions = 8;
     /*
      * Hier werden die Statuskonstanten definiert
      * */
@@ -114,6 +117,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      */
     this.nextStepChoice = function () {
         var algoStatus = this.getStatusID();
+        if(algoStatus != END_ALGORITHM && frageStats.gestellt >= max_questions){
+            algoStatus = -1;//case default
+        }
         switch (algoStatus) {
             case END_ALGORITHM:
                 this.endAlgorithm();
@@ -121,12 +127,15 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             case ALGOINIT:
             case BEGIN_ITERATION:
                 this.algoNext();
-                if (Math.random() < 0.6) this.askQuestion1();//standard 0.6
+                if (frageStats.gestellt < min_questions || Math.random() < 0.5)
+                    this.askQuestion1();//standard 0.6
                 break;
             case UPDATE_MATCHING:
-                if (Math.random() < 0.6) { //standard 0.4
-                    if (Math.random() < 0.5) this.askQuestion2();//standard 0.5
-                    else this.askQuestion3();
+                if (frageStats.gestellt < min_questions || Math.random() < 0.5) { //standard 0.4
+                    if (Math.random() < 0.5)
+                        this.askQuestion2();//standard 0.5
+                    else
+                        this.askQuestion3();
                 }
                 else this.algoNext();
                 break;
