@@ -456,13 +456,13 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     this.showNewEqualityGraph = function(){
         this.showEqualityGraph(lx, ly);
         $("#tf2_div_statusErklaerung").html(
-            "<h3>Neuen Gleichheitsgraph bestimmen</h3>" +
-            "<p>Zur Bestimmung eines neuen Gleichheitsgraph muss der Algorithmus zunächst die Markierungen aktualisieren.</p>" +
-            "<p>Dazu wird ein \\(\\Delta\\) wie folgt bestimmt:</p>"+
-            "<p>\\(\\Delta = \\min\\limits_{s \\in S\\ \\wedge\\ y \\in Y \\setminus T}\\{l(s) + l(y) - w(s,y)\\} = "+delta+"\\)</p>" +
-            "<p>Die Markierungen werden dann nach folgender Formel aktualisiert:</p>" +
-            "<p>\\(\\begin{equation}l^\\prime(v) =\\begin{cases}l(v) - "+delta+" & v \\in S\\\\l(v) + "+delta+" & v \\in T\\\\l(v) & sonst\\end{cases}\\end{equation}\\)</p>" +
-            "<p>Der neue Gleichheitsgraph wurde vom Algorithmus markiert (<strong style='font-weight: bold; color: green;'>grün</strong> und <strong>schwarz</strong>).</p>"
+            "<h3>" + LNG.K("aufgabe2_find_new_equality_graph") + "</h3>" +
+            "<p>" + LNG.K("aufgabe2_must_find_labels") + "</p>" +
+            "<p>" + LNG.K("aufgabe2_delta_set") + "</p>"+
+            "<p>" + LNG.K("aufgabe2_min_delta") + " = " + delta + "\\)</p>" +
+            "<p>" + LNG.K("aufgabe2_labels_actualised") + "</p>" +
+            "<p>" + LNG.K("aufgabe2_label_update_formula1") + delta + LNG.K("aufgabe2_label_update_formula2") + delta + LNG.K("aufgabe2_label_update_formula3") + "</p>" +
+            "<p>" + LNG.K("aufgabe2_new_graph_marked") + "</p>"
         );
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,"tf2_div_statusErklaerung"]);
         $(".marked").removeClass("marked");
@@ -513,9 +513,9 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         });
 
         $("#tf2_div_statusErklaerung").html(
-            "<h3>Augmentationsweg bestimmen</h3>" +
-            "<p>Der Algorithmus versucht nun schrittweise einen alternierenden Pfad zu konstruieren.</p>" +
-            "<p>Die Konstruktion stoppt, wenn der alternierende Pfad augmentierend wird oder es keine weiteren passenden Kanten mehr gibt.</p>");
+            "<h3>" + LNG.K("aufgabe2_find_augmenting_path") + "</h3>" +
+            "<p>" + LNG.K("aufgabe2_build_alt_path") + "</p>" +
+            "<p>" + LNG.K("aufgabe2_build_stops") + "</p>");
 
         $("#tf2_td_setS").html(sField.join(",") || "&#8709;");
         $("#tf2_td_setT").html(tField.join(",") || "&#8709;");
@@ -542,9 +542,9 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         this.showLabels(lx, ly);
         this.showEqualityGraph(lx, ly);
         statusID = READY_TO_START;
-        $("#tf2_div_statusErklaerung").html("<h3>Gleichheitsgraph bestimmen</h3>"
-        + "<p>Der Algorithmus bestimmt zuerst eine initiale Markierung für jeden Knoten.</p>"
-        + "<p>Anhand der Markierungen wird der Gleichheitsgraph ermittelt (<strong>schwarz</strong>).</p>");
+        $("#tf2_div_statusErklaerung").html("<h3>" + LNG.K("aufgabe2_find_equality_graph") + "</h3>"
+        + "<p>" + LNG.K("aufgabe2_initial_labels") + "</p>"
+        + "<p>" + LNG.K("aufgabe2_found_equality_graph") + "</p>");
         $(".marked").removeClass("marked");
         $("#tf2_p_l4").addClass("marked");
         return READY_TO_START;
@@ -588,9 +588,9 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
         showTreeRoot(S);
         statusID = READY_FOR_SEARCHING;
-        $("#tf2_div_statusErklaerung").html("<h3>Augmentationsweg bestimmen</h3>" +
-        "<h3>Wurzel eines alternierenden Pfades finden</h3>" +
-        "<p>Der Algorithmus wählt als Wurzel einen Knoten, der noch nicht im Matching vorhanden ist und markiert ihn <span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>.</p>");
+        $("#tf2_div_statusErklaerung").html("<h3>" + LNG.K("aufgabe2_find_augmenting_path") + "</h3>" +
+            "<h3>" + LNG.K("aufgabe2_find_root") + "</h3>" +
+            "<p>" + LNG.K("aufgabe2_choose_root") + "<span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>" + LNG.K("aufgabe2_light_green") + "</span>.</p>");
         $(".marked").removeClass("marked");
         $("#tf2_p_l6").addClass("marked");
         $("#tf2_p_l7").addClass("marked");
@@ -618,8 +618,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             return READY_TO_BUILD_TREE;
         }
         $("#tf2_div_statusErklaerung").html(
-            "<h3>Augmentationsweg bestimmen</h3>" +
-            "<p>Der Algorithmus konnte keinen Augmentationsweg mit der gewählten Wurzel (<span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>) im aktuellen Gleichheitsgraph finden.</p>"
+            "<h3>" + LNG.K("aufgabe2_find_augmenting_path") + "</h3>" +
+            "<p>" + LNG.K("aufgabe2_cannot_find") + " (<span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>" + LNG.K("aufgabe2_light_green") + "</span>) " + LNG.K("aufgabe2_in_graph") + "</p>"
         );
         statusID = AUGMENTING_PATH_NOT_FOUND;
         $(".marked").removeClass("marked");
@@ -635,8 +635,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     this.markAugmentingPath = function(){
         showAugmentingPath(x, y, prev, xy, yx);
         $("#tf2_div_statusErklaerung").html(
-            "<h3>Augmentationsweg bestimmen</h3>" +
-            "<p>Es wurde ein Augmentationsweg (<span style='font-weight: bold; color: red;'>rot</span>) gefunden.</p>"
+            "<h3>" + LNG.K("aufgabe2_find_augmenting_path") + "</h3>" +
+            "<p>" + LNG.K("aufgabe2_found_augmenting_path") + "</p>"
         );
         statusID = READY_TO_INCREASE_MATCHING;
         return READY_TO_INCREASE_MATCHING;
@@ -748,8 +748,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         showCurrentMatching(xy, true);
         statusID = MATCHING_INCREASED;
         $("#tf2_div_statusErklaerung").html(
-            "<h3>Matching vergrößern</h3>" +
-            "<p>Mittels des gefundenen Augmentationsweges konnte das Matching (<span style='font-weight: bold; color: green;'>grün</span>) ergänzt werden.</p>"
+            "<h3>" + LNG.K("aufgabe2_increase_matching") + "</h3>" +
+            "<p>" + LNG.K("aufgabe2_augment_matching") + "</p>"
         );
         $(".marked").removeClass("marked");
         if(maxMatch == cost.length){
@@ -830,13 +830,13 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
 
         $("#tf2_div_statusErklaerung").html(
-            "<h3>Optimales Matching</h3>" +
-            "<p>Die Ungarische Methode hat erfolgreich ein maximales Matching bestimmt.</p>" +
-            "<p>Das Gesamtgewicht beträgt <strong>"+ret+"</strong>.</p>" +
-            "<h3>Was nun?</h3>" +
-            "<button id='tf2_button_gotoIdee' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>Beschreibung des Algorithmus lesen</span></button>" +
-            "<h3>Forschungsaufgaben ausprobieren:</h3>" +
-            "<button id='tf2_button_gotoFA1' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>FA1</span></button>"
+            "<h3>" + LNG.K("aufgabe2_optimal_matching") + "</h3>" +
+            "<p>" + LNG.K("aufgabe2_matching_found") + "</p>" +
+            "<p>" + LNG.K("aufgabe2_total_weight") + " <strong>"+ret+"</strong>.</p>" +
+            "<h3>" + LNG.K("algorithm_msg_finish") + "</h3>" +
+            "<button id='tf2_button_gotoIdee' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>" + LNG.K("algorithm_btn_more") + "</span></button>" +
+            "<h3>" + LNG.K("aufgabe2_another_task") + "</h3>" +
+            "<button id='tf2_button_gotoFA1' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>" + LNG.K('algorithm_btn_exe1') + "</span></button>"
         );
 
         $("#tf2_button_gotoIdee").click(function() {
@@ -913,8 +913,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                     graph.edges[key].setLayout("dashed", graph.edges[key].originalDashed);
                 }
             }
-            $("#tf2_div_statusErklaerung").html("<h3>Die Ungarische Methode</h3>" +
-            "<p>Klicke auf <strong>Nächster Schritt</strong>, um den Algorithmus zu starten.</p>");
+            $("#tf2_div_statusErklaerung").html("<h3>" + LNG.K("aufgabe2_hungarian_method") + "</h3>" +
+            "<p>" + LNG.K("aufgabe2_click_next") + "</p>");
             $(".marked").removeClass("marked");
             $("#tf2_p_l2").addClass("marked");
         }
@@ -935,6 +935,11 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_div_statusTabs").hide();
         $("#tf2_div_questionModal").show();
         $("#tf2_questionSolution").hide();
+        $("#tf2_div_questionModal").find("form").submit( function( e ) {
+            e.preventDefault();
+            $("#tf2_button_questionClose2").click();
+            $("#tf2_button_questionClose").click();
+        });
     };
 
     /**
@@ -1080,6 +1085,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             }
             algo.needRedraw = true;
         });
+
         this.canvas.on("click.GraphDrawer", function(e){
             algo.nodeClickHandler(e, nodeLayouts);
         });
@@ -1275,14 +1281,18 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
         var randomVariable = Math.random();
 
-        if(equalityGraphQuestions < 2 && statusID === LABELS_UPDATED && randomVariable > 0.5) {
+        if(equalityGraphQuestions < 3 && statusID === LABELS_UPDATED
+            && (equalityGraphQuestions < 2 || randomVariable > 0.5)) {
+
             equalityGraphQuestions++;
             return EQUALITY_GRAPH_QUESTION;
-        }else if(statusID === LABELS_UPDATED && (equalityGraphQuestions >= 2 || randomVariable <= 0.5)){
+        }else if(statusID === LABELS_UPDATED && (equalityGraphQuestions >= 3 || randomVariable <= 0.5)){
             this.nextStepChoice();
         }
 
-        if(augmentingPathQuestions < 3 && statusID === AUGMENTING_PATH_FOUND && randomVariable > 0.5){
+        if(augmentingPathQuestions < 3 && statusID === AUGMENTING_PATH_FOUND
+            && (augmentingPathQuestions < 1 || randomVariable > 0.5)){
+
             augmentingPathQuestions++;
             return AUGMENTING_PATH_QUESTION;
         }else if(statusID === AUGMENTING_PATH_FOUND && (augmentingPathQuestions >= 3 || randomVariable <= 0.5)){
