@@ -28,13 +28,12 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
             table = displayMatrix(distance, contextNew, nodes, false);
             if(distance.length > 11){
                 tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, 0, 0, 10, true);
-                $("#" + tabprefix + "_div_statusText").append("<table id='matrix'>" + tableSmall + "</table>");
+                $("#" + tabprefix + "_div_statusText").append(LNG.K('textdb_msg_original_matrix_big') + "<h3>" + LNG.K('textdb_msg_original_matrix') + "</h3><table id='matrix'>" + tableSmall + "</table>");
                 $("#tg_button_showMatrix").show();
             }else{
                 $("#tg_button_showMatrix").hide();
                 $("#" + tabprefix + "_div_statusText").append("<h3>" + LNG.K('textdb_msg_original_matrix') + "</h3><table id='matrix'>" + table + "</table>");
             }
-            $(".not-number-cell").css("color", "black");
             $(".marked").removeClass("marked");
             $("#" + tabprefix + "_p_l2").addClass("marked");
             $("#" + tabprefix + "_p_l3").addClass("marked");
@@ -45,18 +44,26 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
         case 2:
             table = displayMatrix(distance, contextNew, nodes,  true);
             var formula = "<p id='formula'>" + contextNew.formula + "</p>";
-            $("#" + tabprefix + "_div_statusText").html("<p>" + LNG.K("textdb_msg_this_step") + "<strong>" + nodes[contextNew.i].getLabel() + "</strong> "
+            $("#" + tabprefix + "_div_statusText").html("");
+            if(algo.contextStack.length === 0){
+                $("#" + tabprefix + "_div_statusText").append("<p>" + LNG.K("textdb_msg_first_step") + "</p>");
+            }
+            $("#" + tabprefix + "_div_statusText").append("<p>" + LNG.K("textdb_msg_path_length") + "<strong>(" + nodes[contextNew.i].getLabel() + ", " + nodes[contextNew.j].getLabel()
+                + ")</strong>" + LNG.K("textdb_msg_minimal_value") + "<strong>(" + nodes[contextNew.i].getLabel() + ", " + nodes[contextNew.k].getLabel() + ")</strong>" + LNG.K("textdb_msg_and")
+                + "<strong>(" + nodes[contextNew.k].getLabel() + ", " + nodes[contextNew.j].getLabel() + ")</strong>" + LNG.K("textdb_msg_calculated") + "</p>");
+            $("#" + tabprefix + "_div_statusText").append(formula);
+            $("#" + tabprefix + "_div_statusText").append("<p>" + LNG.K("textdb_msg_this_step") + "<strong>" + nodes[contextNew.i].getLabel() + "</strong> "
                 + LNG.K("textdb_msg_and") + "<strong>" + nodes[contextNew.j].getLabel() + "</strong>" + LNG.K("textdb_msg_improved")
                 + LNG.K("textdb_msg_new_path") + "<strong>(" + nodes[contextNew.i].getLabel() + ", " + nodes[contextNew.k].getLabel() + ")</strong>"
                 + LNG.K("textdb_msg_and") + "<strong>(" + nodes[contextNew.k].getLabel() + ", " + nodes[contextNew.j].getLabel() + ")</strong>" + LNG.K("textdb_msg_cheaper")
-                + "<strong>(" + nodes[contextNew.i].getLabel() + ", " + nodes[contextNew.j].getLabel() + ")</strong>." + "</p><p>" + LNG.K("textdb_msg_hover") + "</p>");
+                + "<strong>(" + nodes[contextNew.i].getLabel() + ", " + nodes[contextNew.j].getLabel() + ")</strong>." + "</p>");
+
+            $("#" + tabprefix + "_div_statusText").append("<p>" + LNG.K("textdb_msg_hover") + "</p>");
             if(distance.length > 11){
                 tableSmall = displayMatrixSmall(distance, contextNew, nodes,  true);
                 $("#" + tabprefix + "_div_statusText").append("<table id='matrix'>" + tableSmall + "</table>");
-                $("#" + tabprefix + "_div_statusText").append(formula);
             }else{
                 $("#" + tabprefix + "_div_statusText").append("<table id='matrix'>" + table + "</table>");
-                $("#" + tabprefix + "_div_statusText").append(formula);
             }
             $(".marked").removeClass("marked");
             $("#" + tabprefix + "_p_l6").addClass("marked");
@@ -70,18 +77,17 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
 
         case 3:
             $("#" + tabprefix + "_div_statusText").html("<h3>" + LNG.K('textdb_msg_algo_end') + "</h3>");
-                $("#" + tabprefix + "_div_statusText").append("<p>" + LNG.K('textdb_msg_paths_computed') + "</p>");
-                table = displayMatrix(distance, contextNew, nodes, false);
-                if(distance.length > 11){
-                    tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, algo.startVertical, algo.startHorizontal, 10, false);
-                    $("#" + tabprefix + "_div_statusText").append("<table id='tableWrapper' style='margin-left: -20px;'><tr><td></td><td align='center'><div id='up' style='background-image: url(img/up.png);width: 60px;height: 30px;'></div></td><td></td></tr><tr><td><div id='left' style='background-image: url(img/left.png);width: 30px;height: 60px;'></div></td><td><table id='matrix'>" + tableSmall + "</table></td><td><div id='right' style='background-image: url(img/right.png); width: 30px; height: 60px'></div></td></tr><tr><td></td><td align='center'><div id='down' style='background-image: url(img/down.png);width: 60px;height: 30px;'></div></td><td></td></tr></table>");
-                    $("#tg_button_showMatrix").hide();
-                }else{
-                    $("#" + tabprefix + "_div_statusText").append("<h3>" + LNG.K('textdb_msg_endmatrix') + "</h3><table id='matrix'>" + table + "</table>");
-                }
-                $("#table_div").scrollLeft(0);
-                $("#table_div").scrollTop(0);
-                $(".not-number-cell").css("color", "black");
+            $("#" + tabprefix + "_div_statusText").append("<p>" + LNG.K('textdb_msg_paths_computed') + "</p>");
+            table = displayMatrix(distance, contextNew, nodes, false);
+            if(distance.length > 11){
+                tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, algo.startVertical, algo.startHorizontal, 10, false);
+                $("#" + tabprefix + "_div_statusText").append("<table id='tableWrapper' style='margin-left: -20px;'><tr><td></td><td align='center'><div id='up' style='background-image: url(img/up.png);width: 60px;height: 30px;'></div></td><td></td></tr><tr><td><div id='left' style='background-image: url(img/left.png);width: 30px;height: 60px;'></div></td><td><table id='matrix'>" + tableSmall + "</table></td><td><div id='right' style='background-image: url(img/right.png); width: 30px; height: 60px'></div></td></tr><tr><td></td><td align='center'><div id='down' style='background-image: url(img/down.png);width: 60px;height: 30px;'></div></td><td></td></tr></table>");
+                $("#tg_button_showMatrix").hide();
+            }else{
+                $("#" + tabprefix + "_div_statusText").append("<h3>" + LNG.K('textdb_msg_endmatrix') + "</h3><table id='matrix'>" + table + "</table>");
+            }
+            $("#table_div").scrollLeft(0);
+            $("#table_div").scrollTop(0);
             $(".marked").removeClass("marked");
             $("#" + tabprefix + "_p_l13").addClass("marked");
             $("#" + tabprefix + "_td_i").html(distance.length);
@@ -103,6 +109,7 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
                     algo.startHorizontal = 0;
                 }
                 tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, algo.startVertical, algo.startHorizontal, 10, false);
+                console.log(tableSmall);
                 $("#matrix").html(tableSmall);
             });
             $("#down").on("click", function(){
@@ -331,7 +338,7 @@ function displayMatrixSmall(distance, contextNew, nodes, markChanged){
                 table += "<td>...</td>";
             }
             if(contextNew && markChanged && rows[i] == contextNew.changedRow && cols[j] == contextNew.changedColumn){
-                table += "<td class='";
+                table += "<td onmouseover='markPath(this)' onmouseout='unmarkPath(this)' i='" + i + "' j='" + j + "' class='";
                 if(contextNew.preliminary){
                     table += "updated-cell";
                 }else{
@@ -340,7 +347,7 @@ function displayMatrixSmall(distance, contextNew, nodes, markChanged){
                 table += "'>" + distance[rows[i]][cols[j]] + "</td>";
             }else if(contextNew && ((rows[i] == contextNew.i && cols[j] == contextNew.k) 
                 || (rows[i] == contextNew.k && cols[j] == contextNew.j))){
-                table += "<td class='";
+                table += "<td onmouseover='markPath(this)' onmouseout='unmarkPath(this)' i='" + i + "' j='" + j + "' class='";
                 if(contextNew.preliminary){
                     table += "summand-cell";
                 }else{

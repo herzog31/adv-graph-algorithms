@@ -125,7 +125,7 @@ function initializeSiteLayout() {
             }
         }
     });
-    $("body").data("graph", new Graph(4));
+    $("body").data("graph", new Graph(8));
 }
 
 /**

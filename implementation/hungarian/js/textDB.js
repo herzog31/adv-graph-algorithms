@@ -7,7 +7,7 @@ function showLabels(lx, ly){
         $("body").data("graph").nodes[lx.length + i].setLabel(ly[i]);
     }
 
-    showEqualityGraph(lx, ly);
+    //showEqualityGraph(lx, ly);
 }
 
 function showEqualityGraph(lx, ly){

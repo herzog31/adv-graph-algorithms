@@ -74,10 +74,11 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     const AUGMENTING_PATH_NOT_FOUND = 4;
     const READY_FOR_SEARCHING = 5;
     const LABELS_UPDATED = 6;
-    const MATCHING_INCREASED = 7;
-    const READY_TO_BUILD_TREE = 8;
-    const READY_TO_BUILD_TREE_AFTER_RELABELING = 9;
-    const FINISHED = 10;
+    const SHOW_NEW_EQUALITY_GRAPH = 7;
+    const MATCHING_INCREASED = 8;
+    const READY_TO_BUILD_TREE = 9;
+    const READY_TO_BUILD_TREE_AFTER_RELABELING = 10;
+    const FINISHED = 11;
 
     var cost = new Array();
     this.cost = cost;
@@ -90,6 +91,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     var q;
 
     var goOn = false;
+    var showedTerms = false;
+    var delta = -1;
 
     this.completeGraph = function() {
 
@@ -392,6 +395,9 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             case AUGMENTING_PATH_NOT_FOUND:
                 this.update_labels();
                 break;
+            case SHOW_NEW_EQUALITY_GRAPH:
+                this.newEqualityGraph();
+                break;
             case LABELS_UPDATED:
                 this.findAugmentPathAfterLabeling();
                 break;
@@ -407,9 +413,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             case AUGMENTING_PATH_FOUND:
                 this.increaseMatching();
                 break;
-            //case FINISHED:
-            //    this.end();
-            //    break;
             default:
                 console.log("Fehlerhafte StatusID.");
                 break;
@@ -458,14 +461,14 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         });
 
         $("#ta_div_statusErklaerung").html(
-            "<h3>Augmentationsweg bestimmen</h3>" +
-            "<p>Der Algorithmus versucht nun schrittweise einen alternierenden Pfad zu konstruieren.</p>" +
-            "<p>Die Konstruktion stoppt, wenn der alternierende Pfad augmentierend wird oder es keine weiteren passenden Kanten mehr gibt.</p>");
+            "<h3>" + LNG.K("algorithm_augmenting_path") + "</h3>" +
+            "<p>" + LNG.K("algorithm_construct_path") + "</p>" +
+            "<p>" + LNG.K("algorithm_ST_sets") + "</p>" +
+            "<p>" + LNG.K("algorithm_construction_stops") + "</p>");
 
         $("#ta_td_setS").html(sField.join(",") || "&#8709;");
         $("#ta_td_setT").html(tField.join(",") || "&#8709;");
-        //TODO node borders
-    }
+    };
 
     this.initLabels = function(){
         this.setAll(S, false);
@@ -482,11 +485,12 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             }
         }
         showLabels(lx, ly);
+        this.showEqualityGraph(lx, ly);
         statusID = READY_TO_START;
-        console.log("READY_TO_START");
-        $("#ta_div_statusErklaerung").html("<h3>Gleichheitsgraph bestimmen</h3>"
-            + "<p>Der Algorithmus bestimmt zuerst eine initiale Markierung für jeden Knoten.</p>"
-            + "<p>Anhand der Markierungen wird der Gleichheitsgraph ermittelt (<strong>schwarz</strong>).</p>");
+        $("#ta_div_statusErklaerung").html("<h3>" + LNG.K("algorithm_find_eq_graph") + "</h3>"
+            + "<p>" + LNG.K("algorithm_equality_graph_definition") + "</p>"
+            + "<p>" + LNG.K("algorithm_construct_eq_graph") + "</p>"
+            + "<p>" + LNG.K("algorithm_labels_to_graph") + "</p>");
         $(".marked").removeClass("marked");
         $("#ta_p_l4").addClass("marked");
         return READY_TO_START;
@@ -495,7 +499,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     this.augment = function() {
         if (maxMatch == cost.length) {
             statusID = FINISHED;
-            console.log("FINISHED");
             this.end();
             $("#ta_button_1Schritt").button("option", "disabled", true);
             showCurrentMatching(xy, false);
@@ -504,7 +507,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             $("#ta_p_l13").addClass("marked");
             return FINISHED;
         }
-        showEqualityGraph(lx, ly);
+        this.showEqualityGraph(lx, ly);
         x, y, root = -1;
         q = new Array(n);
         wr = 0, rd = 0;
@@ -527,9 +530,17 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         showTreeRoot(S);
         statusID = READY_FOR_SEARCHING;
         console.log("READY_FOR_SEARCHING");
-        $("#ta_div_statusErklaerung").html("<h3>Augmentationsweg bestimmen</h3>" +
-            "<h3>Wurzel eines alternierenden Pfades finden</h3>" + 
-            "<p>Der Algorithmus wählt als Wurzel einen Knoten, der noch nicht im Matching vorhanden ist und markiert ihn <span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>.</p>");
+        $("#ta_div_statusErklaerung").html();
+        $("#ta_div_statusErklaerung").append("<h3>" + LNG.K("algorithm_augmenting_path") + "</h3>" +
+            "<p>" + LNG.K("algorithm_need_augmenting_path") + "</p>");
+
+        if(!showedTerms){
+            $("#ta_div_statusErklaerung").append("<p>" + LNG.K("algorithm_definitions") + "</p>");
+            showedTerms = true;
+        }
+
+        $("#ta_div_statusErklaerung").append("<h3>" + LNG.K("algorithm_find_root") + "</h3>" +
+            "<p>" + LNG.K("algorithm_chooses_root") + "<span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>" + LNG.K("aufgabe2_light_green") + "</span>.</p>");
         $(".marked").removeClass("marked");
         $("#ta_p_l6").addClass("marked");
         $("#ta_p_l7").addClass("marked");
@@ -555,9 +566,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         }
         console.log("AUGMENTING_PATH_NOT_FOUND");
         $("#ta_div_statusErklaerung").html(
-            "<h3>Augmentationsweg bestimmen</h3>" +
-            "<p>Der Algorithmus konnte keinen Augmentationsweg mit der gewählten Wurzel (<span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün</span>) im aktuellen Gleichheitsgraph finden.</p>"
-            //TODO the algorithm howto anpassen
+            "<h3>" + LNG.K("algorithm_augmenting_path") + "</h3>" +
+            "<p>" + LNG.K("algorithm_cannot_find_augmenting_path") + "(<span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>" + LNG.K("aufgabe2_light_green") + "</span>)" + LNG.K("algorithm_in_current_graph") + "</p>"
         );
         statusID = AUGMENTING_PATH_NOT_FOUND;
         $(".marked").removeClass("marked");
@@ -571,10 +581,9 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             if (cost[x][y] == lx[x] + ly[y] && !T[y]) {
                 if (yx[y] == -1) {
                     showAugmentingPath(x, y, prev, xy, yx);
-                    console.log("AUGMENTING_PATH_FOUND");
                     $("#ta_div_statusErklaerung").html(
-                        "<h3>Augmentationsweg bestimmen</h3>" +
-                        "<p>Es wurde ein Augmentationsweg (<span style='font-weight: bold; color: red;'>rot</span>) gefunden.</p>"
+                        "<h3>" + LNG.K("algorithm_augmenting_path") + "</h3>" +
+                        "<p>" + LNG.K("algorithm_augmenting_path_found") + "</p>"
                     );
                     statusID = AUGMENTING_PATH_FOUND;
                     $(".marked").removeClass("marked");
@@ -590,7 +599,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                 goOn = true;
             }
             y++;
-            console.log("buildAlternatingTree: READY_TO_BUILD_TREE");
             statusID = READY_TO_BUILD_TREE;
             $(".marked").removeClass("marked");
             $("#ta_p_l6").addClass("marked");
@@ -598,7 +606,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             return READY_TO_BUILD_TREE;
         }
         goOn = true;
-        console.log("READY_FOR_SEARCHING");
         statusID = READY_FOR_SEARCHING;
         $(".marked").removeClass("marked");
         $("#ta_p_l6").addClass("marked");
@@ -609,7 +616,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     this.findAugmentPathAfterLabeling = function(){
         wr = rd = 0;
         y = 0;
-        console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
         this.displayST(S, T);
         statusID = READY_TO_BUILD_TREE_AFTER_RELABELING;
         $(".marked").removeClass("marked");
@@ -627,8 +633,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                     statusID = AUGMENTING_PATH_FOUND;
                     console.log("AUGMENTING_PATH_FOUND");
                     $("#ta_div_statusErklaerung").html(
-                        "<h3>Augmentationsweg bestimmen</h3>" +
-                        "<p>Es wurde ein Augmentationsweg (<span style='font-weight: bold; color: red;'>rot</span>) gefunden.</p>"
+                        "<h3>" + LNG.K("algorithm_augmenting_path") + "</h3>" +
+                        "<p>" + LNG.K("algorithm_augmenting_path_found") + "</p>"
                     );
                     $(".marked").removeClass("marked");
                     $("#ta_p_l11").addClass("marked");
@@ -645,7 +651,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                 goOn = true;
             }
             y++;
-            console.log("READY_TO_BUILD_TREE_AFTER_RELABELING");
             statusID = READY_TO_BUILD_TREE_AFTER_RELABELING;
             $(".marked").removeClass("marked");
             $("#ta_p_l6").addClass("marked");
@@ -653,7 +658,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             return READY_TO_BUILD_TREE_AFTER_RELABELING;
         }
         statusID = READY_FOR_SEARCHING;
-        console.log("READY_FOR_SEARCHING");
         goOn = true;
         $(".marked").removeClass("marked");
         $("#ta_p_l6").addClass("marked");
@@ -663,7 +667,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
 
     this.increaseMatching = function(){
         resetNodeLayout();
-        showEqualityGraph(lx, ly);
+        this.showEqualityGraph(lx, ly);
         maxMatch++;
         for (var cx = x, cy = y, ty; cx != -2; cx = prev[cx], cy = ty) {
             ty = xy[cx];
@@ -672,10 +676,10 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         }
         showCurrentMatching(xy, true);
         statusID = MATCHING_INCREASED;
-        console.log("MATCHING_INCREASED");
         $("#ta_div_statusErklaerung").html(
-            "<h3>Matching vergrößern</h3>" +
-            "<p>Mittels des gefundenen Augmentationsweges konnte das Matching (<span style='font-weight: bold; color: green;'>grün</span>) ergänzt werden.</p>"
+            "<h3>" + LNG.K("algorithm_increase_matching") + "</h3>" +
+            "<p>" + LNG.K("algorithm_matching_can_be_increased") + "</p>" +
+            "<p>" + LNG.K("algorithm_path_to_matching") + "</p>"
         );
         $(".marked").removeClass("marked");
         if(maxMatch == cost.length){
@@ -686,6 +690,37 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         $("#ta_td_setS").html("&#8709;");
         $("#ta_td_setT").html("&#8709;");
         return MATCHING_INCREASED;
+    };
+
+    this.showEqualityGraph = function (lx, ly){
+        for (var edge in this.graph.edges) {
+            if (lx[this.graph.edges[edge].getSourceID()] +
+                ly[this.graph.edges[edge].getTargetID() - lx.length] == this.graph.edges[edge].weight) {
+
+                if(this.graph.edges[edge].originalColor != "green"){
+                    this.graph.edges[edge].originalColor = "black";
+                }
+                this.graph.edges[edge].setLayout("lineColor", $("body").data("graph").edges[edge].originalColor);
+                this.graph.edges[edge].setLayout("lineWidth", 3);
+            }else{
+                this.graph.edges[edge].setLayout("lineColor", const_Colors.grey);
+                this.graph.edges[edge].setLayout("lineWidth", 1);
+            }
+        }
+    };
+
+    this.newEqualityGraph = function(){
+        this.showEqualityGraph(lx, ly);
+        statusID = LABELS_UPDATED;
+        $("#ta_div_statusErklaerung").html(
+            "<h3>" + LNG.K("algorithm_new_graph_found") + "</h3>" +
+            "<p>" + LNG.K("algorithm_labels_updated") + "</p>" +
+            "<p>" + LNG.K("algorithm_formula") + "</p>" +
+            "<p>\\(\\Delta = " + delta + "\\)</p>" +
+            "<p>" + LNG.K("algorithm_new_graph_marked") + "</p>"
+        );
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub,"ta_div_statusErklaerung"]);
+        return LABELS_UPDATED;
     };
 
     this.add_to_tree = function (x, prevx){
@@ -700,7 +735,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     };
 
     this.update_labels = function() {
-        var x, y, delta = -1;
+        var x, y;
+        delta = -1;
         for (y = 0; y < n; y++) {
             if (!T[y] && (delta == -1 || slack[y] < delta)) {
                 delta = slack[y];
@@ -716,23 +752,22 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             if (!T[y])
                 slack[y] -= delta;
         }
-        statusID = LABELS_UPDATED;
+        statusID = SHOW_NEW_EQUALITY_GRAPH;
         showLabels(lx, ly);
-        console.log("LABELS_UPDATED");
         $("#ta_div_statusErklaerung").html(
-            "<h3>Neuen Gleichheitsgraph bestimmen</h3>" +
-            "<p>Zur Bestimmung eines neuen Gleichheitsgraph muss der Algorithmus zunächst die Markierungen aktualisieren.</p>" + 
-            "<p>Dazu wird ein \\(\\Delta\\) wie folgt bestimmt:</p>"+
-            "<p>\\(\\Delta = \\min\\limits_{s \\in S\\ \\wedge\\ y \\in Y \\setminus T}\\{l(s) + l(y) - w(s,y)\\} = "+delta+"\\)</p>" +
-            "<p>Die Markierungen werden dann nach folgender Formel aktualisiert:</p>" + 
-            "<p>\\(\\begin{equation}l^\\prime(v) =\\begin{cases}l(v) - "+delta+" & v \\in S\\\\l(v) + "+delta+" & v \\in T\\\\l(v) & sonst\\end{cases}\\end{equation}\\)</p>" + 
-            "<p>Der neue Gleichheitsgraph wurde vom Algorithmus markiert (<strong style='font-weight: bold; color: green;'>grün</strong> und <strong>schwarz</strong>).</p>"
+            "<h3>" + LNG.K("algorithm_find_new_eq_graph") + "</h3>" +
+            "<p>" + LNG.K("algorithm_actualise_labels") + "</p>" +
+            "<p>" + LNG.K("algorithm_delta_calculated") + "</p>"+
+            "<p>" + LNG.K("algorithm_delta_equals") + delta + "\\)</p>" +
+            "<p>" + LNG.K("algorithm_idea_delta") + "</p>" +
+            "<p>" + LNG.K("algorithm_this_formula") + "</p>" +
+            "<p>" + LNG.K("algorithm_formula") + "</p>"
         );
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,"ta_div_statusErklaerung"]);
         $(".marked").removeClass("marked");
         $("#ta_p_l6").addClass("marked");
         $("#ta_p_l7").addClass("marked");
-        return LABELS_UPDATED;
+        return SHOW_NEW_EQUALITY_GRAPH;
     };
 
     this.setAll = function (arr, val) {
@@ -755,17 +790,13 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         for (var x = 0; x < n; x++) {
             ret += cost[x][xy[x]];
         }
-        //answer = 0;
-        //for (var x = 0; x < n; x++) {
-        //    answer += cost[x][xy[x]];
-        //}
         $("#ta_div_statusErklaerung").html(
-            "<h3>Optimales Matching</h3>" +
-            "<p>Die Ungarische Methode hat erfolgreich ein maximales Matching bestimmt.</p>" +
-            "<p>Das Gesamtgewicht beträgt <strong>"+ret+"</strong>.</p>" +
-            "<h3>Was nun?</h3>" +
-            "<button id='ta_button_gotoIdee' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>Beschreibung des Algorithmus lesen</span></button>" +
-            "<h3>Forschungsaufgaben ausprobieren:</h3>" +
+            "<h3>" + LNG.K("algorithm_optimal_matching") + "</h3>" +
+            "<p>" + LNG.K("algorithm_max_matching") + "</p>" +
+            "<p>" + LNG.K("algorithm_total_weight") + "<strong>"+ret+"</strong>.</p>" +
+            "<h3>" + LNG.K("algorithm_msg_finish") + "</h3>" +
+            "<button id='ta_button_gotoIdee' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>" + LNG.K("algorithm_btn_more") + "</span></button>" +
+            "<h3>" + LNG.K("algorithm_msg_test") + "</h3>" +
             "<button id='ta_button_gotoFA1' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>"+LNG.K('algorithm_btn_exe1')+"</span></button>" +
             "<button id='ta_button_gotoFA2' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'><span class='ui-button-text'>"+LNG.K('algorithm_btn_exe2')+"</span></button>"
         );
@@ -853,8 +884,8 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                     graph.edges[key].setLayout("dashed", graph.edges[key].originalDashed);
                 }
             }
-            $("#ta_div_statusErklaerung").html("<h3>Die Ungarische Methode</h3>" + 
-                "<p>Klicke auf <strong>Nächster Schritt</strong>, um den Algorithmus zu starten.</p>");
+            $("#ta_div_statusErklaerung").html("<h3>" + LNG.K("algorithm_hungarian_method") + "</h3>" +
+                "<p>" + LNG.K("algorithm_click_next") + "</p>");
             $(".marked").removeClass("marked");
             $("#ta_p_l2").addClass("marked");
         }
