@@ -8,13 +8,13 @@ Zu den betrachteten Problemstellungen gehört das \textit{All-Pairs Shortest Pat
 
 Der Algorithmus von Hierholzer löst das \textit{Eulertourproblem}, welches das Finden einer Kantenfolge über alle Kanten des Graphs verlangt, ohne dass eine Kante mehrfach betrachtet wird.
 
-Außerdem betrachten wir mehrere \textit{Matchingprobleme}. So findet der Algorithmus von Hopcroft und Karp kardinalitätsmaximale Matchings und mittels der Ungarischen Methode lassen sich perfekte Matchings optimalen Gewichts bestimmen. 
+Außerdem betrachten wir mehrere \textit{Matchingprobleme}. So findet der Algorithmus von Hopcroft und Karp kardinalitätsmaximale Matchings und mittels der Ungarischen Methode lassen sich perfekte Matchings optimalen Gewichts bestimmen. 
 
 Abschließend betrachten wir das \textit{Chinese Postman Problem}, welches zur Lösung eine Kombination der zuvor genannten Algorithmen benötigt. Es beschreibt das Problem eines Briefträgers, der alle Briefe auf einer möglichst kurzen Route austragen möchte.
 
 Die zu implementierenden Anwendungen richten sich an Schüler und Studenten, die diese unterrichts- bzw. vorlesungsbegleitend verwenden können. Wir führen damit ein didaktisches Konzept aus früheren Projekten fort. Die Probleme und die Lösungsalgorithmen werden beispielhaft und möglichst anschaulich erklärt. Im Folgenden können die Nutzer die Algorithmen ausprobieren und den Ablauf dynamisch regeln. Zum Abschluss der Übung werden besondere Aspekte der Probleme durch Forschungsaufgaben vertieft.
 
-Grundlage unserer Implementierung ist ein Framework, welches im Zuge mehrerer Projekte entwickelt wurde. Es handelt sich um ein rein clientseitiges Web Framework zur Darstellung in modernen Webbrowsern. Es basierend auf HTML5 und modernen JavaScript Bibliotheken, sowie Cascading Stylesheets (CSS). Neben dem Framework selbst, konnten wir für unsere Implementierung auch auf den Programmcode verschiedener bereits implementierter Algorithmen zurückgreifen.
+Grundlage unserer Implementierung ist ein Framework, welches im Zuge mehrerer Projekte entwickelt wurde. Es handelt sich um ein rein clientseitiges Web Framework zur Darstellung von Graphalgorithmen in modernen Webbrowsern. Es basierend auf HTML5 und modernen Java\-Script Bibliotheken, sowie Cascading Stylesheets (CSS). Neben dem Framework selbst, konnten wir für unsere Implementierung auch auf den Programmcode verschiedener bereits implementierter Algorithmen zurückgreifen.
 
 In der vorliegenden Dokumentation beschreiben wir zunächst allgemein den Aufbau der Webanwendungen und stellen dann die Merkmale jedes implementierten Algorithmus vor. Der zweite Teil dient als technische Dokumentation der von uns implementierten Neuerungen für zukünftige Projekte. Die Disposition der Abschnitte erfolgte parallel zur Implementierung (Mark $\diamondsuit$, Aleksejs $\heartsuit$, Ruslan $\spadesuit$). \hfill$\diamondsuit$
 
@@ -114,7 +114,7 @@ Abhängig davon, ob es zu viele Eingangs- oder Ausgangsknoten gibt, werden diese
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\textwidth]{figures/postman_unbalanced}
+	\includegraphics[width=\textwidth]{figures/postman_unbalanced}
 	\caption[Chinese-Postman: Unbalancierte Knoten]{Hervorheben von Knoten mit ungleichem Eingangs- und Ausgangsgrad}\label{fig:postman_unbalanced}
 \end{figure}
 
@@ -122,7 +122,7 @@ Im nächsten Schritt wird ein bipartiter Graph erstellt, der aus den markierten 
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[]{figures/postman_matching}
+	\includegraphics[width=\textwidth]{figures/postman_matching}
 	\caption[Chinese-Postman: Matchinggraph]{Matchinggraph}\label{fig:postman_matching}
 \end{figure}
 
@@ -135,7 +135,7 @@ Am Ende des Algorithmen wird die Eulertour des Graphen bestimmt. Der Nutzer kann
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\textwidth]{figures/postman_eulerian}
+	\includegraphics[width=\textwidth]{figures/postman_eulerian}
 	\caption[Chinese-Postman: Eulerscher Graph]{Graph nach Einfügen von zusätzlichen Pfaden}\label{fig:postman_eulerian}
 \end{figure}
 
@@ -233,7 +233,7 @@ In dem Chinese-Postman-Algorithmus werden während der Ausführung Kanten in den
 %Beispiel
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\textwidth]{figures/multigraph}
+	\includegraphics[width=\textwidth]{figures/multigraph}
 	\caption[Multigraph]{Multikanten im Graphen}\label{fig:multigraph}
 \end{figure}
 
