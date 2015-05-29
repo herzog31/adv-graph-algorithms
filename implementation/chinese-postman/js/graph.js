@@ -750,7 +750,7 @@ function Graph(filename,canvas) {
      */
     this.addEdge = function(source,target,weight, dir) {
         if(weight == null) {
-            weight = Math.round(Math.random()*70-20);// Zufälliges Gewicht zwischen -20 und 50
+            weight = Math.round(Math.random()*100);// Zufälliges Gewicht zwischen 0 und 99
         }
         if(dir == null) dir = directed;
         var edge = new Edge(source,target,weight,edgeIDCounter,dir);
@@ -1263,7 +1263,7 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
                 this.graph = new Graph("graphs/kreis.txt");
                 break;
             case "koenigsberg":
-                this.canvas.css("background","");
+                this.canvas.css("background-image", "url(img/koenigsberg_bg.png)");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("graphs/koenigsberg.txt");
                 break;

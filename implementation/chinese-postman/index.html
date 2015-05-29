@@ -7,6 +7,7 @@
     <meta name="author" content="Richard Stotz">
     <link rel="stylesheet" type="text/css" href="../library/css/tum-theme2/jquery-ui-1.10.1.custom.min.css" />
     <link rel="stylesheet" type="text/css" href="../library/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
     <script src="../library/js/jquery-1.9.1.min.js" type="text/javascript"></script>
     <script src="../library/js/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
     <script src="../library/js/lang.js" type="text/javascript"></script>
@@ -74,6 +75,7 @@
                 <p>
                     Das Problem wird mittels eines Graphen modelliert.
                     Knoten stellen Kreuzungen dar und Kanten sind die Straßen. Die Länge der Straße entspricht dem Gewicht der zugehörigen Kante.
+                    Da es Einbahnstraßen geben kann,
                 </p>
                 <h2>Hier wird der Chinese-Postman-Algorithmus für gerichtete Graphen vorgestellt, der den günstigsten Kantenzug findet, sodass jede Kante mindestens einmal benutzt wird.</h2>
                 <div id ="te_div_Entscheidung">
@@ -122,7 +124,7 @@
                         <option selected id="tg_selectoption_empty" value="empty">Selbsterstellter Graph</option>
                         <option value="standard">Standardbeispiel</option>
                         <option value="random">Zufallsgraph</option>
-                        <option value="not_connected">Nicht Zusammenhängend</option>
+                        <option value="not_connected">Nicht stark zusammenhängend</option>
                         <option value="cycle">Kreis</option>
                         <option value="nikolaus">Haus vom Nikolaus</option>
                         <option value="koenigsberg">Königsberger Brücken</option>
