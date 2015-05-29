@@ -242,7 +242,7 @@ graphs[7] = ["% Graph 2: Graph mit 6 Knoten und Kanten ohne negative Gewichte",
     "e 5 3 8",
 ];
 
-graphs[8] = ["% Graph 8: Graph mit vielen Knoten und vielen Kanten",
+/*graphs[8] = ["% Graph 8: Graph mit vielen Knoten und vielen Kanten",
     "n 139 212",
      "n 266 94",
      "n 478 203",
@@ -294,8 +294,8 @@ graphs[8] = ["% Graph 8: Graph mit vielen Knoten und vielen Kanten",
      ,"e 5 25 5"
      ,"e 25 1 3"
 ];
-
-/*graphs[8] = ["% Standardbeispiel",
+*/
+graphs[8] = ["% Standardbeispiel",
     "n 120 220",
     "n 240 220",
     "n 360 220",
@@ -320,4 +320,4 @@ graphs[8] = ["% Graph 8: Graph mit vielen Knoten und vielen Kanten",
     "e 4 3 6",
     "e 2 4 10",
     "e 4 2 8"
-];*/
+];
