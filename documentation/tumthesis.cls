@@ -561,7 +561,7 @@
       at ($ (declaration place.north west) + (+0mm, +25mm) $)%
       {\declarationtext};%      
       \draw (declaration place.south east) + (10mm,0mm) --
-      node[below]{\normalsize \@author} (intersection of
+      node[below]{\normalsize Becker, Voroncovs, Zabrodin} (intersection of
       declaration place.south--declaration place.south east and declaration
       text.east--declaration text.south east);
     \end{tikzpicture}
