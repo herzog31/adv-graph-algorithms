@@ -23,7 +23,7 @@ function CanvasDrawMethods() {
  * @param {String} label            Text auf dem Pfeil
  * @param {String} additionalLabel  Zusatztext zu dem Pfeil
  */
-CanvasDrawMethods.drawArrowhead = function (ctx, layout, source, target, center) {
+CanvasDrawMethods.drawArrowhead = function (ctx, layout, source, target, pos) {
     // Pfeilkopf zeichnen
     var arrowHeadColor = layout.lineColor;
     if (layout.isHighlighted) {
@@ -33,8 +33,8 @@ CanvasDrawMethods.drawArrowhead = function (ctx, layout, source, target, center)
     ctx.strokeStyle = arrowHeadColor;
     var edgeAngle = Math.atan2(target.y - source.y, target.x - source.x);
     var arrowStart = {
-        x: center.x + Math.cos(edgeAngle) * layout.arrowHeadLength / 2,
-        y: center.y + Math.sin(edgeAngle) * layout.arrowHeadLength / 2
+        x: pos.x + Math.cos(edgeAngle) * layout.arrowHeadLength / 2,
+        y: pos.y + Math.sin(edgeAngle) * layout.arrowHeadLength / 2
     };
     var lineAngle1 = Math.atan2(target.y - source.y, target.x - source.x)
         + layout.arrowAngle + Math.PI;	// Winkel des rechten Pfeilkopfs relativ zum Nullpunkt
@@ -48,39 +48,31 @@ CanvasDrawMethods.drawArrowhead = function (ctx, layout, source, target, center)
     ctx.stroke();
 };
 CanvasDrawMethods.drawArrow = function (ctx, layout, source, target, control, label, additionalLabel) {
-    if (layout.dashed) {
+/*    if (layout.dashed) {
         ctx.setLineDash([10]);
-    }
+    }*/
     //Zeichne die Kurve bzw. Linie
     CanvasDrawMethods.drawCurve(ctx, layout, source, target, control, label, additionalLabel);
-    ctx.setLineDash([0]);
+    //ctx.setLineDash([0]);
     // Pfeilkopf zeichnen
     var center;
     if (control == null) center = {x: (target.x + source.x) / 2, y: (target.y + source.y) / 2};
     else center = this.getQuadraticCurvePoint(source.x, source.y, control.x, control.y, target.x, target.y, 0.5);
     CanvasDrawMethods.drawArrowhead(ctx, layout, source, target, center);
-/*    if (layout.isHighlighted) {
-        var arrowStart = {
-            x: center.x + Math.cos(edgeAngle) * layout.arrowHeadLength / 2,
-            y: center.y + Math.sin(edgeAngle) * layout.arrowHeadLength / 2
-        };
-        var thirtyPercent = {
-            x: 0.3 * target.x + 0.7 * source.x,
-            y: 0.3 * target.y + 0.7 * source.y
-        };
-        CanvasDrawMethods.drawLine(ctx, {
-            lineColor: const_Colors.EdgeHighlight3,
-            lineWidth: layout.lineWidth
-        }, thirtyPercent, arrowStart);
-    }*/
-
+    if(layout.progressArrow){
+        var position;
+        var p = layout.progressArrowPosition;
+        if (control == null) position = {x: (source.x + (target.x - source.x) * p), y: (source.y + (target.y - source.y) * p)};
+        else position = this.getQuadraticCurvePoint(source.x, source.y, control.x, control.y, target.x, target.y, p);
+        CanvasDrawMethods.drawArrowhead(ctx, layout, source, target, position);
+    }
 };
 
-CanvasDrawMethods.drawDashedArrow = function (ctx, layout, source, target, control, label, additionalLabel) {
+/*CanvasDrawMethods.drawDashedArrow = function (ctx, layout, source, target, control, label, additionalLabel) {
     ctx.setLineDash([10]);
     this.drawArrow(ctx, layout, source, target, control, label, additionalLabel);
     ctx.setLineDash([0]);
-};
+};*/
 
 /**
  * Zeichnet einen Linie in 2D
@@ -140,17 +132,6 @@ CanvasDrawMethods.drawLine = function (ctx, layout, source, target) {
     ctx.setLineDash([0]);
 };
 
-/*CanvasDrawMethods.drawDashedLine = function (ctx, layout, source, target) {
-    ctx.setLineDash([10]);
-    this.drawLine(ctx, layout, source, target);
-    ctx.setLineDash([0]);
-};
-CanvasDrawMethods.drawDashedCurve = function (ctx, layout, source, target, control) {
-    ctx.setLineDash([10]);
-    this.drawCurve(ctx, layout, source, target, control);
-    ctx.setLineDash([0]);
-};*/
-
 function getQBezierValue(t, p1, p2, p3) {
     var iT = 1 - t;
     return iT * iT * p1 + 2 * iT * t * p2 + t * t * p3;
@@ -161,7 +142,7 @@ CanvasDrawMethods.getQuadraticCurvePoint = function (startX, startY, cpX, cpY, e
         x: getQBezierValue(position, startX, cpX, endX),
         y: getQBezierValue(position, startY, cpY, endY)
     };
-}
+};
 
 /**
  * Zeichnet einen Text auf eine Linie.

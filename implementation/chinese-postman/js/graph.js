@@ -41,10 +41,12 @@ var global_Edgelayout = {
     'font': 'Arial',		// Schrifart
     'fontSize': 14,		// Schriftgrösse in Pixeln
     'isHighlighted': false ,        // Ob die Kante eine besondere Markierung haben soll
-    'dashed': false,
-    'showLabels': true,
-    'labelPosition': 0.5,
-    'hidden': false
+    'dashed': false,    //gestrichelt
+    'showLabels': true, //ob das Label angezeigt werden soll
+    'labelPosition': 0.5, // Position des Labels auf der Kante
+    'progressArrow': false,             // Zusätzlicher Animationspfeil
+    'progressArrowPosition': 0.0,       // Position des Animationspfeils
+    'hidden': false //ob die Kante angeyeigt werden soll
 };
 
 /**

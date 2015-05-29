@@ -817,6 +817,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             icons: {primary: "ui-icon-stop"},
             disabled: true
         }).click({org: this}, this.animateTourStop);
+        this.appendTours();
         statusID = END;
         $(".marked").removeClass("marked");
         $("#ta_p_5").addClass("marked");
@@ -830,8 +831,9 @@ function algorithm(p_graph, p_canvas, p_tab) {
                 output += graph.nodes[tour[i].id].getLabel();
             }
             if (tour[i].type == "edge") {
-                var layout = graph.edges[tour[i].id].getLayout();
-                output += ' <span style="color: ' + layout.lineColor + ';">&rarr;</span> ';
+                //var layout = graph.edges[tour[i].id].getLayout();
+                var c =  tourColors[color[tour[i].id]];
+                output += ' <span style="color: ' + c + ';">&rarr;</span> ';
             }
         }
         var output_subtours = "";
@@ -883,7 +885,41 @@ function algorithm(p_graph, p_canvas, p_tab) {
         event.data.org.needRedraw = true;
     };
 
-    this.animateTourStep = function (event) {
+    /**
+     * Führe Schritt in Eulertour Animation aus
+     * State abhängig vom aktuellen Wer der tourAnimationIndex Variablen
+     * @method
+     * @param  {jQuery.Event} event
+     */
+    this.animateTourStep = function(event) {
+
+        var currentEdge = Math.floor(tourAnimationIndex/30);
+        var previousEdge = Math.floor((tourAnimationIndex - 1)/30);
+        var currentArrowPosition = (tourAnimationIndex % 30) / 29;
+
+        if(tourAnimationIndex >= (tour.length*30)) {
+            this.animateTourStop(event);
+            return;
+        }
+
+        if(tourAnimationIndex > 0 && tour[previousEdge].type === "edge") {
+            graph.edges[tour[previousEdge].id].setLayout("progressArrow", false);
+        }
+        this.needRedraw = true;
+
+        if(tour[currentEdge].type === "vertex") {
+            tourAnimationIndex = tourAnimationIndex + 29;
+        }
+
+        if(tour[currentEdge].type === "edge") {
+            graph.edges[tour[currentEdge].id].setLayout("progressArrow", true);
+            graph.edges[tour[currentEdge].id].setLayout("lineColor", tourColors[color[tour[currentEdge].id]]);
+            graph.edges[tour[currentEdge].id].setLayout("progressArrowPosition", currentArrowPosition);
+        }
+        this.needRedraw = true;
+        tourAnimationIndex++;
+    };
+/*    this.animateTourStep = function (event) {
         if (tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "vertex") {
             graph.nodes[tour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
         }
@@ -906,8 +942,12 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
         this.needRedraw = true;
         tourAnimationIndex++;
-    };
-
+    };*/
+    /**
+     * Starte Eulertour Animation
+     * @method
+     * @param  {jQuery.Event} event
+     */
     this.animateTour = function (event) {
         $("#animateTour").button("option", "disabled", true);
         $("#animateTourStop").button("option", "disabled", false);
@@ -915,10 +955,28 @@ function algorithm(p_graph, p_canvas, p_tab) {
         var self = event.data.org;
         animationId = window.setInterval(function () {
             self.animateTourStep(event);
-        }, 250);
+        }, 1500.0/30);
     };
 
-    this.animateTourStop = function (event) {
+    /**
+     * Stoppe Eulertour Animation
+     * @method
+     * @param  {jQuery.Event} event
+     */
+    this.animateTourStop = function(event) {
+        var previousEdge = Math.floor((tourAnimationIndex - 1)/30);
+        if(tourAnimationIndex > 0 && tour[previousEdge].type === "edge") {
+            graph.edges[tour[previousEdge].id].setLayout("progressArrow", false);
+        }
+        event.data.org.needRedraw = true;
+        tourAnimationIndex = 0;
+        window.clearInterval(animationId);
+        animationId = null;
+        $("#animateTour").button("option", "disabled", false);
+        $("#animateTourStop").button("option", "disabled", true);
+    };
+
+/*    this.animateTourStop = function (event) {
         if (tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "vertex") {
             graph.nodes[tour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
         }
@@ -931,8 +989,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         animationId = null;
         $("#animateTour").button("option", "disabled", false);
         $("#animateTourStop").button("option", "disabled", true);
-        return;
-    };
+    };*/
 
     /**
      * Zeigt Texte und Buttons zum Ende des Algorithmus
