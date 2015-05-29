@@ -1,19 +1,22 @@
 % !TeX spellcheck = de_DE
 \chapter{Einleitung} % Mark
-Einleitung
-Motivation
-Referenz auf führere IDPs (Quellen!)
-didaktisches Konzept, kurz
-Aufbau der Dokumentation, inkl. Benennung wer hat was gemacht (Benotung)
+Graphen sind elementarer Bestandteil zur Lösung vieler alltäglicher Probleme. Navigationsgeräte benutzen sie zur Berechnung der Entfernung zwischen zwei Orten und Logistikunternehmen benötigen sie zur Bestimmung optimaler Auslieferungsrouten. Viele komplexe Fragestellungen können mittels Mengen von Knoten und Kanten modelliert und so als allgemeine Probleme beschrieben werden. Durch diese Abstraktion lassen sich Probleme deutlich einfacher visualisieren und erläutern. Dies gilt auch für die zur Lösung benötigten teils komplexen und hochoptimierten Algorithmen. Mit Graphen ist es möglich, jeden Teilschritt eines Algorithmus gesondert darzustellen und im Detail zu beschreiben, so dass die Funktionsweise von Algorithmen einfacher nachzuvollziehen ist.
 
-Mark $\diamondsuit$
-Aleksejs $\heartsuit$
-Ruslan $\spadesuit$
+Dies ist auch Ziel dieses interdisziplinären Projekts: Wir behandeln mehrere komplexe Probleme sowie die dafür benötigten Lösungsalgorithmen und stellen diese in Form von Webanwendungen anschaulich dar.
 
+Zu den betrachteten Problemstellungen gehört das \textit{All-Pairs Shortest Path Problem}, welches die Bestimmung der kürzesten Wege aller Knotenpaare in einem Graph verlangt. Der zu Lösung benötigte Algorithmus wurde von den namensgebenden Mathematikern Robert Floyd und Stephen Warshall entwickelt.
 
-Ende \hfill$\diamondsuit$
+Der Algorithmus von Hierholzer löst das \textit{Eulertourproblem}, welches das Finden einer Kantenfolge über alle Kanten des Graphs verlangt, ohne dass eine Kante mehrfach betrachtet wird.
 
-% Keine Beschreibung der Algorithmen an sich!
+Außerdem betrachten wir mehrere \textit{Matchingprobleme}. So findet der Algorithmus von Hopcroft und Karp kardinalitätsmaximale Matchings und mittels der Ungarischen Methode lassen sich perfekte Matchings optimalen Gewichts bestimmen. 
+
+Abschließend betrachten wir das \textit{Chinese Postman Problem}, welches zur Lösung eine Kombination der zuvor genannten Algorithmen benötigt. Es beschreibt das Problem eines Briefträgers, der alle Briefe auf einer möglichst kurzen Route austragen möchte.
+
+Die zu implementierenden Anwendungen richten sich an Schüler und Studenten, die diese unterrichts- bzw. vorlesungsbegleitend verwenden können. Wir führen damit ein didaktisches Konzept aus früheren Projekten fort. Die Probleme und die Lösungsalgorithmen werden beispielhaft und möglichst anschaulich erklärt. Im Folgenden können die Nutzer die Algorithmen ausprobieren und den Ablauf dynamisch regeln. Zum Abschluss der Übung werden besondere Aspekte der Probleme durch Forschungsaufgaben vertieft.
+
+Grundlage unserer Implementierung ist ein Framework, welches im Zuge mehrerer Projekte entwickelt wurde. Es handelt sich um ein rein clientseitiges Web Framework zur Darstellung in modernen Webbrowsern. Es basierend auf HTML5 und modernen JavaScript Bibliotheken, sowie Cascading Stylesheets (CSS). Neben dem Framework selbst, konnten wir für unsere Implementierung auch auf den Programmcode verschiedener bereits implementierter Algorithmen zurückgreifen.
+
+In der vorliegenden Dokumentation beschreiben wir zunächst allgemein den Aufbau der Webanwendungen und stellen dann die Merkmale jedes implementierten Algorithmus vor. Der zweite Teil dient als technische Dokumentation der von uns implementierten Neuerungen für zukünftige Projekte. Die Disposition der Abschnitte erfolgte parallel zur Implementierung (Mark $\diamondsuit$, Aleksejs $\heartsuit$, Ruslan $\spadesuit$). \hfill$\diamondsuit$
 
 \chapter{Aufbau der Webanwendungen} % Aleksejs
 Jede Applikation ist in mehreren Teile aufgeteilt. Die Struktur von jeder Applikation ist gleich. Alle Anwendungen bestehen aus mehreren Tabs, von denen jeder eine bestimmte Fuktion hat (vgl. Abbildung~\ref{fig:tabs}).
