@@ -274,8 +274,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             "layout": node.getLayout()
         };
         //Knoten hervorheben
-        node.setLayout("borderColor", const_Colors.NodeBorderHighlight);
-        node.setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+        //node.setLayout("borderColor", const_Colors.NodeBorderHighlight);
+        node.setLayout("fillStyle", const_Colors.NodeBorderHighlight);
         //stelle die Frage
         $("#tf1_question").html(LNG.K('aufgabe1_question1'));
         $("#tf1_question_form").html('<input type="radio" id="tf1_input_frage1_0" name="frage1" value="ja"/><label id="tf1_label_frage1_0" for="tf1_input_frage1_0"> ja </label><br>' +
@@ -304,7 +304,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             "layout": node.getLayout()
         };
         //Knoten hervorheben
-        node.setLayout("borderColor", const_Colors.NodeBorderHighlight);
+        //node.setLayout("borderColor", const_Colors.NodeBorderHighlight);
+        node.setLayout("fillStyle", const_Colors.NodeBorderHighlight);
         //stelle die Frage
         $("#tf1_question").html(LNG.K('aufgabe1_question2'));
         $("#tf1_question_form").html('<input type="text" id="tf1_input_frage2" name="frage2" value="" /><br>');

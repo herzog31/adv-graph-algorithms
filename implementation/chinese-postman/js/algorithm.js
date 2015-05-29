@@ -715,24 +715,26 @@ function algorithm(p_graph, p_canvas, p_tab) {
      *
      * */
     this.addPath = function () {
-        redoPath(next-1); //falls die animation nicht beendet wurde
+        if(next > 0){
+            redoPath(next-1); //falls die animation nicht beendet wurde
+            graph.nodes[matching[next-1].s].setLayout('fillStyle', const_Colors.NodeFilling);
+            graph.nodes[matching[next-1].d].setLayout('fillStyle', const_Colors.NodeFilling);
+        }
         var step = 0;
         var current = next;
-        var cost = matching[current].edge.weight;
         next++;
+        var cost = matching[current].edge.weight;
+        var s = matching[current].s;
+        var d = matching[current].d;
+        graph.nodes[s].setLayout('fillStyle', const_Colors.NodeBorderHighlight);
+        graph.nodes[d].setLayout('fillStyle', const_Colors.NodeBorderHighlight);
         matching[current].new_edges = [];
         animationId = setInterval(function () {//animate adding of new edges/paths
-            var s = matching[current].s;
-            var d = matching[current].d;
             var path = matching[current].path;
             if (step == 0) {
-                graph.nodes[s].setLayout('borderColor', const_Colors.NodeBorderHighlight);
-                graph.nodes[d].setLayout('borderColor', const_Colors.NodeBorderHighlight);
                 matching[current].edge.setLayout('lineColor','red');
             }
             else if (step == path.length + 1) {
-                graph.nodes[s].setLayout('borderColor', const_Colors.NodeBorder);
-                graph.nodes[d].setLayout('borderColor', const_Colors.NodeBorder);
                 graph.nodes[s].setLabel(graph.nodes[s].getLabel() + 1);
                 graph.nodes[d].setLabel(graph.nodes[d].getLabel() - 1);
                 graph.removeEdge(matching[current].edge.getEdgeID());

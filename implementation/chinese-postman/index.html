@@ -421,7 +421,7 @@
             <div id="tw_Accordion">
                 <h3>Wie sieht der (Pseudo-)Code des Algorithmus aus?</h3>
                 <div><pre><code>
-                    Eingabe: Gewichteter, ungerichteter Graph G=(V,E)
+                    Eingabe: Gewichteter, gerichteter Graph G=(V,E)
                     Ausgabe: Die Länge eines kürzesten Rundgangs, der alle Kanten enthält,
                              falls das Problem lösbar ist. Sonst unmöglich.
                     </code></pre>
@@ -460,16 +460,23 @@
                     Sei n die Anzahl der Knoten und m die Anzahl der Kanten im Graphen. Der Hierholzer-Algorithmus benötigt maximal m Schritte, der Floyd-Warshall-Algorithmus maximal \(n^3\) Schritte, um das Problem zu lösen.
                     Während des Algorithmen wird ein Matchinggraph für die Ungarische Methode erstellt. Dieser Graph kann bis zu \(2m\) Knoten enthalten.
                     Die Ungarische Methode benötigt in diesem Fall bis zu \(m^3\) Schritte. Das Finden des optimalen Matchings ist somit das schwierigste Teilproblem.
+                    Demzufolge ist die <b>Gesamtlaufzeit des Algorithmen</b> in der Größenordnung \(m^3\).
                     </p>
                 </div>
                 <h3>Wie beweist man, dass der Algorithmus stets ein korrektes Ergebnis berechnet?</h3>
                 <div>
                     <p>
                         Der optimale Rundgang lässt sich zu einem Eulerkreis umformen, indem man für alle mehrfach benutzten Kanten entsprechend viele Kantenkopien in den Graphen einfügt.
-                        Somit lässt sich das Problem auf die Erweiterung des Graphen zu einem eulerschen Graph (Graph, der einen Eulerkreis besitzt) reduzieren.
-                        Die günstigste Erweiterung ist der gesuchte günstigste Rundgang. Dieses Teilproblem wird im Matching-Schritt des Algorithmen gelöst.
-                        Anschließend wird der Eulerkreis gefunden.
+                        Somit lässt sich das Problem auf die Erweiterung des Graphen zu einem eulerschen Graphen (Graph, der einen Eulerkreis besitzt) reduzieren.
                     </p>
+                    <p>
+                        Die günstigste Erweiterung ist der gesuchte günstigste Rundgang. Dieses Teilproblem wird im Matching-Schritt des Algorithmen gelöst.
+                        Anschließend wird der Eulerkreis gefunden. Demzufolge löst der Algorithmus das Briefträgerproblem korrekt.
+                    </p>
+                </div>
+                <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>
+                <div><p>Weitere Graphalgorithmen werden auf der <a href="http://www-m9.ma.tum.de/Allgemeines/Routenplanung">Webseite des Lehrstuhls M9</a> der TU München erklärt.</p>
+                    <p>Ein <a href="http://www.ma.tum.de/Studium/Studieninteressierte">Mathematikstudium an der TU München</a> beantwortet alle Fragen zur Graphentheorie (falls eine Lösung bekannt ist).</p>
                 </div>
             </div>
         </div>
