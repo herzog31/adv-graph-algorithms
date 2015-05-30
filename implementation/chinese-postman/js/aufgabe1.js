@@ -120,6 +120,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
                 this.algoNext();
                 break;
         }
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub,"ta_div_statusErklaerung"]);
         this.needRedraw = true;
     };
     /**
@@ -336,8 +337,11 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             "layout2": graph.nodes[m.d].getLayout()
         };
         //Knoten und Kante hervorheben
-        graph.nodes[m.s].setLayout("borderColor", const_Colors.NodeBorderHighlight);
-        graph.nodes[m.d].setLayout("borderColor", const_Colors.NodeBorderHighlight);
+        for(var n in graph.nodes){
+            graph.nodes[n].setLayout("fillStyle", const_Colors.NodeFilling);
+        }
+        graph.nodes[m.s].setLayout("fillStyle", const_Colors.NodeBorderHighlight);
+        graph.nodes[m.d].setLayout("fillStyle", const_Colors.NodeBorderHighlight);
         m.edge.setLayout("lineColor", const_Colors.EdgeHighlight1);
         //stelle die Frage
         $("#tf1_question").html(LNG.K('aufgabe1_question3'));

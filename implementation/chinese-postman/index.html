@@ -73,9 +73,9 @@
                     Dabei muss er jede Straße mindestens einmal passieren und wieder zum Ursprung zurückkehren.
                 </p>
                 <p>
-                    Das Problem wird mittels eines Graphen modelliert.
+                    Das Problem wird mittels eines gerichteten Graphen modelliert.
                     Knoten stellen Kreuzungen dar und Kanten sind die Straßen. Die Länge der Straße entspricht dem Gewicht der zugehörigen Kante.
-                    Da es Einbahnstraßen geben kann,
+                    Damit man Einbahnstraßen darstellen kann, werden gerichtete Kanten verwendet.
                 </p>
                 <h2>Hier wird der Chinese-Postman-Algorithmus für gerichtete Graphen vorgestellt, der den günstigsten Kantenzug findet, sodass jede Kante mindestens einmal benutzt wird.</h2>
                 <div id ="te_div_Entscheidung">
@@ -219,7 +219,7 @@
                     Ein typisches Beispiel für dieses Problems ist ein Postbote, der alle Straßen einer Stadt ablaufen muss und wieder zum Startpunkt zurückkehrt. Dabei will er eine möglichst kurze Distanz zurücklegen.
                     Das Problem lässt sich mit einem Graphen modellieren.
                     Ein Kantenzug ist eine Folge von Kanten im Graphen, sodass jede nächste Kante als Startknoten den Endknoten der vorherigen Kante besitzt.
-                    Ein Kantenzug ist geschlossen, falls er wieder zum Startknoten der ersten Knotens zurückkehrt.
+                    Ein Kantenzug ist geschlossen, falls er wieder zum Startknoten des ersten Knotens zurückkehrt.
                 </p>
                 <p>
                     Man nennt einen geschlossenen Kantenzug Eulerkreis (Eulertour), falls er der alle Kanten eines Graphen genau einmal enthält.
@@ -230,6 +230,7 @@
                 <p>
                     Da Knoten ohne Eingangs- und Ausgangskanten keinen Einfluss auf die Lösung des Problems haben, können wir annehmen, dass solche isolierten Knoten nicht existieren.
                     Das Problem ist genau dann lösbar, wenn der Graph stark zusammenhängend ist (jeder Knoten von jedem Knoten aus erreichbar) und keine negativen Kreise (geschlossener Kantenzug im Graphen, sodass die Summe der Gewichte der Kanten negativ ist) existieren.
+                    Wenn der Graph nicht stark zusammenhängend ist, gibt es keinen Rundgang und wenn ein negativer Kreis existiert, werden die Kosten unendlich klein.
                     Das Problem lässt sich auf das Bestimmen einer <b>Eulertour</b> im Graphen zurückführen. Falls es eine Eulertour im Graphen gibt,
                     ist diese Tour das optimale Ergebnis, da jede Kante genau einmal besucht wird. Im anderen Fall müssen einige Kanten mehrmals besucht werden. Diese Situation lässt sich modellieren, indem
                     wir <b>zusätzliche Kanten</b> in den Graphen einfügen, die mehrfach benutzten Kanten repräsentieren (mit dem gleichen Kantengewicht wie die originale Kante). Dann besitzt der Rundgang die gleichen Kosten, wie
@@ -249,28 +250,30 @@
                 <p>
                     Von den Knoten mit zu wenigen Ausgangskanten müssen Wege zu den Knoten mit zu wenigen Eingangskanten hinzugefügt werden. Da die Kosten minimal sein sollten, kommen nur die <b>kürzesten Wege</b> in Frage.
                     <!--Für den Matching-Schritt des Algorithmen benötigt man die Abstände und die kürzesten Wege zwischen je zwei Knoten des Graphen.-->
-                    Um die kürzesten Wege bestimmen, wird der Algorithmus von <a href="../floyd-warshall/index.html" target="_blank">Floyd-Warshall</a> benutzt. Die Kosten der kürzesten Wege werden im Matching-Schritt benutzt um die optimale Menge von Wegen zu finden.
+                    Um die kürzesten Wege zu bestimmen, wird der Algorithmus von <a href="../floyd-warshall/index.html" target="_blank">Floyd-Warshall</a> benutzt.
+                    Der Floyd-Warshall-Algorithmus eignet sich sehr gut an dieser Stelle, da er die kürzesten Wege zwischen allen Knotepaaren berechnet.
+                    Die Kosten der kürzesten Wege werden im Matching-Schritt benutzt um die optimale Menge von Wegen zu finden.
                     <!--Weitere Erklärungen zu diesem Algorithmen können <a href="../floyd-warshall/index.html" target="_blank">hier</a> gefunden werden.-->
                 </p>
                 <h1>Matching</h1>
                 <p>
                     Durch Einfügen zusätzlicher Pfade wollen wir erreichen, dass bei allen Knoten im Graphen der Eingangsgrad mit dem Ausgangsgrad übereinstimmt. Dann existiert eine Eulertour im Graphen.
-                    Wir bezeichnen mit \(\delta(v)\) die <b>Differenz zwischen Ausgangs- und Eingangsgrad</b> eines Knotens v. Alle Knoten v mit \(\delta(v) \neq 0 \) werden als unbalanciert bezeichnet.
+                    Wir bezeichnen mit \(\delta_v\) die <b>Differenz zwischen Ausgangs- und Eingangsgrad</b> eines Knotens v. Alle Knoten v mit \(\delta_v \neq 0 \) werden als unbalanciert bezeichnet.
                     Um zu bestimmen welche Pfade wir einfügen, muss eine Zuordnung von Knoten
-                    mit negativen \(\delta(v)\) zu den Knoten mit positiven \(\delta(v)\) erfolgen. Dabei bestimmt \(\delta(v)\) die Anzahl der neuen Pfade, die in dem Knoten v anfangen bzw. enden müssen.
+                    mit negativen \(\delta_v\) zu den Knoten mit positiven \(\delta_v\) erfolgen. Dabei bestimmt \(\delta_v\) die Anzahl der neuen Pfade, die in dem Knoten v anfangen bzw. enden müssen.
                     Ein Pfad vergrößert die Differenz zwischen Ausgangs- und Eingangsgrad des Startknotens um eins und verringert die des Zielknotens um eins.
                 </p>
                 <p>
                     Das Gewicht der zusätzlichen Pfade sollte minimal sein. Um dieses Ziel zu erreichen erstellt man einen neuen <b>bipartiten Graphen</b>, der alle unbalancierten Knoten enthält.
-                    Die unbalancierten Knoten werden in zwei Partitionen unterteilt (negatives und positives \(\delta(v)\)).
-                    \(\delta(v)\) bestimmt wie viele Exemplare des Knotens v im bipartiten Graph vorkommen. Zum Beispiel existieren von einem Knoten v mit \(\delta(v)=3\) genau 3 Kopien im Graphen.
+                    Die unbalancierten Knoten werden in zwei Partitionen unterteilt (negatives und positives \(\delta_v\)).
+                    \(\delta_v\) bestimmt wie viele Exemplare des Knotens v im bipartiten Graph vorkommen. Zum Beispiel existieren von einem Knoten v mit \(\delta_v=3\) genau 3 Kopien im Graphen.
                     Bei der Visualisierung des Algorithmen wurde darauf verzichtet mehrere Exemplare eines Knoten darzustellen, damit die Übersicht nicht verloren geht.
                     Stattdessen wird für einen unbalancierten Knoten genau ein Knoten im Matching-Graphen dargestellt.
-                    Die Knoten in der Visualisierung des Matching-Graphs liegen dann möglicherweise auf mehr als einer Matching-Kante (dies wird durch die \(\delta(v)\) bestimmt).
+                    Die Knoten in der Visualisierung des Matching-Graphs liegen dann möglicherweise auf mehr als einer Matching-Kante (dies wird durch die \(\delta_v\) bestimmt).
                 </p>
                 <p>
                     Das Gewicht einer Kante stellt die Länge des kürzesten Pfades von dem Knoten mit positiver Differenz zwischen dem Ausgangs- und dem Eingangsgrad zu dem Knoten mit negativer Differenz dar.
-                    Die Summe der positiver \(\delta(v)\) ist gleich der negierten Summe der negativer \(\delta(v)\).
+                    Die Summe der Eingangsgrade und der Ausgangsgrade ist in einem Graphen ausgeglichen. Dann ist die Summe der positiven \(\delta_v\) und der negativen \(\delta_v\) ebenfalls ausgeglichen.
                     Damit erhalten wir einen vollständigen bipartiten Graph. Wir wenden einen Algorithmus zur Lösung von gewichteten Matchings auf diesen Graphen an, wie zum Beispiel die
                     <a href="../hungarian/index.html" target="_blank">Ungarische Methode</a>. Damit erhalten wir die optimale Zuordnung und können die neuen Pfade einfügen.
                     Die Kanten der Pfade repräsentieren die Kanten des optimalen Rundgangs, die mehrfach benutzt werden.

@@ -303,9 +303,8 @@ function algorithm(p_graph, p_canvas, p_tab) {
                 //console.log("Fehlerhafte StatusID.");
                 break;
         }
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub,"ta_div_statusErklaerung"]);
         this.needRedraw = true;
-        //console.log(tour);
-        //console.log(new_edges);
     };
     /*
      *
@@ -670,8 +669,9 @@ function algorithm(p_graph, p_canvas, p_tab) {
         statusID = ADD_PATHS;
         // Erklärung im Statusfenster
         $("#"+st+"_div_statusErklaerung").html("<h3>4. " + LNG.K('algorithm_new_paths') + "</h3>"
-        + "<p>" + LNG.K('algorithm_new_paths_1') + "</p>"
-        + "<p>" + LNG.K('algorithm_new_paths_2') + "</p>");
+            + "<p>" + LNG.K('algorithm_new_paths_1') + "</p>"
+            + "<p>" + LNG.K('algorithm_new_paths_2') + "</p>"
+            + "<p>" + LNG.K('algorithm_new_paths_3') + "</p>");
         $(".marked").removeClass("marked");
         $("#ta_p_4").addClass("marked");
     };
@@ -996,10 +996,13 @@ function algorithm(p_graph, p_canvas, p_tab) {
      * @method
      */
     this.endAlgorithm = function () {
-        statusID = STOP;
+        //statusID = STOP;
         $(".marked").removeClass("marked");
         $("#ta_p_end").addClass("marked");
         $( "#ta_div_subtours" ).remove();
+        for(var e in graph.edges){//faerbe die Kanten
+            graph.edges[e].setLayout("lineColor", tourColors[color[e]]);
+        }
         $("#"+st+"_div_statusErklaerung").append("<p></p><h3>" + LNG.K('algorithm_msg_finish') + "</h3>");
         $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoIdee>" + LNG.K('algorithm_btn_more') + "</button>");
         $("#"+st+"_div_statusErklaerung").append("<h3>" + LNG.K('algorithm_msg_test') + "</h3>");

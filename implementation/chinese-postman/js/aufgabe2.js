@@ -286,21 +286,87 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         + "<p>"+LNG.K('aufgabe2_cost') + cost + "</p>"
         + "<p>"+LNG.K('aufgabe2_optimal_cost')+ cpAlgo.getCost() + "</p>");
 
-        $("#tf2_div_statusErklaerung").append(' <p><button id="tf2_animateTour">' + LNG.K('algorithm_status51b_desc2') +
+        $("#tf2_div_statusErklaerung").append(' <p><button id="tf2_animateTour">' + LNG.K('aufgabe2_btn_animation') +
         '</button><button id="tf2_animateTourStop">' + LNG.K('algorithm_status51b_desc3') + '</button></p>\
-            <p>' + LNG.K('algorithm_status51b_desc4') + '</p>');
+            <p>' + LNG.K('aufgabe2_animation') + '</p>');
         $("#tf2_animateTour").button({icons: {primary: "ui-icon-play"}}).click({org: this}, this.animateTour);
         $("#tf2_animateTourStop").button({
             icons: {primary: "ui-icon-stop"},
             disabled: true
         }).click({org: this}, this.animateTourStop);
-        $("#tf2_div_statusErklaerung").append('<button id="tf2_button_gotoWeiteres">'+LNG.K('aufgabe2_btn_more')+'</button>');//button
+        $("#tf2_div_statusErklaerung").append(' <p><button id="tf2_button_gotoExecution">' + LNG.K('aufgabe2_btn_execution') +
+            '</button><p>' + LNG.K('aufgabe2_execution') + '</p>' +
+            '<button id="tf2_button_gotoWeiteres">'+LNG.K('aufgabe2_btn_more')+'</button>');
         $("#tf2_button_gotoWeiteres").button().click(function() {$("#tabs").tabs("option","active", 6);});
+        $("#tf2_button_gotoExecution").button().click(function() {$("#tabs").tabs("option","active", 2);});
         warnBeforeLeave = false;
         this.needRedraw;
     };
 
-    this.animateTourStep = function (event) {
+    /**
+     * Führe Schritt in Eulertour Animation aus
+     * State abhängig vom aktuellen Wer der tourAnimationIndex Variablen
+     * @method
+     * @param  {jQuery.Event} event
+     */
+    this.animateTourStep = function(event) {
+
+        var currentEdge = Math.floor(tourAnimationIndex/30);
+        var previousEdge = Math.floor((tourAnimationIndex - 1)/30);
+        var currentArrowPosition = (tourAnimationIndex % 30) / 29;
+
+        if(tourAnimationIndex >= (tour.length*30)) {
+            this.animateTourStop(event);
+            return;
+        }
+
+        if(tourAnimationIndex > 0 && tour[previousEdge].type === "edge") {
+            graph.edges[tour[previousEdge].id].setLayout("progressArrow", false);
+        }
+        this.needRedraw = true;
+
+        if(tour[currentEdge].type === "vertex") {
+            tourAnimationIndex = tourAnimationIndex + 29;
+        }
+
+        if(tour[currentEdge].type === "edge") {
+            graph.edges[tour[currentEdge].id].setLayout("progressArrow", true);
+            //graph.edges[tour[currentEdge].id].setLayout("lineColor", tourColors[color[tour[currentEdge].id]]);
+            graph.edges[tour[currentEdge].id].setLayout("progressArrowPosition", currentArrowPosition);
+        }
+        this.needRedraw = true;
+        tourAnimationIndex++;
+    };
+
+    this.animateTour = function (event) {
+        $("#tf2_animateTour").button("option", "disabled", true);
+        $("#tf2_animateTourStop").button("option", "disabled", false);
+        tourAnimationIndex = 0;
+        var self = event.data.org;
+        animationId = window.setInterval(function () {
+            self.animateTourStep(event);
+        }, 1500.0/30);
+    };
+
+    /**
+     * Stoppe Eulertour Animation
+     * @method
+     * @param  {jQuery.Event} event
+     */
+    this.animateTourStop = function(event) {
+        var previousEdge = Math.floor((tourAnimationIndex - 1)/30);
+        if(tourAnimationIndex > 0 && tour[previousEdge].type === "edge") {
+            graph.edges[tour[previousEdge].id].setLayout("progressArrow", false);
+        }
+        event.data.org.needRedraw = true;
+        tourAnimationIndex = 0;
+        window.clearInterval(animationId);
+        animationId = null;
+        $("#tf2_animateTour").button("option", "disabled", false);
+        $("#tf2_animateTourStop").button("option", "disabled", true);
+    };
+
+    /*this.animateTourStep = function (event) {
         if (tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "vertex") {
             graph.nodes[tour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
         }
@@ -347,24 +413,24 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_animateTour").button("option", "disabled", false);
         $("#tf2_animateTourStop").button("option", "disabled", true);
         return;
-    };
+    };*/
 
-    var getWarning = function(string){
+/*    var getWarning = function(string){
         return  '<div id ="tg_div_warning" class="ui-widget"> \
         <div class="ui-state-highlight ui-corner-all" style="padding: .7em;"> \
         <div class="ui-icon ui-icon-alert errorIcon"></div> \
         ' + string +'\
         </div> \
         </div>';
-    };
+    };*/
 
-    this.showResult = function() {
+/*    this.showResult = function() {
         $("#tf2_div_statusErklaerung").html("<h3> "+LNG.K('textdb_msg_end_algo')+"</h3>" + "<p>"+LNG.K('textdb_msg_end_algo_1')+"</p>");
         $("#tf2_div_statusErklaerung").append('<button id="tf2_button_gotoWeiteres">'+LNG.K('aufgabe2_btn_more')+'</button>');
         $("#tf2_button_gotoWeiteres").button().click(function() {$("#tabs").tabs("option","active", 6);});
         this.needRedraw = true;
         warnBeforeLeave = false;
-    };
+    };*/
 
     this.addReplayStep = function () {
         var nodeProperties = {};

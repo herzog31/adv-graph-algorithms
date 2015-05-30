@@ -23,11 +23,12 @@ function CanvasDrawMethods() {
  * @param {String} label            Text auf dem Pfeil
  * @param {String} additionalLabel  Zusatztext zu dem Pfeil
  */
-CanvasDrawMethods.drawArrowhead = function (ctx, layout, source, target, pos) {
+CanvasDrawMethods.drawArrowhead = function (ctx, layout, source, target, pos, progress) {
     // Pfeilkopf zeichnen
     var arrowHeadColor = layout.lineColor;
-    if (layout.isHighlighted) {
-        arrowHeadColor = const_Colors.EdgeHighlight3;
+    if(progress){
+        arrowHeadColor = const_Colors.EdgeHighlight2;
+        ctx.lineWidth = 4.0;
     }
     ctx.beginPath();
     ctx.strokeStyle = arrowHeadColor;
@@ -48,12 +49,8 @@ CanvasDrawMethods.drawArrowhead = function (ctx, layout, source, target, pos) {
     ctx.stroke();
 };
 CanvasDrawMethods.drawArrow = function (ctx, layout, source, target, control, label, additionalLabel) {
-/*    if (layout.dashed) {
-        ctx.setLineDash([10]);
-    }*/
     //Zeichne die Kurve bzw. Linie
     CanvasDrawMethods.drawCurve(ctx, layout, source, target, control, label, additionalLabel);
-    //ctx.setLineDash([0]);
     // Pfeilkopf zeichnen
     var center;
     if (control == null) center = {x: (target.x + source.x) / 2, y: (target.y + source.y) / 2};
@@ -64,7 +61,7 @@ CanvasDrawMethods.drawArrow = function (ctx, layout, source, target, control, la
         var p = layout.progressArrowPosition;
         if (control == null) position = {x: (source.x + (target.x - source.x) * p), y: (source.y + (target.y - source.y) * p)};
         else position = this.getQuadraticCurvePoint(source.x, source.y, control.x, control.y, target.x, target.y, p);
-        CanvasDrawMethods.drawArrowhead(ctx, layout, source, target, position);
+        CanvasDrawMethods.drawArrowhead(ctx, layout, source, target, position, true);
     }
 };
 
@@ -213,7 +210,7 @@ CanvasDrawMethods.drawAdditionalTextOnLine = function (ctx, layout, source, targ
     ctx.restore();							// Ursprünglichen Zustand wiederherstellen.
 };
 //Aus der Ungarischen Methode entnommen
-CanvasDrawMethods.drawTextOnLineShifted = function(ctx,layout,source,target,label,even,nodeCount,sourceNode) {
+/*CanvasDrawMethods.drawTextOnLineShifted = function(ctx,layout,source,target,label,even,nodeCount,sourceNode) {
     ctx.save();								// Aktuellen Zustand speichern (vor den Transformationen)
     ctx.font = layout.fontSize.toString() +"px " +layout.font;
     if(layout.lineColor == const_Colors.grey){
@@ -266,7 +263,7 @@ CanvasDrawMethods.drawTextOnLineShifted = function(ctx,layout,source,target,labe
         ctx.fillText(label, 3, 0);
     }
     ctx.restore();							// Ursprünglichen Zustand wiederherstellen.
-};
+};*/
 /**
  * Zeichnet eine gefüllten Kreis an gegebener Position.
  * In den Kreis kann ein Text geschrieben werden.
