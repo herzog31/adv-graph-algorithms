@@ -1,6 +1,6 @@
 % !TeX spellcheck = de_DE
 \chapter{Einleitung} % Mark
-Graphen sind elementare Bestandteile für Lösungen vieler alltäglicher Probleme. Navigationsgeräte benutzen sie zur Berechnung der Entfernung zwischen zwei Orten und Logistikunternehmen benötigen sie zur Bestimmung optimaler Auslieferungsrouten. Viele komplexe Fragestellungen können mittels Mengen von Knoten und Kanten modelliert und so als allgemeine Probleme beschrieben werden. Durch diese Abstraktion lassen sich Probleme deutlich einfacher visualisieren und erläutern. Dies gilt auch für die zur Lösung benötigten teils komplexen und hochoptimierten Algorithmen. Mit Graphen ist es möglich, jeden Teilschritt eines Algorithmus gesondert darzustellen und im Detail zu beschreiben, so dass die Funktionsweise von Algorithmen einfacher nachzuvollziehen ist.
+Graphen sind elementare Bestandteile Algorithmen zur Bestimmung von Lösungen vieler alltäglicher Probleme. Navigationsgeräte benutzen sie zur Berechnung der Entfernung zwischen zwei Orten und Logistikunternehmen benötigen sie zur Bestimmung optimaler Auslieferungsrouten. Viele komplexe Fragestellungen können mittels Mengen von Knoten und Kanten modelliert und so als allgemeine Probleme beschrieben werden. Durch diese Abstraktion lassen sich Probleme deutlich einfacher visualisieren und erläutern. Dies gilt auch für die zur Lösung benötigten teils komplexen und hochoptimierten Algorithmen. Mit Graphen ist es möglich, jeden Teilschritt eines Algorithmus gesondert darzustellen und im Detail zu beschreiben, so dass die Funktionsweise von Algorithmen einfacher nachzuvollziehen ist.
 
 Dies ist auch Ziel dieses interdisziplinären Projekts: Wir behandeln mehrere komplexe Probleme, sowie die dafür benötigten Lösungsalgorithmen und stellen diese in Form von Webanwendungen anschaulich dar.
 
@@ -12,11 +12,11 @@ Außerdem betrachten wir mehrere \textit{Matchingprobleme}. So findet der Algori
 
 Abschließend betrachten wir das \textit{Chinese Postman Problem}, welches zur Lösung eine Kombination der zuvor genannten Algorithmen benötigt. Es beschreibt das Problem eines Briefträgers, der alle Briefe auf einer möglichst kurzen Route austragen möchte.
 
-Die zu implementierenden Anwendungen richten sich an Schüler und Studenten, die diese unterrichts- bzw. vorlesungsbegleitend verwenden können. Wir führen damit ein didaktisches Konzept aus früheren Projekten fort. Die Probleme und die Lösungsalgorithmen werden beispielhaft und möglichst anschaulich erklärt. Im Folgenden können die Nutzer die Algorithmen ausprobieren und den Ablauf dynamisch regeln. Zum Abschluss der Übung werden besondere Aspekte der Probleme durch Forschungsaufgaben vertieft.
+Die zu implementierenden Anwendungen richten sich an Schüler und Studenten, die diese unterrichts- bzw. vorlesungsbegleitend verwenden können. Wir führen damit ein didaktisches Konzept aus früheren Projekten fort \parencite{Stotz2013, Velden2014}. Die Probleme und die Lösungsalgorithmen werden beispielhaft und möglichst anschaulich erklärt. Im Folgenden können die Nutzer die Algorithmen ausprobieren und den Ablauf dynamisch regeln. Zum Abschluss der Übung werden besondere Aspekte der Probleme durch Forschungsaufgaben vertieft.
 
-Grundlage unserer Implementierung ist ein Framework, welches im Zuge mehrerer Projekte entwickelt wurde. Es handelt sich um ein rein clientseitiges Web Framework zur Darstellung von Graphalgorithmen in modernen Webbrowsern. Es basierend auf HTML5 und modernen Java\-Script Bibliotheken, sowie Cascading Stylesheets (CSS). Neben dem Framework selbst, konnten wir für unsere Implementierung auch auf den Programmcode verschiedener bereits implementierter Algorithmen zurückgreifen.
+Grundlage unserer Implementierung ist ein Framework, welches im Zuge mehrerer Projekte entwickelt wurde. Es handelt sich um ein rein clientseitiges Web Framework zur Darstellung von Graphalgorithmen in modernen Webbrowsern. Es basiert auf HTML5 und modernen Java\-Script Bibliotheken, sowie Cascading Stylesheets (CSS). Neben dem Framework selbst konnten wir für unsere Implementierung auch auf den Programmcode verschiedener bereits implementierter Algorithmen zurückgreifen.
 
-In der vorliegenden Dokumentation beschreiben wir zunächst allgemein den Aufbau der Webanwendungen und stellen dann die Merkmale jedes implementierten Algorithmus vor. Der zweite Teil dient als technische Dokumentation der von uns implementierten Neuerungen für zukünftige Projekte. Die Disposition der Abschnitte erfolgte parallel zur Implementierung (Mark $\diamondsuit$, Aleksejs $\heartsuit$, Ruslan $\spadesuit$). \hfill$\diamondsuit$
+In der vorliegenden Dokumentation beschreiben wir zunächst allgemein den Aufbau der Webanwendungen und stellen dann die Merkmale jedes implementierten Algorithmus vor. Der zweite Teil dient als technische Dokumentation der von uns implementierten Neuerungen für zukünftige Projekte. Die Disposition der Abschnitte erfolgte parallel zur Implementierung (Mark J. Becker $\diamondsuit$, Aleksejs Voroncovs $\heartsuit$, Ruslan Zabrodin $\spadesuit$). \hfill$\diamondsuit$
 
 \chapter{Aufbau der Webanwendungen} % Aleksejs
 Jede Applikation ist in mehreren Teile aufgeteilt. Die Struktur von jeder Applikation ist gleich. Alle Anwendungen bestehen aus mehreren Tabs, von denen jeder eine bestimmte Fuktion hat (vgl. Abbildung~\ref{fig:tabs}).
@@ -61,12 +61,12 @@ Beim Algorithmus von Hierholzer war es uns wichtig, die resultierende Eulertour 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth]{figures/hierholzer_animation}
-	\caption[Hierholzer: Eulertour Animation]{Visualisierung der Eulertour mittels Animation}\label{fig:hierholzer-animation}
+	\caption[Hierholzer: Eulertour Animation]{Visualisierung der vom Hierholzer Algorithmus ermittelten Eulertour. Auf der rechten Seite wird die gesamte Eulertour zusammen mit den Subtouren farbig dargestellt. Im Graph links können einzelne Subtouren hervorgehoben (blau) oder die gesamte Tour mittels Animation abgelaufen (grüner Pfeil) werden.}\label{fig:hierholzer-animation}
 \end{figure}
 
 Die erste Forschungsaufgabe soll sicherstellen, dass der Nutzer die wichtigsten Abläufe des Algorithmus versteht. Sie behandelt daher im Wesentlichen den Ablauf des Algorithmus, das Konzept des Knotengrads und das Verbinden von Touren.
 
-In einer weiteren Forschungsaufgabe werden die Besonderheiten des Algorithmus bei Anwendung auf einen gerichteten Graphen betrachtet. Der Nutzer betrachtet die geänderten Voraussetzungen, die der Graph erfüllen muss und die veränderte Auswahl der Kanten zur Konstruktion von Subtouren. \hfill$\diamondsuit$
+In einer weiteren Forschungsaufgabe werden die Besonderheiten des Algorithmus bei Anwendung auf einen gerichteten Graphen betrachtet. Der Nutzer beantwortet Fragen zu geänderten Voraussetzungen, die der Graph erfüllen muss und zur veränderten Auswahl der Kanten zur Konstruktion von Subtouren. \hfill$\diamondsuit$
      
 \section{Algorithmus von Hopcroft und Karp} % Ruslan
 Der Algorithmus wurde in Phasen unterteilt. In jeder Phase des Algorithmen wird nach einer inklusions-maximalen Menge von kürzesten disjunkten Augmentationswegen gesucht. Die in einer Phase gefundenen Augmentationswege werden nacheinander hervorgehoben und das Matching augmentiert.
@@ -145,11 +145,12 @@ Die erste Forschungsaufgabe sollte das Wissen des Benutzers prüfen. Der Benutze
 Die zweite Forschungsaufgabe lässt dem Benutzer die Möglichkeit den Rundweg selbst zu bestimmen, der alle Kanten des Graphen enthält. Anschließend wird die Länge dieses Weges mit der optimalen Lösung verglichen. Der Benutzer kann dadurch feststellen, inwiefern seine Lösung von der optimalen Lösung abweicht. \hfill$\spadesuit$
 
 \chapter{Implementierung}
+Das folgende Kapitel dient als technische Dokumentation unserer Implementierung. Im ersten Teil erläutern wir die Schritte, die für die Installation der Anwendungen nötig sind. Im Weiteren stellen wir Neuheiten im Framework vor, die wir für die Implementierung der Algorithmen implementiert haben.
 
 \section{Installation} % Mark
 Zur Installation sind keine speziellen Anforderungen zu erfüllen. Die Webapplikationen wurden vollständig mittels HTML5, JavaScript und CSS implementiert, sodass keine zusätzliche serverseitige Software benötigt wird. Zum Aufrufen der Anwendungen wird ein moderner Webbrowser benötigt.
 
-Die Bereitstellung erfolgt über den Online Dienst GitHub, der das verteile Versionskontrollsystem Git benutzt. 
+Die Bereitstellung des Codes erfolgt über den Online Dienst GitHub, der das verteile Versionskontrollsystem Git benutzt. 
 Alle Anwendungen liegen in einem gemeinsamen Repository, welches unter \url{https://github.com/herzog31/adv-graph-algorithms} erreichbar ist. Zur Installation kann man entweder auf der Repository Seite die letzte freigegebene Version (Release) als Zip oder Tar Archiv herunterladen oder die aktuellste Version des Repositories mittels folgendem Befehl in das aktuelle Verzeichnis kopieren.
 
 \begin{figure}[h!]
@@ -164,13 +165,13 @@ Um die Anwendungen als Webanwendungen online bereitzustellen wird ein Webserver 
 Die lokale Ausführung ist ohne einen Webserver möglich. Verschiedene Webbrowser besitzen allerdings eine Sicherheitsrichtlinie, die das Öffnen von lokalen Dateien über JavaScript verbieten. Diese Sicherheitsrichtline kann jedoch durch spezielle Einstellungen umgangen werden. Für Google Chrome ist dies über den Start Parameter \texttt{-{}-allow-file-access-from-files} möglich. \hfill$\diamondsuit$
 
 \section{MathJAX} % Mark
-Unter den Tabs \enquote{Beschreibung des Algorithmus} werden die komplizierten Algorithmen, wie bspw. die Ungarische Methode, in möglichst einfachen Worten im Fließtext erklärt. Wir gehen davon aus, dass der Nutzer während der Bearbeitung der Forschungsaufgaben, verschiedene Sachverhalte in der Algorithmenbeschreibung nachschlagen muss. Das wiederholte Lesen von vollständigen Absätzen wollten wir allerdings vermeiden.
+Unter den Tabs \enquote{Beschreibung des Algorithmus} werden die komplizierten Algorithmen, wie beispielsweise die Ungarische Methode, in möglichst einfachen Worten im Fließtext erklärt. Wir gehen davon aus, dass der Nutzer während der Bearbeitung der Forschungsaufgaben verschiedene Sachverhalte in der Algorithmenbeschreibung nachschlagen muss. Das wiederholte Lesen von vollständigen Absätzen wollten wir allerdings vermeiden.
 
-Dazu haben wir zusätzlich zur textuellen Beschreibung, wichtige Punkte der Algorithmen auch als mathematische Formeln dargestellt. Der Nutzer erlangt so durch das erste Lesen der Beschreibung ein Grundverständnis der Algorithmen und kann sich während der Bearbeitung aufkommende Fragen durch die dargestellten Formeln schneller erschließen.
+Dazu haben wir zusätzlich zur textuellen Beschreibung wichtige Punkte der Algorithmen auch als mathematische Formeln dargestellt. Der Nutzer erlangt so durch das erste Lesen der Beschreibung ein Grundverständnis der Algorithmen und kann sich während der Bearbeitung aufkommende Fragen durch die dargestellten Formeln schneller erschließen.
 
-Zur Darstellung der Formeln in den Webapplikationen verwenden wir die JavaScript Bibliothek MathJAX\footnote{https://www.mathjax.org/}. Diese ist frei unter der Apache-Lizenz erhältlich und wird u.a. auch von Wikipedia zur Darstellung jeglicher mathematischer Ausdrücke genutzt. Mit der Bibliothek ist es möglich mit LaTeX beschriebene Ausdrücke als SVG oder PNG im Webbrowser zu rendern. 
+Zur Darstellung der Formeln in den Webapplikationen verwenden wir die JavaScript Bibliothek MathJAX\footnote{https://www.mathjax.org/}. Diese ist frei unter der Apache-Lizenz erhältlich und wird u.a. auch von Wikipedia zur Darstellung jeglicher mathematischer Ausdrücke genutzt. Mit der Bibliothek ist es möglich, mit LaTeX beschriebene Ausdrücke als SVG oder PNG im Webbrowser zu rendern. 
 
-Damit die Bibliothek in den Webanwendungen genutzt werden kann, muss sie wie folgt eingebunden werden (vgl. Abbildung~\ref{fig:listing-mathjax-include}).
+Damit die Bibliothek in den Webanwendungen genutzt werden kann, muss sie wie folgt in den \texttt{<head>} Bereich des HTML Dokuments eingebunden werden (vgl. Abbildung~\ref{fig:listing-mathjax-include}).
 
 \begin{figure}[h!]
 \begin{lstlisting}[language=HTML]
@@ -185,7 +186,7 @@ Damit die Bibliothek in den Webanwendungen genutzt werden kann, muss sie wie fol
 \caption[MathJAX: Einbindung]{Einbinden der MathJAX Bibliothek}\label{fig:listing-mathjax-include}
 \end{figure}
 
-Nach der Einbindung werden sämtliche LaTeX Ausdrücke welche sich zwischen den Begrenzungszeichen \texttt{\textbackslash(} und \texttt{\textbackslash)} befinden, automatisch übersetzt. In einem Beispiel wird hier der HTML Code in Abbildung~\ref{fig:listing-mathjax-example-html} von MathJAX im Browser gerendert (vgl. Abbildung~\ref{fig:mathjax-example-img}.
+Nach der Einbindung werden sämtliche LaTeX Ausdrücke, welche sich zwischen den Begrenzungszeichen \texttt{\textbackslash(} und \texttt{\textbackslash)} befinden, automatisch übersetzt. In einem Beispiel wird hier der HTML Code in Abbildung~\ref{fig:listing-mathjax-example-html} von MathJAX im Browser gerendert (vgl. Abbildung~\ref{fig:mathjax-example-img}.
 
 \begin{figure}[h!]
 \begin{lstlisting}[language=HTML]
@@ -198,7 +199,7 @@ Nach der Einbindung werden sämtliche LaTeX Ausdrücke welche sich zwischen den 
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textwidth]{figures/mathjax-example}
+	\includegraphics[width=0.6\textwidth]{figures/mathjax-example}
 	\caption[MathJAX: Beispiel im Browser]{MathJAX Beispiel: Darstellung im Browser}\label{fig:mathjax-example-img}
 \end{figure}
 
@@ -247,18 +248,18 @@ Mit dieser Implementierung gelingt es, dass in jeder Bearbeitung einer Forschung
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth]{figures/random_question}
-	\caption[Zufällig generierte Frage]{Beispiel für eine zufällig generierte Frage}\label{fig:random-question}
+	\caption[Zufällig generierte Frage]{Beispiel für eine zufällig generierte Frage: Im aktuellen Schritt des Algorithmus wurde der Fragetyp \enquote{Markierungen berechnen} bestimmt. Dazu wurde eine Frage generiert, die den Nutzer auffordert, Markierungen für vier zufällig gewählte Knoten zu bestimmen.}\label{fig:random-question}
 \end{figure}
 
 \subsection*{Implementierung} % Mark
-In der Funktion \texttt{nextStepChoice()} wird vor der Auswahl des nächsten Schritts des Algorithmus mittels der Funktion \texttt{askQuestion()} bestimmt, ob und welche Frage gestellt werden soll. Für jeden Fragetyp exisiert eine separate Funktion (bspw. \texttt{generateNextStepQuestion()}), die auf den aktuellen Graph zugreift und eine Frage mit zufälligen Elementen generiert und in das DOM Element \texttt{\#tf1\_div\_questionModal} schreibt. Die gegebene Antwort wird durch Aufruf der Funktion \texttt{saveAnswer()} gespeichert und mit der richtigen Lösung verglichen. Am Ende der Forschungsaufgabe kann mittels \texttt{showQuestionResults()} eine Übersicht angezeigt werden, die zeigt, wieviele Fragen richtig beantwortet wurden. Weitere Informationen sind der Inline-Dokumentation zu entnehmen. \hfill$\diamondsuit$
+Die beschriebene Funktionalität zur Generierung von Fragen wurde direkt in die Implementierung der Forschungsaufgaben in den Dateien \texttt{aufgabe1.js} und \texttt{aufgabe2.js} integriert. In der Funktion \texttt{nextStepChoice()} wird vor der Auswahl des nächsten Schritts des Algorithmus mittels der Funktion \texttt{askQuestion()} bestimmt, ob und welche Frage gestellt werden soll. Für jeden Fragetyp exisiert eine separate Funktion (bspw. \texttt{generateNextStepQuestion()}), die auf den aktuellen Graph zugreift und eine Frage mit zufälligen Elementen generiert und in das DOM Element \texttt{\#tf1\_div\_questionModal} schreibt. Die gegebene Antwort wird durch Aufruf der Funktion \texttt{saveAnswer()} gespeichert und mit der richtigen Lösung verglichen. Am Ende der Forschungsaufgabe kann mittels \texttt{showQuestionResults()} eine Übersicht angezeigt werden, die zeigt, wieviele Fragen richtig beantwortet wurden. Weitere Informationen sind der Inline-Dokumentation zu entnehmen. \hfill$\diamondsuit$
 
 \section{Gemeinsam genutzte Dateien} % Mark
-Im Rahmen dieses interdisziplinären Projekts wurden Webapplikationen für insgesamt fünf Algorithmen entwickelt. Jede Applikation liegt in einem von den anderen Algorithmen unabhängigen Projektordner, der jeweils auch das Graph Framework aus früheren Projekten enthält. Daher lagen im gesamten Repository viele Dateien mehrfach vor. Dies war insofern problematisch, da Änderungen, die alle Anwendungen betreffen in mehreren Dateien vorgenommen werden mussten.
+Im Rahmen dieses interdisziplinären Projekts wurden Webapplikationen für insgesamt fünf Algorithmen entwickelt. Jede Applikation liegt in einem von den anderen Algorithmen unabhängigen Projektordner, der jeweils auch das Graph Framework aus früheren Projekten enthält. Daher lagen im gesamten Repository viele Dateien mehrfach vor. Dies war insofern problematisch, da Änderungen, die alle Anwendungen betreffen, in mehreren Dateien vorgenommen werden mussten.
 
 Unser Ziel war es daher, gemeinsam genutzte Dateien auszulagern. Wir beschränken uns hier auf Dateien, welche das Layout und Design der Anwendungen definieren, sowie universelle Programmbibliotheken (bspw. MathJAX). Diese Beschränkung ist notwendig, um die Flexibilität im Entwicklungsprozess zu gewährleisten. Es existieren weitere Dateien, die sich zum aktuellen Zeitpunkt anwendungsübergreifend nicht signifikant unterscheiden. Diese sind allerdings algorithmenspezifisch und könnten in zukünftigen Entwicklungsphasen weiter verändert werden.
 
-Zur Auslagerung legten wir zunächst einen \texttt{library} Ordner an. Das Finden von Dateiduplikaten übernimmt ein Python Skript (vgl. \texttt{deduplicate.py}), welches mittels der \texttt{difflib} Bibliothek alle Dateien in den Projektordnern paarweise miteinander vergleicht und einen Ähnlichkeitsquotienten bestimmt. Das Skript zeigt dann alle Dateien, die einen festgelegten Änhlichkeitsgrenzwert überschreiten an (vgl. Abbildungen \ref{fig:shared-files-1} und \ref{fig:shared-files-2}). Anhand des Quotienten lässt sich ablesen, ob Dateien im Gesamten oder in Teilen ausgelagert werden können. Das Verschieben in den \texttt{library} Ordner und die Anpassung der Pfade in den Anwendungen erfolgt dann manuell.
+Zur Auslagerung legten wir zunächst einen \texttt{library} Ordner an. Das Finden von Dateiduplikaten übernimmt ein Python Skript (vgl. \texttt{deduplicate.py}), welches mittels der \texttt{difflib} Bibliothek alle Dateien in den Projektordnern paarweise miteinander vergleicht und einen Ähnlichkeitsquotienten bestimmt. Das Skript zeigt dann alle Dateien, die einen festgelegten Ähnlichkeitsgrenzwert überschreiten (vgl. Abbildungen \ref{fig:shared-files-1} und \ref{fig:shared-files-2}). Anhand des Quotienten lässt sich ablesen, ob Dateien im Gesamten oder in Teilen ausgelagert werden können. Das Verschieben in den \texttt{library} Ordner und die Anpassung der Pfade in den Anwendungen erfolgt dann manuell.
 
 \begin{figure}[h!]
 \noindent\texttt{chinese-postman/img/TUMLogo.png \\
