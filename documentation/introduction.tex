@@ -23,7 +23,7 @@ Jede Applikation ist in mehreren Teile aufgeteilt. Die Struktur von jeder Applik
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textwidth]{figures/tabs}
+	\includegraphics[width=0.75\textwidth]{figures/tabs}
 	\caption[Tabs der Anwendung]{Tabs der Anwendung}\label{fig:tabs}
 \end{figure}
 
@@ -47,7 +47,7 @@ Da die Implementierung des Floyd-Warshall Algorithmus nicht kompliziert ist, war
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textwidth]{figures/fw-matrix}
+	\includegraphics[width=0.75\textwidth]{figures/fw-matrix}
 	\caption[Floyd-Warshall: Matrix]{Visualisierung des verbesserten Pfades}\label{fig:fw-matrix}
 \end{figure}
 
@@ -60,7 +60,7 @@ Beim Algorithmus von Hierholzer war es uns wichtig, die resultierende Eulertour 
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textwidth]{figures/hierholzer_animation}
+	\includegraphics[width=0.75\textwidth]{figures/hierholzer_animation}
 	\caption[Hierholzer: Eulertour Animation]{Visualisierung der vom Hierholzer Algorithmus ermittelten Eulertour. Auf der rechten Seite wird die gesamte Eulertour zusammen mit den Subtouren farbig dargestellt. Im Graph links können einzelne Subtouren hervorgehoben (blau) oder die gesamte Tour mittels Animation abgelaufen (grüner Pfeil) werden.}\label{fig:hierholzer-animation}
 \end{figure}
 
@@ -75,7 +75,7 @@ Die graue Markierung der benutzten Knoten sollte außerdem hervorheben, dass die
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textwidth]{figures/hopcroft_karp_augmentation}
+	\includegraphics[width=0.75\textwidth]{figures/hopcroft_karp_augmentation}
 	\caption[Hopcroft-Karp: Augmentationsweg]{Hervorhebung des aktuellen Augmentationsweges im Hopcroft-Karp-Algorithmus}\label{fig:hopcroft_karp_augmentation}
 \end{figure}
 
@@ -87,7 +87,7 @@ In der zweiten Forschungsaufgabe bekommt der Nutzer die Gelegenheit mit Augmenta
 Obwohl es mehrere Implementierungen der Ungarischen Methode gibt, die Idee bleibt bei allen gleich. Die Applikation geht nicht tief in die Einzelheiten der konkreten Implementierung, sondern erklärt das generelle Prinzip der Ungarischen Methode. Dafür war der Einsatz des bipartiten gewichteten Graphs notwendig. Als die Ungarische Methode perfektes Matching im bipartiten Graphen sucht, wird eingegebener Graph in der Anwendung bis zum kompletten Graphen vervollständigt falls der Nutzer das nicht gemacht hat. Um die genutzte Begriffe (wie z. B. Matching oder Augmentationsweg) verständlich zu machen, werden unterschiedliche Farben für Knoten und Kanten während des Ablaufs verwendet (vgl. Abbildung~\ref{fig:hungarian-colors}).
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textwidth]{figures/hungarian-colors}
+	\includegraphics[width=0.75\textwidth]{figures/hungarian-colors}
 	\caption[Ungarische Methode: Augmentationsweg]{Augmentationsweg wird rot markiert}\label{fig:hungarian-colors}
 \end{figure}
 
@@ -114,7 +114,7 @@ Abhängig davon, ob es zu viele Eingangs- oder Ausgangsknoten gibt, werden diese
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textwidth]{figures/postman_unbalanced}
+	\includegraphics[width=0.75\textwidth]{figures/postman_unbalanced}
 	\caption[Chinese-Postman: Unbalancierte Knoten]{Hervorheben von Knoten mit ungleichem Eingangs- und Ausgangsgrad}\label{fig:postman_unbalanced}
 \end{figure}
 
@@ -122,7 +122,7 @@ Im nächsten Schritt wird ein bipartiter Graph erstellt, der aus den markierten 
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textwidth]{figures/postman_matching}
+	\includegraphics[width=0.75\textwidth]{figures/postman_matching}
 	\caption[Chinese-Postman: Matchinggraph]{Matchinggraph}\label{fig:postman_matching}
 \end{figure}
 
@@ -135,7 +135,7 @@ Am Ende des Algorithmen wird die Eulertour des Graphen bestimmt. Der Nutzer kann
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textwidth]{figures/postman_eulerian}
+	\includegraphics[width=0.75\textwidth]{figures/postman_eulerian}
 	\caption[Chinese-Postman: Eulerscher Graph]{Graph nach Einfügen von zusätzlichen Pfaden}\label{fig:postman_eulerian}
 \end{figure}
 
@@ -216,14 +216,14 @@ MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
 Zwei Algorithmen, die im Rahmen des Projekts implementiert wurden, nämlich Hopcroft \& Karp Algorithmus und die Ungarische Methode, müssen auf bipartiten Graphen ausgeführt werden. Dafür haben wir das Konzept des bipartiten Graphen im existierenden Framework entwickelt. Um die Darstellung des Matching-Problems und dessen Lösung möglichst anschaulich zu machen, haben wir die Knoten im Graphen in zwei Gruppen geteilt (vgl. Abbildung~\ref{fig:hungarian-bipartite}). Die Kanten können nur zwischen den Knotengruppen erstellt werden. Bei der Ungarischen Methode war es wichtig den Graph mit extra Knoten und Kanten zu vervollständigen, wenn der ursprüngliche Graph nicht komplett war. Das ist notwendig, weil die Ungarische Methode perfektes Matching sucht.
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textwidth]{figures/hungarian-bipartite}
+	\includegraphics[width=0.75\textwidth]{figures/hungarian-bipartite}
 	\caption[Bipartiter Graph]{Bipartiter Graph}\label{fig:hungarian-bipartite}
 \end{figure}
 
 In der Abbildung~\ref{fig:hungarian-complete} kann man sehen, was passiert, wenn man bei der Ungarischen Methode einen nicht kompletten Graphen eingibt. Falls eine Kante zwischen beliebigen zwei Knoten fehlt, wird eine zusätzliche graue Kante mit dem Gewicht 0 hinzugefügt. Wenn die Knotengruppen ungleiche Anzahl der Knoten enthalten, dann werden zusätzliche Knoten dem Graphen hinzugefügt. Alle Nachbarkanten bei diesen zusätzlichen Knoten haben das Gewicht 0. \hfill$\heartsuit$
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textwidth]{figures/hungarian-complete}
+	\includegraphics[width=0.75\textwidth]{figures/hungarian-complete}
 	\caption[Vollständiger, bipartiter Graph]{Der Graph wird mit fehlenden Knoten und Kanten erweitert}\label{fig:hungarian-complete}
 \end{figure}
 
@@ -234,7 +234,7 @@ In dem Chinese-Postman-Algorithmus werden während der Ausführung Kanten in den
 %Beispiel
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textwidth]{figures/multigraph}
+	\includegraphics[width=0.75\textwidth]{figures/multigraph}
 	\caption[Multigraph]{Multikanten im Graphen}\label{fig:multigraph}
 \end{figure}
 
@@ -247,7 +247,7 @@ Mit dieser Implementierung gelingt es, dass in jeder Bearbeitung einer Forschung
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textwidth]{figures/random_question}
+	\includegraphics[width=0.75\textwidth]{figures/random_question}
 	\caption[Zufällig generierte Frage]{Beispiel für eine zufällig generierte Frage: Im aktuellen Schritt des Algorithmus wurde der Fragetyp \enquote{Markierungen berechnen} bestimmt. Dazu wurde eine Frage generiert, die den Nutzer auffordert, Markierungen für vier zufällig gewählte Knoten zu bestimmen.}\label{fig:random-question}
 \end{figure}
 
