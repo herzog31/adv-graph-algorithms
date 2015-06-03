@@ -78,7 +78,7 @@ Die graue Markierung der benutzten Knoten sollte außerdem hervorheben, dass die
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.75\textwidth]{figures/hopcroft_karp_augmentation}
-	\caption[Hopcroft-Karp: Augmentationsweg]{Hervorhebung des aktuellen Augmentationsweges im Hopcroft-Karp-Algorithmus}\label{fig:hopcroft_karp_augmentation}
+	\caption[Hopcroft-Karp: Augmentationsweg]{Aktueller Augmentationsweg im Hopcroft-Karp-Algorithmus. Die grauen Knoten wurden bereits in der aktuellen Iteration verwendet und können deshalb nicht in anderen Augmentationswegen der aktuellen Iteration vorkommen. Die zwei hervorgehobenen Knoten und die hervorgehobene Kante dazwischen stellen den aktuellen knotensdisjunkten kürzesten Augmentationsweg dar.}\label{fig:hopcroft_karp_augmentation}
 \end{figure}
 
 In der ersten Forschungsaufgabe soll der Nutzer sein Verständnis über den Ablauf des Algorithmen prüfen. Der Benutzer sollte das Konzept von kürzesten Augmentationswegen verstehen und wissen, welche Kanten nach einem Augmentationsschritt im Matching sein werden.
@@ -117,7 +117,7 @@ Abhängig davon, ob es zu viele Eingangs- oder Ausgangsknoten gibt, werden diese
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.75\textwidth]{figures/postman_unbalanced}
-	\caption[Chinese-Postman: Unbalancierte Knoten]{Hervorheben von Knoten mit ungleichem Eingangs- und Ausgangsgrad}\label{fig:postman_unbalanced}
+	\caption[Chinese-Postman: Unbalancierte Knoten]{Hervorheben von Knoten mit ungleichem Ausgangs- und Eingangsgrad im Chinese-Postman-Algorithmus. Die Differenz zwischen dem Ausgangs- und dem Eingangsgrad eines Knotens wird in den Knoten eingetragen. In den Knoten mit negativer Differenz müssen zusätzliche Pfade starten und in den Knoten mit positiver Differenz enden, damit der Graph eulersch wird. }\label{fig:postman_unbalanced}
 \end{figure}
 
 Im nächsten Schritt wird ein bipartiter Graph erstellt, der aus den markierten Knoten besteht. Um den Wechsel von dem Ausgangsgraphen zu dem bipartiten Graphen nachvollziehbar zu gestalten, wurde eine Animation eingefügt. Alle für den Matching-Graphen relevanten Knoten werden in den bipartiten Matching-Graphen übergeführt. Das Aussehen des Matching-Graphen wurde aus der Ungarischen Methode übernommen. 
@@ -125,7 +125,7 @@ Im nächsten Schritt wird ein bipartiter Graph erstellt, der aus den markierten 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.75\textwidth]{figures/postman_matching}
-	\caption[Chinese-Postman: Matchinggraph]{Matchinggraph}\label{fig:postman_matching}
+	\caption[Chinese-Postman: Matching-Graph]{Matching-Graph im Chinese-Postman-Algorithmus. Hier wird bestimmt, zwischen welchen Knoten neue Wege eingefügt werden. Das Problem wird mit Ungarischer Methode gelöst. Im Matching-Graphen wird durch die grünen Kanten die optimale Zuordnung angezeigt.}\label{fig:postman_matching}
 \end{figure}
 
 In der Implementierung des Algorithmen bestimmt die Differenz zwischen Ausgangs- und Eingangsgrad eines Knotens, wie oft dieser im Matching-Graphen vorkommt. Es entsteht ein vollständiger bipartiter Graph, sodass mit der Ungarischen Methode ein optimales Matching bestimmt werden kann. Das Gewicht einer Kante ist die Länge des kürzesten Weges von dem Knoten mit negativer Differenz zwischen Ausgangs- und Eingangsgrad zu dem Knoten mit positiver Differenz. Bei der Visualisierung des Algorithmus wurde eine Entscheidung zugunsten Übersichtlichkeit getroffen, sodass ein Knoten nur einmal im Matching-Graphen vorkommen sollte. Dadurch wird für den Nutzer nachvollziehbar, zwischen welchen Knoten neue Wege eingefügt werden müssen. Die Differenz zwischen Ausgangs- und Eingangsgrad eines Knotens bestimmt die Anzahl von Pfaden, die in diesem Knoten enden beziehungsweise anfangen müssen und somit die Anzahl von Matching-Kanten, die zu diesem Knoten inzident sind.
@@ -138,7 +138,7 @@ Am Ende des Algorithmen wird die Eulertour des Graphen bestimmt. Der Nutzer kann
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.75\textwidth]{figures/postman_eulerian}
-	\caption[Chinese-Postman: Eulerscher Graph]{Graph nach Einfügen von zusätzlichen Pfaden}\label{fig:postman_eulerian}
+	\caption[Chinese-Postman: Eulerscher Graph]{Graph nach Einfügen von zusätzlichen Pfaden im Chinese-Postman-Algorithmus. Die gestrichelten Kanten stellen neu eingefügte Kanten dar. Nach Einfügen der Pfade wird der Graph eulersch.}\label{fig:postman_eulerian}
 \end{figure}
 
 %Forschungsaufgaben
@@ -235,7 +235,7 @@ In dem Chinese-Postman-Algorithmus werden jedoch während der Ausführung Kanten
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.75\textwidth]{figures/multigraph}
-	\caption[Multigraph]{Multikanten im Graphen}\label{fig:multigraph}
+	\caption[Multigraph]{Multikanten im Graphen.}\label{fig:multigraph}
 \end{figure}
 
 Es wurde eine Entscheidung getroffen, den Multikanten eine Krümmung zu geben, damit sie für den Nutzer übersichtlich dargestellt werden können. Die Abbildung \ref{fig:multigraph} zeigt einen Graphen mit Multikanten. Die größte Herausforderung bestand darin, die Krümmungen der Kanten zu bestimmen, sodass sich die Kanten zwischen zwei Knoten nicht überlappen. Außerdem sollte sichergestellt werden, dass genug Abstand zwischen zwei Multikanten besteht, damit die Kantengewichte gelesen werden können. Die Krümmung einer Kante sollte sich ändern, falls Kanten zwischen dem Quell- und Endknoten eingefügt beziehungsweise gelöscht werden. Um diese Probleme zu lösen wird jeder Multikante ihre eigene Krümmung zugeordnet, die dynamisch beim Zeichnen der Kante berechnet wird. Dies stellt sicher, dass sich die Kanten zwischen zwei Knoten nicht überlappen, die Kanten symmetrisch angeordnet werden und die Krümmung dynamisch angepasst werden kann.
