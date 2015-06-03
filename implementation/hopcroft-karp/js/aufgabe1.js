@@ -20,27 +20,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      */
     var graph = this.graph;
     /**
-     * Convenience Objekt, damit man das Canvas ohne this. ansprechen kann.
-     * @type Object
-     */
-    var canvas = p_canvas;
-    /**
-     * ID des Intervals, der für das "Vorspulen" genutzt wurde.
-     * @type Number
-     */
-    var fastForwardIntervalID = null;
-    /**
      * Closure Variable für dieses Objekt
      * @type Forschungsaufgabe1
      */
     var algo = this;
-    /**
-     * Status der Frage.<br>
-     * Keys: aktiv, warAktiv
-     * Values: Boolean
-     * @type Object
-     */
-    var frageStatus = new Object();
     /**
      * Parameter der aktuellen Frage (wird dann für die Antwort verwendet)<br>
      * frageKnoten: Knoten, zu dem die Frage gestellt wurde<br>
@@ -52,12 +35,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      */
     this.frageParam = new Object();
     /**
-     * Welcher Tab (Erklärung oder Pseudocode) angezeigt wurde, bevor die Frage kam.
-     * Dieser Tag wird nach der Frage wieder eingeblendet.
-     * @type Boolean
-     */
-    var tabVorFrage = null;
-    /**
      * Statistiken zu den Fragen
      * @type Object
      */
@@ -66,12 +43,25 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         falsch: 0,
         gestellt:0
     };
-
+    /**
+     *  Die run Methode der Oberklasse
+     *  @type method
+     */
     this.base_run = this.run;
-
+    /**
+     *  Die nextStepChoice Methode der Oberklasse
+     *  @type method
+     */
     this.algoNext = this.nextStepChoice;
-
+    /**
+     *  Die minimale Anzahl von Fragen
+     *  @type Number
+     */
     var min_questions = 3;
+    /**
+     *  Die maximale Anzahl von Fragen
+     *  @type Number
+     */
     var max_questions = 8;
     /*
      * Hier werden die Statuskonstanten definiert
@@ -108,7 +98,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     /**
      * In dieser Funktion wird der nächste Schritt des Algorithmus ausgewählt.
      * Welcher das ist, wird über die Variable "statusID" bestimmt.<br>
-     * Mögliche Werte sind:<br>
      *  @method
      */
     this.nextStepChoice = function () {
@@ -156,7 +145,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
     /**
      * Fügt einen Tab für die Frage hinzu.<br>
-     * Deaktiviert außerdem die Buttons zum weitermachen
+     * Deaktiviert außerdem die Buttons zum Weitermachen
      * @method
      */
     this.addFrageTab = function() {
@@ -223,7 +212,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_div_ErgebnisseTab").append('<button id="tf1_button_gotoFA2">'+LNG.K('algorithm_btn_exe2')+'</button>');
         $("#tf1_button_gotoFA2").button().click(function() {$("#tabs").tabs("option","active", 5);});
     };
-
+    /**
+     * Verarbeitet die Antwort und zeigt Lösung an
+     * @method
+     */
     this.handleAnswer = function() {
         //gebe richtige Antwort und Erklaerung aus
         $("#tf1_questionSolution").find("#tf1_question_answer").html(this.frageParam.Antwort);
@@ -262,8 +254,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             }
         });
     };
-
-
+    /**
+     * Stellt die Frage vom Typ 1
+     * @method
+     */
     this.askQuestion1 = function () {
         var NUMBER_OF_ANSWERS = 4;
         var sp = this.getShortestPathLength();
@@ -300,7 +294,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     /**
      * Generiert Antwortmöglichkeiten fuer die erste Frage
      * Das erste Element des Rückgabewerts ist stets die richtige Antwort
-     * @param {Number} Anzahl von Antwortmöglichkeiten.
+     * @param {Number} number Anzahl von Antwortmöglichkeiten.
      * @returns {Array} Antwortmöglichkeiten, wobei die erste korrekt ist.
      * @method
      */
@@ -321,13 +315,15 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
         return answers;
     };
-
+    /**
+     * Stellt die Frage vom Typ 2
+     * @method
+     */
     this.askQuestion2 = function () {
         var NUMBER_OF_ANSWERS = 5;
         var mc = Object.keys(this.getMatching()).length +1;
         var AntwortGrund = "<p>" + LNG.K('aufgabe1_answer2_reason0') + "</p>";
         this.addFrageTab();
-        frageStatus = {"aktiv": true, "warAktiv": false};
         this.frageParam = {
             qid: 2,
             "Antwort": mc,
@@ -339,30 +335,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_question_form").html('<input type="text" id="tf1_input_frage2" name="frage2" value="" /><br>');
         $("#tf1_input_frage2").one("keyup", function() { $("#tf1_button_questionClose").button("option", "disabled", false); });
     };
-/*    /!**
-     * Generiert Antwortmöglichkeiten fuer die zweite Frage
-     * Das erste Element des Rückgabewerts ist stets die richtige Antwort
-     * @param {Number} Anzahl von Antwortmöglichkeiten.
-     * @param {Number} Richtige Antwort.
-     * @returns {Array} Antwortmöglichkeiten, wobei die erste korrekt ist.
+    /**
+     * Stellt die Frage vom Typ 3
      * @method
-     *!/
-    this.generateAnswers2 = function(number,correctAnswer) {
-        var answers = new Array();
-        answers.push(correctAnswer);
-        var values = [correctAnswer-1,correctAnswer+1,correctAnswer-2,correctAnswer+2,correctAnswer-3,correctAnswer+3,correctAnswer-4,correctAnswer+4,correctAnswer-5,correctAnswer+5];
-        var count = answers.length;
-        while(count<5){
-            var a = Math.floor((Math.random()*values.length));
-            if(values[a]>=0){
-                answers.push((values[a]));
-                count++;
-            }
-            values.splice(a,1);
-        }
-        return answers;
-    };*/
-
+     */
     this.askQuestion3 = function () {
         var answer = chooseEdge();
         var onPath = answer[0];
@@ -391,7 +367,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             }
         }
         this.addFrageTab();
-        frageStatus = {"aktiv": true, "warAktiv": false};
         this.frageParam = {
             qid: 3,
             "Antwort": correctAnswer,
@@ -409,7 +384,11 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             '<input type="radio" id="tf1_input_frage1_1" name="frage1" value="nein"/><label id="tf1_label_frage1_1" for="tf1_input_frage1_1"> nein </label><br>');
         $("#tf1_question_form").find("input[type='radio']").one("change", function() { $("#tf1_button_questionClose").button("option", "disabled", false); });
     };
-
+    /**
+     * Waehlt zufaellig eine Kante aus
+     * @return {Object}
+     * @method
+     */
     var chooseEdge = function(){
         var matching = algo.getMatching();
         var path = algo.getPath();

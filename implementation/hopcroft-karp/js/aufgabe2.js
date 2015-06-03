@@ -9,7 +9,7 @@
  * die Klasse CanvasDrawer. 
  * @constructor
  * @augments CanvasDrawer
- * @param {Graph} p_graph Graph, auf dem der Algorithmus ausgeführt wird
+ * @param {BipartiteGraph} p_graph Graph, auf dem der Algorithmus ausgeführt wird
  * @param {Object} p_canvas jQuery Objekt des Canvas, in dem gezeichnet wird.
  * @param {Object} p_tab jQuery Objekt des aktuellen Tabs.
  */
@@ -17,7 +17,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     CanvasDrawer.call(this,p_graph,p_canvas,p_tab);
     /**
      * Convenience Objekt, damit man den Graph ohne this ansprechen kann.
-     * @type Graph
+     * @type BipartiteGraph
      */
     var graph = p_graph;
     /**
@@ -37,26 +37,43 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     var fastForwardIntervalID = null;
     /*
      * Das Objekt, das den Hopcroft-Karp-Algorithmus ausfuehrt
+     * @type Object
      * */
     var hkAlgo;
-
+    /*
+     * Der Augmentationsweg, der vom Nutzer erstellt wird
+     * @type Object
+     * */
     var path = new Array();
-
-    var matching = new Object();
-
-    var matched = new Object();
-
+    /*
+     * Die Layouts von Knoten, damit das urspruengliche Layout sichergestellt werden kann
+     * @type Object
+     * */
     var layoutStack = new Array();
-
+    /*
+     * Maximale Anzahl von Wegen, die Nutzer finden soll
+     * @type Number
+     * */
     const MAX = 5;
-
+    /*
+     * Anzahl vom Nutzer erstellten Wege
+     * @type Number
+     * */
     var paths = 0;
     /**
      * Zeigt an, ob vor dem Verlassen des Tabs gewarnt werden soll.
      * @type Boolean
      */
     var warnBeforeLeave = false;
+    /**
+     * Zeigt an, eine Augmentations erfolgen soll
+     * @type Boolean
+     */
     var update = false;
+    /**
+     * Zeigt an, eine Augmentations erfolgt ist
+     * @type Boolean
+     */
     var afterUpdate = false;
 
     /*
@@ -120,11 +137,19 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     this.getWarnBeforeLeave = function() {
         return warnBeforeLeave;
     };
-
+    /**
+     * Registriere die Klick-Handler an Buttons und canvas<br>
+     * Nutzt den Event Namespace ".Forschungsaufgabe2"
+     * @method
+     */
     this.registerClickHandlers = function() {
         canvas.on("click.Forschungsaufgabe2",function(e) {algo.canvasClickHandler(e);});
         canvas.on("contextmenu.Forschungsaufgabe2",function(e) {algo.rightClickHandler(e);});
     };
+    /**
+     * Entferne die Klick-Handler von Buttons und canvas im Namespace ".HKAlgorithm"
+     * @method
+     */
     this.deregisterClickHandlers = function() {
         canvas.off("click.Forschungsaufgabe2");
         canvas.off("contextmenu.Forschungsaufgabe2");
@@ -189,7 +214,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     /**
      * In dieser Funktion wird der nächste Schritt des Algorithmus ausgewählt.
      * Welcher das ist, wird über die Variable "statusID" bestimmt.<br>
-     * Mögliche Werte sind:<br>
      *  @method
      */
     this.nextStepChoice = function() {
@@ -232,13 +256,20 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
         this.needRedraw = true;
     };
-
+    /**
+     * Der Nutzer wird aufgefordert ein Augmentatonsweg einzuzeichnen
+     * @method
+     */
     this.drawPath = function() {
         this.registerClickHandlers();
         $("#tf2_button_1Schritt").button("option", "disabled", true);
         $("#tf2_div_statusErklaerung").html("<h3>"+LNG.K('aufgabe2_header')+"</h3>" + "<p>"+LNG.K('aufgabe2_path')+"</p>" + "<p>"+LNG.K('aufgabe2_legend')+"</p>");
     };
-
+    /**
+     * Behandelt Klicks im Canvas<br>
+     * @param {jQuery.Event} e jQuery Event Objekt, enthält insbes. die Koordinaten des Mauszeigers.
+     * @method
+     */
     this.canvasClickHandler = function(e){
         var node = getClickedNode(e);
         if(node!=null){
@@ -298,6 +329,12 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
         this.needRedraw = true;
     };
+    /**
+     * Behandelt Klicks im Canvas<br>
+     * @param {jQuery.Event} e jQuery Event Objekt, enthält insbes. die Koordinaten des Mauszeigers.
+     * @return {Object} Der geklickte Knoten
+     * @method
+     */
     var getClickedNode = function(e){
         var mx = e.pageX - canvas.offset().left;
         var my = e.pageY - canvas.offset().top;
@@ -308,6 +345,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
         return null;
     };
+    /*
+     * Die Warnung wird hier konstruiert
+     * @method
+     * */
     var getWarning = function(string){
         return  '<div id ="tg_div_warning" class="ui-widget"> \
         <div class="ui-state-highlight ui-corner-all" style="padding: .7em;"> \
@@ -316,29 +357,11 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         </div> \
         </div>';
     };
-/*    var augmentMatching = function () {
-        var path = path;
-        setNodeMatched(path[0]);
-        //iterate over all edges in the path
-        for (var i = 1; i < path.length; i++) {
-            var edge = graph.edges[graph.getEdgeBetween(path[i-1],path[i])];
-            //if its matching edge then delete it from the matching
-            if (matching[edge.getEdgeID()]) {
-                delete matching[edge.getEdgeID()];
-                edge.setLayout("lineColor", "black"); //set the color to black
-            }
-            //else insert it
-            else {
-                matching[edge.getEdgeID()] = edge;
-                edge.setLayout("lineColor", MATCHED_EDGE_COLOR); // set the matching color
-                if(i%2==1){
-                    matched[path[i - 1].getNodeID()] = path[i];
-                    matched[path[i].getNodeID()] = path[i - 1];
-                }
-            }
-            setNodeMatched(path[i]);
-        }
-    };*/
+
+    /*
+     * Methoden fuer die Visualisierung.
+     * Das Layout und Aussehen von Knoten und Kanten wird hier festgelegt.
+     * */
     var highlightNode = function(node){
         node.setLayout('borderColor',"Navy");
         //node.setLayout('borderColor',const_Colors.NodeBorderHighlight);
@@ -351,7 +374,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         edge.setLayout("lineColor", MATCHED_EDGE_COLOR);
         edge.setLayout("lineWidth", global_Edgelayout.lineWidth * 1.3);
     };
-
     var setNodeMatched = function (node) {
         node.setLayout('fillStyle', MATCHED_NODE_COLOR);
         node.setLayout('borderWidth',global_NodeLayout.borderWidth);
@@ -367,6 +389,12 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
         }
     };
+
+    /**
+     * Behandelt die Rechtsklicks im Canvas<br>
+     * @param {jQuery.Event} e jQuery Event Objekt, enthält insbes. die Koordinaten des Mauszeigers.
+     * @method
+     */
     this.rightClickHandler = function(e) {
         e.preventDefault();
         if(path.length>0){
@@ -401,34 +429,20 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         // Ändere auch die lokalen Variablen (und vermeide "div
         this.needRedraw = true;
     };
-
     
     /**
      * Initialisiere den Algorithmus, stelle die Felder auf ihre Startwerte.
+     * @method
      */
     this.initializeAlgorithm = function() {
         $("#tf2_div_statusErklaerung").html("<h3>1 "+LNG.K('textdb_msg_case0_1')+"</h3>"
             + "<p>"+LNG.K('aufgabe2_msg_1')+"</p>");
         $("#tf2_div_statusErklaerung").append("<h3>"+LNG.K('aufgabe2_msg_2')+"</h3>");
     };
-    
-    this.hoverOverEdge = function(e) {
-        var mx = e.pageX - this.canvas.offset().left;
-        var my = e.pageY - this.canvas.offset().top;
-        var edgeFound = false;
-        for(var kantenID in this.graph.edges) {
-            if (this.graph.edges[kantenID].contains(mx, my,this.canvas[0].getContext("2d")) && edgeOrder.indexOf(kantenID) == -1) {
-                edgeFound = true;
-                this.canvas.css( 'cursor', 'pointer' );
-                break;                   // Maximal einen Knoten auswählen
-            }
-        }
-        if(!edgeFound) {
-            this.canvas.css( 'cursor', 'default' );
-        }
-    };
-    
-
+    /**
+     * Zeigt die Resultate der Aufgabe an.
+     * @method
+     */
     this.showResult = function() {
         // Falls wir im "Vorspulen" Modus waren, daktiviere diesen
         if(fastForwardIntervalID != null) {
@@ -451,7 +465,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             this.graph.edges[kantenID].additionalLabel = null;
         }
     };
-
 }
 
 // Vererbung realisieren
