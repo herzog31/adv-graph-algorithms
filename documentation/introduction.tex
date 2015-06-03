@@ -230,13 +230,15 @@ Falls eine Kante zwischen beliebigen zwei Knoten fehlt, wird eine zusätzliche g
 \section{Multigraphen} % Ruslan
 %Motivation
 In bisherigen auf dem Framework basierenden Algorithmen war es nicht möglich, Multikanten zu erstellen, was auch für die Algorithmen nicht notwendig war. Es war möglich, maximal zwei Kanten zwischen zwei Knoten einzufügen. 
-In dem Chinese-Postman-Algorithmus werden jedoch während der Ausführung Kanten in den Graphen eingefügt. Deshalb muss das Graphenmodell für den Chinese-Postman-Algorithmus Multikanten darstellen können. Die Abbildung \ref{fig:multigraph} zeigt einen Graphen mit Multikanten. \hfill$\spadesuit$
+In dem Chinese-Postman-Algorithmus werden jedoch während der Ausführung Kanten in den Graphen eingefügt. Deshalb muss das Graphenmodell für den Chinese-Postman-Algorithmus Multikanten darstellen können. Um dieses Problem zu lösen wurde das Framework erweitert, sodass es jetzt Multikanten darstellen kann. \hfill$\spadesuit$
 %Beispiel
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.75\textwidth]{figures/multigraph}
 	\caption[Multigraph]{Multikanten im Graphen}\label{fig:multigraph}
 \end{figure}
+
+Es wurde eine Entscheidung getroffen, den Multikanten eine Krümmung zu geben, damit sie für den Nutzer übersichtlich dargestellt werden können. Die Abbildung \ref{fig:multigraph} zeigt einen Graphen mit Multikanten. Die größte Herausforderung bestand darin, die Krümmungen der Kanten zu bestimmen, sodass sich die Kanten zwischen zwei Knoten nicht überlappen. Außerdem sollte sichergestellt werden, dass genug Abstand zwischen zwei Multikanten besteht, damit die Kantengewichte gelesen werden können. Die Krümmung einer Kante sollte sich ändern, falls Kanten zwischen dem Quell- und Endknoten eingefügt beziehungsweise gelöscht werden. Um diese Probleme zu lösen wird jeder Multikante ihre eigene Krümmung zugeordnet, die dynamisch beim Zeichnen der Kante berechnet wird. Dies stellt sicher, dass sich die Kanten zwischen zwei Knoten nicht überlappen, die Kanten symmetrisch angeordnet werden und die Krümmung dynamisch angepasst werden kann.
 
 \section{Zufällig generierte Fragen} % Mark
 In bisherigen auf diesem Framework basierenden Projekten war die Varianz der Fragen in den Forschungsaufgaben problematisch. Die Forschungsaufgaben behandelten meistens statische Fragen an vorher festgelegten Stellen zu vorgegebenen Graphen. Daraus resultierend bietet sich dem Nutzer ein wenig abwechslungsreiches Erlebnis und die Motivation, eine Forschungsaufgabe mehrfach zu bearbeiten, ist nicht gegeben.
@@ -285,9 +287,9 @@ Für zukünftige Projekte können die Parameter des Skripts angepasst werden. We
 \chapter{Zusammenfassung} % Ruslan
 %Zusammenfass.
 Das interdisziplinäre Projekt beschäftigt sich mit der anschaulichen Darstellung von weiterführenden Graphalgorithmen. Es wurden folgende Probleme behandelt: All-Pairs Shortest Path Problem, Matchingprobleme in bipartiten Graphen, das Eulertour Problem und das Chinese-Postman-Problem. 
-Die Problemstellungen wurden mit einfachen Worten erklärt und die verwendeten Lösungsverfahren interaktiv veranschaulicht. Die Darstellung der Algorithmen erfolgt in Form mehrerer Web-Applikationen, die auf ein gemeinsames Framework aufbauen, welches bereits bei früheren Projekten zum Einsatz kam. In den Applikationen wird der Benutzer zunächst an die jeweilige Problemstellung herangeführt. Anschließend erhält er die Möglichkeit die Algorithmen auf selbst erstellten Graphen schrittweise ausführen zu lassen. Außerdem wurden speziellen Eigenschaften der Algorithmen in gesonderten Forschungsaufgaben behandelt. 
+Die Problemstellungen wurden mit einfachen Worten erklärt und die verwendeten Lösungsverfahren interaktiv veranschaulicht. Die Darstellung der Algorithmen erfolgt in Form mehrerer Web-Applikationen, die auf ein gemeinsames Framework aufbauen, welches bereits bei früheren Projekten zum Einsatz kam. In den Applikationen wird der Benutzer zunächst an die jeweilige Problemstellung herangeführt. Anschließend erhält er die Möglichkeit, die Algorithmen auf selbst erstellten Graphen schrittweise ausführen zu lassen. Außerdem wurden speziellen Eigenschaften der Algorithmen in gesonderten Forschungsaufgaben behandelt. 
 
 %Neues
 Im Rahmen des Projekts wurden mehrere Änderungen und Weiterentwicklungen an dem Framework durchgeführt. Für Matchingprobleme auf bipartiten Graphen wurde ein bipartites Graphenmodell und die zugehörige Visualisierung entwickelt. Für den Chinese-Postman-Algorithmus wurde ein Graphenmodell entwickelt, das Multikanten unterstützt. 
-Die MathJax-Bibliothek ermöglicht in der Beschreibung der Algorithmen mathematische Formeln einzusetzen. Dadurch können wichtige Aspekte der Algorithmen als mathematische Formeln dargestellt werden, sodass das Grundverständnis der Algorithmen dem Benutzer besser vermittelt wird.
+Die MathJax-Bibliothek ermöglicht es, in der Beschreibung der Algorithmen mathematische Formeln einzusetzen. Dadurch können wichtige Aspekte der Algorithmen als mathematische Formeln dargestellt werden, sodass das Grundverständnis der Algorithmen dem Benutzer besser vermittelt wird.
 Um die Motivation, eine Forschungsaufgabe mehrfach zu bearbeiten, zu erhöhen, wurden dynamische Fragen erstellt. Die Anzahl der Fragen hängt von dem Graphen ab und der Fragetyp wird während der Abarbeitung zufällig ausgewählt. Da das vorliegende interdisziplinäre Projekt eine Gruppenarbeit darstellt, war es möglich identische und gemeinsam genutzte Dateien auszulagern. Dadurch existieren sie nur einmal, was eventuelle Änderungen an dem Projekt vereinfacht. \hfill$\spadesuit$
