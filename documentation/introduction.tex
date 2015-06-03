@@ -72,8 +72,8 @@ In einer weiteren Forschungsaufgabe werden die Besonderheiten des Algorithmus be
      
 \section{Algorithmus von Hopcroft und Karp} % Ruslan
 Der Algorithmus wurde in Phasen unterteilt. In jeder Phase des Algorithmen wird nach einer inklusions-maximalen Menge von kürzesten disjunkten Augmentationswegen gesucht. Die in einer Phase gefundenen Augmentationswege werden nacheinander hervorgehoben und das Matching augmentiert.
-Das Aufzeigen der Augmentationswege stand im Fokus bei der Visualisierung des Algorithmen. Der Benutzter sollte diese leicht erkennen und nachvollziehen können. Um das Konzept von disjunkten Augmentationswegen zu verdeutlichen, werden die Knoten der bereits verarbeiteten Augmentationswegen grau markiert. Dadurch wird dem Benutzer verdeutlicht, dass ein Knoten in einer Phase nur auf einem Augmentationsweg vorkommt. 
-Die graue Markierung der benutzten Knoten sollte außerdem hervorheben, dass die Menge von disjunkten Augmentationswegen inklusions-maximal ist. Der Benutzer kann am Ende einer Phase leicht nachvollziehen, dass es keinen weiteren disjunkten kürzesten Augmentationsweg existiert.
+Das Aufzeigen der Augmentationswege stand im Fokus bei der Visualisierung des Algorithmus. Der Benutzter sollte diese leicht erkennen und nachvollziehen können. Um das Konzept von disjunkten Augmentationswegen zu verdeutlichen, werden die Knoten der bereits verarbeiteten Augmentationswegen grau markiert. Dadurch wird dem Benutzer verdeutlicht, dass ein Knoten in einer Phase nur auf einem Augmentationsweg vorkommt. 
+Die graue Markierung der benutzten Knoten sollte außerdem hervorheben, dass die Menge der disjunkten Augmentationswege inklusions-maximal ist. Der Benutzer kann am Ende einer Phase leicht nachvollziehen, dass es keinen weiteren disjunkten kürzesten Augmentationsweg existiert.
 
 \begin{figure}[h!]
 	\centering
@@ -83,7 +83,7 @@ Die graue Markierung der benutzten Knoten sollte außerdem hervorheben, dass die
 
 In der ersten Forschungsaufgabe soll der Nutzer sein Verständnis über den Ablauf des Algorithmen prüfen. Der Benutzer sollte das Konzept von kürzesten Augmentationswegen verstehen und wissen, welche Kanten nach einem Augmentationsschritt im Matching sein werden.
 
-In der zweiten Forschungsaufgabe bekommt der Nutzer die Gelegenheit mit Augmentationswegen zu experimentieren. Der Algorithmus stoppt zufällig an einigen Stellen, wo der Benutzer einen Augmentationsweg selbst einzeichnen soll. Es müssen nicht die kürzesten Augmentationswege eingezeichnet werden. Der Benutzer sollte sehen, wie seine Wahl die weitere Ausführung des Algorithmen beeinflusst. \hfill$\spadesuit$
+In der zweiten Forschungsaufgabe bekommt der Nutzer die Gelegenheit, selbst mit Augmentationswegen zu experimentieren. Der Algorithmus stoppt zufällig an einigen Stellen, wo der Benutzer einen Augmentationsweg selbst einzeichnen soll. Es müssen nicht die kürzesten Augmentationswege eingezeichnet werden. Der Benutzer sollte sehen, wie seine Wahl die weitere Ausführung des Algorithmus beeinflusst. \hfill$\spadesuit$
 
 \section{Ungarische Methode} % Aleksejs
 Obwohl es mehrere Implementierungen der Ungarischen Methode gibt, die Idee bleibt bei allen gleich. Die Applikation geht nicht tief in die Einzelheiten der konkreten Implementierung, sondern erklärt das generelle Prinzip der Ungarischen Methode. Dafür war der Einsatz des bipartiten gewichteten Graphs notwendig. Als die Ungarische Methode perfektes Matching im bipartiten Graphen sucht, wird eingegebener Graph in der Anwendung bis zum kompletten Graphen vervollständigt falls der Nutzer das nicht gemacht hat. Um die genutzte Begriffe (wie z. B. Matching oder Augmentationsweg) verständlich zu machen, werden unterschiedliche Farben für Knoten und Kanten während des Ablaufs verwendet (vgl. Abbildung~\ref{fig:hungarian-colors}).
@@ -107,7 +107,7 @@ Das Besondere bei dem Chinese-Postman-Algorithmus ist, dass er für die Ausführ
 \item Hierholzer-Algorithmus
 \end{itemize}
 Der Algorithmus ist in verschiedene Schritte eingeteilt. Zuerst wird überprüft, ob das Problem auf dem Graphen lösbar ist. Anschließend wird eine Menge von Pfaden gesucht, sodass nach dem Einfügen dieser Pfade in den Graphen der Graph eulersch wird. Die Summe der Längen dieser Pfade sollte minimal sein.
-Zum Schluss wird ein Eulerkreis im Graphen gefunden, was die Lösung des Problems darstellt.
+Zum Schluss wird ein Eulerkreis im Graphen gefunden, welcher die Lösung des Problems darstellt.
 
 %Visualisierung
 Um die optimale Menge von zusätzlichen Pfaden zu bestimmen, werden zuerst Knoten bestimmt, bei denen die Anzahl der Eingangs- und Ausgangskanten nicht übereinstimmt.
@@ -120,7 +120,7 @@ Abhängig davon, ob es zu viele Eingangs- oder Ausgangsknoten gibt, werden diese
 	\caption[Chinese-Postman: Unbalancierte Knoten]{Hervorheben von Knoten mit ungleichem Eingangs- und Ausgangsgrad}\label{fig:postman_unbalanced}
 \end{figure}
 
-Im nächsten Schritt wird ein bipartiter Graph erstellt, der aus den markierten Knoten besteht. Um den Wechsel von dem Ausgangsgraphen zu dem bipartiten Graphen nachvollziehbar zu gestalten, wurde eine Animation eingefügt. Alle für den Matching-Graphen relevanten Knoten werden aus dem Graphen herausgenommen und zu dem bipartiten Matching-Graphen transportiert. Das Aussehen des Matching-Graphen wurde aus der Ungarischen Methode übernommen. 
+Im nächsten Schritt wird ein bipartiter Graph erstellt, der aus den markierten Knoten besteht. Um den Wechsel von dem Ausgangsgraphen zu dem bipartiten Graphen nachvollziehbar zu gestalten, wurde eine Animation eingefügt. Alle für den Matching-Graphen relevanten Knoten werden in den bipartiten Matching-Graphen übergeführt. Das Aussehen des Matching-Graphen wurde aus der Ungarischen Methode übernommen. 
 
 \begin{figure}[h!]
 	\centering
@@ -128,9 +128,9 @@ Im nächsten Schritt wird ein bipartiter Graph erstellt, der aus den markierten 
 	\caption[Chinese-Postman: Matchinggraph]{Matchinggraph}\label{fig:postman_matching}
 \end{figure}
 
-In der Implementierung des Algorithmen bestimmt die Differenz zwischen Ausgangs- und Eingangsgrad eines Knotens, wie oft dieser im Matching-Graphen vorkommt. Es entsteht ein vollständiger bipartiter Graph, sodass mit der Ungarischen-Methode-Algorithmus ein optimales Matching bestimmt werden kann. Das Gewicht einer Kante ist die Länge des kürzesten Weges von dem Knoten mit negativer Differenz zwischen Ausgangs- und Eingangsgrad zu dem Knoten mit positiver Differenz. Bei der Visualisierung des Algorithmen wurde eine Entscheidung zugunsten Übersichtlichkeit getroffen, sodass ein Knoten nur einmal im Matching-Graphen vorkommen sollte. Dadurch wird für den Nutzer nachvollziehbar, zwischen welchen Knoten neue Wege eingefügt werden müssen. Die Differenz zwischen Ausgangs- und Eingangsgrad eines Knotens bestimmt die Anzahl von Pfaden, die in diesem Knoten enden bzw. anfangen müssen und somit die Anzahl von Matching-Kanten, die zu diesem Knoten inzident sind.
+In der Implementierung des Algorithmen bestimmt die Differenz zwischen Ausgangs- und Eingangsgrad eines Knotens, wie oft dieser im Matching-Graphen vorkommt. Es entsteht ein vollständiger bipartiter Graph, sodass mit der Ungarischen Methode ein optimales Matching bestimmt werden kann. Das Gewicht einer Kante ist die Länge des kürzesten Weges von dem Knoten mit negativer Differenz zwischen Ausgangs- und Eingangsgrad zu dem Knoten mit positiver Differenz. Bei der Visualisierung des Algorithmus wurde eine Entscheidung zugunsten Übersichtlichkeit getroffen, sodass ein Knoten nur einmal im Matching-Graphen vorkommen sollte. Dadurch wird für den Nutzer nachvollziehbar, zwischen welchen Knoten neue Wege eingefügt werden müssen. Die Differenz zwischen Ausgangs- und Eingangsgrad eines Knotens bestimmt die Anzahl von Pfaden, die in diesem Knoten enden beziehungsweise anfangen müssen und somit die Anzahl von Matching-Kanten, die zu diesem Knoten inzident sind.
 
-Nachdem die optimalen Pfade im Matching-Schritt bestimmt wurden, werden die Knoten wieder an ihren Platz in den normalen Graphen transportiert. Allerdings werden die Matching-Kanten ebenfalls in den Graphen übernommen. Der Benutzer sieht somit auch im normalen Graphen, zwischen welchen Knoten neue Wege eingefügt werden müssen.
+Nachdem die optimalen Pfade im Matching-Schritt bestimmt wurden, werden die Knoten des Matching-Graphen an ihren Platz in den normalen Graphen übergeführt. Allerdings werden die Matching-Kanten ebenfalls in den Graphen übernommen. Der Benutzer sieht somit auch im normalen Graphen, zwischen welchen Knoten neue Wege eingefügt werden müssen.
 Das Einfügen von neuen Pfaden wird ebenfalls mittels einer Animation aufgezeigt. Die aktuelle Matching-Kante wird markiert und die Kanten auf dem neuen Weg werden schrittweise in den Graphen eingefügt. Anschießend wird die Matching-Kante gelöscht.
 
 Am Ende des Algorithmen wird die Eulertour des Graphen bestimmt. Der Nutzer kann die Animation der Tour selbst starten und stoppen. Die Visualisierung der Eulertour ist aus dem Hierholzer-Algorithmus übernommen.
@@ -144,7 +144,7 @@ Am Ende des Algorithmen wird die Eulertour des Graphen bestimmt. Der Nutzer kann
 %Forschungsaufgaben
 Die erste Forschungsaufgabe sollte das Wissen des Benutzers prüfen. Der Benutzer sollte verstehen, welche Knoten im Matching-Graphen gebraucht werden und wie viele zusätzliche Wege in einem Knoten starten bzw. enden müssen.
 
-Die zweite Forschungsaufgabe lässt dem Benutzer die Möglichkeit den Rundweg selbst zu bestimmen, der alle Kanten des Graphen enthält. Anschließend wird die Länge dieses Weges mit der optimalen Lösung verglichen. Der Benutzer kann dadurch feststellen, inwiefern seine Lösung von der optimalen Lösung abweicht. \hfill$\spadesuit$
+Die zweite Forschungsaufgabe lässt dem Benutzer die Möglichkeit, den Rundweg selbst zu bestimmen, der alle Kanten des Graphen enthält. Anschließend wird die Länge dieses Weges mit der optimalen Lösung verglichen. Der Benutzer kann dadurch feststellen, inwiefern seine Lösung von der optimalen Lösung abweicht. \hfill$\spadesuit$
 
 \chapter{Implementierung}
 Das folgende Kapitel dient als technische Dokumentation unserer Implementierung. Im ersten Teil erläutern wir die Schritte, die für die Installation der Anwendungen nötig sind. Im Weiteren stellen wir Neuheiten im Framework vor, die wir für die Implementierung der Algorithmen implementiert haben.
@@ -229,8 +229,8 @@ Falls eine Kante zwischen beliebigen zwei Knoten fehlt, wird eine zusätzliche g
 
 \section{Multigraphen} % Ruslan
 %Motivation
-In bisherigen auf dem Framework basierenden Algorithmen war es nicht möglich Multikanten zu erstellen, was aber für die Algorithmen nicht notwendig war. Es war möglich maximal zwei Kanten zwischen zwei Knoten einzufügen. 
-In dem Chinese-Postman-Algorithmus werden während der Ausführung Kanten in den Graphen eingefügt. Deshalb muss das Graphenmodell für den Chinese-Postman-Algorithmus mit Multikanten darstellen können. Die Abbildung \ref{fig:multigraph} zeigt einen Graphen mit Multikanten. \hfill$\spadesuit$
+In bisherigen auf dem Framework basierenden Algorithmen war es nicht möglich, Multikanten zu erstellen, was auch für die Algorithmen nicht notwendig war. Es war möglich, maximal zwei Kanten zwischen zwei Knoten einzufügen. 
+In dem Chinese-Postman-Algorithmus werden jedoch während der Ausführung Kanten in den Graphen eingefügt. Deshalb muss das Graphenmodell für den Chinese-Postman-Algorithmus Multikanten darstellen können. Die Abbildung \ref{fig:multigraph} zeigt einen Graphen mit Multikanten. \hfill$\spadesuit$
 %Beispiel
 \begin{figure}[h!]
 	\centering
