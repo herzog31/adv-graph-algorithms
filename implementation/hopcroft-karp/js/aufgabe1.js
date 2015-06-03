@@ -7,7 +7,7 @@
 /**
  * Instanz der Forschungsaufgabe 1
  * @constructor
- * @param {Graph} p_graph Graph, auf dem der Algorithmus ausgeführt wird
+ * @param {BipartiteGraph} p_graph Graph, auf dem der Algorithmus ausgeführt wird
  * @param {Object} p_canvas jQuery Objekt des Canvas, in dem gezeichnet wird.
  * @param {Object} p_tab jQuery Objekt des aktuellen Tabs.
  * @augments CanvasDrawer
@@ -29,10 +29,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      * @type Number
      */
     var fastForwardIntervalID = null;
-    /*
-    * Das Objekt, das den Hopcroft-Karp-Algorithmus ausfuehrt
-    * */
-    //var hkAlgo;
     /**
      * Closure Variable für dieses Objekt
      * @type Forschungsaufgabe1

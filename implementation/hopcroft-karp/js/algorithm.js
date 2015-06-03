@@ -2,7 +2,7 @@
  * Instanz des Hopcroft-Karp Algorithmus, erweitert die Klasse CanvasDrawer
  * @constructor
  * @augments CanvasDrawer
- * @param {Graph} p_graph Graph, auf dem der Algorithmus ausgeführt wird
+ * @param {BipartiteGraph} p_graph Graph, auf dem der Algorithmus ausgeführt wird
  * @param {Object} p_canvas jQuery Objekt des Canvas, in dem gezeichnet wird.
  * @param {Object} p_tab jQuery Objekt des aktuellen Tabs.
  */
@@ -37,21 +37,11 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      */
     var algo = this;
     /**
-     * Hier die Variablen vom HK-Algo
-     */
-    /**
      * Enthaelt alle Kanten, die zu aktuellem Zeitpunkt zum Matching gehoeren.
      * Keys: KantenIDs Value: Kanten
      * @type Object
      */
     var matching = new Object();
-/*    *//**
-     * Enthaelt alle freien Knoten (derzeit) der linken Seite
-     * Wird als Ausgangspunkt fuer die Erstellung des alternierenden Graphen benutzt.
-     * Keys: KnotenIDs Value: Knoten
-     * @type Object
-     *//*
-    var superNode = new Object();*/
     /*
     * Repraesentiert den Augmentierungsgraphen.
     * @type Object
@@ -96,10 +86,14 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      */
     var toggleMatchButton = true;
     /**
-     * Gibt das Statusausgabefenster an.
+     * Gibt den Kontext des Ausgabefensters an.
+     * @type String
      */
     var st = "ta";
-
+    /**
+     * Gibt das Statusausgabefenster an.
+     * @type String
+     */
     var statusErklaerung = "#"+st+"_div_statusErklaerung";
     /*
     * Hier werden die Statuskonstanten definiert
@@ -265,7 +259,8 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     };
 
     /*
-    * Mit Hilfe der Breitensuche wird ein Augmentierungsgraph aufgebaut, der die kuerzesten Augmentationswege enthaelt.
+    * Mit Hilfe der Breitensuche wird ein Augmentationsgraph aufgebaut, der die kuerzesten Augmentationswege enthaelt.
+    * @param {Object} superNode   Startknoten fuer die Breitensuche.
     * @method
     * */
     var bfs = function (superNode) {
@@ -337,6 +332,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
 
     /*
     * Mittels der Tiefensuche wird nach knotendisjunkten Augmantationswegen gesucht. Dabei wird der Augmentierungsgraph aus der Bfs-Phase verwendet.
+    * @param {Object} superNode   Startknoten fuer die Tiefensuche
     * @method
     * */
    var dfs = function(superNode){
@@ -365,6 +361,8 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
    };
     /*
     * Rekursives Unterprogramm, das fuer die Tiefensuche benutzt wird.
+    * @param {Object} node   Der aktuelle Knoten
+    * @param {Object} stack   Der aufgebaute Stack
     * @method
     * */
    var recursiveDfs = function (node, stack) {
@@ -483,6 +481,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     };
     /*
      * Der aktuelle Augmentationsweg wird hervorgehoben.
+     * @param {Object} path   Der aktuelle Augmentationsweg
      * @method
      * */
     this.highlightPath = function(path){
@@ -513,6 +512,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     /*
      * Das Matching wird durch den aktuellen Augmentationsweg verbessert.
      * Die Kanten des aktuellen Augmentationsweges werden vertauscht.
+     * @param {Object} path   Der aktuelle Augmentationsweg
      * @method
      * */
     this.augmentMatching = function(path){
@@ -545,6 +545,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
 
     /*
      * Die auf dem Augmentationsweg benutzten Knoten und inzidenten Kanten werden ausgeblendet.
+     * @param {Object} path   Der aktuelle Augmentationsweg
      * @method
      * */
     this.hidePath = function(path){
@@ -705,6 +706,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
 
     /**
      * Setzt das Ausgabefenster, wo Erklaerungen ausgegeben werden.
+     * @param {String} fenster   Der Kontext des neuen Ausgabefensters
      * @method
      */
     this.setStatusWindow = function(fenster){
@@ -720,6 +722,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     };
     /**
      * Gibt zurueck, ob der Knoten gematcht ist.
+     * @param {Object} node Knoten
      * @method
      */
     this.isMatched = function (node){
@@ -727,6 +730,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     };
     /**
      * Gibt den Partner des Knoten zurueck, falls er existiert.
+     * @param {Object} node Knoten
      * @method
      */
     this.getPartner = function (node){

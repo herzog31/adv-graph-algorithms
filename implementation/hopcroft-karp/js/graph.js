@@ -456,13 +456,26 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
         return jQuery.extend(true, {},layout);
     };
 
+    /**
+     * @method
+     * @param {String} label Zusätzliches Label
+     */
     this.setAdditionalLabel = function(label) {
         additionalLabel = label;
     };
+
+    /**
+     * @method
+     * @return {String} Zusätzliches Label
+     */
     this.getAdditionalLabel = function() {
         return additionalLabel;
     };
 
+    /**
+     * Verändert das Aussehen des Knotens
+     * @param {Object} layoutObject Layout
+     */
     this.setLayoutObject = function(layoutObject) {
         layout = layoutObject;
     };
@@ -1227,9 +1240,15 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
     };
 
     /**
-     * Gibt die Variable dragging zurueck
+     * Gibt zurueck, ob ein Knoten gezogen wird
+     * @returns {Boolean} Variable dragging
      */
     this.dragging = function(){return dragging;};
+
+    /**
+     * Gibt den ausgewaehlten Knoten zurueck
+     * @returns {Object} ausgewaehlter Knoten
+     */
     this.getSelectedNode = function(){return selectedNode};
 }
 

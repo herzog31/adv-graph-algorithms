@@ -1,5 +1,13 @@
 /**
- * Created by Ruslan on 06.10.2014.
+ * @author Ruslan Zabrodin
+ * Hier wird der bipartite Graph und alle zugehörigen Fuktionen definiert.<br>
+ * Außerdem wird die Klasse BipartiteGraphDrawer definiert, die es ermöglicht auf das Canvas zu zeichnen<br>
+ * Schließich werden einige globale Objekte definiert.
+ */
+
+/**
+ * Einige Konstanten, die im BipartiteGraph genutzt werden.
+ * @type Object
  */
 var graph_constants = {
     U_POSITION : 75, //standard 75
@@ -9,21 +17,54 @@ var graph_constants = {
     MAX_NODES: 8
 };
 
+/**
+ * Datenstruktur für einen bipartiten Graph.
+ * Benutzt Graph als Oberklasse.
+ * @constructor
+ * @augments Graph
+ * @argument {String} [filename] Parse Graph aus der gegebenen Datei, oder Angabe "random"
+ * @argument {Object} [canvas] jQuery Handler zum Canvas in den gezeichnet werden soll, für Zufallsgraph.
+ * @argument {String} [text] textuelle Beschreibung des Graphen.
+ * @this {BipartiteGraph}
+ */
 function BipartiteGraph(filename,p_canvas,text){
     Graph.call(this);
-
+    /**
+     *  Knoten der ersten Knotenmenge, assoziatives Array mit den KnotenIDs als Schlüssel
+     *  und den Knoten als Wert.
+     *  @type Object
+     */
     this.unodes = new Object();
+    /**
+     *  Knoten der zweiten Knotenmenge, assoziatives Array mit den KnotenIDs als Schlüssel
+     *  und den Knoten als Wert.
+     *  @type Object
+     */
     this.vnodes = new Object();
-
+    /**
+     *  jQuery Handler zum Canvas in den gezeichnet werden soll
+     *  @type Object
+     */
     var canvas = p_canvas;
     /**
      * Closure Objekt für den Graph
      * @type Graph
      */
     var closure_graph = this;
-
+    /**
+     *  Die addNode Methode der Oberklasse
+     *  @type method
+     */
     this.base_addNode = this.addNode;
+    /**
+     *  Die addEdgee Methode der Oberklasse
+     *  @type method
+     */
     this.base_addEdge = this.addEdge;
+    /**
+     *  Die removeNode Methode der Oberklasse
+     *  @type method
+     */
     this.base_removeNode = this.removeNode;
 
     /*
@@ -58,6 +99,12 @@ function BipartiteGraph(filename,p_canvas,text){
         }
     };
 
+    /**
+     * Fügt dem Graph einen Knoten hinzu
+     * @method
+     * @param {Boolean} isInU Gibt an, ob der Knoten in die erste Knotenmenge hinzugefuegt werden soll
+     * @return {GraphNode}
+     */
     this.addNode = function (isInU) {
         var numberOfNodes;
         if(isInU) numberOfNodes = Object.keys(this.unodes).length;
@@ -75,14 +122,25 @@ function BipartiteGraph(filename,p_canvas,text){
         }
         return node;
     };
-
+    /**
+     * Entfernt den angegebenen Knoten aus dem Graph
+     * @method
+     * @param {Number} nodeID ID des zu löschenden Knoten.
+     */
     this.removeNode = function(nodeID) {
         this.base_removeNode(nodeID);
         delete this.unodes[nodeID];
         delete this.vnodes[nodeID];
         this.reorderNodes();
     };
-
+    /**
+     * Fügt dem Graph eine Kante hinzu
+     * @method
+     * @param {GraphNode} source   Anfangsknoten der Kante.
+     * @param {GraphNode} target   Endknoten der Kante.
+     * @param {Number} weight Gewicht der Kante.
+     * @return {Edge}
+     */
     this.addEdge = function(source,target,weight) {
         if(source == null || target == null) return null;
         //check first if its bipartite
@@ -94,7 +152,18 @@ function BipartiteGraph(filename,p_canvas,text){
         if(this.unodes[source.getNodeID()]) return this.base_addEdge(source,target,weight);
         else return this.base_addEdge(target,source,weight);
     };
-
+    /**
+     * Liest den Graph aus einer externen Datei ein.<br>
+     * Graphen werden in Textdateien gespeichert und folgen einem einfachen Format:<br>
+     * Die Datei wird zeilenweise gelesen <br>
+     * Zeilen die mit % beginnen sind Kommentare<br>
+     * Zeilen der Form n Zahl1 Zahl2 beschreiben einen Knoten mit den Koordinaten (x,y) = (Zahl1,Zahl2)<br>
+     * Zeilen der Form e id1 id2 g beschreiben eine Kante zwischen den Knoten mit IDs id1 und id2
+     * mit Gewicht g.<br><br>
+     * @param {String} file Dateiname
+     * @private
+     * @method
+     */
     function parseGraphfromFile(file) {
         var request = $.ajax({
             url: file,
@@ -103,8 +172,13 @@ function BipartiteGraph(filename,p_canvas,text){
         });
 
         request.done(parseFromText);
-    };
-
+    }
+    /**
+     * Liest den Graph aus einem String ein.<br>
+     * @param {String} file Dateiname
+     * @private
+     * @method
+     */
     function parseFromText(text) {
         var lines = text.split("\n");                     // Nach Zeilen aufteilen
         var ucard = 0;
@@ -140,8 +214,13 @@ function BipartiteGraph(filename,p_canvas,text){
                 }
             }
         }
-    };
-
+    }
+    /**
+     * Generiert einen Zufallsgraph.
+     * @param {Object} canvas jQuery Handler zum Canvas, auf das der Graph gezeichnet wird
+     * @method
+     * @private
+     */
     function generateRandomGraph(canvas) {
         var NumberOfNodes = 7;
         var diff = (canvas[0].width-100)/NumberOfNodes;
@@ -160,11 +239,21 @@ function BipartiteGraph(filename,p_canvas,text){
             }
         }
     }
-
+    /**
+     * Setzt den Canvas
+     * @param {Object} can jQuery Handler zum Canvas, auf das der Graph gezeichnet wird
+     * @method
+     * @private
+     */
     this.setCanvas = function(can){
         canvas = can;
     };
-
+    /**
+     * Für Debugging / erstellen neuer Beispiele:
+     * Gibt eine String Repräsentation nach dem Schema, das in den Beispielgraphen genutzt wird,
+     * vom aktuellen Graph.
+     * @returns {String} Repräsentation als String
+     */
     this.getDescriptionAsString = function() {
         var graphDescription = "";
         graphDescription += "% Automatisch generiert um " +(new Date).toGMTString() + "\n";
@@ -196,16 +285,40 @@ function BipartiteGraph(filename,p_canvas,text){
 BipartiteGraph.prototype = Object.create(Graph.prototype);
 BipartiteGraph.prototype.constructor = BipartiteGraph;
 
-
+/**
+ * Kapselt die Funktionalität um einen BipartiteGraph auf das Canvas zu zeichnen
+ * @constructor
+ * @augments GraphDrawer
+ * @param {Graph} p_graph Graph, auf dem der Algorithmus ausgeführt wird.
+ * @param {Object} p_canvas jQuery Objekt des Canvas, in dem gezeichnet wird.
+ * @param {Object} p_tab jQuery Objekt des aktuellen Tabs.
+ */
 function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
     GraphDrawer.call(this,p_graph,p_canvas,p_tab);
+    /**
+     * Graph, auf dem der Algorithmus ausgeführt wird
+     * @type Object
+     */
     var graph = p_graph;
+    /**
+     * jQuery Objekt des Canvas, in dem gezeichnet wird
+     * @type Object
+     */
     var canvas = p_canvas;
     graph.setCanvas(canvas);
     canvas.off("mouseup.GraphDrawer");  // Mouseup off
+    /**
+     *  Die mouseDownHandler Methode der Oberklasse
+     *  @type method
+     */
     this.base_mouseDownHandler = this.mouseDownHandler;
 
-
+    /**
+     * Behandelt Mausbewegungen im Canvas<br>
+     * Falls ein Knoten ausgewählt ist und die Maus nicht gedrückt, so wird eine neue Kante gezeichnet
+     * @param {jQuery.Event} e jQuery Event Objekt, enthält insbes. die Koordinaten des Mauszeigers.
+     * @method
+     */
     this.mouseMoveHandler = function(e) {
         if (this.getSelectedNode() != null) {
             this.unfinishedEdge.to = {x: e.pageX - canvas.offset().left, y: e.pageY - canvas.offset().top};
@@ -213,7 +326,12 @@ function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
             this.needRedraw = true;
         }
     };
-
+    /**
+     * Behandelt Doppelklicks im Canvas<br>
+     * bei einem Doppelklick in die freie Landschaft in der Naehe einer Knotenmenge wird ein neuer Knoten in selbiger Knotenmenge erstellt.
+     * @param {jQuery.Event} e jQuery Event Objekt, enthält insbes. die Koordinaten des Mauszeigers.
+     * @method
+     */
     this.dblClickHandler = function(e) {
         var isInU = e.pageY - canvas.offset().top < 0.5 * (graph_constants.V_POSITION + graph_constants.U_POSITION);
         graph.addNode(isInU);
@@ -230,7 +348,10 @@ function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
         $("#tab_tg").data("algo",algo);
         algo.run();
     };
-
+    /**
+     * Setzt den Graph auf einen der Beispielgraphen. Fügt auch die
+     * Hintergrundbilder per CSS hinzu.
+     */
     this.setGraphHandler = function() {
         var selection = $("#tg_select_GraphSelector>option:selected").attr("value");
         switch(selection) {
@@ -266,7 +387,12 @@ function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
         this.refresh();
         $("#tg_select_GraphSelector").val(selection);
     };
-
+    /**
+     * Behandelt Rechtsklicks im Canvas<br>
+     * Bei einem Rechtsklick auf einen Knoten oder eine Kante wird diese gelöscht.
+     * @param {jQuery.Event} e jQuery Event Objekt, enthält insbes. die Koordinaten des Mauszeigers.
+     * @method
+     */
     this.rightClickHandler = function(e) {
         e.preventDefault();                                 // Kein Kontextmenü
         this.deselectNode();                                // In jedem Fall erstmal den aktuellen Knoten abwählen...
@@ -298,6 +424,15 @@ function BipartiteGraphDrawer(p_graph,p_canvas,p_tab) {
         }
     };
 }
+
+/**
+ * Zeigt, ob ein Kante zwischen den beiden Knoten existiert
+ * @method
+ * @param {GraphNode} source   Anfangsknoten der Kante.
+ * @param {GraphNode} target   Endknoten der Kante.
+ * @return {Number}
+ * @this {Graph}
+ */
 BipartiteGraph.prototype.getEdgeBetween= function(source,target) {
     for(var edgeID in this.edges) {
         if((this.edges[edgeID].getSourceID() == source.getNodeID()
