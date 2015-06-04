@@ -194,6 +194,10 @@ function GraphNode(coordinates,nodeID) {
         layout[parameter] = newValue;
     };
 
+    /**
+     * Verändert das Aussehen des Knotens
+     * @param {Object} layoutObject Layout
+     */
     this.setLayoutObject = function(layoutObject) {
         layout = layoutObject;
     };
@@ -473,7 +477,7 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
     };
 
     /**
-     * Verändert das Aussehen des Knotens
+     * Verändert das Aussehen der Kante
      * @param {Object} layoutObject Layout
      */
     this.setLayoutObject = function(layoutObject) {

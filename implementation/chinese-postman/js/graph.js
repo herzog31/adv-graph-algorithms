@@ -203,6 +203,10 @@ function GraphNode(coordinates,nodeID) {
         layout[parameter] = newValue;
     };
 
+    /**
+     * Verändert das Aussehen des Knotens
+     * @param {Object} layoutObject Layout
+     */
     this.setLayoutObject = function(layoutObject) {
         layout = layoutObject;
     };
@@ -286,13 +290,14 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
      */
     var directed = directedEdge;
     /**
-     * Pointer auf die Kante in entgegengesetzter Richtung
-     * @type Number
+     * Ausgangsknoten der Kante
+     * @type Object
      */
-    //var oppositeEdge = null;
-
     var source = sourceNode;
-
+    /**
+     * Zielknoten der Kante
+     * @type Object
+     */
     var target = targetNode;
     /**
      * ID des Quellknotens der Kante
@@ -374,44 +379,21 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
         return targetID;
     };
     /**
-     * @method
-     * @returns {Number} ID der entgegengesetzten Kante
-     */
-    this.getOppositeEdgeID = function() {
-        return oppositeEdge;
-    };
-    /**
-     * Trage eine Kante als entgegengesetzte Kante ein.
-     * @method
-     * @param {Number} edgeID ID der entgegengesetzten Kante
-     */
-    this.setOppositeEdgeID = function(edgeID) {
-        oppositeEdge = edgeID;
-    };
-    /**
      * Setze die Koordinaten des Anfangs der Kante
      * @method
      * @param {Object} coord Koordinaten des Anfangs der Kante
-     * @param {Boolean} noShift Ob die Koordinaten verschoben werden sollen,
      * damit Kanten nicht überlappen
      */
-    this.setSourceCoordinates = function(coord,noShift) {
+    this.setSourceCoordinates = function(coord) {
         sourceCoordinates = coord;
-        //if(oppositeEdge && !noShift) {
-        //    this.shift();
-        //}
     };
     /**
      * Setze die Koordinaten des Ziels der Kante
      * @method
      * @param {Object} coord Koordinaten des Ziels der Kante
-     * @param {Boolean} noShift Ob die Koordinaten verschoben werden sollen,
      */
-    this.setTargetCoordinates = function(coord,noShift) {
+    this.setTargetCoordinates = function(coord) {
         targetCoordinates = coord;
-        //if(oppositeEdge && !noShift) {
-        //    this.shift();
-        //}
     };
     /**
      * @method
@@ -468,14 +450,10 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
     this.getLayout = function() {
         return jQuery.extend(true, {},layout);
     };
-
-    this.setAdditionalLabel = function(label) {
-        this.additionalLabel = label;
-    };
-    this.getAdditionalLabel = function() {
-        return this.additionalLabel;
-    };
-
+    /**
+     * Verändert das Aussehen der Kante
+     * @param {Object} layoutObject Layout
+     */
     this.setLayoutObject = function(layoutObject) {
         layout = layoutObject;
     };
@@ -487,8 +465,6 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
     this.setLayout = function(parameter,newValue) {
         layout[parameter] = newValue;
     };
-
-
     /**
      * Gibt den Status des Felds "isHighlighted" an, der z.B. für die 
      * Markierung der Vorgängerkanten genutzt werden kann.
