@@ -75,7 +75,7 @@
                 <p>
                     Das Problem wird mittels eines gerichteten Graphen modelliert.
                     Knoten stellen Kreuzungen dar und Kanten sind die Straßen. Die Länge der Straße entspricht dem Gewicht der zugehörigen Kante.
-                    Damit man Einbahnstraßen darstellen kann, werden gerichtete Kanten verwendet.
+                    Durch Verwendung von gerichteten Kanten ist es möglich Einbahnstraßen im Graphen darzustellen.
                 </p>
                 <h2>Hier wird der Chinese-Postman-Algorithmus für gerichtete Graphen vorgestellt, der den günstigsten Kantenzug findet, sodass jede Kante mindestens einmal benutzt wird.</h2>
                 <div id ="te_div_Entscheidung">
@@ -187,7 +187,7 @@
                             <p class="pseudocode" id="ta_p_2">  2. Finden von unbalancierten Knoten</p>
                             <p class="pseudocode" id="ta_p_3">  3. Bestimmen von zusätzlichen Pfaden</p>
                             <p class="pseudocode" id="ta_p_4">  4. Einfügen von zusätzlichen Pfaden</p>
-                            <p class="pseudocode" id="ta_p_5">  5. Bestimmen von dem Eulerkreis</p>
+                            <p class="pseudocode" id="ta_p_5">  5. Bestimmen des Eulerkreises</p>
                             <p class="pseudocode" id="ta_p_end">END</p>
                         </div>
                     </div>
@@ -216,17 +216,17 @@
                 </div>
                 <h1>Briefträgerproblem</h1>
                 <p>
-                    Ein typisches Beispiel für dieses Problems ist ein Postbote, der alle Straßen einer Stadt ablaufen muss und wieder zum Startpunkt zurückkehrt. Dabei will er eine möglichst kurze Distanz zurücklegen.
+                    Ein typisches Beispiel für dieses Problem ist ein Postbote, der alle Straßen einer Stadt ablaufen muss und wieder zum Startpunkt zurückkehrt. Dabei will er eine möglichst kurze Distanz zurücklegen.
                     Das Problem lässt sich mit einem Graphen modellieren.
                     Ein Kantenzug ist eine Folge von Kanten im Graphen, sodass jede nächste Kante als Startknoten den Endknoten der vorherigen Kante besitzt.
-                    Ein Kantenzug ist geschlossen, falls er wieder zum Startknoten des ersten Knotens zurückkehrt.
+                    Ein Kantenzug ist geschlossen, falls er wieder zum Startknoten der ersten Kante zurückkehrt.
                 </p>
                 <p>
-                    Man nennt einen geschlossenen Kantenzug Eulerkreis (Eulertour), falls er der alle Kanten eines Graphen genau einmal enthält.
-                    Das Briefträgerproblem besteht darin, einen geschlossenen Kantenzug im Graphen zu finden, sodass alle Kanten mindesten einmal
+                    Man nennt einen geschlossenen Kantenzug Eulerkreis (Eulertour), falls er alle Kanten eines Graphen genau einmal enthält.
+                    Das Briefträgerproblem besteht darin, einen geschlossenen Kantenzug (Rundgang) im Graphen zu finden, sodass alle Kanten mindesten einmal
                     benutzt werden und die Summe der Kantengewichte des Kantenzugs (Kosten des Rundgangs) minimal ist.
                 </p>
-                <h1>Idee des Algorithmen</h1>
+                <h1>Idee des Algorithmus</h1>
                 <p>
                     Da Knoten ohne Eingangs- und Ausgangskanten keinen Einfluss auf die Lösung des Problems haben, können wir annehmen, dass solche isolierten Knoten nicht existieren.
                     Das Problem ist genau dann lösbar, wenn der Graph stark zusammenhängend ist (jeder Knoten von jedem Knoten aus erreichbar) und keine negativen Kreise (geschlossener Kantenzug im Graphen, sodass die Summe der Gewichte der Kanten negativ ist) existieren.
@@ -236,11 +236,11 @@
                     wir <b>zusätzliche Kanten</b> in den Graphen einfügen, die mehrfach benutzten Kanten repräsentieren (mit dem gleichen Kantengewicht wie die originale Kante). Dann besitzt der Rundgang die gleichen Kosten, wie
                     die Eulertour im neuen Graphen. Das Problem besteht jetzt darin, die mehrfach benutzten Kanten des minimalen Rundgangs zu bestimmen.
                 </p>
-                <p> Die Anzahl der Eingangskanten eines Knotens nennt man den Eingangsgrad und die Anzahl der Ausgangskanten den Ausgangsgrad.
+                <p> Die Anzahl der Eingangskanten eines Knotens nennt man den Eingangsgrad und die Anzahl der Ausgangskanten den Ausgangsgrad des Knotens.
                     <i>Ein Theorem der Graphentheorie besagt, dass es genau dann eine Eulertour im Graphen gibt, wenn bei allen Knoten im Graphen der Eingangsgrad mit dem Ausgangsgrad übereinstimmt.</i>
                     Also reicht es aus, wenn wir <b>zusätzliche Pfade</b> in den Graphen einfügen, sodass nach dem Einfügen bei allen Knoten im Graphen der Eingangsgrad mit dem Ausgangsgrad übereinstimmt.
                     Die Summe der Kantengewichte der Pfade sollte minimal sein.
-                    Welche Pfade genau eingefügt werden, wird im Matching-Schritt des Algorithmen festgestellt.
+                    Welche Pfade genau eingefügt werden, wird im Matching-Schritt des Algorithmus festgestellt.
                 </p>
                 <p>
                     Nachdem sichergestellt wurde, dass der Graph eine Eulertour besitzt, muss diese nur gefunden werden. Dies erfolgt mit einem geeigneten Algorithmus, wie z.B. dem Hierholzer-Algorithmus.
@@ -249,11 +249,11 @@
                 <h1>Kürzeste Wege</h1>
                 <p>
                     Von den Knoten mit zu wenigen Ausgangskanten müssen Wege zu den Knoten mit zu wenigen Eingangskanten hinzugefügt werden. Da die Kosten minimal sein sollten, kommen nur die <b>kürzesten Wege</b> in Frage.
-                    <!--Für den Matching-Schritt des Algorithmen benötigt man die Abstände und die kürzesten Wege zwischen je zwei Knoten des Graphen.-->
+                    <!--Für den Matching-Schritt des Algorithmus benötigt man die Abstände und die kürzesten Wege zwischen je zwei Knoten des Graphen.-->
                     Um die kürzesten Wege zu bestimmen, wird der Algorithmus von <a href="../floyd-warshall/index.html" target="_blank">Floyd-Warshall</a> benutzt.
-                    Der Floyd-Warshall-Algorithmus eignet sich sehr gut an dieser Stelle, da er die kürzesten Wege zwischen allen Knotepaaren berechnet.
+                    Der Floyd-Warshall-Algorithmus eignet sich sehr gut an dieser Stelle, da er die kürzesten Wege zwischen allen Knotenpaaren berechnet.
                     Die Kosten der kürzesten Wege werden im Matching-Schritt benutzt um die optimale Menge von Wegen zu finden.
-                    <!--Weitere Erklärungen zu diesem Algorithmen können <a href="../floyd-warshall/index.html" target="_blank">hier</a> gefunden werden.-->
+                    <!--Weitere Erklärungen zu diesem Algorithmus können <a href="../floyd-warshall/index.html" target="_blank">hier</a> gefunden werden.-->
                 </p>
                 <h1>Matching</h1>
                 <p>
@@ -267,12 +267,12 @@
                     Das Gewicht der zusätzlichen Pfade sollte minimal sein. Um dieses Ziel zu erreichen erstellt man einen neuen <b>bipartiten Graphen</b>, der alle unbalancierten Knoten enthält.
                     Die unbalancierten Knoten werden in zwei Partitionen unterteilt (negatives und positives \(\delta_v\)).
                     \(\delta_v\) bestimmt wie viele Exemplare des Knotens v im bipartiten Graph vorkommen. Zum Beispiel existieren von einem Knoten v mit \(\delta_v=3\) genau 3 Kopien im Graphen.
-                    Bei der Visualisierung des Algorithmen wurde darauf verzichtet mehrere Exemplare eines Knoten darzustellen, damit die Übersicht nicht verloren geht.
+                    Bei der Visualisierung des Algorithmus wurde darauf verzichtet mehrere Exemplare eines Knoten darzustellen, damit die Übersicht nicht verloren geht.
                     Stattdessen wird für einen unbalancierten Knoten genau ein Knoten im Matching-Graphen dargestellt.
-                    Die Knoten in der Visualisierung des Matching-Graphs liegen dann möglicherweise auf mehr als einer Matching-Kante (dies wird durch die \(\delta_v\) bestimmt).
+                    Die Knoten in der Visualisierung des Matching-Graphs liegen dann möglicherweise auf mehr als einer Matching-Kante (dies wird durch \(\delta_v\) bestimmt).
                 </p>
                 <p>
-                    Das Gewicht einer Kante stellt die Länge des kürzesten Pfades von dem Knoten mit positiver Differenz zwischen dem Ausgangs- und dem Eingangsgrad zu dem Knoten mit negativer Differenz dar.
+                    Das Gewicht einer Kante stellt die Länge des kürzesten Pfades von dem Knoten mit negativer Differenz zwischen dem Ausgangs- und dem Eingangsgrad zu dem Knoten mit positiver Differenz dar.
                     Die Summe der Eingangsgrade und der Ausgangsgrade ist in einem Graphen ausgeglichen. Dann ist die Summe der positiven \(\delta_v\) und der negativen \(\delta_v\) ebenfalls ausgeglichen.
                     Damit erhalten wir einen vollständigen bipartiten Graph. Wir wenden einen Algorithmus zur Lösung von gewichteten Matchings auf diesen Graphen an, wie zum Beispiel die
                     <a href="../hungarian/index.html" target="_blank">Ungarische Methode</a>. Damit erhalten wir die optimale Zuordnung und können die neuen Pfade einfügen.
@@ -280,11 +280,11 @@
                 </p>
                 <h1>Eulertour</h1>
                 <p>
-                    Nach dem Einfügen von zusätzlichen Pfaden, besitzten alle Knoten im Graphen die gleiche Anzahl von Eingangs- und Ausgangskanten.
+                    Nach dem Einfügen von zusätzlichen Pfaden, besitzen alle Knoten im Graphen die gleiche Anzahl von Eingangs- und Ausgangskanten.
                     Dann existiert ein Eulerkreis im Graphen. Um diesen zu finden, wird der Algorithmus von <a href="../hierholzer/index.html" target="_blank">Hierholzer</a> verwendet.
 <!--                    Dieser startet mit einem beliebigen Knoten und folgt den Kanten bis man wieder an den Startpunkt gelangt. Falls noch unbenutzte Kanten existieren, wiederholt man die Prozedur
                     mit einem Knoten auf der bereits gefundenen Tour und fügt die neue Tour in die alte ein. Dies wird wiederholt, bis alle Kanten benutzt wurden. -->
-                    <!--Eine detailierte Beschreibung des Algorithmen kann <a href="../hierholzer/index.html" target="_blank">hier</a> gefunden werden.-->
+                    <!--Eine detailierte Beschreibung des Algorithmus kann <a href="../hierholzer/index.html" target="_blank">hier</a> gefunden werden.-->
                     Die Kosten des optimalen Rundgangs werden durch die Summe aller Kantengewichte der Eulertour bestimmt.
                 </p>
                 <h1>Was nun?</h1>
@@ -352,7 +352,7 @@
                             <p class="pseudocode" id="tf1_p_2">  2. Finden von nicht balancierten Knoten</p>
                             <p class="pseudocode" id="tf1_p_3">  3. Bestimmen von zusätzlichen Pfaden</p>
                             <p class="pseudocode" id="tf1_p_4">  4. Einfügen von zusätzlichen Pfaden</p>
-                            <p class="pseudocode" id="tf1_p_5">  5. Bestimmen von dem Eulerkreis</p>
+                            <p class="pseudocode" id="tf1_p_5">  5. Bestimmen des Eulerkreises</p>
                             <p class="pseudocode" id="tf1_p_end">END</p>
                         </div>
                     </div>
@@ -434,7 +434,7 @@
                             2. Finden von nicht balancierte Knoten
                             3. Bestimmen von zusätzlichen Pfaden
                             4. Einfügen von zusätzlichen Pfaden
-                            5. Bestimmen von dem Eulerkreis
+                            5. Bestimmen des Eulerkreises
                             END
                     </code></pre>
                 </div>
@@ -449,22 +449,33 @@
                         <li>Vergleich und Zuweisung  &ndash; Falls 20 größer als 15 ist, setze Variable <var>n</var> auf 20.</li>
                         <li>Einfache Arithmetische Operationen &ndash; Was ist 5 + 5 ?</li>
                     </ul>
-                    <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen.
+                    <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die
+                        ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen.
                         Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus.
-                        Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
-                    <h2>Laufzeit des Briefträger-Algorithmen</h2>
-                    <p>
-                        Die Laufzeit des Algorithmen hängt von der Laufzeit der benutzten Unteralgorithmen. Diese sind:
+                        Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von
+                        der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
+
+                    <h2>Laufzeit des Briefträger-Algorithmus</h2>
+                    <div>
+                        Die Laufzeit des Algorithmus hängt von der Laufzeit der benutzten Unteralgorithmen. Diese sind:
                     <ul>
-                        <li>Kürzeste-Wege-Algorithmus: <a href="../floyd-warshall/index.html" target="_blank">Floyd-Warshall</a> </li>
-                        <li>Algorithmus zur Bestimmung von optimalen zusätzlichen Pfaden: <a href="../hungarian/index.html" target="_blank">Ungarische Methode</a></li>
-                        <li>Algorithmus zur Bestimmung von Eulertouren: <a href="../hierholzer/index.html" target="_blank">Hierholzer-Algorithmus</a></li>
+                        <li>Kürzeste-Wege-Algorithmus: <a href="../floyd-warshall/index.html" target="_blank">Floyd-Warshall</a>
+                        </li>
+                        <li>Algorithmus zur Bestimmung von optimalen zusätzlichen Pfaden: <a
+                                href="../hungarian/index.html" target="_blank">Ungarische Methode</a></li>
+                        <li>Algorithmus zur Bestimmung von Eulertouren: <a href="../hierholzer/index.html"
+                                                                           target="_blank">Hierholzer-Algorithmus</a>
+                        </li>
                     </ul>
-                    Sei n die Anzahl der Knoten und m die Anzahl der Kanten im Graphen. Der Hierholzer-Algorithmus benötigt maximal m Schritte, der Floyd-Warshall-Algorithmus maximal \(n^3\) Schritte, um das Problem zu lösen.
-                    Während des Algorithmen wird ein Matchinggraph für die Ungarische Methode erstellt. Dieser Graph kann bis zu \(2m\) Knoten enthalten.
-                    Die Ungarische Methode benötigt in diesem Fall bis zu \(m^3\) Schritte. Das Finden des optimalen Matchings ist somit das schwierigste Teilproblem.
-                    Demzufolge ist die <b>Gesamtlaufzeit des Algorithmen</b> in der Größenordnung \(m^3\).
-                    </p>
+                    Sei n die Anzahl der Knoten und m die Anzahl der Kanten im Graphen. Der Hierholzer-Algorithmus
+                    benötigt maximal m Schritte, der Floyd-Warshall-Algorithmus maximal \(n^3\) Schritte, um das Problem
+                    zu lösen.
+                    Während des Algorithmus wird ein Matchinggraph für die Ungarische Methode erstellt. Dieser Graph
+                    kann bis zu \(2m\) Knoten enthalten.
+                    Die Ungarische Methode benötigt in diesem Fall bis zu \(m^3\) Schritte. Das Finden des optimalen
+                    Matchings ist somit das schwierigste Teilproblem.
+                    Demzufolge ist die <b>Gesamtlaufzeit des Algorithmus</b> in der Größenordnung \(m^3\).
+                    </div>
                 </div>
                 <h3>Wie beweist man, dass der Algorithmus stets ein korrektes Ergebnis berechnet?</h3>
                 <div>
@@ -473,7 +484,7 @@
                         Somit lässt sich das Problem auf die Erweiterung des Graphen zu einem eulerschen Graphen (Graph, der einen Eulerkreis besitzt) reduzieren.
                     </p>
                     <p>
-                        Die günstigste Erweiterung ist der gesuchte günstigste Rundgang. Dieses Teilproblem wird im Matching-Schritt des Algorithmen gelöst.
+                        Die günstigste Erweiterung ist der gesuchte günstigste Rundgang. Dieses Teilproblem wird im Matching-Schritt des Algorithmus gelöst.
                         Anschließend wird der Eulerkreis gefunden. Demzufolge löst der Algorithmus das Briefträgerproblem korrekt.
                     </p>
                 </div>

@@ -430,7 +430,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         for (var key in graph.edges) {
             edgeProperties[graph.edges[key].getEdgeID()] = {
                 layout: JSON.stringify(graph.edges[key].getLayout()),
-                label: graph.edges[key].getAdditionalLabel()
             };
         }
         history.push({
@@ -455,7 +454,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             for (var key in oldState.edgeProperties) {
                 if (graph.edges[key]) {
                     graph.edges[key].setLayoutObject(JSON.parse(oldState.edgeProperties[key].layout));
-                    //graph.edges[key].setAdditionalLabel(oldState.edgeProperties[key].label);
                 }
             }
         }

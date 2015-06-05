@@ -1047,14 +1047,14 @@ function algorithm(p_graph, p_canvas, p_tab) {
      * @method
      */
     this.endAlgorithm = function () {
-        //statusID = STOP;
         $(".marked").removeClass("marked");
         $("#ta_p_end").addClass("marked");
         $( "#ta_div_subtours" ).remove();
         for(var e in graph.edges){//faerbe die Kanten
             graph.edges[e].setLayout("lineColor", tourColors[color[e]]);
         }
-        $("#"+st+"_div_statusErklaerung").append("<p></p><h3>" + LNG.K('algorithm_msg_finish') + "</h3>");
+        $("#"+st+"_div_statusErklaerung").append("<p><b>" + LNG.K('algorithm_cost_optimal') + cost + "</b></p>");
+        $("#"+st+"_div_statusErklaerung").append("<br><h3>" + LNG.K('algorithm_msg_finish') + "</h3>");
         $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoIdee>" + LNG.K('algorithm_btn_more') + "</button>");
         $("#"+st+"_div_statusErklaerung").append("<h3>" + LNG.K('algorithm_msg_test') + "</h3>");
         $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoFA1>" + LNG.K('algorithm_btn_exe1') + "</button>");
@@ -1137,14 +1137,12 @@ function algorithm(p_graph, p_canvas, p_tab) {
             nodeProperties[graph.nodes[key].getNodeID()] = {
                 layout: JSON.stringify(graph.nodes[key].getLayout()),
                 label: graph.nodes[key].getLabel()
-                //coordiantes: graph.nodes[key].getCoordinates()
             };
         }
         var edgeProperties = {}
         for (var key in graph.edges) {
             edgeProperties[graph.edges[key].getEdgeID()] = {
-                layout: JSON.stringify(graph.edges[key].getLayout()),
-                label: graph.edges[key].getAdditionalLabel()
+                layout: JSON.stringify(graph.edges[key].getLayout())
             };
         }
         history.push({
@@ -1157,7 +1155,6 @@ function algorithm(p_graph, p_canvas, p_tab) {
             "pseudocode": $("#"+st+"_div_statusPseudocode").html(),
             "htmlSidebar": $("#"+st+"_div_statusErklaerung").html()
         });
-        //console.log("Current History Step: ", history[history.length-1]);
     };
     /**
      * Stelle letzten Schritt auf dem Replay Stack wieder her
@@ -1177,13 +1174,11 @@ function algorithm(p_graph, p_canvas, p_tab) {
                 if (graph.nodes[key]) {
                     graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].layout));
                     graph.nodes[key].setLabel(oldState.nodeProperties[key].label);
-                    //graph.nodes[key].setCoordinates(oldState.nodeProperties[key].coordiantes);
                 }
             }
             for (var key in oldState.edgeProperties) {
                 if (graph.edges[key]) {
                     graph.edges[key].setLayoutObject(JSON.parse(oldState.edgeProperties[key].layout));
-                    //graph.edges[key].setAdditionalLabel(oldState.edgeProperties[key].label);
                 }
             }
             if (statusID == START_ADDING_PATHS) {
