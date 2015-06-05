@@ -19,43 +19,43 @@ Grundlage unserer Implementierung ist ein Framework, welches im Zuge mehrerer Pr
 In der vorliegenden Dokumentation beschreiben wir zunächst allgemein den Aufbau der Webanwendungen und stellen dann die Merkmale jedes implementierten Algorithmus vor. Der zweite Teil dient als technische Dokumentation der von uns implementierten Neuerungen für zukünftige Projekte. Die Disposition der Abschnitte erfolgte parallel zur Implementierung (Mark J. Becker $\diamondsuit$, Aleksejs Voroncovs $\heartsuit$, Ruslan Zabrodin $\spadesuit$). \hfill$\diamondsuit$
 
 \chapter{Aufbau der Webanwendungen} % Aleksejs
-Jede Applikation ist in mehreren Teile aufgeteilt. Die Struktur von jeder Applikation ist gleich. Alle Anwendungen bestehen aus mehreren Tabs, von denen jeder eine bestimmte Fuktion hat (vgl. Abbildung~\ref{fig:tabs}).
+Jede Applikation ist in mehrere Teile aufgeteilt. Die Struktur jeder Applikation ist gleich. Alle Anwendungen bestehen aus mehreren Tabs, von denen jeder eine bestimmte Funktion hat (vgl. Abbildung~\ref{fig:tabs}).
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.75\textwidth]{figures/tabs}
-	\caption[Tabs der Anwendung]{Tabs der Anwendung}\label{fig:tabs}
+	\includegraphics[width=\textwidth]{figures/tabs}
+	\caption[Tabs der Anwendung]{Jede Anwendung ist in Tabs unterteilt. Um zwischen den Teilen der Anwendung zu navigieren, muss man auf den entsprechenden Tab im Bereich oben klicken.}\label{fig:tabs}
 \end{figure}
 
-Die Tabs \enquote{Einführung}, \enquote{Beschreibung des Algorithmus} und \enquote{Weiteres} enthalten nur den statischen Text mit Bildern und sind deswegen nicht interaktiv. Alle weiteren Tabs bieten dem Nutzer die Eingabemöglichkeiten um die Funktionen der Algorithmen zu erläutern oder seine Kentnisse zu prüfen. \hfill$\heartsuit$
+Die Tabs \enquote{Einführung}, \enquote{Beschreibung des Algorithmus} und \enquote{Weiteres} enthalten nur den statischen Text mit Bildern und sind deswegen nicht interaktiv. Alle weiteren Tabs sind interaktiv. Sie bieten dem Nutzer Möglichkeiten an, die Funktionen der Algorithmen zu lernen und die Kentnisse des Nutzers zu prüfen. \hfill$\heartsuit$
 
 \section{Aufbau der Tabs} % Aleksejs
-\textbf{Einführung:} das Ziel des Tabs ist, eine allgemeine Vorstellung über die Anwendung dem Nutzer zu geben. Der statische Text in diesem Tab enthält einige relevante Informationen zum Problem für jeweiligen Algorithmus, ein diesem Problem entsprechendes Bild sowie zwei Tasten, die zur Erstellung des Graphs und zur Beschreibung des Algorithmus führen. Außer diesen zwei Tasten ist der Tab mit keiner weiteren Interaktivität ausgestattet.
+\textbf{Einführung:} Das Ziel des Tabs ist, dem Nutzer eine allgemeine Vorstellung über die Anwendung zu geben. Der statische Text in diesem Tab enthält einige relevante Informationen zum Problem des jeweiligen Algorithmus, ein diesem Problem entsprechendes Bild sowie zwei Buttons, die zur Erstellung des Graphs und zur Beschreibung des Algorithmus führen. Außer diesen zwei Buttons ist der Tab mit keiner weiteren Interaktivität ausgestattet.
 
-\noindent\textbf{Graph erstellen:} In diesem Tab kann der Nutzer einen Graph erstellen, auf dem der Algorithmus später ausgeführt wird. Hier stehen zwei Möglichkeiten zur Verfügung: entweder den Graph selbst mit der Maus zu erstellen oder einen fertigen Graph aus der vorgegebenen Liste zu wählen. Falls der Algorithmus einen gewichteten Graph voraussetzt, kann der Nutzer die Gewichte nach dem Doppelklick auf der Kante selbst eingeben. Wenn der Algorithmus einen bipartiten Graph erfordert, dann wird die Erstellung des Graph beschränkt, damit alle Eigenschaften des bipartiten Graphs erfüllt sind. 
+\noindent\textbf{Graph erstellen:} In diesem Tab kann der Nutzer einen Graph erstellen, auf dem der Algorithmus später ausgeführt wird. Hier stehen zwei Möglichkeiten zur Verfügung: entweder den Graph selbst mit der Maus zu erstellen oder einen fertigen Graph aus der vorgegebenen Liste zu wählen. Falls der Algorithmus einen gewichteten Graph voraussetzt, kann der Nutzer die Gewichte nach einem Doppelklick auf die Kante selbst eingeben. Wenn der Algorithmus einen bipartiten Graph erfordert, dann wird die Erstellung des Graph beschränkt, damit alle Eigenschaften des bipartiten Graphs erfüllt sind. 
 
-\noindent\textbf{Algorithmus ausführen:} Hier wird der Ablauf des Algorithmus dargestellt. Der Algorithmus läuft auf dem Graph, der im vorigen Tab erstellt wurde. Man kann sowohl schrittweise den Algorithmus ausführen als auch den vorspulen. Außerdem kann der Nutzer den Schnellvorlauf pausieren, in diesem Fall wird der Ablauf im aktuellen Schritt gestoppt. Bei jedem Schritt wird die entsprechende Information zum Status des Algorithmus aufgezeigt und der Stand des Pseudocodes wird im separaten Fenster abgebildet.
+\noindent\textbf{Algorithmus ausführen:} Hier wird der Ablauf des Algorithmus dargestellt. Der Algorithmus läuft auf dem Graph, der im vorigen Tab erstellt wurde. Man kann sowohl schrittweise den Algorithmus ausführen als auch vorspulen. Außerdem kann der Nutzer den Schnellvorlauf pausieren, in diesem Fall wird der Ablauf im aktuellen Schritt gestoppt. Bei jedem Schritt wird die entsprechende Information zum Status des Algorithmus aufgezeigt und der Stand des Pseudocodes wird im separaten Bereich rechts abgebildet.
 
-\noindent\textbf{Beschreibung des Algorithmus:} Dieser Tab stellt die ausführliche Informationen zum jeweiligen Algorithmus dar. Der Tab enthält statischen Text mit Bildern, der die Logik des Algorithmus erklärt. Im unteren Teil des Tabs stehen die Tasten, die auf anderen Tabs verweisen.
+\noindent\textbf{Beschreibung des Algorithmus:} Dieser Tab stellt die ausführlichen Informationen zum jeweiligen Algorithmus dar. Der Tab enthält statischen Text mit Bildern, der die Logik des Algorithmus erklärt. Im unteren Teil des Tabs stehen die Buttons, die auf andere Tabs verweisen.
 
-\noindent\textbf{Forschungsaufgaben:} Bei jeder Anwendung stehen zwei Tabs zur Verfügung, wo der Nutzer die Aufgaben lösen muss. Der Zweck der Forschungsaufgaben ist zu prüfen, wie gut der Nutzer die Algorithmen verstanden hat. In den Aufgaben wird gefragt, welche Entscheidungen der Algorithmus trifft. Am Ende der Aufgabe sieht man die Statistik, die die Antworten des Nutzers erfasst. Danach wird vorgeschlagen zu weiteren Tabs der Applikation zu gehen.
+\noindent\textbf{Forschungsaufgaben:} Bei jeder Anwendung stehen zwei Tabs zur Verfügung, wo der Nutzer ausgewählte Aufgaben lösen muss. Der Zweck der Forschungsaufgaben ist zu prüfen, wie gut der Nutzer die Algorithmen verstanden hat. In den Aufgaben muss man entweder die Logik des entsprechenden Algorithmus reproduzieren oder beantworten, welche Entscheidungen der Algorithmus trifft. Am Ende der Aufgabe sieht man die Statistik, die die Antworten des Nutzers erfasst. Danach wird vorgeschlagen, zu weiteren Tabs der Applikation zu gehen.
 
-\noindent\textbf{Weiteres:} Im letzten Tab kann der Nutzer weitere Informationen zum Algorithmus lesen. Es handelt sich um den Pseudocode, die Laufzeit der Algorithmen, den Beweis der Korrektheit und die Links zu sonstigen Quellen. \hfill$\heartsuit$
+\noindent\textbf{Weiteres:} Im letzten Tab kann der Nutzer weitere ausführliche Informationen zum Algorithmus lesen. Es handelt sich um den Pseudocode, die Laufzeit der Algorithmen, den Beweis der Korrektheit und die Links zu sonstigen Quellen. \hfill$\heartsuit$
 
 \section{Algorithmus von Floyd-Warshall} % Aleksejs
-Da die Implementierung des Floyd-Warshall Algorithmus nicht kompliziert ist, war es wichtig zu zeigen, was genau während dem Ablauf schrittweise passiert. 
+Da die Implementierung des Floyd-Warshall Algorithmus nicht kompliziert ist, war es wichtig zu zeigen, was genau während des Ablaufs schrittweise passiert. 
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.75\textwidth]{figures/fw-matrix}
-	\caption[Floyd-Warshall: Matrix]{Visualisierung des verbesserten Pfades}\label{fig:fw-matrix}
+	\caption[Floyd-Warshall: Matrix]{Nachdem man die Maus über eine Zelle in der Abstandsmatrix bewegt, werden die Kanten, Start- und Endknoten des aktuellen Pfads im Graph grün markiert.}\label{fig:fw-matrix}
 \end{figure}
 
-Der Algorithmus wurde in Schritte so unterteilt, dass jeder Schritt eine Verbesserung der Distanz zwischen zwei Knoten darstellt. Um die Verbesserungen anschaulich zu machen, wurde die Adjazenzmatrix implementiert. In jeder Zelle der Adjazenzmatrix wird der aktuelle Distanzwert zwischen zwei entsprechenden Knoten gespeichert. Wenn man die Maus über eine Zelle in der Matrix bewegt, dann wird der Pfad, der diesem Distanzwert entspricht, im Graphen markiert (vgl. Abbildung~\ref{fig:fw-matrix}).
+Der Algorithmus wurde so in Schritte unterteilt, dass jeder Schritt eine Verbesserung der Distanz zwischen zwei Knoten darstellt. Um die Verbesserungen anschaulich zu machen, wurde die Abstandsmatrix implementiert. In jeder Zelle der Abstandsmatrix wird der aktuelle Distanzwert zwischen zwei entsprechenden Knoten gespeichert. Wenn man die Maus über eine Zelle in der Matrix bewegt, dann wird der Pfad, der diesem Distanzwert entspricht, im Graphen markiert (vgl. Abbildung~\ref{fig:fw-matrix}).
 
-Die erste Forschungsaufgabe prüft, ob der Nutzer die Logik des Algorithmus verstanden hat. Während des Ablaufs von Floyd-Warshall auf dem bestimmten Graphen werden die Fragen über die vom Algorithmus getroffenen Entscheidungen gestellt.
+Die erste Forschungsaufgabe prüft, ob der Nutzer die Logik des Algorithmus verstanden hat. Während des Ablaufs von Floyd-Warshall auf dem vorgegebenen Graphen werden die Fragen über die vom Algorithmus getroffenen Entscheidungen gestellt.
 
-In der zweiten Forschungsaufgabe soll der Nutzer die fehlende Kantengewichte bestimmen. Ein Teil der Kantenkosten sowie die Adjazenzmatrix sind am Anfang gegeben. Diese Information muss genutzt werden um die fehlende Gewichte zu bestimmen. \hfill$\heartsuit$
+In der zweiten Forschungsaufgabe soll der Nutzer die fehlende Kantengewichte bestimmen. Ein Teil der Kantenkosten sowie die Abstandsmatrix zum Ende des Algorithmus sind gegeben. Diese Information muss genutzt werden, um die fehlende Gewichte zu bestimmen. \hfill$\heartsuit$
 
 \section{Algorithmus von Hierholzer} % Mark
 Beim Algorithmus von Hierholzer war es uns wichtig, die resultierende Eulertour verständlich zu visualisieren. Dazu werden zunächst alle Subtouren in unterschiedlichen Farben dargestellt. Einzelne Subtouren können auf der Ergebnisseite einzeln hervorgehoben werden. Der Benutzer erkennt mittels der Farben außerdem, welcher Teil der Tour aus welcher Subtour stammt. Die Tour kann durch eine Animation (vgl. Abbildung~\ref{fig:hierholzer-animation}) in der richtigen Reihenfolge abgelaufen werden, sodass der Nutzer verifizieren kann, dass es sich wirklich um eine Eulertour handelt.
@@ -90,17 +90,17 @@ In der zweiten Forschungsaufgabe bekommt der Nutzer die Gelegenheit, selbst mit 
 
 \section{Ungarische Methode} % Aleksejs
 
-Obwohl es mehrere Implementierungen der Ungarischen Methode gibt, die Idee bleibt bei allen gleich. Die Applikation geht nicht tief in die Einzelheiten der konkreten Implementierung, sondern erklärt das generelle Prinzip der Ungarischen Methode. Dafür war der Einsatz des bipartiten gewichteten Graphs notwendig. Als die Ungarische Methode perfektes Matching im bipartiten Graphen sucht, wird eingegebener Graph in der Anwendung bis zum kompletten Graphen vervollständigt falls der Nutzer das nicht gemacht hat. Um die genutzte Begriffe (wie z. B. Matching oder Augmentationsweg) verständlich zu machen, werden unterschiedliche Farben für Knoten und Kanten während des Ablaufs verwendet (vgl. Abbildung~\ref{fig:hungarian-colors}).
+Obwohl es viele Implementierungen der Ungarischen Methode gibt, bleibt die Idee bei allen gleich. Die vorgestellte Applikation geht nicht tief in die Einzelheiten der konkreten Implementierung, sondern erklärt das generelle Prinzip der Ungarischen Methode. Dafür war der Einsatz des bipartiten gewichteten Graphs notwendig. Da die Ungarische Methode ein perfektes Matching im bipartiten Graphen sucht, wird ein gegebener Graph in der Anwendung bis zum kompletten Graphen vervollständigt, falls der Nutzer das nicht gemacht hat. Um die genutzten Begriffe (wie z. B. Matching oder Augmentationsweg) verständlich zu machen, werden während des Ablaufs unterschiedliche Farben für Knoten und Kanten verwendet (vgl. Abbildung~\ref{fig:hungarian-colors}).
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.75\textwidth]{figures/hungarian-colors}
-	\caption[Ungarische Methode: Augmentationsweg]{Augmentationsweg wird rot markiert}\label{fig:hungarian-colors}
+	\includegraphics[width=0.4\textwidth]{figures/hungarian-colors}
+	\caption[Ungarische Methode: Augmentationsweg]{Um das Matching zu vergrößern, sucht die Ungarische Methode einen Augmentationsweg und markiert ihn rot. Der Augmentationsweg beginnt und endet in Knoten außerhalb des aktuellen Matchings. }\label{fig:hungarian-colors}
 \end{figure}
 
-Die erste Forschungsaufgabe prüft, wie gut der Nutzer den Aufbau des Algorithmus verstanden hat. Dazu werden die Fragen während des Ablaufs auf dem beliebigen Graphen gestellt. Der Nutzer muss beantworten, wie der Algorithmus die Markierungen zuweist und welche Schritte macht der Algorithmus als weitere. 
+Die erste Forschungsaufgabe prüft, wie gut der Nutzer den Aufbau des Algorithmus verstanden hat. Dazu werden während des Ablaufs auf einem beliebigen Graphen Fragen gestellt. Der Nutzer muss beantworten, wie der Algorithmus die Markierungen zuweist und welche Schritte der Algorithmus als nächstes macht. 
 
-Bei der zweiten Forschungsaufgabe werden auch die Fragen während des Ablaufs der Ungarischen Methode gestellt. Der Graph ist in diesem Fall bestimmt und die Fragen fassen den Aufbau des Augmentationsweges und Gleichheitsgraphs um. \hfill$\heartsuit$
+Bei der zweiten Forschungsaufgabe werden ebenfalls Fragen während des Ablaufs der Ungarischen Methode gestellt. Der Graph ist in diesem Fall vorgegeben und die Fragen befassen sich mit dem Aufbau des Augmentationswegs und Gleichheitsgraphen. \hfill$\heartsuit$
 
 \section{Chinese-Postman-Algorithmus} % Ruslan
 %Besonderes
@@ -221,17 +221,17 @@ MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
 \end{figure}
 
 \section{Bipartite Graphen} % Aleksejs
-Zwei Algorithmen, die im Rahmen des Projekts implementiert wurden, nämlich Hopcroft \& Karp Algorithmus und die Ungarische Methode, müssen auf bipartiten Graphen ausgeführt werden. Dafür haben wir das Konzept des bipartiten Graphen im existierenden Framework entwickelt. 
+Zwei Algorithmen, die im Rahmen des Projekts implementiert wurden, nämlich Hopcroft und Karp Algorithmus und die Ungarische Methode, müssen auf bipartiten Graphen ausgeführt werden. Dafür haben wir das Konzept des bipartiten Graphen im existierenden Framework entwickelt. 
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.75\textwidth]{figures/hungarian-bipartite}
-	\caption[Bipartiter Graph]{Bipartiter Graph}\label{fig:hungarian-bipartite}
+	\includegraphics[width=0.4\textwidth]{figures/hungarian-bipartite}
+	\caption[Bipartiter Graph]{Ein bipartiter Graph stellt einen Graph mit zwei Partitionen (oben und unten) dar. Wenn der eingegebene Graph bei der Ungarischen Methode nicht vollständig ist dann werden zusätliche graue Knoten und Kanten hinzugefügt.}\label{fig:hungarian-bipartite}
 \end{figure}
 
-Um die Darstellung des Matching-Problems und dessen Lösung möglichst anschaulich zu machen, haben wir die Knoten im Graphen in zwei Gruppen geteilt (vgl. Abbildung~\ref{fig:hungarian-bipartite}). Die Kanten können nur zwischen den Knotengruppen erstellt werden. Bei der Ungarischen Methode war es wichtig den Graph mit extra Knoten und Kanten zu vervollständigen, wenn der ursprüngliche Graph nicht komplett war. Das ist notwendig, weil die Ungarische Methode perfektes Matching sucht.
+Um die Darstellung des Matching-Problems und dessen Lösung möglichst anschaulich zu machen, haben wir die Knoten im Graphen in zwei Gruppen geteilt (vgl. Abbildung~\ref{fig:hungarian-bipartite}). Die Kanten können nur zwischen den Knotengruppen erstellt werden. Bei der Ungarischen Methode war es wichtig, den Graph mit zusätzlichen Knoten und Kanten zu vervollständigen, wenn der ursprüngliche Graph nicht komplett war. Das ist notwendig, weil die Ungarische Methode ein perfektes Matching sucht.
 
-Falls eine Kante zwischen beliebigen zwei Knoten fehlt, wird eine zusätzliche graue Kante mit dem Gewicht 0 hinzugefügt. Wenn die Knotengruppen ungleiche Anzahl der Knoten enthalten, dann werden zusätzliche Knoten dem Graphen hinzugefügt. Alle Nachbarkanten bei diesen zusätzlichen Knoten haben das Gewicht 0. \hfill$\heartsuit$
+Falls eine Kante zwischen beliebigen zwei Knoten fehlt, wird eine zusätzliche graue Kante mit dem Gewicht 0 hinzugefügt. Wenn die Anzahl der Knoten in den Partitionen ungleich ist, dann werden zusätzliche Knoten hinzugefügt. Alle Nachbarkanten bei diesen zusätzlichen Knoten haben das Gewicht 0. \hfill$\heartsuit$
 
 \section{Multigraphen} % Ruslan
 %Motivation
