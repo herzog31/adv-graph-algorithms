@@ -39,26 +39,40 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      * Das Objekt, das den Hopcroft-Karp-Algorithmus ausfuehrt
      * */
     var cpAlgo;
-
-    var feasible = false;
-
+    /**
+     * Die Kosten der vom Nutzer erstellten Tour
+     * @type {number}
+     */
     var cost = 0;
-
+    /**
+     * Startknoten des Rundgangs
+     * @type {Object}
+     */
     var start = null;
-
+    /**
+     * Schon benutzte Knoten
+     * @type {Object}
+     */
     var used = {};
-
+    /**
+     * Die vom Nutzer erstellte Tour
+     * @type {Object}
+     */
     var tour = [];
-
+    /**
+     * Wird fuer die Animation gebraucht
+     */
     var animationId = null;
-
+    /**
+     * Wird fuer die Animation gebraucht
+     * @type number
+     */
     var tourAnimationIndex = 0;
     /**
      * Zeigt an, ob vor dem Verlassen des Tabs gewarnt werden soll.
      * @type Boolean
      */
     var warnBeforeLeave = true;
-
     /*
      * Alle benoetigten Information zur Wiederherstellung der vorangegangenen Schritte werden hier gespeichert.
      * @type Array
@@ -68,7 +82,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     /*
      * Hier wird das Aussehen der Kanten und Knoten bestimmt
      * */
-
     const FEASIBILITY = 0;
     const SHOW_UNBALANCED_NODES = 3;
     const SHORTEST_PATHS = 7;
@@ -131,11 +144,20 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     this.getWarnBeforeLeave = function() {
         return warnBeforeLeave;
     };
-
+    /**
+     * Registriere die Klickhandler an canvas<br>
+     * Nutzt den Event Namespace ".Forschungsaufgabe2"
+     * @method
+     */
     this.registerClickHandlers = function() {
         canvas.on("click.Forschungsaufgabe2",function(e) {algo.canvasClickHandler(e);});
         canvas.on("contextmenu.Forschungsaufgabe2",function(e) {algo.rightClickHandler(e);});
     };
+    /**
+     * Entferne die Klickhandler vom canvas<br>
+     * Nutzt den Event Namespace ".Forschungsaufgabe2"
+     * @method
+     */
     this.deregisterClickHandlers = function() {
         canvas.off("click.Forschungsaufgabe2");
         canvas.off("contextmenu.Forschungsaufgabe2");
@@ -196,21 +218,30 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     this.getStatusID = function() {
         return cpAlgo.getStatusID();
     };
-
+    /**
+     * Prueft ob die ausgewaehlte Kante den Weg fortsetzen kann
+     * @param edge
+     * @returns {boolean}
+     */
     var next = function(edge){
         if(tour.length == 0) return true;
         var prev = tour[tour.length-1];
         if(prev.id == edge.getSourceID()) return true;
         else return false;
     };
-
+    /**
+     * Gibt zurueck, ob die Tour komplett ist
+     * @returns {boolean}
+     */
     var completed = function(){
         if(tour.length == 0) return false;
         var all_edges_used = (Object.keys(used).length == Object.keys(graph.edges).length);
         var back_to_start = (tour[0].id == tour[tour.length-1].id);
         return all_edges_used && back_to_start;
     };
-
+    /**
+     * Methoden fuer die Visualisierung von Kanten und Knoten
+     */
     var highlight = function(edge){
         edge.setLayout("lineColor", "green");
         edge.setLayout("lineWidth", global_Edgelayout.lineWidth*3);
@@ -229,7 +260,11 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         node.setLayout("fillStyle", 'green');
         //node.setLabel('s');
     };
-
+    /**
+     * Findet die angeklickte Kante
+     * @param e
+     * @returns {Object|null}
+     */
     var getClickedEdge = function(e){
         for(var kantenID in graph.edges) {
             if (graph.edges[kantenID].contains(e.pageX - canvas.offset().left, e.pageY - canvas.offset().top,algo.canvas[0].getContext("2d"))) {
@@ -238,7 +273,11 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
         return null;
     };
-
+    /**
+     * Behandelt Klicks im Canvas<br>
+     * @param {jQuery.Event} e jQuery Event Objekt, enthält insbes. die Koordinaten des Mauszeigers.
+     * @method
+     */
     this.canvasClickHandler = function(e){
         var edge = getClickedEdge(e);
         if(edge && next(edge)){
@@ -266,7 +305,11 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
         this.needRedraw = true;
     };
-
+    /**
+     * Behandelt die Rechtsklicks im Canvas<br>
+     * @param {jQuery.Event} e jQuery Event Objekt, enthält insbes. die Koordinaten des Mauszeigers.
+     * @method
+     */
     this.rightClickHandler = function(e) {
         e.preventDefault();
         if(tour.length > 0){
@@ -280,49 +323,71 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
         this.needRedraw = true;
     };
-
+    /**
+     * Die erstellte Tour wird angezeigt.
+     * Das Ablaufen der Tour kann durch eine Animation angeschaut werden.
+     */
     this.showCreatedTour = function(){
         $("#tf2_div_statusErklaerung").html("<h3>"+LNG.K('aufgabe2_header')+"</h3>" + "<p>"+LNG.K('aufgabe2_tour_completed')+"</p>"
         + "<p>"+LNG.K('aufgabe2_cost') + cost + "</p>"
         + "<p>"+LNG.K('aufgabe2_optimal_cost')+ cpAlgo.getCost() + "</p>");
 
-        $("#tf2_div_statusErklaerung").append(' <p><button id="tf2_animateTour">' + LNG.K('algorithm_status51b_desc2') +
+        $("#tf2_div_statusErklaerung").append(' <p><button id="tf2_animateTour">' + LNG.K('aufgabe2_btn_animation') +
         '</button><button id="tf2_animateTourStop">' + LNG.K('algorithm_status51b_desc3') + '</button></p>\
-            <p>' + LNG.K('algorithm_status51b_desc4') + '</p>');
+            <p>' + LNG.K('aufgabe2_animation') + '</p>');
         $("#tf2_animateTour").button({icons: {primary: "ui-icon-play"}}).click({org: this}, this.animateTour);
         $("#tf2_animateTourStop").button({
             icons: {primary: "ui-icon-stop"},
             disabled: true
         }).click({org: this}, this.animateTourStop);
-        $("#tf2_div_statusErklaerung").append('<button id="tf2_button_gotoWeiteres">'+LNG.K('aufgabe2_btn_more')+'</button>');//button
+        $("#tf2_div_statusErklaerung").append(' <p><button id="tf2_button_gotoExecution">' + LNG.K('aufgabe2_btn_execution') +
+            '</button><p>' + LNG.K('aufgabe2_execution') + '</p>' +
+            '<button id="tf2_button_gotoWeiteres">'+LNG.K('aufgabe2_btn_more')+'</button>');
         $("#tf2_button_gotoWeiteres").button().click(function() {$("#tabs").tabs("option","active", 6);});
+        $("#tf2_button_gotoExecution").button().click(function() {$("#tabs").tabs("option","active", 2);});
         warnBeforeLeave = false;
         this.needRedraw;
     };
 
-    this.animateTourStep = function (event) {
-        if (tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "vertex") {
-            graph.nodes[tour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
-        }
-        if (tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "edge") {
-            //graph.edges[tour[(tourAnimationIndex - 1)].id].setLayout("lineColor", tourColors[color[tour[(tourAnimationIndex - 1)].id]]);
-            graph.edges[tour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
-        }
-        this.needRedraw = true;
-        if (tourAnimationIndex >= tour.length) {
+    /**
+     * Führe Schritt in Eulertour Animation aus
+     * State abhängig vom aktuellen Wer der tourAnimationIndex Variablen
+     * @method
+     * @param  {jQuery.Event} event
+     */
+    this.animateTourStep = function(event) {
+
+        var currentEdge = Math.floor(tourAnimationIndex/30);
+        var previousEdge = Math.floor((tourAnimationIndex - 1)/30);
+        var currentArrowPosition = (tourAnimationIndex % 30) / 29;
+
+        if(tourAnimationIndex >= (tour.length*30)) {
             this.animateTourStop(event);
             return;
         }
-        if (tour[tourAnimationIndex].type == "vertex") {
-            graph.nodes[tour[tourAnimationIndex].id].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+
+        if(tourAnimationIndex > 0 && tour[previousEdge].type === "edge") {
+            graph.edges[tour[previousEdge].id].setLayout("progressArrow", false);
         }
-        if (tour[tourAnimationIndex].type == "edge") {
-            //graph.edges[tour[tourAnimationIndex].id].setLayout("lineColor", tourColors[color[tour[tourAnimationIndex].id]]);
-            graph.edges[tour[tourAnimationIndex].id].setLayout("lineWidth", 6);
+        this.needRedraw = true;
+
+        if(tour[currentEdge].type === "vertex") {
+            tourAnimationIndex = tourAnimationIndex + 29;
         }
+
+        if(tour[currentEdge].type === "edge") {
+            graph.edges[tour[currentEdge].id].setLayout("progressArrow", true);
+            //graph.edges[tour[currentEdge].id].setLayout("lineColor", tourColors[color[tour[currentEdge].id]]);
+            graph.edges[tour[currentEdge].id].setLayout("progressArrowPosition", currentArrowPosition);
+        }
+        this.needRedraw = true;
         tourAnimationIndex++;
     };
-
+    /**
+     * Starte Eulertour Animation
+     * @method
+     * @param  {jQuery.Event} event
+     */
     this.animateTour = function (event) {
         $("#tf2_animateTour").button("option", "disabled", true);
         $("#tf2_animateTourStop").button("option", "disabled", false);
@@ -330,15 +395,17 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         var self = event.data.org;
         animationId = window.setInterval(function () {
             self.animateTourStep(event);
-        }, 250);
+        }, 1500.0/30);
     };
-
-    this.animateTourStop = function (event) {
-        if (tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "vertex") {
-            graph.nodes[tour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
-        }
-        if (tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "edge") {
-            graph.edges[tour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
+    /**
+     * Stoppe Eulertour Animation
+     * @method
+     * @param  {jQuery.Event} event
+     */
+    this.animateTourStop = function(event) {
+        var previousEdge = Math.floor((tourAnimationIndex - 1)/30);
+        if(tourAnimationIndex > 0 && tour[previousEdge].type === "edge") {
+            graph.edges[tour[previousEdge].id].setLayout("progressArrow", false);
         }
         event.data.org.needRedraw = true;
         tourAnimationIndex = 0;
@@ -346,26 +413,11 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         animationId = null;
         $("#tf2_animateTour").button("option", "disabled", false);
         $("#tf2_animateTourStop").button("option", "disabled", true);
-        return;
     };
-
-    var getWarning = function(string){
-        return  '<div id ="tg_div_warning" class="ui-widget"> \
-        <div class="ui-state-highlight ui-corner-all" style="padding: .7em;"> \
-        <div class="ui-icon ui-icon-alert errorIcon"></div> \
-        ' + string +'\
-        </div> \
-        </div>';
-    };
-
-    this.showResult = function() {
-        $("#tf2_div_statusErklaerung").html("<h3> "+LNG.K('textdb_msg_end_algo')+"</h3>" + "<p>"+LNG.K('textdb_msg_end_algo_1')+"</p>");
-        $("#tf2_div_statusErklaerung").append('<button id="tf2_button_gotoWeiteres">'+LNG.K('aufgabe2_btn_more')+'</button>');
-        $("#tf2_button_gotoWeiteres").button().click(function() {$("#tabs").tabs("option","active", 6);});
-        this.needRedraw = true;
-        warnBeforeLeave = false;
-    };
-
+    /**
+     * Füge Schritt zum Replay Stack hinzu
+     * @method
+     */
     this.addReplayStep = function () {
         var nodeProperties = {};
         for (var key in graph.nodes) {
@@ -378,7 +430,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         for (var key in graph.edges) {
             edgeProperties[graph.edges[key].getEdgeID()] = {
                 layout: JSON.stringify(graph.edges[key].getLayout()),
-                label: graph.edges[key].getAdditionalLabel()
             };
         }
         history.push({
@@ -387,7 +438,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             "htmlSidebar": $("#tf2_div_statusErklaerung").html()
         });
     };
-
+    /**
+     * Stelle letzten Schritt auf dem Replay Stack wieder her
+     * @method
+     */
     this.replayStep = function () {
         if (history.length > 0) {
             var oldState = history.pop();
@@ -400,7 +454,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             for (var key in oldState.edgeProperties) {
                 if (graph.edges[key]) {
                     graph.edges[key].setLayoutObject(JSON.parse(oldState.edgeProperties[key].layout));
-                    graph.edges[key].setAdditionalLabel(oldState.edgeProperties[key].label);
                 }
             }
         }

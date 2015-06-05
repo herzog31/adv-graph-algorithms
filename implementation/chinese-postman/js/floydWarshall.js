@@ -1,7 +1,9 @@
 /**
- * Created by Ruslan on 14.02.2015.
+ * Berechnet die kuerzesten Wege zwischen allen Paaren von Knoten in einem Graphen
+ * @param graph Der Graph, auf dem das Problem geloest werden soll
+ * @param distance Matrix, die die kuerzesten Enfernungen enthalten wird
+ * @param pred Matrix, die die Vorgaengerknoten enthalten wird
  */
-
 function shortestPaths(graph,distance,pred){
     var keys = Object.keys(graph.nodes);
     for(var k1 in keys){

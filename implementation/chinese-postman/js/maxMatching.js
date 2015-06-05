@@ -1,3 +1,10 @@
+/**
+ * Berechnet das maximale gewichtete Matching in bipartiten Graphen
+ * @param cost Die Kostenmatrix fuer bipartite Graphen.
+ * Eintrag (i,j) ist das Gewicht der Kante zwischen den Knoten i der 1. Knotenmenge und Knoten j der 2. Knotenmenge.
+ * Falls keine Kante zwischen i und j existiert, ist der (i,j) Eintrag 0.
+ * @returns {Array} Der i-te Eintrag des Arrays enthaelt den Matchingpartner des i-ten Knotens der 1.Knotenmenge.
+ */
 function maxMatching(cost){
     function setAll(arr, val) {
         var i, n = arr.length;

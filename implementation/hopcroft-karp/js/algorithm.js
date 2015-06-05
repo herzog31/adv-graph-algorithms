@@ -2,7 +2,7 @@
  * Instanz des Hopcroft-Karp Algorithmus, erweitert die Klasse CanvasDrawer
  * @constructor
  * @augments CanvasDrawer
- * @param {Graph} p_graph Graph, auf dem der Algorithmus ausgeführt wird
+ * @param {BipartiteGraph} p_graph Graph, auf dem der Algorithmus ausgeführt wird
  * @param {Object} p_canvas jQuery Objekt des Canvas, in dem gezeichnet wird.
  * @param {Object} p_tab jQuery Objekt des aktuellen Tabs.
  */
@@ -37,21 +37,11 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      */
     var algo = this;
     /**
-     * Hier die Variablen vom HK-Algo
-     */
-    /**
      * Enthaelt alle Kanten, die zu aktuellem Zeitpunkt zum Matching gehoeren.
      * Keys: KantenIDs Value: Kanten
      * @type Object
      */
     var matching = new Object();
-/*    *//**
-     * Enthaelt alle freien Knoten (derzeit) der linken Seite
-     * Wird als Ausgangspunkt fuer die Erstellung des alternierenden Graphen benutzt.
-     * Keys: KnotenIDs Value: Knoten
-     * @type Object
-     *//*
-    var superNode = new Object();*/
     /*
     * Repraesentiert den Augmentierungsgraphen.
     * @type Object
@@ -96,10 +86,14 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      */
     var toggleMatchButton = true;
     /**
-     * Gibt das Statusausgabefenster an.
+     * Gibt den Kontext des Ausgabefensters an.
+     * @type String
      */
     var st = "ta";
-
+    /**
+     * Gibt das Statusausgabefenster an.
+     * @type String
+     */
     var statusErklaerung = "#"+st+"_div_statusErklaerung";
     /*
     * Hier werden die Statuskonstanten definiert
@@ -264,48 +258,9 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         this.needRedraw = true;
     };
 
-    /**
-     * Initialisiere den Algorithmus.
-     * @method
-     */
-    this.initialize = function () {
-        this.beginIteration();
-        $("#"+st+"_button_Zurueck").button("option", "disabled", false);
-    };
-
     /*
-    * Jede neue Iteration beginnt mit dieser Methode. Es werden Breitensuche und Tiefensuche ausgefuehrt, um die kuerzesten Wege zu finden.
-    * @method
-    * */
-    this.beginIteration = function () {
-        iteration++;
-        disjointPaths = [];
-        currentPath = 0;
-        shortestPathLength = 0;
-        // finde alle freien Knoten in der U-Partition
-        var superNode = {};
-        for (var n in graph.unodes) {
-            var node = graph.unodes[n];
-            if(!this.isMatched(node))superNode[node.getNodeID()] = node;
-        }
-        //fuehre Breiten- und Tiefensuche aus
-        bfs(superNode);
-        dfs(superNode);
-        if(shortestPathLength > 0){
-            statusID = NEXT_AUGMENTING_PATH;
-            $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
-                + "<h3> "+LNG.K('textdb_msg_begin_it')+"</h3>"
-                + "<p>"+LNG.K('textdb_msg_path_shortest')+ shortestPathLength + "</p>"
-                + "<p>"+LNG.K('textdb_msg_begin_it_1')+"<p>");
-        }
-        else{
-            statusID = END_ALGORITHM;
-            $(statusErklaerung).html("<h3> "+LNG.K('textdb_msg_end_algo')+"</h3>"
-                + "<p>"+LNG.K('textdb_msg_end_algo_1')+"</p>");
-        }
-    };
-    /*
-    * Mit Hilfe der Breitensuche wird ein Augmentierungsgraph aufgebaut, der die kuerzesten Augmentationswege enthaelt.
+    * Mit Hilfe der Breitensuche wird ein Augmentationsgraph aufgebaut, der die kuerzesten Augmentationswege enthaelt.
+    * @param {Object} superNode   Startknoten fuer die Breitensuche.
     * @method
     * */
     var bfs = function (superNode) {
@@ -377,6 +332,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
 
     /*
     * Mittels der Tiefensuche wird nach knotendisjunkten Augmantationswegen gesucht. Dabei wird der Augmentierungsgraph aus der Bfs-Phase verwendet.
+    * @param {Object} superNode   Startknoten fuer die Tiefensuche
     * @method
     * */
    var dfs = function(superNode){
@@ -405,6 +361,8 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
    };
     /*
     * Rekursives Unterprogramm, das fuer die Tiefensuche benutzt wird.
+    * @param {Object} node   Der aktuelle Knoten
+    * @param {Object} stack   Der aufgebaute Stack
     * @method
     * */
    var recursiveDfs = function (node, stack) {
@@ -429,8 +387,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      * Das Layout und Aussehen von Knoten und Kanten wird hier festgelegt.
      * */
     var setEdgeMatched = function(edge){
-        var MATCHED_EDGE_COLOR = "DarkBlue";
-        edge.setLayout("lineColor", MATCHED_EDGE_COLOR);
+        edge.setLayout("lineColor", "green");
         edge.setLayout("lineWidth", global_Edgelayout.lineWidth*1.3);
     };
     var setEdgeNotMatched = function(edge){
@@ -438,8 +395,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         edge.setLayout("lineWidth", global_Edgelayout.lineWidth);
     };
     var setNodeMatched = function(node){
-        var MATCHED_NODE_COLOR = const_Colors.NodeFillingHighlight;
-        node.setLayout('fillStyle',MATCHED_NODE_COLOR);
+        node.setLayout('fillStyle', const_Colors.NodeFillingHighlight);
         node.setLayout('borderColor',global_NodeLayout.borderColor);
     };
     var setNodeNotMatched = function(node){
@@ -469,8 +425,63 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
         node.setLayout('borderColor',"Gray");
     };
 
+    /**
+     * Initialisiere den Algorithmus.
+     * @method
+     */
+    this.initialize = function () {
+        this.beginIteration();
+        $("#"+st+"_button_Zurueck").button("option", "disabled", false);
+    };
+
+    /*
+     * Jede neue Iteration beginnt mit dieser Methode. Es werden Breitensuche und Tiefensuche ausgefuehrt, um die kuerzesten Wege zu finden.
+     * @method
+     * */
+    this.beginIteration = function () {
+        iteration++;
+        disjointPaths = [];
+        currentPath = 0;
+        shortestPathLength = 0;
+        // finde alle freien Knoten in der U-Partition
+        var superNode = {};
+        for (var n in graph.unodes) {
+            var node = graph.unodes[n];
+            if(!this.isMatched(node))superNode[node.getNodeID()] = node;
+        }
+        //fuehre Breiten- und Tiefensuche aus
+        bfs(superNode);
+        dfs(superNode);
+        //restore Layouts
+        for(var n in graph.nodes){
+            var node = graph.nodes[n];
+            if(this.isMatched(node)) setNodeMatched(node);
+            else setNodeNotMatched(node);
+        }
+        for(var e in graph.edges){
+            setEdgeNotMatched(graph.edges[e]);
+        }
+        for(var e in matching){
+            setEdgeMatched(graph.edges[e]);
+        }
+        if(shortestPathLength > 0){
+            statusID = NEXT_AUGMENTING_PATH;
+            $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
+                + "<h3> "+LNG.K('textdb_msg_begin_it')+"</h3>"
+                + "<p>"+LNG.K('textdb_msg_begin_it_1')+"<p>"
+                + "<p>"+LNG.K('textdb_msg_path_shortest')+ shortestPathLength + "</p>"
+                + "<p>"+LNG.K('textdb_msg_begin_it_2')+"<p>"
+                + "<p>"+LNG.K('textdb_msg_begin_it_3')+"<p>");
+        }
+        else{
+            statusID = END_ALGORITHM;
+            $(statusErklaerung).html("<h3> "+LNG.K('textdb_msg_end_algo')+"</h3>"
+                + "<p>"+LNG.K('textdb_msg_end_algo_1')+"</p>");
+        }
+    };
     /*
      * Der aktuelle Augmentationsweg wird hervorgehoben.
+     * @param {Object} path   Der aktuelle Augmentationsweg
      * @method
      * */
     this.highlightPath = function(path){
@@ -491,14 +502,17 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
 
         //statuserklaerung
         $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
-        + "<h3> "+LNG.K('textdb_msg_path_highlight')+"</h3>"
-        + "<p> "+LNG.K('textdb_msg_path_highlight_1')+"<p>");
+            + "<h3> "+LNG.K('textdb_msg_path_highlight')+"</h3>"
+            + "<p>"+LNG.K('textdb_msg_path_shortest')+ shortestPathLength + "</p>"
+            + "<p> "+LNG.K('textdb_msg_path_highlight_1')+"<p>"
+            + "<p> "+LNG.K('textdb_msg_path_highlight_2')+"<p>");
         statusID = UPDATE_MATCHING;
     };
 
     /*
      * Das Matching wird durch den aktuellen Augmentationsweg verbessert.
      * Die Kanten des aktuellen Augmentationsweges werden vertauscht.
+     * @param {Object} path   Der aktuelle Augmentationsweg
      * @method
      * */
     this.augmentMatching = function(path){
@@ -531,6 +545,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
 
     /*
      * Die auf dem Augmentationsweg benutzten Knoten und inzidenten Kanten werden ausgeblendet.
+     * @param {Object} path   Der aktuelle Augmentationsweg
      * @method
      * */
     this.hidePath = function(path){
@@ -565,18 +580,6 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     * */
     this.endIteration = function(){
         statusID = BEGIN_ITERATION;
-        //restore Layouts
-        for(var n in graph.nodes){
-            var node = graph.nodes[n];
-            if(this.isMatched(node)) setNodeMatched(node);
-            else setNodeNotMatched(node);
-        }
-        for(var e in graph.edges){
-            setEdgeNotMatched(graph.edges[e]);
-        }
-        for(var e in matching){
-            setEdgeMatched(graph.edges[e]);
-        }
         //statuserklaerung
         $(statusErklaerung).html('<h3>'+iteration+'. '+LNG.K('textdb_text_iteration')+'</h3>'
             + "<h3> "+LNG.K('textdb_msg_end_it')+"</h3>"
@@ -703,6 +706,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
 
     /**
      * Setzt das Ausgabefenster, wo Erklaerungen ausgegeben werden.
+     * @param {String} fenster   Der Kontext des neuen Ausgabefensters
      * @method
      */
     this.setStatusWindow = function(fenster){
@@ -718,6 +722,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     };
     /**
      * Gibt zurueck, ob der Knoten gematcht ist.
+     * @param {Object} node Knoten
      * @method
      */
     this.isMatched = function (node){
@@ -725,6 +730,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
     };
     /**
      * Gibt den Partner des Knoten zurueck, falls er existiert.
+     * @param {Object} node Knoten
      * @method
      */
     this.getPartner = function (node){

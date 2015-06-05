@@ -1,5 +1,4 @@
 /**
- * @author Richard Stotz
  * Funktionen in dieser Datei werden dazu genutzt,
  * Formen auf das Canvas zu zeichnen
  */
@@ -20,21 +19,22 @@ function CanvasDrawMethods() {
  * @param {Object} layout           Layout des Pfeils
  * @param {Object} source           Koordinaten des Ausgangspunkts
  * @param {Object} target           Koordinaten des Zielpunkts
- * @param {String} label            Text auf dem Pfeil
- * @param {String} additionalLabel  Zusatztext zu dem Pfeil
+ * @param {Object} pos              Die Koordinaten des Pfeils zwischen Zielpunkt und Ausgangspunkt
+ * @param {Boolean} progress        Ob der Pfeil ein eine besonderer Progress-Pfeil ist
  */
-CanvasDrawMethods.drawArrowhead = function (ctx, layout, source, target, center) {
+CanvasDrawMethods.drawArrowhead = function (ctx, layout, source, target, pos, progress) {
     // Pfeilkopf zeichnen
     var arrowHeadColor = layout.lineColor;
-    if (layout.isHighlighted) {
-        arrowHeadColor = const_Colors.EdgeHighlight3;
+    if(progress){
+        arrowHeadColor = const_Colors.EdgeHighlight2;
+        ctx.lineWidth = 4.0;
     }
     ctx.beginPath();
     ctx.strokeStyle = arrowHeadColor;
     var edgeAngle = Math.atan2(target.y - source.y, target.x - source.x);
     var arrowStart = {
-        x: center.x + Math.cos(edgeAngle) * layout.arrowHeadLength / 2,
-        y: center.y + Math.sin(edgeAngle) * layout.arrowHeadLength / 2
+        x: pos.x + Math.cos(edgeAngle) * layout.arrowHeadLength / 2,
+        y: pos.y + Math.sin(edgeAngle) * layout.arrowHeadLength / 2
     };
     var lineAngle1 = Math.atan2(target.y - source.y, target.x - source.x)
         + layout.arrowAngle + Math.PI;	// Winkel des rechten Pfeilkopfs relativ zum Nullpunkt
@@ -47,48 +47,41 @@ CanvasDrawMethods.drawArrowhead = function (ctx, layout, source, target, center)
     ctx.lineTo(arrowStart.x + Math.cos(lineAngle2) * layout.arrowHeadLength, arrowStart.y + Math.sin(lineAngle2) * layout.arrowHeadLength);
     ctx.stroke();
 };
+/**
+ * Zeichnet eine Linie mit Pfeil in 2D
+ * @param {Object} ctx              2dContext des Canvas
+ * @param {Object} layout           Layout der Linie
+ * @param {Object} source           Koordinaten des Ausgangspunkts
+ * @param {Object} target           Koordinaten des Zielpunkts
+ * @param {Object} control          Kontrollpunkt zur Berechnung der Kurve
+ * @param {String} label            Text
+ * @param {String} additionalLabel  Zusaetzlicher Text
+ */
 CanvasDrawMethods.drawArrow = function (ctx, layout, source, target, control, label, additionalLabel) {
-    if (layout.dashed) {
-        ctx.setLineDash([10]);
-    }
     //Zeichne die Kurve bzw. Linie
     CanvasDrawMethods.drawCurve(ctx, layout, source, target, control, label, additionalLabel);
-    ctx.setLineDash([0]);
     // Pfeilkopf zeichnen
     var center;
     if (control == null) center = {x: (target.x + source.x) / 2, y: (target.y + source.y) / 2};
     else center = this.getQuadraticCurvePoint(source.x, source.y, control.x, control.y, target.x, target.y, 0.5);
     CanvasDrawMethods.drawArrowhead(ctx, layout, source, target, center);
-/*    if (layout.isHighlighted) {
-        var arrowStart = {
-            x: center.x + Math.cos(edgeAngle) * layout.arrowHeadLength / 2,
-            y: center.y + Math.sin(edgeAngle) * layout.arrowHeadLength / 2
-        };
-        var thirtyPercent = {
-            x: 0.3 * target.x + 0.7 * source.x,
-            y: 0.3 * target.y + 0.7 * source.y
-        };
-        CanvasDrawMethods.drawLine(ctx, {
-            lineColor: const_Colors.EdgeHighlight3,
-            lineWidth: layout.lineWidth
-        }, thirtyPercent, arrowStart);
-    }*/
-
+    if(layout.progressArrow){
+        var position;
+        var p = layout.progressArrowPosition;
+        if (control == null) position = {x: (source.x + (target.x - source.x) * p), y: (source.y + (target.y - source.y) * p)};
+        else position = this.getQuadraticCurvePoint(source.x, source.y, control.x, control.y, target.x, target.y, p);
+        CanvasDrawMethods.drawArrowhead(ctx, layout, source, target, position, true);
+    }
 };
-
-CanvasDrawMethods.drawDashedArrow = function (ctx, layout, source, target, control, label, additionalLabel) {
-    ctx.setLineDash([10]);
-    this.drawArrow(ctx, layout, source, target, control, label, additionalLabel);
-    ctx.setLineDash([0]);
-};
-
 /**
- * Zeichnet einen Linie in 2D
+ * Zeichnet einen Linie/Kurve in 2D
  * @param {Object} ctx           2dContext des Canvas
  * @param {Object} layout        Layout der Linie
  * @param {Object} source        Koordinaten des Ausgangspunkts
  * @param {Object} target        Koordinaten des Zielpunkts
  * @param {Object} control       Kontrollpunkt zur Berechnung der Kurve
+ * @param {String} label            Text
+ * @param {String} additionalLabel  Zusaetzlicher Text
  */
 CanvasDrawMethods.drawCurve = function (ctx, layout, source, target, control, label, additionalLabel) {
     if(control == null){
@@ -126,6 +119,14 @@ CanvasDrawMethods.drawCurve = function (ctx, layout, source, target, control, la
         if (additionalLabel !== null) CanvasDrawMethods.drawAdditionalTextOnLine(ctx, layout, s, t, additionalLabel);
     }
 };
+
+/**
+ * Zeichnet einen Linie/Kurve in 2D
+ * @param {Object} ctx           2dContext des Canvas
+ * @param {Object} layout        Layout der Linie
+ * @param {Object} source        Koordinaten des Ausgangspunkts
+ * @param {Object} target        Koordinaten des Zielpunkts
+ */
 CanvasDrawMethods.drawLine = function (ctx, layout, source, target) {
     if (layout.dashed) {
         ctx.setLineDash([10]);
@@ -139,29 +140,35 @@ CanvasDrawMethods.drawLine = function (ctx, layout, source, target) {
     ctx.stroke();
     ctx.setLineDash([0]);
 };
-
-/*CanvasDrawMethods.drawDashedLine = function (ctx, layout, source, target) {
-    ctx.setLineDash([10]);
-    this.drawLine(ctx, layout, source, target);
-    ctx.setLineDash([0]);
-};
-CanvasDrawMethods.drawDashedCurve = function (ctx, layout, source, target, control) {
-    ctx.setLineDash([10]);
-    this.drawCurve(ctx, layout, source, target, control);
-    ctx.setLineDash([0]);
-};*/
-
+/**
+ * Berechnet den Bezier-Wert fuer die Berechnung von Kruemmungen der Kanten
+ * @param t
+ * @param p1
+ * @param p2
+ * @param p3
+ * @returns {number} BezierValue
+ */
 function getQBezierValue(t, p1, p2, p3) {
     var iT = 1 - t;
     return iT * iT * p1 + 2 * iT * t * p2 + t * t * p3;
 }
-
+/**
+ * Berechnet die Koordinaten eines Punktes auf einer quadratischen Bezierkurve
+ * @param startX    Koordinaten des Startknotens
+ * @param startY    Koordinaten des Startknotens
+ * @param cpX       Koordinaten des Kontrollknotens
+ * @param cpY       Koordinaten des Kontrollknotens
+ * @param endX      Koordinaten des Zielknotens
+ * @param endY      Koordinaten des Zielknotens
+ * @param position  Position des Punktes zwischen Startpunkt und Endpunkt (0<=position<=1)
+ * @returns {{x: number, y: number}} Koordinaten des gesuchten Punktes
+ */
 CanvasDrawMethods.getQuadraticCurvePoint = function (startX, startY, cpX, cpY, endX, endY, position) {
     return {
         x: getQBezierValue(position, startX, cpX, endX),
         y: getQBezierValue(position, startY, cpY, endY)
     };
-}
+};
 
 /**
  * Zeichnet einen Text auf eine Linie.
@@ -231,61 +238,6 @@ CanvasDrawMethods.drawAdditionalTextOnLine = function (ctx, layout, source, targ
     ctx.stroke();
     ctx.restore();							// Ursprünglichen Zustand wiederherstellen.
 };
-//Aus der Ungarischen Methode entnommen
-CanvasDrawMethods.drawTextOnLineShifted = function(ctx,layout,source,target,label,even,nodeCount,sourceNode) {
-    ctx.save();								// Aktuellen Zustand speichern (vor den Transformationen)
-    ctx.font = layout.fontSize.toString() +"px " +layout.font;
-    if(layout.lineColor == const_Colors.grey){
-        ctx.fillStyle = const_Colors.grey;
-    }else{
-        ctx.fillStyle = "black";
-    }
-    var labelMeasure = ctx.measureText(label);
-    var alpha = Math.atan2(target.y-source.y,target.x-source.x);
-    var center;
-    var coefficient = sourceNode % 2 == 0 ? 0.5*(sourceNode-1) : -0.5*sourceNode;
-    if(sourceNode == 0) coefficient = 0;
-    var offset;
-    if((graph_constants.V_POSITION - graph_constants.U_POSITION - global_NodeLayout.nodeRadius*2)/nodeCount > 45){
-        offset = 45;
-    }else{
-        offset = (graph_constants.V_POSITION - graph_constants.U_POSITION - global_NodeLayout.nodeRadius*2)/nodeCount;
-    }
-    if(source.x > target.x){
-        center ={
-            x: source.x - (0.5*(source.x - target.x) + coefficient*offset/Math.abs(Math.tan(alpha))),
-            y: source.y + (0.5*(target.y - source.y) + coefficient*offset)
-        };
-    }else{
-        center ={
-            x: source.x + (0.5*(target.x - source.x) + coefficient*offset/(Math.tan(alpha))),
-            //y: Math.min(target.y, source.y) + (0.5*Math.abs(target.y - source.y) + coefficient*sourceNode*offset*Math.sin(alpha))
-            y: source.y + (0.5*(target.y - source.y) + coefficient*offset)
-        };
-    }
-    ctx.translate(center.x, center.y);
-    ctx.rotate(alpha - Math.PI / 2);
-    if(label == "77"){
-        console.log(Math.sin(alpha - Math.PI / 2));
-        console.log(Math.cos(alpha - Math.PI / 2));
-        //    console.log(alpha);
-        //    ctx.rotate(Math.PI/2);
-        //}else{
-        //
-        //    ctx.fillText(label, 0, 0);
-    }
-    //if(Math.abs(alpha)>Math.PI/2) {
-    //    ctx.fillText(label, 0, layout.fontSize*Math.tan(alpha));
-    //}else{
-    //    ctx.fillText(label, 0, layout.fontSize*Math.tan(alpha - Math.PI / 2));
-    //}
-    if(Math.abs(alpha)>Math.PI/2) {
-        ctx.fillText(label, 3, -layout.fontSize * Math.sin(Math.abs(alpha - Math.PI / 2)));
-    }else{
-        ctx.fillText(label, 3, 0);
-    }
-    ctx.restore();							// Ursprünglichen Zustand wiederherstellen.
-};
 /**
  * Zeichnet eine gefüllten Kreis an gegebener Position.
  * In den Kreis kann ein Text geschrieben werden.
@@ -294,7 +246,6 @@ CanvasDrawMethods.drawTextOnLineShifted = function(ctx,layout,source,target,labe
  * @param {Object} layout        Aussehen des Knotens.
  * @param {String} label         Beschriftung des Knotens.
  */
-
 CanvasDrawMethods.drawDisk = function (ctx, position, layout, label) {
     ctx.beginPath();
     // Zeichne Füllung

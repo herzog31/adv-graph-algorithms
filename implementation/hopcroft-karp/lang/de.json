@@ -29,13 +29,16 @@
     "textdb_msg_init_3": "Maximal heißt hier, dass es zusätzlich zu den gefundenen Pfaden keinen anderen kürzesten knotendisjunkten Augmentationsweg gibt.",
 
     "textdb_msg_begin_it": "Beginn der nächsten Phase",
-    "textdb_msg_begin_it_1": "In dieser Phase werden nur Augmentationswege dieser Länge gesucht. Es wird nach einer inklusions-maximalen Menge von kürzesten knotendisjunkten Augmentationswegen gesucht. Wenn kein solcher Augmentationsweg gefunden werden kann, endet diese Phase.",
-    "textdb_msg_end_it": "Ende einer Phase",
+    "textdb_msg_begin_it_1": "Es wird nach einer inklusions-maximalen Menge von kürzesten knotendisjunkten Augmentationswegen gesucht. Wenn kein solcher Augmentationsweg gefunden werden kann, endet diese Phase.",
+    "textdb_msg_begin_it_2": "In dieser Phase werden nur Augmentationswege dieser Länge betrachtet. Die knotendisjunkten Augmentationswege werden nacheinander aufgezeigt.",
+    "textdb_msg_begin_it_3": "Da die gefundenen Augmentatonswege knotendisjunkt sind, spielt es keine Rolle, ob das Matching mit einem gefundenen Augmentationsweg gleich oder erst am Ende der Phase augmentiert wird. Aus Gründen der Übersichtlichkeit wird deshalb das Matching sofort nach Aufzeigen des Augmentationsweges augmentiert.",
+    "textdb_msg_end_it": "Ende der Phase",
     "textdb_msg_end_it_1": "Es gibt keine weiteren knotendisjunkten Augmentationswege der Länge ",
     "textdb_msg_end_it_2": "Falls es weitere Augmentationswege gibt, müssen diese länger sein und werden in den nächsten Phasen gefunden.",
 
     "textdb_msg_end_algo": "Algorithmus Ende",
-    "textdb_msg_end_algo_1": "Es gibt keine Augmentationswege mehr. Demzufolge ist das aktuelle Matching optimal.",
+    "textdb_msg_end_algo_1": "Es konnten keine Augmentationswege mehr gefunden werden. Der Algorithmus terminiert und gibt das aktuellen Matching aus.",
+    "textdb_msg_end_algo_2": "Es gibt keine Augmentationswege mehr. Demzufolge ist das aktuelle Matching optimal.",
 
     "textdb_msg_path": "Finde einen kürzesten augmentierenden Pfad",
     "textdb_msg_path_1a": "Zuerst wird mittels der Breitensuche ein gerichteter Graph aufgebaut, der alle kürzesten verbessernden Pfade enthält.",
@@ -45,14 +48,16 @@
     "textdb_msg_path_shortest": "Die Länge des kürzesten Augmentationsweges beträgt: ",
 
     "textdb_msg_path_highlight": "Suche nach einem Augmentationsweg",
-    "textdb_msg_path_highlight_1": "Der hervorgehobene Augmentationsweg besitzt die minimale Länge und benutzt nur Knoten, die in dieser Iteration noch nicht benutzt wurden.",
+    "textdb_msg_path_highlight_1": "Es wurde ein kürzester Augmentationsweg gefunden, der bezüglich der bereits gefundenen Wege in dieser Phase knotendisjunkt ist.",
+    "textdb_msg_path_highlight_2": "Der hervorgehobene Augmentationsweg besitzt die minimale Länge und benutzt nur Knoten, die in dieser Iteration noch nicht benutzt wurden.",
 
     "textdb_msg_update": "Aktualisieren des Matchings",
-    "textdb_msg_update_1": "Die alternierenden Kanten des gefundenen Augmentationsweges werden vertauscht.",
-    "textdb_msg_update_2": "Die Kardinalität des Matchings wird um eins erhöht.",
+    "textdb_msg_update_0": "Da die in dieser Phase gefundenen Augmentatonswege knotendisjunkt sind, spielt es keine Rolle, ob der gefundene Augmentationsweg gleich oder erst am Ende der Phase augmentiert wird. Aus Gründen der Übersichtlichkeit  wird das Matching deshalb sofort nach Aufzeigen des Augmentationsweges augmentiert.",
+    "textdb_msg_update_1": "Das Matching wird mit dem gefundenen Augmentationsweg augmentiert. Die ungematchten Kanten des Augmentationsweges werden zum Matching hinzugefügt und die Matching-Kanten des Weges werden aus dem Matching entfernt.",
+    "textdb_msg_update_2": "Die Anzahl der Nicht-Matching-Kanten eines Augmentationsweges ist um eins höher als die Anzal der Matching-Kanten des Weges. Deshalb erhöht sich die Kardinalität des Matchings genau um eins.",
 
     "textdb_msg_gray": "Ausblenden von benutzten Knoten",
-    "textdb_msg_gray_1": "Die Knoten, die im aktuellen Augmentationsweg vorkommen, dürfen nicht in anderen Augmentationswegen der aktuellen Phase vorkommen. Deshalb werden sie ausgeblendet.",
+    "textdb_msg_gray_1": "Die Knoten, die im aktuellen Augmentationsweg vorkommen, dürfen nicht in anderen Augmentationswegen der aktuellen Phase vorkommen. Deshalb werden sie ausgeblendet und in dieser Phase nicht mehr benutzt.",
 
     "textdb_msg_case4_1": "Ergebnis: Algorithmus erfolgreich beendet",
     "textdb_msg_case5_1": "Jetzt kann der Algorithmus beginnen!",

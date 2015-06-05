@@ -58,15 +58,33 @@ function algorithm(p_graph, p_canvas, p_tab) {
      * @type Number
      */
     var phase = 0;
-
+    /**
+     * Gibt an ob das Problem loesbar ist
+     * @type Boolean
+     */
     var feasible = null;
-
+    /**
+     * Die Differenzen der Ausgangs- und Eingagnsgrade aller Knoten
+     * Keys: KnotenIDs Value: Differenz
+     * @type {Object}
+     */
     var delta = new Object();
-
+    /**
+     * Die Anzahl der zusaetzlichen Wege, die eingefuegt werden muessen
+     * @type {number}
+     */
     var excess = 0;
-
+    /**
+     * Knoten mit positiver delta
+     * Keys: KnotenIDs Value: Knoten
+     * @type {Object}
+     */
     var demandNodes = new Object();
-
+    /**
+     * Knoten mit negativer delta
+     * Keys: KnotenIDs Value: Knoten
+     * @type {Object}
+     */
     var supplyNodes = new Object();
     /**
      * Array mit Objekten der Form:<br>
@@ -74,25 +92,55 @@ function algorithm(p_graph, p_canvas, p_tab) {
      * @type Array
      */
     var matching = [];
-
+    /**
+     * Der Matching-Graph, der im Laufe des Algorithmen erstellt wird
+     * @type {Object}
+     */
     var matching_graph = null;
-
+    /**
+     * Mapping von Knoten im normalen Graph zu ihren repraesentativen Knoten im Matchinggraph
+     * @type {Object}
+     */
     var id_map = {};
-
+    /**
+     * Der naechste Weg, der eingefuegt werden soll
+     * @type {number}
+     */
     var next = 0;
     /**
-     * Array mit den neu eingefuegten Pfaden<br>
-     * Enthaelt Arrays von neuen Kanten
-     * @type Object
+     * Die guenstigsten Kosten des Rundgangs
+     * @type {number}
      */
-    var cost = null;
-
+    var cost = 0;
+    /**
+     * Die berechnete Eulertour.
+     * @type {Array}
+     */
     var tour = new Array();
-
+    /**
+     * Die berechneten Subtouren.
+     * @type {Array}
+     */
     var subtours = new Array();
+    /**
+     * Die Farben der Kanten
+     * @type {Object}
+     */
     var color = {};
+    /**
+     * Menge von Farben, die als Subtourfarben verwendet werden
+     * @type {Array}
+     */
     var tourColors = new Array("#0000cc", "#006600", "#990000", "#999900", "#cc6600", "#660099", "#330000");
+    /**
+     * Wird bei einer Animation benoetigt
+     * @type {number}
+     */
     var tourAnimationIndex = 0;
+    /**
+     * Wird bei einer Animation benoetigt
+     * @type {number}
+     */
     var animationId = 0;
     /*
      * Alle benoetigten Information zur Wiederherstellung der vorangegangenen Schritte werden hier gespeichert.
@@ -116,9 +164,9 @@ function algorithm(p_graph, p_canvas, p_tab) {
     const START_TOUR = 16;
     const SHOW_TOUR = 15;
     const END = 10;
-    const STOP = 19;
     /*
-     * Entferne alle Knoten, die zu keiner Kante inzident sind
+     * Entferne alle Knoten, die zu keiner Kante inzident sind.
+     * @method
      * */
     this.deleteIsolatedNodes = function () {
         for (var n in graph.nodes) {
@@ -165,7 +213,17 @@ function algorithm(p_graph, p_canvas, p_tab) {
         this.destroyCanvasDrawer();
         this.deregisterEventHandlers();
     };
-
+    /**
+     * Alle in den Graphen neu eingefuegten Kanten werden geloescht.
+     * @method
+     */
+    this.deleteInsertedEdges = function(){
+        for (var e in graph.edges) {
+            if (graph.edges[e].getLayout().dashed || !graph.edges[e].getDirected()) {
+                graph.removeEdge(e);
+            }
+        }
+    };
     /**
      * Beendet den Tab und startet ihn neu
      * @method
@@ -258,14 +316,6 @@ function algorithm(p_graph, p_canvas, p_tab) {
     /**
      * In dieser Funktion wird der nächste Schritt des Algorithmus ausgewählt.
      * Welcher das ist, wird über die Variable "statusID" bestimmt.<br>
-     * Mögliche Werte sind:<br>
-     *  0: Initialisierung<br>
-     *  1: Prüfung ob Gewichte aktualisiert werden sollen, und initialierung<br>
-     *  2: Prüfe, ob anhand der aktuellen Kante ein Update vorgenommen wird (Animation)<br>
-     *  3: Update, falls nötig, den Knoten<br>
-     *  4: Untersuche, ob es eine Kante gibt, die auf einen negativen Kreis hinweist.<br>
-     *  5: Finde den negativen Kreis im Graph und beende<br>
-     *  6: Normales Ende, falls kein negativer Kreis gefunden wurde.
      *  @method
      */
     this.nextStepChoice = function () {
@@ -303,13 +353,13 @@ function algorithm(p_graph, p_canvas, p_tab) {
                 //console.log("Fehlerhafte StatusID.");
                 break;
         }
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub,"ta_div_statusErklaerung"]);
         this.needRedraw = true;
-        //console.log(tour);
-        //console.log(new_edges);
     };
-    /*
-     *
-     * */
+    /**
+     * Konstruiert den Matchinggraphen und berechnet das optimale Matching
+     * @method
+     */
     this.findMatching = function () {
         //construct cost matrix
         var uid_map = {};
@@ -345,7 +395,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
     };
     /*
-     * Computes the eulertour
+     * Berechnet die Eulertour
      * @method
      * */
     this.computeEulerTour = function () {
@@ -459,6 +509,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
     };
     /**
      * Ueberpruefe ob das Problem loesbar ist.
+     * @method
      */
     this.checkFeasibility = function () {
         $("#"+st+"_button_Zurueck").button({icons: {primary: "ui-icon-seek-start"}, disabled: false});
@@ -498,7 +549,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         $("#ta_p_feasible").addClass("marked");
     };
     /*
-     * Findet nicht balancierte Knoten
+     * Findet nicht balancierte Knoten und hebt diese hervor.
      * @method
      * */
     this.showUnbalancedNodes = function () {
@@ -540,7 +591,9 @@ function algorithm(p_graph, p_canvas, p_tab) {
         $(".marked").removeClass("marked");
         $("#ta_p_2").addClass("marked");
     };
-
+    /**
+     * Methoden fuer die Visualisierung. Das Aussehen wird hier bestimmt.
+     */
     var highlightSupply = function (node) {
         node.setLayout('fillStyle', '#CCFFFF');
     };
@@ -554,16 +607,24 @@ function algorithm(p_graph, p_canvas, p_tab) {
     var hideEdge = function (edge) {
         edge.setLayout("lineWidth", global_Edgelayout.lineWidth * 0.4);
     };
-    var randomizeLabelPosition = function (edge) {
-        var rand = Math.random() * 0.6 + 0.2;
-        edge.setLayout('labelPosition', rand);
-    };
     var hideNode = function (node) {
         node.setLayout('fillStyle', "DarkGray");
         node.setLayout('borderWidth', global_NodeLayout.borderWidth);
         node.setLayout('borderColor', "Gray");
     };
-
+    /**
+     * Die Positon des Labels einer Kante wird zufaellig bestimmt.
+     * @param edge Kante
+     */
+    var randomizeLabelPosition = function (edge) {
+        var rand = Math.random() * 0.6 + 0.2;
+        edge.setLayout('labelPosition', rand);
+    };
+    /**
+     * Der Matching-Graph wird erstellt und gezeigt.
+     * Die Kanten im Matchinggraphen sind die Laengen der kuerzesten Pfade.
+     * @method
+     */
     this.showShortestPaths = function () {
         this.findMatching();
         //construct new graph
@@ -612,7 +673,10 @@ function algorithm(p_graph, p_canvas, p_tab) {
         $(".marked").removeClass("marked");
         $("#ta_p_3").addClass("marked");
     };
-
+    /**
+     * Nur die Matchingkanten bleiben im Matchinggraphen.
+     * @method
+     */
     this.showMatching = function () {
         for (var e in matching_graph.edges) {//remove all edges
             matching_graph.removeEdge(e);
@@ -633,7 +697,10 @@ function algorithm(p_graph, p_canvas, p_tab) {
         $(".marked").removeClass("marked");
         $("#ta_p_3").addClass("marked");
     };
-
+    /**
+     * Es wird zurueck zum normalen Graphen gewechselt.
+     * @method
+     */
     this.startAddingPaths = function () {
         this.graph = graph;
         //insert matching edges
@@ -670,12 +737,16 @@ function algorithm(p_graph, p_canvas, p_tab) {
         statusID = ADD_PATHS;
         // Erklärung im Statusfenster
         $("#"+st+"_div_statusErklaerung").html("<h3>4. " + LNG.K('algorithm_new_paths') + "</h3>"
-        + "<p>" + LNG.K('algorithm_new_paths_1') + "</p>"
-        + "<p>" + LNG.K('algorithm_new_paths_2') + "</p>");
+            + "<p>" + LNG.K('algorithm_new_paths_1') + "</p>"
+            + "<p>" + LNG.K('algorithm_new_paths_2') + "</p>"
+            + "<p>" + LNG.K('algorithm_new_paths_3') + "</p>");
         $(".marked").removeClass("marked");
         $("#ta_p_4").addClass("marked");
     };
-
+    /**
+     * Falls die Animation nicht am Ende war, wird das Einfuegen eines Pfades beendet.
+     * @param {number} path Weg im Graphen
+     */
     var redoPath = function(path){//if the animation not yet ended, repare
         var match = matching[path];
         if(next > 0 && graph.edges[match.edge.getEdgeID()]){
@@ -694,6 +765,10 @@ function algorithm(p_graph, p_canvas, p_tab) {
             graph.nodes[d].setLabel(graph.nodes[d].getLabel() - 1);
         }
     };
+    /**
+     * Das Einfuegen eines Pfades wird rueckgaengig gemacht.
+     * @param path Weg
+     */
     var undoPath = function(path){
         var match = matching[path];
         var s = match.s;
@@ -712,27 +787,30 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
     };
     /*
-     *
+     * Der naechste Pfad wird in den Graphen eingefuegt.
+     * @method
      * */
     this.addPath = function () {
-        redoPath(next-1); //falls die animation nicht beendet wurde
+        if(next > 0){
+            redoPath(next-1); //falls die animation nicht beendet wurde
+            graph.nodes[matching[next-1].s].setLayout('fillStyle', const_Colors.NodeFilling);
+            graph.nodes[matching[next-1].d].setLayout('fillStyle', const_Colors.NodeFilling);
+        }
         var step = 0;
         var current = next;
-        var cost = matching[current].edge.weight;
         next++;
+        var cost = matching[current].edge.weight;
+        var s = matching[current].s;
+        var d = matching[current].d;
+        graph.nodes[s].setLayout('fillStyle', const_Colors.NodeBorderHighlight);
+        graph.nodes[d].setLayout('fillStyle', const_Colors.NodeBorderHighlight);
         matching[current].new_edges = [];
         animationId = setInterval(function () {//animate adding of new edges/paths
-            var s = matching[current].s;
-            var d = matching[current].d;
             var path = matching[current].path;
             if (step == 0) {
-                graph.nodes[s].setLayout('borderColor', const_Colors.NodeBorderHighlight);
-                graph.nodes[d].setLayout('borderColor', const_Colors.NodeBorderHighlight);
                 matching[current].edge.setLayout('lineColor','red');
             }
             else if (step == path.length + 1) {
-                graph.nodes[s].setLayout('borderColor', const_Colors.NodeBorder);
-                graph.nodes[d].setLayout('borderColor', const_Colors.NodeBorder);
                 graph.nodes[s].setLabel(graph.nodes[s].getLabel() + 1);
                 graph.nodes[d].setLabel(graph.nodes[d].getLabel() - 1);
                 graph.removeEdge(matching[current].edge.getEdgeID());
@@ -762,9 +840,9 @@ function algorithm(p_graph, p_canvas, p_tab) {
     };
 
 
-    // Methoden fuer die Visualisierung der Eulertour
     /*
-     *
+     * Den Knoten werden Labels zur Unterscheidung zugeordnet.
+     * @method
      * */
     this.addNamingLabels = function () {
         var nodeCounter = 1;
@@ -774,8 +852,9 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
     };
     /*
-    *
-    * */
+     * Der eulersche Graph mit Knotenlabels wird angezeigt.
+     * @method
+     * */
     this.startTour = function () {
         if(next > 0) redoPath(next-1);
         //compute the tour and the cost of the tour
@@ -805,6 +884,10 @@ function algorithm(p_graph, p_canvas, p_tab) {
         $(".marked").removeClass("marked");
         $("#ta_p_5").addClass("marked");
     };
+    /*
+     * Der eulersche Graph mit Knotenlabels wird angezeigt.
+     * @method
+     * */
     this.showTour = function(){
         //create output path and subpaths
         $("#"+st+"_div_statusErklaerung").html('<h3>5. ' + LNG.K('algorithm_euler') + '</h3>\
@@ -815,11 +898,15 @@ function algorithm(p_graph, p_canvas, p_tab) {
             icons: {primary: "ui-icon-stop"},
             disabled: true
         }).click({org: this}, this.animateTourStop);
+        this.appendTours();
         statusID = END;
         $(".marked").removeClass("marked");
         $("#ta_p_5").addClass("marked");
     };
-
+    /*
+     * Die Subtouren werden an die Erklaerung angehaengt.
+     * @method
+     * */
     this.appendTours = function () {
         //create output path and subpaths
         var output = "";
@@ -828,8 +915,9 @@ function algorithm(p_graph, p_canvas, p_tab) {
                 output += graph.nodes[tour[i].id].getLabel();
             }
             if (tour[i].type == "edge") {
-                var layout = graph.edges[tour[i].id].getLayout();
-                output += ' <span style="color: ' + layout.lineColor + ';">&rarr;</span> ';
+                //var layout = graph.edges[tour[i].id].getLayout();
+                var c =  tourColors[color[tour[i].id]];
+                output += ' <span style="color: ' + c + ';">&rarr;</span> ';
             }
         }
         var output_subtours = "";
@@ -854,7 +942,11 @@ function algorithm(p_graph, p_canvas, p_tab) {
         $(".subtourList").on("mouseenter", "li.subtour_hover", {org: this}, this.hoverSubtour).on("mouseleave", "li.subtour_hover", {org: this}, this.dehoverSubtour);
         statusID = END;
     };
-
+    /**
+     * Hebe Subtour Fett hervor
+     * @method
+     * @param  {jQuery.Event} event Hover Event
+     */
     this.hoverSubtour = function (event) {
         var tourId = $(event.target).data("tourId");
         $(event.target).css("font-weight", "bold");
@@ -867,7 +959,11 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
         event.data.org.needRedraw = true;
     };
-
+    /**
+     * Macht die Hervorhebung rückgängig
+     * @method
+     * @param  {jQuery.Event} event Hover Event
+     */
     this.dehoverSubtour = function (event) {
         var tourId = $(event.target).data("tourId");
         $(event.target).css("font-weight", "normal");
@@ -881,31 +977,45 @@ function algorithm(p_graph, p_canvas, p_tab) {
         event.data.org.needRedraw = true;
     };
 
-    this.animateTourStep = function (event) {
-        if (tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "vertex") {
-            graph.nodes[tour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
-        }
-        if (tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "edge") {
-            graph.edges[tour[(tourAnimationIndex - 1)].id].setLayout("lineColor", tourColors[color[tour[(tourAnimationIndex - 1)].id]]);
-            graph.edges[tour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
-        }
-        this.needRedraw = true;
-        if (tourAnimationIndex >= tour.length) {
-            if(statusID == END) this.appendTours();
+    /**
+     * Führe Schritt in Eulertour Animation aus
+     * State abhängig vom aktuellen Wer der tourAnimationIndex Variablen
+     * @method
+     * @param  {jQuery.Event} event
+     */
+    this.animateTourStep = function(event) {
+
+        var currentEdge = Math.floor(tourAnimationIndex/30);
+        var previousEdge = Math.floor((tourAnimationIndex - 1)/30);
+        var currentArrowPosition = (tourAnimationIndex % 30) / 29;
+
+        if(tourAnimationIndex >= (tour.length*30)) {
             this.animateTourStop(event);
             return;
         }
-        if (tour[tourAnimationIndex].type == "vertex") {
-            graph.nodes[tour[tourAnimationIndex].id].setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+
+        if(tourAnimationIndex > 0 && tour[previousEdge].type === "edge") {
+            graph.edges[tour[previousEdge].id].setLayout("progressArrow", false);
         }
-        if (tour[tourAnimationIndex].type == "edge") {
-            graph.edges[tour[tourAnimationIndex].id].setLayout("lineColor", tourColors[color[tour[tourAnimationIndex].id]]);
-            graph.edges[tour[tourAnimationIndex].id].setLayout("lineWidth", 6);
+        this.needRedraw = true;
+
+        if(tour[currentEdge].type === "vertex") {
+            tourAnimationIndex = tourAnimationIndex + 29;
+        }
+
+        if(tour[currentEdge].type === "edge") {
+            graph.edges[tour[currentEdge].id].setLayout("progressArrow", true);
+            graph.edges[tour[currentEdge].id].setLayout("lineColor", tourColors[color[tour[currentEdge].id]]);
+            graph.edges[tour[currentEdge].id].setLayout("progressArrowPosition", currentArrowPosition);
         }
         this.needRedraw = true;
         tourAnimationIndex++;
     };
-
+    /**
+     * Starte Eulertour Animation
+     * @method
+     * @param  {jQuery.Event} event
+     */
     this.animateTour = function (event) {
         $("#animateTour").button("option", "disabled", true);
         $("#animateTourStop").button("option", "disabled", false);
@@ -913,15 +1023,17 @@ function algorithm(p_graph, p_canvas, p_tab) {
         var self = event.data.org;
         animationId = window.setInterval(function () {
             self.animateTourStep(event);
-        }, 250);
+        }, 1500.0/30);
     };
-
-    this.animateTourStop = function (event) {
-        if (tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "vertex") {
-            graph.nodes[tour[(tourAnimationIndex - 1)].id].setLayout("fillStyle", const_Colors.NodeFilling);
-        }
-        if (tourAnimationIndex > 0 && tour[(tourAnimationIndex - 1)].type == "edge") {
-            graph.edges[tour[(tourAnimationIndex - 1)].id].setLayout("lineWidth", 3);
+    /**
+     * Stoppe Eulertour Animation
+     * @method
+     * @param  {jQuery.Event} event
+     */
+    this.animateTourStop = function(event) {
+        var previousEdge = Math.floor((tourAnimationIndex - 1)/30);
+        if(tourAnimationIndex > 0 && tour[previousEdge].type === "edge") {
+            graph.edges[tour[previousEdge].id].setLayout("progressArrow", false);
         }
         event.data.org.needRedraw = true;
         tourAnimationIndex = 0;
@@ -929,19 +1041,20 @@ function algorithm(p_graph, p_canvas, p_tab) {
         animationId = null;
         $("#animateTour").button("option", "disabled", false);
         $("#animateTourStop").button("option", "disabled", true);
-        return;
     };
-
     /**
      * Zeigt Texte und Buttons zum Ende des Algorithmus
      * @method
      */
     this.endAlgorithm = function () {
-        statusID = STOP;
         $(".marked").removeClass("marked");
         $("#ta_p_end").addClass("marked");
         $( "#ta_div_subtours" ).remove();
-        $("#"+st+"_div_statusErklaerung").append("<p></p><h3>" + LNG.K('algorithm_msg_finish') + "</h3>");
+        for(var e in graph.edges){//faerbe die Kanten
+            graph.edges[e].setLayout("lineColor", tourColors[color[e]]);
+        }
+        $("#"+st+"_div_statusErklaerung").append("<p><b>" + LNG.K('algorithm_cost_optimal') + cost + "</b></p>");
+        $("#"+st+"_div_statusErklaerung").append("<br><h3>" + LNG.K('algorithm_msg_finish') + "</h3>");
         $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoIdee>" + LNG.K('algorithm_btn_more') + "</button>");
         $("#"+st+"_div_statusErklaerung").append("<h3>" + LNG.K('algorithm_msg_test') + "</h3>");
         $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoFA1>" + LNG.K('algorithm_btn_exe1') + "</button>");
@@ -965,7 +1078,14 @@ function algorithm(p_graph, p_canvas, p_tab) {
         $("#"+st+"_button_1Schritt").button("option", "disabled", true);
         $("#"+st+"_button_vorspulen").button("option", "disabled", true);
     };
-
+    /**
+     * Schritt einer Animation, die den Knoten zu neuen Koordinaten transportiert.
+     * @param node  Knoten
+     * @param c     alte Koordinaten
+     * @param newc  neue Koordinaten
+     * @param step  aktuelle Schritt
+     * @param aid   Animations-id
+     */
     this.animateMoveStep = function (node, c, newc, step, aid) {
         var STEPS = 100;
         var coord = c;
@@ -976,6 +1096,11 @@ function algorithm(p_graph, p_canvas, p_tab) {
             window.clearInterval(aid);
         }
     };
+    /**
+     * Erzeugt eine Animation, die den Knoten zu neuen Koordinaten transportiert.
+     * @param node Knoten
+     * @param newc  neue Koordinaten
+     */
     this.animateMove = function (node, newc) {
         var step = 0;
         var an = 0;
@@ -1002,21 +1127,22 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
         this.needRedraw = true;
     };
-
+    /**
+     * Füge Schritt zum Replay Stack hinzu
+     * @method
+     */
     this.addReplayStep = function () {
         var nodeProperties = {};
         for (var key in graph.nodes) {
             nodeProperties[graph.nodes[key].getNodeID()] = {
                 layout: JSON.stringify(graph.nodes[key].getLayout()),
                 label: graph.nodes[key].getLabel()
-                //coordiantes: graph.nodes[key].getCoordinates()
             };
         }
         var edgeProperties = {}
         for (var key in graph.edges) {
             edgeProperties[graph.edges[key].getEdgeID()] = {
-                layout: JSON.stringify(graph.edges[key].getLayout()),
-                label: graph.edges[key].getAdditionalLabel()
+                layout: JSON.stringify(graph.edges[key].getLayout())
             };
         }
         history.push({
@@ -1029,9 +1155,11 @@ function algorithm(p_graph, p_canvas, p_tab) {
             "pseudocode": $("#"+st+"_div_statusPseudocode").html(),
             "htmlSidebar": $("#"+st+"_div_statusErklaerung").html()
         });
-        //console.log("Current History Step: ", history[history.length-1]);
     };
-
+    /**
+     * Stelle letzten Schritt auf dem Replay Stack wieder her
+     * @method
+     */
     this.replayStep = function () {
         if (history.length > 0) {
             var oldState = history.pop();
@@ -1046,13 +1174,11 @@ function algorithm(p_graph, p_canvas, p_tab) {
                 if (graph.nodes[key]) {
                     graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].layout));
                     graph.nodes[key].setLabel(oldState.nodeProperties[key].label);
-                    //graph.nodes[key].setCoordinates(oldState.nodeProperties[key].coordiantes);
                 }
             }
             for (var key in oldState.edgeProperties) {
                 if (graph.edges[key]) {
                     graph.edges[key].setLayoutObject(JSON.parse(oldState.edgeProperties[key].layout));
-                    graph.edges[key].setAdditionalLabel(oldState.edgeProperties[key].label);
                 }
             }
             if (statusID == START_ADDING_PATHS) {
@@ -1083,30 +1209,43 @@ function algorithm(p_graph, p_canvas, p_tab) {
             }
         }
     };
-
+    /**
+     * Setzt das Ausgabefenster, wo Erklaerungen ausgegeben werden.
+     * @param {String} fenster   Der Kontext des neuen Ausgabefensters
+     * @method
+     */
     this.setStatusWindow = function(fenster){
         st = fenster;
     };
+    /**
+     * Gibt die Distanzmatrix zurueck
+     * @returns {Object}
+     */
     this.getDistance = function(){
         return distance;
     };
+    /**
+     * Gibt das Matching zurueck
+     * @returns {Object}
+     */
     this.getMatching = function(){
         return matching;
     };
+    /**
+     * Gibt die Kosten des optimalen Rundgangs zurueck
+     * @returns {number}
+     */
     this.getCost = function(){
         return cost;
     };
+    /**
+     * Gibt aus, ob das Problem loesbar ist.
+     * @returns {Boolean}
+     */
     this.isFeasible = function(){
         return feasible;
     };
 
-    this.deleteInsertedEdges = function(){
-        for (var e in graph.edges) {
-            if (graph.edges[e].getLayout().dashed || !graph.edges[e].getDirected()) {
-                graph.removeEdge(e);
-            }
-        }
-    };
 }
 
 // Vererbung realisieren

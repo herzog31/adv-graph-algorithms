@@ -7,6 +7,7 @@
 /**
  * Instanz der Forschungsaufgabe 1
  * @constructor
+ * @augments algorithm
  * @param {Graph} p_graph Graph, auf dem der Algorithmus ausgeführt wird
  * @param {Object} p_canvas jQuery Objekt des Canvas, in dem gezeichnet wird.
  * @param {Object} p_tab jQuery Objekt des aktuellen Tabs.
@@ -25,20 +26,20 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      * @type Forschungsaufgabe1
      */
     var algo = this;
-
+    /**
+     * Methode nextStepChoice der Oberklasse
+     * @type {Function|*}
+     */
     this.algoNext = this.nextStepChoice;
-
-    //this.base_destroy = this.destroy;
-
-    //this.base_stopFastForward = this.stopFastForward;
-
+    /**
+     * Methode run der Oberklasse
+     * @type {Function|*}
+     */
     this.base_run = this.run;
     /**
      * Parameter der aktuellen Frage (wird dann für die Antwort verwendet)<br>
-     * frageKnoten: Knoten, zu dem die Frage gestellt wurde<br>
      * Antwort : String der richtigen Antwort<br>
      * AntwortGrund: Begründung der richtigen Antwort<br>
-     * newNodeLabel: Label den der Knoten nach der richtigen Beantwortung bekommt (neuer Abstandswert)<br>
      * gewusst: Ob die Antwort bereits beim ersten Versuch korrekt gegeben wurd<br>
      * @type Object
      */
@@ -52,10 +53,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         falsch: 0,
         gestellt: 0
     };
-    /**
-     * Gibt das Statusausgabefenster an.
-     */
-    var statusErklaerung = "#tf1_div_statusErklaerung";//statusErklaerung
     /*
      * Statuskonstanten
      * */
@@ -120,6 +117,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
                 this.algoNext();
                 break;
         }
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub,"ta_div_statusErklaerung"]);
         this.needRedraw = true;
     };
     /**
@@ -249,7 +247,10 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             }
         });
     };
-
+    /**
+     * Stellt die Frage vom Typ 1
+     * @method
+     */
     this.askQuestion1 = function () {
         //waehle den Knoten aus
         var node = chooseNode();
@@ -274,21 +275,27 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             "layout": node.getLayout()
         };
         //Knoten hervorheben
-        node.setLayout("borderColor", const_Colors.NodeBorderHighlight);
-        node.setLayout("fillStyle", const_Colors.NodeFillingHighlight);
+        //node.setLayout("borderColor", const_Colors.NodeBorderHighlight);
+        node.setLayout("fillStyle", const_Colors.NodeBorderHighlight);
         //stelle die Frage
         $("#tf1_question").html(LNG.K('aufgabe1_question1'));
         $("#tf1_question_form").html('<input type="radio" id="tf1_input_frage1_0" name="frage1" value="ja"/><label id="tf1_label_frage1_0" for="tf1_input_frage1_0"> ja </label><br>' +
             '<input type="radio" id="tf1_input_frage1_1" name="frage1" value="nein"/><label id="tf1_label_frage1_1" for="tf1_input_frage1_1"> nein </label><br>');
         $("#tf1_question_form").find("input[type='radio']").one("change", function() { $("#tf1_button_questionClose").button("option", "disabled", false); });
     };
-
+    /**
+     * Waehlt zufaellig einen Knoten aus
+     * @returns {Object}
+     */
     var chooseNode = function(){
         var keys = Object.keys(algo.graph.nodes);
         var rand = Math.floor(Math.random()*keys.length);
         return algo.graph.nodes[keys[rand]];
     };
-
+    /**
+     * Stellt die Frage vom Typ 2
+     * @method
+     */
     this.askQuestion2 = function () {
         var node = chooseNode();
         var delta = node.getLabel();
@@ -304,13 +311,17 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             "layout": node.getLayout()
         };
         //Knoten hervorheben
-        node.setLayout("borderColor", const_Colors.NodeBorderHighlight);
+        //node.setLayout("borderColor", const_Colors.NodeBorderHighlight);
+        node.setLayout("fillStyle", const_Colors.NodeBorderHighlight);
         //stelle die Frage
         $("#tf1_question").html(LNG.K('aufgabe1_question2'));
         $("#tf1_question_form").html('<input type="text" id="tf1_input_frage2" name="frage2" value="" /><br>');
         $("#tf1_input_frage2").one("keyup", function() { $("#tf1_button_questionClose").button("option", "disabled", false); });
     };
-
+    /**
+     * Stellt die Frage vom Typ 3
+     * @method
+     */
     this.askQuestion3 = function () {
         //waehle die Matchingkante
         var match = this.getMatching();
@@ -335,8 +346,11 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             "layout2": graph.nodes[m.d].getLayout()
         };
         //Knoten und Kante hervorheben
-        graph.nodes[m.s].setLayout("borderColor", const_Colors.NodeBorderHighlight);
-        graph.nodes[m.d].setLayout("borderColor", const_Colors.NodeBorderHighlight);
+        for(var n in graph.nodes){
+            graph.nodes[n].setLayout("fillStyle", const_Colors.NodeFilling);
+        }
+        graph.nodes[m.s].setLayout("fillStyle", const_Colors.NodeBorderHighlight);
+        graph.nodes[m.d].setLayout("fillStyle", const_Colors.NodeBorderHighlight);
         m.edge.setLayout("lineColor", const_Colors.EdgeHighlight1);
         //stelle die Frage
         $("#tf1_question").html(LNG.K('aufgabe1_question3'));

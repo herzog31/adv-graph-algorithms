@@ -77,11 +77,19 @@ CanvasDrawMethods.drawLine = function(ctx,layout,source,target) {
     ctx.stroke();
 };
 
+/**
+ * Zeichnet einen gestrichelte Linie in 2D
+ * @param {Object} ctx           2dContext des Canvas
+ * @param {Object} layout        Layout der Linie
+ * @param {Object} source        Koordinaten des Ausgangspunkts
+ * @param {Object} target        Koordinaten des Zielpunkts
+ */
 CanvasDrawMethods.drawDashedLine = function(ctx,layout,source,target) {
     ctx.setLineDash([10]);
     this.drawLine(ctx,layout,source,target);
     ctx.setLineDash([0]);
 };
+
 /**
  * Zeichnet einen Text auf eine Linie.
  * Der Text wird ensprechend gedreht.

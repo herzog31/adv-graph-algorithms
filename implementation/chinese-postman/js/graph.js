@@ -41,10 +41,12 @@ var global_Edgelayout = {
     'font': 'Arial',		// Schrifart
     'fontSize': 14,		// Schriftgrösse in Pixeln
     'isHighlighted': false ,        // Ob die Kante eine besondere Markierung haben soll
-    'dashed': false,
-    'showLabels': true,
-    'labelPosition': 0.5,
-    'hidden': false
+    'dashed': false,    //gestrichelt
+    'showLabels': true, //ob das Label angezeigt werden soll
+    'labelPosition': 0.5, // Position des Labels auf der Kante
+    'progressArrow': false,             // Zusätzlicher Animationspfeil
+    'progressArrowPosition': 0.0,       // Position des Animationspfeils
+    'hidden': false //ob die Kante angeyeigt werden soll
 };
 
 /**
@@ -201,6 +203,10 @@ function GraphNode(coordinates,nodeID) {
         layout[parameter] = newValue;
     };
 
+    /**
+     * Verändert das Aussehen des Knotens
+     * @param {Object} layoutObject Layout
+     */
     this.setLayoutObject = function(layoutObject) {
         layout = layoutObject;
     };
@@ -284,13 +290,14 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
      */
     var directed = directedEdge;
     /**
-     * Pointer auf die Kante in entgegengesetzter Richtung
-     * @type Number
+     * Ausgangsknoten der Kante
+     * @type Object
      */
-    //var oppositeEdge = null;
-
     var source = sourceNode;
-
+    /**
+     * Zielknoten der Kante
+     * @type Object
+     */
     var target = targetNode;
     /**
      * ID des Quellknotens der Kante
@@ -372,44 +379,21 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
         return targetID;
     };
     /**
-     * @method
-     * @returns {Number} ID der entgegengesetzten Kante
-     */
-    this.getOppositeEdgeID = function() {
-        return oppositeEdge;
-    };
-    /**
-     * Trage eine Kante als entgegengesetzte Kante ein.
-     * @method
-     * @param {Number} edgeID ID der entgegengesetzten Kante
-     */
-    this.setOppositeEdgeID = function(edgeID) {
-        oppositeEdge = edgeID;
-    };
-    /**
      * Setze die Koordinaten des Anfangs der Kante
      * @method
      * @param {Object} coord Koordinaten des Anfangs der Kante
-     * @param {Boolean} noShift Ob die Koordinaten verschoben werden sollen,
      * damit Kanten nicht überlappen
      */
-    this.setSourceCoordinates = function(coord,noShift) {
+    this.setSourceCoordinates = function(coord) {
         sourceCoordinates = coord;
-        //if(oppositeEdge && !noShift) {
-        //    this.shift();
-        //}
     };
     /**
      * Setze die Koordinaten des Ziels der Kante
      * @method
      * @param {Object} coord Koordinaten des Ziels der Kante
-     * @param {Boolean} noShift Ob die Koordinaten verschoben werden sollen,
      */
-    this.setTargetCoordinates = function(coord,noShift) {
+    this.setTargetCoordinates = function(coord) {
         targetCoordinates = coord;
-        //if(oppositeEdge && !noShift) {
-        //    this.shift();
-        //}
     };
     /**
      * @method
@@ -466,14 +450,10 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
     this.getLayout = function() {
         return jQuery.extend(true, {},layout);
     };
-
-    this.setAdditionalLabel = function(label) {
-        this.additionalLabel = label;
-    };
-    this.getAdditionalLabel = function() {
-        return this.additionalLabel;
-    };
-
+    /**
+     * Verändert das Aussehen der Kante
+     * @param {Object} layoutObject Layout
+     */
     this.setLayoutObject = function(layoutObject) {
         layout = layoutObject;
     };
@@ -485,8 +465,6 @@ function Edge(sourceNode,targetNode,weight,edgeID,directedEdge) {
     this.setLayout = function(parameter,newValue) {
         layout[parameter] = newValue;
     };
-
-
     /**
      * Gibt den Status des Felds "isHighlighted" an, der z.B. für die 
      * Markierung der Vorgängerkanten genutzt werden kann.
@@ -750,7 +728,7 @@ function Graph(filename,canvas) {
      */
     this.addEdge = function(source,target,weight, dir) {
         if(weight == null) {
-            weight = Math.round(Math.random()*70-20);// Zufälliges Gewicht zwischen -20 und 50
+            weight = Math.round(Math.random()*100);// Zufälliges Gewicht zwischen 0 und 99
         }
         if(dir == null) dir = directed;
         var edge = new Edge(source,target,weight,edgeIDCounter,dir);
@@ -1263,7 +1241,7 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
                 this.graph = new Graph("graphs/kreis.txt");
                 break;
             case "koenigsberg":
-                this.canvas.css("background","");
+                this.canvas.css("background-image", "url(img/koenigsberg_bg.png)");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("graphs/koenigsberg.txt");
                 break;
