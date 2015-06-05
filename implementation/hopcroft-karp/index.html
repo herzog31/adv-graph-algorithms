@@ -73,7 +73,7 @@
                     Eine mögliche Anwendung für das bipartite Matching-Problem ist die Zuordnung von Studenten und Arbeitsstellen. Das Problem wird mittels eines bipartiten Graphen modelliert.
                     Die Studenten und Arbeitsstellen werden durch zwei Knotenmengen dargestellt.
                     Die Kanten repräsentieren mögliche Zuordnungen bzw. Qualifikationen.
-                    Das Ziel ist möglichst viele passende Zuordnungen zu finden, wobei die Studenten nur eine Stelle annehmen können und die Stellen nur einmal vergeben wird.
+                    Das Ziel ist, möglichst viele passende Zuordnungen zu finden, wobei die Studenten nur eine Stelle annehmen können und die Stellen nur einmal vergeben wird.
                 </p>
                 <p>
                     Sei ein ungerichteter Graph G=(V,E) gegeben. Eine Teilmenge \(M \subseteq E\) heißt Matching, falls keine zwei Kanten aus M einen Knoten gemeinsam haben.
@@ -117,11 +117,15 @@
                 <div id="tg_div_statusWindow" class="statusWindow">
                     <h2>Auf welchem Graph soll der Algorithmus ausgeführt werden?</h2>
                     <div id="tg_div_statusErklaerung">
-                        <p>Um einen Knoten in einer Partition zu erstellen, mache einen Doppelklick in der Nähe dieser Partition.
-                            Es können maximal 8 Knoten in einer Partition erstellt werden.
+                        <p>
+                            Der Graph besteht aus zwei Knotenmengen und Kanten zwischen diesen Knotenmengen.
+                        </p>
+                        <p>
+                            Um einen Knoten in einer Knotenmenge zu erstellen, mache einen Doppelklick in der Nähe dieser Knotenmenge.
+                            Es können maximal 8 Knoten in je einer Knotenmenge erstellt werden.
                         </p>
                         <p>Um eine Kante zu erstellen, klicke zunächst auf den Ausgangsknoten und dann auf den Zielknoten.</p>
-                        <p>Du kannst nur Kanten zwischen verschiedenen Partitionen einfügen.</p>
+                        <p>Du kannst nur Kanten zwischen verschiedenen Knotenmengen einfügen.</p>
                         <p>Ein Rechtsklick löscht Kanten und Knoten.</p>
                     </div>
                     <h3>Keine Lust, selbst einen Graph zu erstellen?<br></h3>
@@ -137,12 +141,12 @@
                 </div>
             </div>
             <div title="Graph erstellen" class="tabIntroDialog">
-                <h2>Auf welchem Graph soll der Algorithmus ausgeführt werden?</h2>
-                <p>Um einen Knoten in einer Partition zu erstellen, mache einen Doppelklick in der Nähe dieser Partition.
-                    Es können maximal 8 Knoten in einer Partition erstellt werden.
+                <p>
+                    Um einen Knoten in einer Knotenmenge zu erstellen, mache einen Doppelklick in der Nähe dieser Knotenmenge.
+                    Es können maximal 8 Knoten in je einer Knotenmenge erstellt werden.
                 </p>
                 <p>Um eine Kante zu erstellen, klicke zunächst auf den Ausgangsknoten und dann auf den Zielknoten.</p>
-                <p>Du kannst nur Kanten zwischen verschiedenen Partitionen einfügen.</p>
+                <p>Du kannst nur Kanten zwischen verschiedenen Knotenmengen einfügen.</p>
                 <p>Ein Rechtsklick löscht Kanten und Knoten.</p>
             </div>
         </div>
@@ -189,14 +193,14 @@
                         </div>
                         <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
                             <p class="pseudocode" id="ta_p_begin">BEGIN</p>
-                            <p class="pseudocode" id="ta_p_l2">  M &larr; &empty;</p>
+                            <p class="pseudocode" id="ta_p_l2">  M := &empty;</p>
                             <p class="pseudocode" id="ta_p_l3">  REPEAT </p>
-                            <p class="pseudocode" id="ta_p_l4">    l &larr; Länge des kürzesten</p>
+                            <p class="pseudocode" id="ta_p_l4">    l := Länge des kürzesten</p>
                             <p class="pseudocode" id="ta_p_l5">             Augmentationsweges </p>
-                            <p class="pseudocode" id="ta_p_l6">    &Rho; &larr; {P1,P2,...,Pk} inklusions-maximale</p>
-                            <p class="pseudocode" id="ta_p_l7">    Menge knotendisjunkter kürzester </p>
-                            <p class="pseudocode" id="ta_p_l8">    Augmentationswege bezüglich M</p>
-                            <p class="pseudocode" id="ta_p_l9">    M &larr; M &oplus; (P1 &cup; P2 &cup; ... &cup; Pk)</p>
+                            <p class="pseudocode" id="ta_p_l6">    &Rho; := {P1,...,Pk} inklusions-maximale</p>
+                            <p class="pseudocode" id="ta_p_l7">         Menge knotendisjunkter</p>
+                            <p class="pseudocode" id="ta_p_l8">         Augmentationswege der Länge l</p>
+                            <p class="pseudocode" id="ta_p_l9">    M := M &oplus; (P1 &cup; P2 &cup; ... &cup; Pk)</p>
                             <p class="pseudocode" id="ta_p_20">  UNTIL &Rho; = &empty;</p>
                             <p class="pseudocode" id="ta_p_return">RETURN M</p>
                             <p class="pseudocode" id="ta_p_end">END</p>
@@ -238,7 +242,7 @@
                     Ein <b>Matching</b> ist eine Menge von Kanten, sodass jeder Knoten auf maximal einer Kante liegt. Das erste Bild zeigt ein Matching auf einem bipartiten Graphen.
                     Das zu untersuchende Problem ist das Bestimmen von kardinalitätsmaximalen (maximale Anzahl von Elementen) Matchings auf bipartiten Graphen.
                 </p>
-                <h1>Idee des Algorithmen</h1>
+                <h1>Idee des Algorithmus</h1>
                 <p>
                     Sei M das aktuelle Matching (am Anfang ist es leer). Kanten in M heißen Matching-Kanten, alle anderen freie Kanten. Die freien Kanten sind auf den Bildern schwarz gekennzeichnet und die Matching-Kanten grün.
                     Ein Knoten, der auf einer Matching-Kante liegt, heißt besetzt(oder gematcht). Anderenfalls ist der Knoten frei. Die besetzten Knoten besitzen auf den Bildern grüne Farbe und freie Knoten blaue Farbe.
@@ -259,18 +263,18 @@
                     Ein Theorem aus der Graphentheorie besagt:<br>
                     <i>Ein Matching M in G(V,E) ist genau dann kardinalitäts-maximal, wenn es keinen Augmentationsweg gibt.</i> <br>
                     Ein einfacher Algorithmus zur Bestimmung von maximalen Matchings besteht darin, immer nach einem Augmentationsweg zu suchen und das Matching zu vergrößern. Existiert kein Augmentationsweg mehr, so ist das Matching optimal.
-                    Allerdings kann die Laufzeit dieses Algorithmen in bestimmten Fällen lang sein.
+                    Allerdings kann die Laufzeit dieses Algorithmus in bestimmten Fällen lang sein.
                 </p>
                 <p>
                     Der Algorithmus von Hopcroft und Karp verbessert die Laufzeit im Vergleich zu dem einfachen Algorithmus.
-                    In jeder Iteration des Algorithmen werden nur die <b>kürzesten Augmentationswege</b> betrachtet. Es wird nach einer Menge von <b>knotendisjunkten</b> Augmentationswegen gesucht.
+                    In jeder Iteration des Algorithmus werden nur die <b>kürzesten Augmentationswege</b> betrachtet. Es wird nach einer Menge von <b>knotendisjunkten</b> Augmentationswegen gesucht.
                     Das heißt, jeweils zwei Wege dürfen keinen gemeinsamen Knoten enthalten.
                 </p>
                 <p>
-                    Die Menge von kürzesten knotendisjunkten Augmentationswegen sollte <b>inkusions-maximal</b> sein. Das bedeutet, dass es keinen weiteren kürzesten Augmentationsweg existiert, der knotendisjunkt bezüglich der bereits gefundenen ist.
-                    Nachdem die gesuchte inkusions-maximale Menge von Augmentationswegen bestimmt wurde, wird das Matching augmentiert und es beginnt eine neue Iteration.
+                    Die Menge von kürzesten knotendisjunkten Augmentationswegen sollte <b>inklusions-maximal</b> sein. Das bedeutet, dass es keinen weiteren kürzesten Augmentationsweg existiert, der knotendisjunkt bezüglich der bereits gefundenen ist.
+                    Nachdem die gesuchte inklusions-maximale Menge von Augmentationswegen bestimmt wurde, wird das Matching augmentiert und es beginnt eine neue Iteration.
                     Nach jeder Iteration erhöht sich die Länge des kürzesten Augmentationsweges. Der Beweis dafür ist etwas kompliziert und wird deswegen ausgelassen.
-                    Es ist aber intuitiv, dass die Länge der Augmentationswege nach einer Augmentation nicht kürzer wird. Falls keine Augmentationwege mehr existieren, terminiert der Algorithmus.
+                    Es ist aber intuitiv, dass die Länge der Augmentationswege nach einer Augmentation nicht kürzer wird. Falls keine Augmentationswege mehr existieren, terminiert der Algorithmus.
                 </p>
                 <h1>Finden von kürzesten Augmentationswegen</h1>
                 <p>
@@ -282,17 +286,17 @@
                     Von den Knoten der aktuellen Partition folgt man den Kanten zu allen noch nicht untersuchten Nachbarn dieser Knoten, die jetzt die nächste Schicht darstellen.
                     Befindet sich ein freier Knoten in der neuen Schicht, so wird die Prozedur beendet. Ist die Schicht leer, so wird die Prozedur ebenfalls gestoppt und es wird ausgegeben, dass keine Augmentationswege existieren.
                     Andererseits erweitert man den so erstellten Schichtgraphen um eine weitere Schicht mit den Matching-Partnern der letzten Schicht.
-                    Die Schicht mit den Matchingpartnern wird zur aktuellen Schicht und die Prozedur wird wiederholt. Am Ende entsteht ein Schichtgraph, der alle kürzesten (und nur die kürzesten) Augmentationswege enthält, falls Augmentationswege existieren.
+                    Die Schicht mit den Matching-Partnern wird zur aktuellen Schicht und die Prozedur wird wiederholt. Am Ende entsteht ein Schichtgraph, der alle kürzesten (und nur die kürzesten) Augmentationswege enthält, falls Augmentationswege existieren.
                 </p>
                 <p>
                     Das dritte Bild zeigt den Schichtgraphen mit vier Schichten. Die erste Schicht besteht aus zwei freien Knoten einer Partition. Alle ihre Nachbarn werden zur zweiten Schicht hinzugefügt.
-                    Da kein freier Knoten unter den Knoten der zweiten Schicht existiert, wird eine dritte Schicht mit den Matching-Partnern der zweiten Schicht ertellt.
+                    Da kein freier Knoten unter den Knoten der zweiten Schicht existiert, wird eine dritte Schicht mit den Matching-Partnern der zweiten Schicht erstellt.
                     Alle noch nicht betrachteten Nachbarn der dritten Schicht werden zur vierten Schicht hinzugefügt. Unter ihnen existieren zwei freie Knoten. Also endet die Prozedur.
                 </p>
                 <p>
                     Um eine inklusions-maximale Menge von knotendisjunkten Augmentationswegen zu finden, benutzt man den Schichtgraphen aus dem letzten Schritt. Man startet mit den freien Knoten der ersten Schicht und wendet die <b>Tiefensuche</b> darauf an.
                     Falls es einen Augmentationsweg gibt, der mit diesem Knoten anfängt, wird er gefunden. Alle Knoten, die auf diesem Weg vorkommen, werden aus dem Schichtgraphen entfernt oder markiert.
-                    Während der Ausführung des Algorithmen werden diese Knoten grau markiert. Wendet man diese Prozedur auf alle Knoten der
+                    Während der Ausführung des Algorithmus werden diese Knoten grau markiert. Wendet man diese Prozedur auf alle Knoten der
                     ersten Schicht an, so ist die gefundene Menge der kürzesten Augmentationswege knotendisjunkt und nach dem Ende dieser Prozedur existiert kein kürzester Augmentationsweg, der bzgl. der bereits gefundenen knotendisjunkt ist.
                 </p>
                 <p>
@@ -363,16 +367,18 @@
                             <p>Tipp: Vorher nochmals die Beschreibung des Algorithmus durchlesen.</p>
                         </div>
                         <div class="PseudocodeWrapper" id="tf1_div_statusPseudocode">
-                            <p class="pseudocode" id="tf_p_l1">BEGIN</p>
-                            <p class="pseudocode" id="tf_p_l2">  M &larr; &empty;</p>
-                            <p class="pseudocode" id="tf_p_l3">  REPEAT </p>
-                            <p class="pseudocode" id="tf_p_l4">    &Rho; &larr; {P1,P2,...,Pk} inklusions-maximale</p>
-                            <p class="pseudocode" id="tf_p_l5">    Menge knotendisjunkter kürzester </p>
-                            <p class="pseudocode" id="tf_p_l6">    Augmentationswege</p>
-                            <p class="pseudocode" id="tf_p_l7">    M &larr; M &oplus; (P1 &cup; P2 &cup; ... &cup; Pk)</p>
-                            <p class="pseudocode" id="tf_p_l8">  UNTIL &Rho; == &empty;</p>
-                            <p class="pseudocode" id="tf_p_l9">RETURN M</p>
-                            <p class="pseudocode" id="tf_p_l10">END</p>
+                            <p class="pseudocode" id="tf1_p_begin">BEGIN</p>
+                            <p class="pseudocode" id="tf1_p_l2">  M := &empty;</p>
+                            <p class="pseudocode" id="tf1_p_l3">  REPEAT </p>
+                            <p class="pseudocode" id="tf1_p_l4">    l := Länge des kürzesten</p>
+                            <p class="pseudocode" id="tf1_p_l5">             Augmentationsweges </p>
+                            <p class="pseudocode" id="tf1_p_l6">    &Rho; := {P1,...,Pk} inklusions-maximale</p>
+                            <p class="pseudocode" id="tf1_p_l7">         Menge knotendisjunkter</p>
+                            <p class="pseudocode" id="tf1_p_l8">         Augmentationswege der Länge l</p>
+                            <p class="pseudocode" id="tf1_p_l9">    M := M &oplus; (P1 &cup; P2 &cup; ... &cup; Pk)</p>
+                            <p class="pseudocode" id="tf1_p_20">  UNTIL &Rho; = &empty;</p>
+                            <p class="pseudocode" id="tf1_p_return">RETURN M</p>
+                            <p class="pseudocode" id="tf1_p_end">END</p>
                         </div>
                     </div>
                 </div>
@@ -446,16 +452,16 @@
                 <div><pre><code>
                 Eingabe: Bipartiter ungewichteter Graph G=(U &cup; V, E)
                 Ausgabe: Matching M &sube; E
-
-                BEGIN
-                   M &larr; &empty;
+                    BEGIN
+                      M := &empty;
                       REPEAT
-                        &Rho; &larr; {P1,P2,...,Pk} inklusions-maximale
-                        Menge von kürzesten knotendisjunkten Augmentationswegen
-                        M &larr; M &oplus; (P1 &cup; P2 &cup; ... &cup; Pk)
-                      UNTIL &Rho; == &empty;
-                   RETURN M
-                END
+                        l := Länge des kürzesten Augmentationsweges
+                        &Rho; := {P1,...,Pk} inklusions-maximale Menge
+                             knotendisjunkter Augmentationswege der Länge l
+                        M := M &oplus; (P1 &cup; P2 &cup; ... &cup; Pk)
+                      UNTIL &Rho; = &empty;
+                      RETURN M
+                    END
                 </code></pre></div>
                 <h3>Wie schnell ist der Algorithmus?</h3>
                 <div>
@@ -475,37 +481,44 @@
                     <h2>Laufzeit des Hopcroft-Karp-Algorithmus</h2>
                     <p>
                         Angenommen der Graph enthält n Knoten und m Kanten.
-                        In jeder Iteration des Algorithmen wird eine inklusions-maximale Menge von kürzesten knotendisjunkte Augmentationswegen gefunden.
+                        In jeder Iteration des Algorithmus wird eine inklusions-maximale Menge von kürzesten knotendisjunkten Augmentationswegen gefunden.
                         Dies hat zur Folge, dass die Länge des kürzesten Augmentationsweges nach jeder Iteration um mindestens 1 erhöht wird.
                     </p>
                     <p>
                         Sei M ein Matching und M* das optimale Matching. Dann existieren |M*|-|M| knotendisjunkte Augmentationswege bzgl. M. Untersuche die symmetrische Differenz M* &oplus; M = M*\M &cup; M\M*.
                         Ein Knoten kann hier maximal auf zwei Kanten liegen (eine aus M* und eine aus M). Dann enthält die symmetrische Differenz nur alternierende Kreise und alternierende Wege. In einem Kreis ist die Anzahl der Kanten aus M  gleich der Anzahl der Kanten aus M*.
                         Dann aber müssen |M*|-|M| knotendisjunkte Wege existieren, die Augmentationswege bezüglich M sind.
-                        Sei M ein Matching und l die Länge des kürzesten Augmentationsweges bzgl. M. Dann ist die Kardinalität des optimalen Matchings maximal \( |M| + \frac{|M*|-|M|}{(l+1)} < |M| + \frac{n}{(l+1)}\).
+                    </p>
+                    <p>
+                        Sei M ein Matching und l die Länge des kürzesten Augmentationsweges bzgl. M. Dann ist die Kardinalität des optimalen Matchings maximal \( |M| + \frac{n}{(l+1)}\).
+                        Es existieren |M*|-|M| knotendisjunkte Augmentationswege bzgl. M. Alle diese Wege enthalten mindestens l+1 Knoten, da die Länge des kürzesten Augmantationsweges l ist.
+                        Dann gilt: \( (|M^*|-|M|)*(l+1) < |V| \), da die Wege knotendisjunkt sind. Deshalb ist \( |M^*|-|M| < \frac{n}{(l+1)}\)
                         Das heißt, es gibt maximal \( \frac{n}{(l+1)}\) Augmentationen bezüglich M.
-                        Nach der \(\sqrt{n}\) Iteration beträgt die Länge des kürzesten Augmentationsweges mindestens \(\sqrt{n}\), da die Länge der kürzesten Augmentationswegen mit jeder Iteration steigt.
-                        Dann existieren maximal \(\frac{n}{\sqrt{n}}=\sqrt{n}\) zusätzlichen Augmentationen. In jeder Iteration wird mindestens ein Augmentationsweg gefunden.
+                    </p>
+                    <p>
+                        Die Länge des kürzesten Augmentationsweges wird mit jeder Iteration länger. Dies wird hier nicht bewiesen. Den Beweis kann der interessierte Leser in der geeigneten Literatur nachlesen.
+                        Intuitiv ist es jedoch klar, dass die Augmentationswege nicht kürzer werden können. Wegen der inklusions-maximalen Eigenschaft der gefundenen Menge von knotendisjunkten Augmentationswegen wird die Länge sogar länger.
+                        Dann muss aber nach der \(\sqrt{n}\) Iteration des Algorithmen die Länge des kürzesten Augmentationsweges mindestens \(\sqrt{n}\) betragen.
+                        Dann existieren maximal \(\frac{n}{\sqrt{n}}=\sqrt{n}\) zusätzliche Augmentationen. In jeder Iteration wird mindestens ein Augmentationsweg gefunden.
                         Daraus geht hervor, dass es maximal \(2\sqrt{n}\) Iterationen geben kann.
                     </p>
                     <p> Jede Kante wird im Laufe einer Iteration nur konstant viele Male betrachtet und verarbeitet. Es wird die Breitensuche und die Tiefensuche ausgeführt, wo jede Kante nur einmal betrachtet wird.
-                        Ausserdem wird das Matching aktualisiert. Wir können also die Verarbeitung einer Kante während einer Iteration als einen einzigen Verarbeitungsschritt zusammenfassen.
-                        Dann kann jede Iteration in  \(m\) Schritten durchgeführt werden.<br>
-                        Die <b>Gesamtlaufzeit des Algorithmus</b> ist von der Größenordnung \(m\sqrt{n}\).
-                        Den vollständigen Beweis kann der interessierte Leser in der geeigneten Literatur nachlesen.
+                        Außerdem wird das Matching aktualisiert. Wir können also die Verarbeitung einer Kante während einer Iteration als einen einzigen Verarbeitungsschritt zusammenfassen.
+                        Dann kann jede Iteration in  \(m\) Schritten durchgeführt werden. Wie das genau funktioniert, kann der Leser unter "Beschreibung des Algorithmus" nachlesen.<br>
+                        Die <b>Gesamtlaufzeit des Algorithmus</b> ist in der Größenordnung \(m\sqrt{n}\).
                     </p>
                 </div>
                 <h3>Wie beweist man, dass der Algorithmus stets ein korrekt arbeitet?</h3>
                 <div>
                     <p>
-                        In jeder Iteration des Algorithmen wird nach Augmentationswegen gesucht und das Matching wird verbessert. Es können nur endlich viele Verbesserungen durchgeführt werden, sodass der
-                        Algorithmus terminiert. Nach der letzten Iteration des Algorithmen existieren keine Augmentationswege mehr.
+                        In jeder Iteration des Algorithmus wird nach Augmentationswegen gesucht und das Matching wird verbessert. Es können nur endlich viele Verbesserungen durchgeführt werden, sodass der
+                        Algorithmus terminiert. Nach der letzten Iteration des Algorithmus existieren keine Augmentationswege mehr.
                         Dann ist das Matching optimal und der Hopcroft-Karp-Algorithmus berechnet das richtige Ergebnis.
                     </p>
                     <p>
                         Ein Theorem aus der Graphentheorie besagt:<br>
                         <i>Ein Matching M in G(V,E) ist genau dann kardinalitäts-maximal, wenn es keinen Augmentationsweg gibt.</i> <br>
-                        Nach der letzten Iteration des Hopcroft-Karp-Algorithmen existieren keine Augmentationswege mehr. Dann ist das gefundene Matching optimal und der Hopcroft-Karp-Algorithmus berechnet das richtige Ergebnis.
+                        Nach der letzten Iteration des Hopcroft-Karp-Algorithmus existieren keine Augmentationswege mehr. Dann ist das gefundene Matching optimal und der Hopcroft-Karp-Algorithmus berechnet das richtige Ergebnis.
                     </p>
                 </div>
                 <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>
