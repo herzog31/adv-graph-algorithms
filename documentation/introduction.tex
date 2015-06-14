@@ -73,18 +73,18 @@ In einer weiteren Forschungsaufgabe werden die Besonderheiten des Algorithmus be
 \section{Algorithmus von Hopcroft und Karp} % Ruslan
 
 Der Algorithmus wurde in Phasen unterteilt. In jeder Phase des Algorithmen wird nach einer inklusions-maximalen Menge von kürzesten disjunkten Augmentationswegen gesucht. Die in einer Phase gefundenen Augmentationswege werden nacheinander hervorgehoben und das Matching augmentiert.
-Das Aufzeigen der Augmentationswege stand im Fokus bei der Visualisierung des Algorithmus. Der Benutzter sollte diese leicht erkennen und nachvollziehen können. 
+Das Aufzeigen der Augmentationswege stand im Fokus bei der Visualisierung des Algorithmus. Der Benutzer sollte diese leicht erkennen und nachvollziehen können. 
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.55\textwidth]{figures/hopcroft_karp_augmentation}
-	\caption[Hopcroft-Karp: Augmentationsweg]{Aktueller Augmentationsweg im Hopcroft-Karp-Algorithmus. Die grauen Knoten wurden bereits in der aktuellen Iteration verwendet und können deshalb nicht in anderen Augmentationswegen der aktuellen Iteration vorkommen. Die zwei hervorgehobenen Knoten und die hervorgehobene Kante dazwischen stellen den gefundenen knotendisjunkten kürzesten Augmentationsweg dar.}\label{fig:hopcroft_karp_augmentation}
+	\caption[Hopcroft-Karp: Augmentationsweg]{Aktueller Augmentationsweg im Hopcroft-Karp-Algorithmus. Die grauen Knoten wurden bereits in der aktuellen Iteration verwendet und dürfen deshalb nicht in anderen Augmentationswegen der aktuellen Iteration vorkommen. Die zwei hervorgehobenen Knoten und die hervorgehobene Kante dazwischen stellen den gefundenen knotendisjunkten kürzesten Augmentationsweg dar.}\label{fig:hopcroft_karp_augmentation}
 \end{figure}
 
 Um das Konzept von disjunkten Augmentationswegen zu verdeutlichen, werden die Knoten der bereits verarbeiteten Augmentationswegen grau markiert. Dadurch wird dem Benutzer verdeutlicht, dass ein Knoten in einer Phase nur auf einem Augmentationsweg vorkommt. 
 Die graue Markierung der benutzten Knoten sollte außerdem hervorheben, dass die Menge der disjunkten Augmentationswege inklusions-maximal ist. Der Benutzer kann am Ende einer Phase leicht nachvollziehen, dass es keinen weiteren disjunkten kürzesten Augmentationsweg existiert.
 
-In der ersten Forschungsaufgabe soll der Nutzer sein Verständnis über den Ablauf des Algorithmen prüfen. Der Benutzer sollte das Konzept von kürzesten Augmentationswegen verstehen und wissen, welche Kanten nach einem Augmentationsschritt im Matching sein werden.
+In der ersten Forschungsaufgabe soll der Nutzer sein Verständnis über den Ablauf des Algorithmus prüfen. Der Benutzer sollte das Konzept von kürzesten Augmentationswegen verstehen und wissen, welche Kanten nach einem Augmentationsschritt im Matching sein werden.
 
 In der zweiten Forschungsaufgabe bekommt der Nutzer die Gelegenheit, selbst mit Augmentationswegen zu experimentieren. Der Algorithmus stoppt zufällig an einigen Stellen, wo der Benutzer einen Augmentationsweg selbst einzeichnen soll. Es müssen nicht die kürzesten Augmentationswege eingezeichnet werden. Der Benutzer sollte sehen, wie seine Wahl die weitere Ausführung des Algorithmus beeinflusst. \hfill$\spadesuit$
 
@@ -129,12 +129,12 @@ Zum Schluss wird ein Eulerkreis im Graphen gefunden, welcher die Lösung des Pro
 
 %Visualisierung
 Um die optimale Menge von zusätzlichen Pfaden zu bestimmen, werden zuerst Knoten bestimmt, bei denen die Anzahl der Eingangs- und Ausgangskanten nicht übereinstimmt.
-Abhängig davon, ob es zu viele Eingangs- oder Ausgangsknoten gibt, werden diese Knoten hell- bzw. dunkelfarbig markiert (vgl. Abbildung~\ref{fig:postman_unbalanced}). Außerdem wird die Differenz zwischen Ausgangs- und Eingangsgrad eines Knoten im Knoten gezeigt. Dadurch entstehen zwei Partitionen von Knoten. 
+Abhängig davon, ob es zu viele Eingangs- oder Ausgangsknoten gibt, werden diese Knoten hell- bzw. dunkelfarbig markiert (vgl. Abbildung~\ref{fig:postman_unbalanced}). Außerdem wird die Differenz zwischen Ausgangs- und Eingangsgrad eines Knoten im Knoten gezeigt. Dadurch entstehen zwei Knotenmengen (Knoten mit negativer und Knoten mit positiver Differenz). 
 %Der Nutzer sieht damit sofort, zwischen welchen Knoten neue Pfade eingefügt werden müssen.
 
 Im nächsten Schritt wird ein bipartiter Graph erstellt, der aus den markierten Knoten besteht. Um den Wechsel von dem Ausgangsgraphen zu dem bipartiten Graphen nachvollziehbar zu gestalten, wurde eine Animation eingefügt. Alle für den Matching-Graphen relevanten Knoten werden in den bipartiten Matching-Graphen übergeführt. Das Aussehen des Matching-Graphen wurde aus der Ungarischen Methode übernommen. 
 
-In der Implementierung des Algorithmen bestimmt die Differenz zwischen Ausgangs- und Eingangsgrad eines Knotens, wie oft dieser im Matching-Graphen vorkommt. Es entsteht ein vollständiger bipartiter Graph, sodass mit der Ungarischen Methode ein optimales Matching bestimmt werden kann. Das Gewicht einer Kante ist die Länge des kürzesten Weges von dem Knoten mit negativer Differenz zwischen Ausgangs- und Eingangsgrad zu dem Knoten mit positiver Differenz. Bei der Visualisierung des Algorithmus wurde eine Entscheidung zugunsten Übersichtlichkeit getroffen, sodass ein Knoten nur einmal im Matching-Graphen vorkommen sollte. Dadurch wird für den Nutzer nachvollziehbar, zwischen welchen Knoten neue Wege eingefügt werden müssen. Die Differenz zwischen Ausgangs- und Eingangsgrad eines Knotens bestimmt die Anzahl von Pfaden, die in diesem Knoten enden beziehungsweise anfangen müssen und somit die Anzahl von Matching-Kanten, die zu diesem Knoten inzident sind.
+In der Implementierung des Algorithmus bestimmt die Differenz zwischen Ausgangs- und Eingangsgrad eines Knotens, wie oft dieser im Matching-Graphen vorkommt. Es entsteht ein vollständiger bipartiter Graph, sodass mit der Ungarischen Methode ein optimales Matching bestimmt werden kann. Das Gewicht einer Kante ist die Länge des kürzesten Weges von dem Knoten mit negativer Differenz zwischen Ausgangs- und Eingangsgrad zu dem Knoten mit positiver Differenz. Bei der Visualisierung des Algorithmus wurde eine Entscheidung zugunsten Übersichtlichkeit getroffen, sodass ein Knoten nur einmal im Matching-Graphen vorkommen sollte. Dadurch wird für den Nutzer nachvollziehbar, zwischen welchen Knoten neue Wege eingefügt werden müssen. Die Differenz zwischen Ausgangs- und Eingangsgrad eines Knotens bestimmt die Anzahl von Pfaden, die in diesem Knoten enden beziehungsweise anfangen müssen und somit die Anzahl von Matching-Kanten, die zu diesem Knoten inzident sind.
 
 \begin{figure}[h!]
 	\centering
@@ -143,9 +143,9 @@ In der Implementierung des Algorithmen bestimmt die Differenz zwischen Ausgangs-
 \end{figure}
 
 Nachdem die optimalen Pfade im Matching-Schritt bestimmt wurden, werden die Knoten des Matching-Graphen an ihren Platz in den normalen Graphen übergeführt. Allerdings werden die Matching-Kanten ebenfalls in den Graphen übernommen. Der Benutzer sieht somit auch im normalen Graphen, zwischen welchen Knoten neue Wege eingefügt werden müssen.
-Das Einfügen von neuen Pfaden wird ebenfalls mittels einer Animation aufgezeigt. Die aktuelle Matching-Kante wird markiert und die Kanten auf dem neuen Weg werden schrittweise in den Graphen eingefügt. Anschießend wird die Matching-Kante gelöscht.
+Das Einfügen von neuen Pfaden wird ebenfalls mittels einer Animation aufgezeigt. Die aktuelle Matching-Kante wird markiert und die Kanten auf dem neuen Weg werden schrittweise in den Graphen eingefügt. Anschließend wird die Matching-Kante gelöscht.
 
-Am Ende des Algorithmen wird die Eulertour des Graphen bestimmt. Der Nutzer kann die Animation der Tour selbst starten und stoppen. Die Visualisierung der Eulertour ist aus dem Hierholzer-Algorithmus übernommen.
+Am Ende des Algorithmus wird die Eulertour des Graphen bestimmt. Der Nutzer kann die Animation der Tour selbst starten und stoppen. Die Visualisierung der Eulertour ist aus dem Hierholzer-Algorithmus übernommen.
 
 %Forschungsaufgaben
 Die erste Forschungsaufgabe sollte das Wissen des Benutzers prüfen. Der Benutzer sollte verstehen, welche Knoten im Matching-Graphen gebraucht werden und wie viele zusätzliche Wege in einem Knoten starten bzw. enden müssen.
@@ -244,7 +244,7 @@ In dem Chinese-Postman-Algorithmus werden jedoch während der Ausführung Kanten
 	\caption[Multigraph]{Multikanten im Graphen.}\label{fig:multigraph}
 \end{figure}
 
-Es wurde eine Entscheidung getroffen, den Multikanten eine Krümmung zu geben, damit sie für den Nutzer übersichtlich dargestellt werden können. Die Abbildung \ref{fig:multigraph} zeigt einen Graphen mit Multikanten. Die größte Herausforderung bestand darin, die Krümmungen der Kanten zu bestimmen, sodass sich die Kanten zwischen zwei Knoten nicht überlappen. Außerdem sollte sichergestellt werden, dass genug Abstand zwischen zwei Multikanten besteht, damit die Kantengewichte gelesen werden können. Die Krümmung einer Kante sollte sich ändern, falls Kanten zwischen dem Quell- und Endknoten eingefügt beziehungsweise gelöscht werden. Um diese Probleme zu lösen wird jeder Multikante ihre eigene Krümmung zugeordnet, die dynamisch beim Zeichnen der Kante berechnet wird. Dies stellt sicher, dass sich die Kanten zwischen zwei Knoten nicht überlappen, die Kanten symmetrisch angeordnet werden und die Krümmung dynamisch angepasst werden kann.
+Es wurde eine Entscheidung getroffen, den Multikanten eine Krümmung zu geben, damit sie für den Nutzer übersichtlich dargestellt werden können. Die Abbildung \ref{fig:multigraph} zeigt einen Graphen mit Multikanten. Die größte Herausforderung bestand darin, die Krümmungen der Kanten zu bestimmen, sodass die Kanten zwischen zwei Knoten sich nicht überlappen. Außerdem sollte sichergestellt werden, dass genug Abstand zwischen zwei Multikanten besteht, damit die Kantengewichte gelesen werden können. Die Krümmung einer Kante sollte sich ändern, falls Kanten zwischen dem Quell- und Endknoten eingefügt beziehungsweise gelöscht werden. Um diese Probleme zu lösen wird jeder Multikante ihre eigene Krümmung zugeordnet, die dynamisch beim Zeichnen der Kante berechnet wird. Dies stellt sicher, dass sich die Kanten zwischen zwei Knoten nicht überlappen, die Kanten symmetrisch angeordnet werden und die Krümmung dynamisch angepasst werden kann.
 
 \section{Zufällig generierte Fragen} % Mark
 In bisherigen auf diesem Framework basierenden Projekten war die Varianz der Fragen in den Forschungsaufgaben problematisch. Die Forschungsaufgaben behandelten meistens statische Fragen an vorher festgelegten Stellen zu vorgegebenen Graphen. Daraus resultierend bietet sich dem Nutzer ein wenig abwechslungsreiches Erlebnis und die Motivation, eine Forschungsaufgabe mehrfach zu bearbeiten, ist nicht gegeben.
