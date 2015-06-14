@@ -1365,7 +1365,7 @@ function GraphDrawer(p_graph, p_canvas, p_tab) {
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph(8);
                 break;
-            case "Kreis":
+            case "Gitter":
                 this.canvas.css("background", "");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph(2);
@@ -1383,7 +1383,6 @@ function GraphDrawer(p_graph, p_canvas, p_tab) {
             case "Selbsterstellter Graph":
                 break;
             default:
-            //console.log("Auswahl im Dropdown Menü unbekannt, tue nichts.");
 
         }
 

@@ -49,6 +49,7 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 
 	this.distance = distance;
 	this.paths = paths;
+    this.contextStack = contextStack;
 
 	this.finished = false;
     this.startHorizontal = 0;

@@ -597,7 +597,7 @@ Edge.prototype.draw = function(ctx, nodeCount, sourceNode) {
  * @method
  */
 Edge.prototype.contains = function(mx,my,ctx) {
-    var toleranz = 7;									// Wie viele Punkte entfernt von der Kante darf man klicken?
+    var toleranz = 12;									// Wie viele Punkte entfernt von der Kante darf man klicken?
     var sourceC = this.getSourceCoordinates();
     var targetC = this.getTargetCoordinates();
     var alpha = Math.atan2(targetC.y-sourceC.y,targetC.x-sourceC.x);
@@ -609,7 +609,8 @@ Edge.prototype.contains = function(mx,my,ctx) {
     var targetShift = {x:targetC.x-sourceC.x,y:targetC.y-sourceC.y};
     var targetShiftRot = {x:targetShift.x*Math.cos(-alpha) - targetShift.y*Math.sin(-alpha),
                 y:targetShift.x*Math.sin(-alpha) + targetShift.y*Math.cos(-alpha)};
-    if(MouseShiftRot.x>=0 && MouseShiftRot.x<=targetShiftRot.x && Math.abs(MouseShiftRot.y)<=toleranz) {
+    if(MouseShiftRot.x>=0 && MouseShiftRot.x<=targetShiftRot.x && Math.abs(MouseShiftRot.y)<=toleranz
+        && my > graph_constants.U_POSITION + 75 && my < graph_constants.V_POSITION - 75) {
         return true;
     }
     
@@ -751,7 +752,7 @@ function Graph(filename,canvas) {
             }
         }
         if(weight == null) {
-            weight = Math.round(Math.random()*200 -100);			// Zufälliges Gewicht zwischen -100 und 100
+            weight = Math.round(Math.random()*100);			// Zufälliges Gewicht zwischen 0 und 100
         }
         var edge = new Edge(source,target,weight,edgeIDCounter,directed);
         this.edges[edgeIDCounter] = edge;

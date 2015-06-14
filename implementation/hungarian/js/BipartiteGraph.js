@@ -150,11 +150,11 @@ function BipartiteGraph(filename,p_canvas,text){
             closure_graph.addNode(false);
         }
 
-        // Kanten erstellen, mit WSKeit 30 %
+        // Kanten erstellen, mit WSKeit 50 %
         for(var i in closure_graph.unodes) {
             for(var j in closure_graph.vnodes) {
-                if(Math.random() < 0.3) {
-                    closure_graph.addEdge(closure_graph.unodes[i],closure_graph.vnodes[j],1);
+                if(Math.random() > 0.5) {
+                    closure_graph.addEdge(closure_graph.unodes[i],closure_graph.vnodes[j],Math.floor(Math.random()*100));
                 }
             }
         }

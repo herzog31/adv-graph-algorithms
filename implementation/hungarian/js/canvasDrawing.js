@@ -102,11 +102,11 @@ CanvasDrawMethods.drawTextOnLine = function(ctx,layout,source,target,label,even,
     var labelMeasure = ctx.measureText(label);
     var alpha = Math.atan2(target.y-source.y,target.x-source.x);
     var center;
-    var coefficient = sourceNode % 2 == 0 ? -(sourceNode/2) : (sourceNode+1)/2;
-    if(sourceNode == 0) {
+    var coefficient = sourceNode % 2 == 0 ? -((nodeCount - sourceNode - 1)/2) : ((nodeCount - sourceNode))/2;
+    if(sourceNode == nodeCount - 1) {
         coefficient = 0;
-    }else if(sourceNode == 1){
-        coefficient = 1;
+    }else if(sourceNode == nodeCount - 2){
+        coefficient = sourceNode % 2 == 0 ? -1 : 1;
     }
     var offset = (graph_constants.V_POSITION - graph_constants.U_POSITION - global_NodeLayout.nodeRadius*2)/(nodeCount*2);
     if(source.x > target.x){

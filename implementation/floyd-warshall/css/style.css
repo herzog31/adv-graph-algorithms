@@ -311,6 +311,11 @@ figcaption {
     text-align: justify;
 }
 
+#ta_div_statusTabs{
+    margin-bottom: 5px;
+    padding-bottom: 10px;
+}
+
 #ta_div_statusTabs .ui-widget-header {
     background: transparent; 
     border: none;
