@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: maxMatching.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: maxMatching.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Berechnet das maximale gewichtete Matching in bipartiten Graphen
+ * @param cost Die Kostenmatrix fuer bipartite Graphen.
+ * Eintrag (i,j) ist das Gewicht der Kante zwischen den Knoten i der 1. Knotenmenge und Knoten j der 2. Knotenmenge.
+ * Falls keine Kante zwischen i und j existiert, ist der (i,j) Eintrag 0.
+ * @returns {Array} Der i-te Eintrag des Arrays enthaelt den Matchingpartner des i-ten Knotens der 1.Knotenmenge.
+ */
+function maxMatching(cost){
+    function setAll(arr, val) {
+        var i, n = arr.length;
+        for (i = 0; i &lt; n; ++i) {
+            arr[i] = val;
+        }
+    }
+    function initLabels(){
+        for (var x = 0; x &lt; n; x++) {
+            for (var y = 0; y &lt; n; y++) {
+                if(cost[x][y] > lx[x]){
+                    lx[x] = cost[x][y];
+                }
+            }
+        }
+    }
+    function augment(){
+        if(maxMatch == cost.length) return;
+        var x, y, root = -1;
+        var q = new Array(n);
+        var wr = 0, rd = 0;
+        setAll(S, false);
+        setAll(T, false);
+        setAll(prev, -1);
+        for (x = 0; x &lt; n; x++) {
+            if (xy[x] == -1) {
+                q[wr++] = root = x;
+                prev[x] = -2;
+                S[x] = true;
+                break;
+            }
+        }
+        for (y = 0; y &lt; n; y++) {
+            slack[y] = lx[root] + ly[y] - cost[root][y];
+            slackx[y] = root;
+        }
+        while (true){
+            while (rd &lt; wr) {
+                x = q[rd++];
+                for (y = 0; y &lt; n; y++) {
+                    if (cost[x][y] == lx[x] + ly[y] &amp;&amp; !T[y]) {
+                        if (yx[y] == -1) break;
+                        T[y] = true;
+                        q[wr++] = yx[y];
+                        add_to_tree(yx[y], x);
+                    }
+                }
+                if (y &lt; n) break;
+            }
+            if (y &lt; n) break;
+            update_labels();
+            wr = rd = 0;
+            for (y = 0; y &lt; n; y++)
+                if (!T[y] &amp;&amp; slack[y] == 0) {
+                    if (yx[y] == -1) {
+                        x = slackx[y];
+                        break;
+                    }else {
+                        T[y] = true;
+                        if (!S[yx[y]]) {
+                            q[wr++] = yx[y];
+                            add_to_tree(yx[y], slackx[y]);
+                        }
+                    }
+                }
+            if (y &lt; n) break;
+        }
+        if (y &lt; n){
+            maxMatch++;
+            for (var cx = x, cy = y, ty; cx != -2; cx = prev[cx], cy = ty){
+                ty = xy[cx];
+                yx[cy] = cx;
+                xy[cx] = cy;
+            }
+            augment();
+        }
+    }
+    function update_labels(){
+        var x, y, delta = -1;
+        for (y = 0; y &lt; n; y++) {
+            if (!T[y] &amp;&amp; (delta == -1 || slack[y] &lt; delta)) {
+                delta = slack[y];
+            }
+        }
+        for (x = 0; x &lt; n; x++) {
+            if (S[x]) lx[x] -= delta;
+        }
+        for (y = 0; y &lt; n; y++) {
+            if (T[y]) ly[y] += delta;
+        }
+        for (y = 0; y &lt; n; y++) {
+            if (!T[y])
+                slack[y] -= delta;
+        }
+    }
+    function add_to_tree(x, prevx){
+        S[x] = true;
+        prev[x] = prevx;
+        for (var y = 0; y &lt; n; y++) {
+            if (lx[x] + ly[y] - cost[x][y] &lt; slack[y]) {
+                slack[y] = lx[x] + ly[y] - cost[x][y];
+                slackx[y] = x;
+            }
+        }
+    }
+    function hungarianMethod(){
+        var ret = 0;
+        initLabels();
+        augment();
+        for (var x = 0; x &lt; n; x++)
+            ret += cost[x][xy[x]];
+        //alert(ret);
+        //return ret;
+        return xy;
+    }
+
+    //var cost = [[7,4,3],[6,8,5],[9,4,4]];
+
+    var lx = new Array(cost.length),
+        ly = new Array(cost.length),
+        xy = new Array(cost.length),
+        yx = new Array(cost.length),
+        S = new Array(cost.length),
+        T = new Array(cost.length),
+        slack = new Array(cost.length),
+        slackx = new Array(cost.length),
+        prev = new Array(cost.length),
+        maxMatch = 0;
+    var n = cost.length;
+    setAll(S, false);
+    setAll(T, false);
+    setAll(xy, -1);
+    setAll(yx, -1);
+    setAll(lx, 0);
+    setAll(ly, 0);
+
+    return hungarianMethod();
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="algorithm.html">algorithm</a></li><li><a href="CanvasDrawer.html">CanvasDrawer</a></li><li><a href="CanvasDrawMethods.html">CanvasDrawMethods</a></li><li><a href="Edge.html">Edge</a></li><li><a href="Forschungsaufgabe1.html">Forschungsaufgabe1</a></li><li><a href="Forschungsaufgabe2.html">Forschungsaufgabe2</a></li><li><a href="Graph.html">Graph</a></li><li><a href="GraphDrawer.html">GraphDrawer</a></li><li><a href="GraphNode.html">GraphNode</a></li></ul><h3>Global</h3><ul><li><a href="global.html#const_Colors">const_Colors</a></li><li><a href="global.html#getQBezierValue">getQBezierValue</a></li><li><a href="global.html#global_Edgelayout">global_Edgelayout</a></li><li><a href="global.html#global_KnotenRadius">global_KnotenRadius</a></li><li><a href="global.html#global_NodeLayout">global_NodeLayout</a></li><li><a href="global.html#initializeSiteLayout">initializeSiteLayout</a></li><li><a href="global.html#maxMatching">maxMatching</a></li><li><a href="global.html#shortestPaths">shortestPaths</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Sun Jun 14 2015 17:10:06 GMT+0200 (Mitteleuropäische Sommerzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

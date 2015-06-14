@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: aufgabe2.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: aufgabe2.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @author Ruslan Zabrodin
+ * Code für Forschungsaufgabe 2&lt;br>
+ */
+
+/**
+ * In Forschungsaufgabe 2 muss der Nutzer die Augmentationswege selber finden. &lt;br>
+ * Da auch diese Aufgabe wieder Dinge auf das Canvas zeichnet, erweitert diese Klasse
+ * die Klasse CanvasDrawer. 
+ * @constructor
+ * @augments CanvasDrawer
+ * @param {BipartiteGraph} p_graph Graph, auf dem der Algorithmus ausgeführt wird
+ * @param {Object} p_canvas jQuery Objekt des Canvas, in dem gezeichnet wird.
+ * @param {Object} p_tab jQuery Objekt des aktuellen Tabs.
+ */
+function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
+    CanvasDrawer.call(this,p_graph,p_canvas,p_tab);
+    /**
+     * Convenience Objekt, damit man den Graph ohne this ansprechen kann.
+     * @type BipartiteGraph
+     */
+    var graph = p_graph;
+    /**
+     * Convenience Objekt, damit man das Canvas ohne this. ansprechen kann.
+     * @type Object
+     */
+    var canvas = p_canvas;
+    /**
+     * Closure Variable für dieses Objekt
+     * @type Forschungsaufgabe2
+     */
+    var algo = this;
+    /**
+     * ID des Intervals, der für das "Vorspulen" genutzt wurde.
+     * @type Number
+     */
+    var fastForwardIntervalID = null;
+    /*
+     * Das Objekt, das den Hopcroft-Karp-Algorithmus ausfuehrt
+     * @type Object
+     * */
+    var hkAlgo;
+    /*
+     * Der Augmentationsweg, der vom Nutzer erstellt wird
+     * @type Object
+     * */
+    var path = new Array();
+    /*
+     * Die Layouts von Knoten, damit das urspruengliche Layout sichergestellt werden kann
+     * @type Object
+     * */
+    var layoutStack = new Array();
+    /*
+     * Maximale Anzahl von Wegen, die Nutzer finden soll
+     * @type Number
+     * */
+    const MAX = 5;
+    /*
+     * Anzahl vom Nutzer erstellten Wege
+     * @type Number
+     * */
+    var paths = 0;
+    /**
+     * Zeigt an, ob vor dem Verlassen des Tabs gewarnt werden soll.
+     * @type Boolean
+     */
+    var warnBeforeLeave = false;
+    /**
+     * Zeigt an, eine Augmentations erfolgen soll
+     * @type Boolean
+     */
+    var update = false;
+    /**
+     * Zeigt an, eine Augmentations erfolgt ist
+     * @type Boolean
+     */
+    var afterUpdate = false;
+
+    /*
+     * Hier werden die Statuskonstanten definiert
+     * */
+    const ALGOINIT = 0;
+    const BEGIN_ITERATION = 1;
+    const END_ITERATION = 2;
+    const NEXT_AUGMENTING_PATH = 3;
+    const UPDATE_MATCHING = 4;
+    const GRAY_PATH = 5;
+    const END_ALGORITHM = 6;
+
+    /**
+     * Startet die Ausführung des Algorithmus.
+     * @method
+     */
+    this.run = function() {
+        this.initCanvasDrawer();
+        hkAlgo = new HKAlgorithm(graph,canvas,p_tab);
+        hkAlgo.deregisterEventHandlers();
+        hkAlgo.setStatusWindow("dummy");
+        // Die Buttons werden erst im Javascript erstellt, um Problemen bei der mehrfachen Initialisierung vorzubeugen.
+        $("#tf2_div_abspielbuttons").append("&lt;button id=\"tf2_button_1Schritt\">"+LNG.K('algorithm_btn_next')+"&lt;/button>&lt;br>");
+        $("#tf2_button_1Schritt").on("click.Forschungsaufgabe1",function() {algo.nextStepChoice();});
+        $("#tf2_button_1Schritt").button({icons:{primary: "ui-icon-seek-end"}, disabled: false});
+        $("#tf2_button_1Schritt").show();
+        $("#tf2_div_statusTabs").tabs();
+        $(".marked").removeClass("marked");
+        $("#tf2_tr_LegendeClickable").removeClass("greyedOutBackground");
+        this.needRedraw = true;
+    };
+    
+    /**
+     * Beendet die Ausführung des Algorithmus.
+     * @method
+     */
+    this.destroy = function() {
+        this.removeAdditionalLabels();
+        //hkAlgo.destroy();
+        this.destroyCanvasDrawer();
+        this.deregisterEventHandlers();
+    };
+    
+    /**
+     * Beendet den Tab und startet ihn neu
+     * @method
+     */
+    this.refresh = function() {
+        this.stopFastForward();
+        this.destroy();
+        var algo = new Forschungsaufgabe2($("body").data("graph"),$("#tf2_canvas_graph"),$("#tab_tf2"));
+        $("#tab_tf2").data("algo",algo);
+        algo.run();
+    };
+    
+    /**
+     * Zeigt and, ob vor dem Verlassen des Tabs gewarnt werden soll.
+     * @returns {Boolean}
+     */
+    this.getWarnBeforeLeave = function() {
+        return warnBeforeLeave;
+    };
+    /**
+     * Registriere die Klick-Handler an Buttons und canvas&lt;br>
+     * Nutzt den Event Namespace ".Forschungsaufgabe2"
+     * @method
+     */
+    this.registerClickHandlers = function() {
+        canvas.on("click.Forschungsaufgabe2",function(e) {algo.canvasClickHandler(e);});
+        canvas.on("contextmenu.Forschungsaufgabe2",function(e) {algo.rightClickHandler(e);});
+    };
+    /**
+     * Entferne die Klick-Handler von Buttons und canvas im Namespace ".HKAlgorithm"
+     * @method
+     */
+    this.deregisterClickHandlers = function() {
+        canvas.off("click.Forschungsaufgabe2");
+        canvas.off("contextmenu.Forschungsaufgabe2");
+    };
+
+    /**
+     * Registriere die Eventhandler an Buttons und canvas&lt;br>
+     * Nutzt den Event Namespace ".Forschungsaufgabe2SN"
+     * @method
+     */
+    this.registerEventHandlers = function() {
+        //$("#tf2_select_aufgabeGraph").on("change",function() {algo.setGraphHandler();});
+        //this.canvas.on("click.Forschungsaufgabe2SN",function(e) {algo.startNodeFinder(e);});
+        $("#tf2_tr_LegendeClickable").on("click.Forschungsaufgabe2",function() {algo.changeVorgaengerVisualization();});
+    };
+
+    /**
+     * Entferne die Eventhandler von Buttons und canvas im Namespace ".Forschungsaufgabe2"
+     * und ".Forschungsaufgabe2SN"
+     * @method
+     */
+    this.deregisterEventHandlers = function() {
+        $("#tf1_select_aufgabeGraph").off("change");
+        this.canvas.off(".Forschungsaufgabe2SN");
+        this.canvas.off(".Forschungsaufgabe2");
+        canvas.off("click.Forschungsaufgabe2");
+        canvas.off("contextmenu.Forschungsaufgabe2");
+        $("#tf2_tr_LegendeClickable").off(".Forschungsaufgabe2");
+        $("#tf2_button_Zurueck").off(".Forschungsaufgabe2");
+    };
+    /**
+     * "Spult vor", führt den Algorithmus mit hoher Geschwindigkeit aus.
+     * @method
+     */
+    this.fastForwardAlgorithm = function() {
+        //$("#tf2_button_vorspulen").hide();
+        //$("#tf2_button_stoppVorspulen").show();
+        $("#tf2_button_1Schritt").button("option", "disabled", true);
+        if(fastForwardIntervalID == null){
+            var geschwindigkeit = 200;	// Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
+            fastForwardIntervalID = window.setInterval(function(){algo.nextStepChoice();},geschwindigkeit);
+        }
+    };
+    /**
+     * Stoppt das automatische Abspielen des Algorithmus
+     * @method
+     */
+    this.stopFastForward = function() {
+        //$("#tf1_button_vorspulen").show();
+        //$("#tf1_button_stoppVorspulen").hide();
+        $("#tf2_button_1Schritt").button("option", "disabled", false);
+        window.clearInterval(fastForwardIntervalID);
+        fastForwardIntervalID = null;
+    };
+    /**
+     * Zeigt and, in welchem Zustand sich der Algorithmus im Moment befindet.
+     * @returns {Number} StatusID des Algorithmus
+     */
+    this.getStatusID = function() {
+        return hkAlgo.getStatusID();
+    };
+    /**
+     * In dieser Funktion wird der nächste Schritt des Algorithmus ausgewählt.
+     * Welcher das ist, wird über die Variable "statusID" bestimmt.&lt;br>
+     *  @method
+     */
+    this.nextStepChoice = function() {
+        if (update) {
+            hkAlgo.augmentMatching(path);
+            path = new Array();
+            update = false;
+            afterUpdate = true;
+            $("#tf2_div_statusErklaerung").html("&lt;h3> "+LNG.K('textdb_msg_update')+"&lt;/h3>" + "&lt;p>"+LNG.K('aufgabe2_update')+"&lt;/p>");
+        }
+        else if(afterUpdate){
+            afterUpdate = false;
+            paths++;
+            $("#tf2_button_1Schritt").button("option", "disabled", true);
+            hkAlgo.startNewIteration();
+            this.fastForwardAlgorithm();
+        }
+        else{
+            var algoStatus = hkAlgo.getStatusID();
+            if(algoStatus == END_ALGORITHM){
+                this.showResult();
+            }
+            else if(algoStatus == BEGIN_ITERATION || algoStatus == ALGOINIT){
+                hkAlgo.nextStepChoice();
+                if(Math.random() &lt; 0 &amp;&amp; paths &lt; MAX) { // mit bestimmter Wahrscheinlichkeit am Iterationsanfang Weg einzeichnen
+                    this.stopFastForward();
+                    this.drawPath();
+                }
+                else this.fastForwardAlgorithm();
+            }
+            else if(algoStatus == NEXT_AUGMENTING_PATH){
+                if(Math.random() &lt; 0.5 &amp;&amp; paths &lt; MAX){
+                    this.stopFastForward();
+                    hkAlgo.startNewIteration();
+                    this.drawPath();
+                }
+                else hkAlgo.nextStepChoice();
+            }
+            else hkAlgo.nextStepChoice();
+        }
+        this.needRedraw = true;
+    };
+    /**
+     * Der Nutzer wird aufgefordert ein Augmentatonsweg einzuzeichnen
+     * @method
+     */
+    this.drawPath = function() {
+        this.registerClickHandlers();
+        $("#tf2_button_1Schritt").button("option", "disabled", true);
+        $("#tf2_div_statusErklaerung").html("&lt;h3>"+LNG.K('aufgabe2_header')+"&lt;/h3>" + "&lt;p>"+LNG.K('aufgabe2_path')+"&lt;/p>" + "&lt;p>"+LNG.K('aufgabe2_legend')+"&lt;/p>");
+    };
+    /**
+     * Behandelt Klicks im Canvas&lt;br>
+     * @param {jQuery.Event} e jQuery Event Objekt, enthält insbes. die Koordinaten des Mauszeigers.
+     * @method
+     */
+    this.canvasClickHandler = function(e){
+        var node = getClickedNode(e);
+        if(node!=null){
+            var free = !(hkAlgo.isMatched(node));
+            $("#tf2_div_statusErklaerung").html("&lt;h3>"+LNG.K('aufgabe2_header')+"&lt;/h3>" + "&lt;p>"+LNG.K('aufgabe2_path')+"&lt;/p>" + "&lt;p>"+LNG.K('aufgabe2_legend')+"&lt;/p>");
+            if(path.length == 0){
+                if(!free) {
+                    $("#tf2_div_statusErklaerung").append(getWarning(LNG.K('aufgabe2_warn_1')));
+                }
+                else{
+                    $("#tf2_div_statusErklaerung").append("&lt;p>"+LNG.K('aufgabe2_result_1')+"&lt;/p>");
+                    path.push(node);
+                    layoutStack.push(node.getLayout());
+                    highlightNode(node);
+                }
+            }
+            else{
+                var used = false;
+                for(var i in path){
+                    if(path[i]==node) used = true;
+                }
+                var unconnected = false;
+                var edge = graph.edges[graph.getEdgeBetween(node,path[path.length-1])];
+                if(edge == undefined) unconnected = true;
+                var notPartner = false;
+                if(((path.length-1)/2)%2 == 1 &amp;&amp; hkAlgo.getPartner(node)!= path[path.length-1]) notPartner=true;
+
+                if(used){
+                    $("#tf2_div_statusErklaerung").append(getWarning(LNG.K('aufgabe2_warn_2')));
+                }
+                else if(unconnected){
+                    $("#tf2_div_statusErklaerung").append(getWarning(LNG.K('aufgabe2_warn_3')));
+                }
+                else if(notPartner){
+                    $("#tf2_div_statusErklaerung").append(getWarning(LNG.K('aufgabe2_warn_4')));
+                }
+                else {
+                    if(free){//end of the augmenting path
+                        $("#tf2_div_statusErklaerung").html("&lt;h3> "+LNG.K('aufgabe2_header')+"&lt;/h3>" + "&lt;p>"+LNG.K('aufgabe2_found')+"&lt;/p>");
+                        update = true;
+                        $("#tf1_button_1Schritt").button({disabled: false});
+                        $("#tf1_button_1Schritt").show();
+                        this.stopFastForward();
+                        this.deregisterClickHandlers();
+                    }
+                    else{//grow Path
+                        $("#tf2_div_statusErklaerung").append("&lt;p>"+LNG.K('aufgabe2_result_3')+"&lt;/p>");
+                    }
+                    path.push(edge);
+                    path.push(node);
+                    layoutStack.push(edge.getLayout());
+                    layoutStack.push(node.getLayout());
+                    highlightEdge(edge);
+                    highlightNode(node);
+                }
+            }
+        }
+        this.needRedraw = true;
+    };
+    /**
+     * Behandelt Klicks im Canvas&lt;br>
+     * @param {jQuery.Event} e jQuery Event Objekt, enthält insbes. die Koordinaten des Mauszeigers.
+     * @return {Object} Der geklickte Knoten
+     * @method
+     */
+    var getClickedNode = function(e){
+        var mx = e.pageX - canvas.offset().left;
+        var my = e.pageY - canvas.offset().top;
+        for(var knotenID in graph.nodes) {
+            if (graph.nodes[knotenID].contains(mx, my)) {
+                return graph.nodes[knotenID];
+            }
+        }
+        return null;
+    };
+    /*
+     * Die Warnung wird hier konstruiert
+     * @method
+     * */
+    var getWarning = function(string){
+        return  '&lt;div id ="tg_div_warning" class="ui-widget"> \
+        &lt;div class="ui-state-highlight ui-corner-all" style="padding: .7em;"> \
+        &lt;div class="ui-icon ui-icon-alert errorIcon">&lt;/div> \
+        ' + string +'\
+        &lt;/div> \
+        &lt;/div>';
+    };
+
+    /*
+     * Methoden fuer die Visualisierung.
+     * Das Layout und Aussehen von Knoten und Kanten wird hier festgelegt.
+     * */
+    var highlightNode = function(node){
+        node.setLayout('borderColor',"Navy");
+        //node.setLayout('borderColor',const_Colors.NodeBorderHighlight);
+        node.setLayout('borderWidth',global_NodeLayout.borderWidth*1.5);
+    };
+    var highlightEdge = function(edge){
+        edge.setLayout("lineWidth", global_Edgelayout.lineWidth*2.4);
+    };
+    var setEdgeMatched = function (edge) {
+        edge.setLayout("lineColor", MATCHED_EDGE_COLOR);
+        edge.setLayout("lineWidth", global_Edgelayout.lineWidth * 1.3);
+    };
+    var setNodeMatched = function (node) {
+        node.setLayout('fillStyle', MATCHED_NODE_COLOR);
+        node.setLayout('borderWidth',global_NodeLayout.borderWidth);
+        node.setLayout('borderColor', global_NodeLayout.borderColor);
+    };
+    var markNode = function(){
+        var n1 = path[path.length-1];
+        n1.setLayout('borderWidth',global_NodeLayout.borderWidth*1.3);
+        if(path.length>1){
+            var n2 = path[path.length-2];
+            n2.setLayout('borderWidth',global_NodeLayout.borderWidth*1.3);
+            graph.edges[graph.getEdgeBetween(n1,n2)].setLayout("lineWidth", global_Edgelayout.lineWidth*1.7);
+
+        }
+    };
+
+    /**
+     * Behandelt die Rechtsklicks im Canvas&lt;br>
+     * @param {jQuery.Event} e jQuery Event Objekt, enthält insbes. die Koordinaten des Mauszeigers.
+     * @method
+     */
+    this.rightClickHandler = function(e) {
+        e.preventDefault();
+        if(path.length>0){
+            var node = path.pop();
+            var layout = layoutStack.pop();
+            node.setLayoutObject(layout);
+            if(path.length>0){
+                var edge = path.pop();
+                layout = layoutStack.pop();
+                edge.setLayoutObject(layout);
+            }
+        }
+        this.needRedraw = true;
+    };
+    /**
+     * Wählt einen Graph um darauf die Forschungsaufgabe auszuführen
+     * @method
+     */
+    this.setGraphHandler = function() {
+        var selection = $("#tf2_select_aufgabeGraph>option:selected").val();
+        switch(selection) {
+            case "Selbsterstellter Graph":
+                this.graph = $("body").data("graph");
+                break;
+            case "Standardbeispiel":
+                this.graph = new BipartiteGraph("graphs/graph1.txt");
+                break;
+            default:
+                //console.log("Auswahl im Dropdown Menü unbekannt, tue nichts.");
+                
+        }
+        // Ändere auch die lokalen Variablen (und vermeide "div
+        this.needRedraw = true;
+    };
+    
+    /**
+     * Initialisiere den Algorithmus, stelle die Felder auf ihre Startwerte.
+     * @method
+     */
+    this.initializeAlgorithm = function() {
+        $("#tf2_div_statusErklaerung").html("&lt;h3>1 "+LNG.K('textdb_msg_case0_1')+"&lt;/h3>"
+            + "&lt;p>"+LNG.K('aufgabe2_msg_1')+"&lt;/p>");
+        $("#tf2_div_statusErklaerung").append("&lt;h3>"+LNG.K('aufgabe2_msg_2')+"&lt;/h3>");
+    };
+    /**
+     * Zeigt die Resultate der Aufgabe an.
+     * @method
+     */
+    this.showResult = function() {
+        // Falls wir im "Vorspulen" Modus waren, daktiviere diesen
+        if(fastForwardIntervalID != null) {
+            this.stopFastForward();
+        }
+        $("#tf2_button_1Schritt").hide();
+        $("#tf2_div_statusErklaerung").html("&lt;h3> "+LNG.K('textdb_msg_end_algo')+"&lt;/h3>" + "&lt;p>"+LNG.K('textdb_msg_end_algo_1')+"&lt;/p>");
+        $("#tf2_div_statusErklaerung").append('&lt;button id="tf2_button_gotoWeiteres">'+LNG.K('aufgabe2_btn_more')+'&lt;/button>');
+        $("#tf2_button_gotoWeiteres").button().click(function() {$("#tabs").tabs("option","active", 6);});
+        this.needRedraw = true;
+        warnBeforeLeave = false;
+    };
+
+    /**
+     * Entfernt die Zusatzlabels vom Graph (vor dem Beenden)
+     * @method
+     */
+    this.removeAdditionalLabels = function() {
+        for(var kantenID in this.graph.edges) {
+            this.graph.edges[kantenID].additionalLabel = null;
+        }
+    };
+}
+
+// Vererbung realisieren
+Forschungsaufgabe2.prototype = new CanvasDrawer;
+Forschungsaufgabe2.prototype.constructor = Forschungsaufgabe2;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BipartiteGraph.html">BipartiteGraph</a></li><li><a href="BipartiteGraphDrawer.html">BipartiteGraphDrawer</a></li><li><a href="CanvasDrawer.html">CanvasDrawer</a></li><li><a href="CanvasDrawMethods.html">CanvasDrawMethods</a></li><li><a href="Edge.html">Edge</a></li><li><a href="Forschungsaufgabe1.html">Forschungsaufgabe1</a></li><li><a href="Forschungsaufgabe2.html">Forschungsaufgabe2</a></li><li><a href="Graph.html">Graph</a></li><li><a href="GraphDrawer.html">GraphDrawer</a></li><li><a href="GraphNode.html">GraphNode</a></li><li><a href="HKAlgorithm.html">HKAlgorithm</a></li></ul><h3>Global</h3><ul><li><a href="global.html#const_Colors">const_Colors</a></li><li><a href="global.html#global_Edgelayout">global_Edgelayout</a></li><li><a href="global.html#global_KnotenRadius">global_KnotenRadius</a></li><li><a href="global.html#global_NodeLayout">global_NodeLayout</a></li><li><a href="global.html#graph_constants">graph_constants</a></li><li><a href="global.html#initializeSiteLayout">initializeSiteLayout</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Sun Jun 14 2015 17:11:38 GMT+0200 (Mitteleuropäische Sommerzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
