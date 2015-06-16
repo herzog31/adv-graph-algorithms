@@ -479,9 +479,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         this.markPseudoCodeLine([6, 7]);
 
         if(rd < wr) {
-            if(augment) {
-                x = q[rd++];
-            }
+            x = q[rd++];
 
             if(!labeling) {
 
@@ -503,31 +501,38 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
                 }
 
-            }else{
-                wr = 0;
-                rd = 0;
-                for(y = 0; y < n; y++) {
-
-                    if (!T[y] && slack[y] == 0) {
-                        if (yx[y] == -1) {
-                            x = slackx[y];
-                            // -> 8 AUGMENT_PATH_FOUND
-                            statusID = AUGMENT_PATH_FOUND;
-                            this.displayST();
-                            return;
-                        }
-
-                        T[y] = true;
-                        if (!S[yx[y]]) {
-                            q[wr++] = yx[y];
-                            this.add_to_tree(yx[y], slackx[y]);
-                        }
-                    }
-
-                }
+                // REPEAT
+                this.constructAlternatingPath();
 
             }
     
+        }
+
+        if(labeling) {
+            for(y = 0; y < n; y++) {
+
+                if (!T[y] && slack[y] == 0) {
+                    if (yx[y] == -1) {
+                        x = slackx[y];
+                        // -> 8 AUGMENT_PATH_FOUND
+                        statusID = AUGMENT_PATH_FOUND;
+                        this.displayST();
+                        return;
+                    }
+
+                    T[y] = true;
+                    if (!S[yx[y]]) {
+                        q[wr++] = yx[y];
+                        this.add_to_tree(yx[y], slackx[y]);
+                    }
+                }
+            }
+
+            labeling = false;
+
+            // REPEAT
+            this.constructAlternatingPath();
+
         }
 
         // -> 5 NO_AUGMENT_PATH_FOUND
@@ -909,8 +914,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
         T.map(function(node, i) {
             if(node) {
-            graph.nodes[(S.length+i)].setLayout("fillStyle", "green");
-            tField.push(graph.nodes[i+Object.keys(graph.vnodes).length].getOuterLabel());
+                graph.nodes[(S.length+i)].setLayout("fillStyle", "green");
+                tField.push(graph.nodes[i+Object.keys(graph.vnodes).length].getOuterLabel());
             }
         });
 
@@ -941,6 +946,11 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
     };
 
+    /**
+     * Zeige aktuelles Matching in der Tabelle an
+     * @param  {Array} xy
+     * @param  {Boolean} otherEdges
+     */
     this.showCurrentMatching = function(xy, otherEdges){
         var matching = [];
         if(!otherEdges) {
