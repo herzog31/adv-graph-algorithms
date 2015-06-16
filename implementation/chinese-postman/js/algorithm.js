@@ -582,7 +582,10 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
         else {
             statusID = SHORTEST_PATHS;
-            // Erklärung im Statusfenster
+            // Erklärung im Statusfenster und Legende
+            $("#tab_"+st).find(".LegendeText").html('<table><tr>' +
+                '<td class="LegendeTabelle"><img src="img/legende_positive.png" alt="Knoten" class="LegendeIcon" width="22" height="22"></td><td><span>'+LNG.K('algorithm_legende_positive')+'</span></td></tr><tr>' +
+                '<td class="LegendeTabelle"><img src="img/legende_negative.png" alt="Knoten" class="LegendeIcon" width="22" height="22"></td><td><span>'+LNG.K('algorithm_legende_negative')+'</span></td></tr></table>');
             $("#"+st+"_div_statusErklaerung").append("<p>" + LNG.K('algorithm_unbalanced_1') + "</p>"
                 + "<p>" + LNG.K('algorithm_unbalanced_2') + "</p>"
                  + "<p>" + LNG.K('algorithm_unbalanced_3') + "</p>");
@@ -688,7 +691,10 @@ function algorithm(p_graph, p_canvas, p_tab) {
             randomizeLabelPosition(e);
         }
         statusID = START_ADDING_PATHS;
-        // Erklärung im Statusfenster
+        // Erklärung im Statusfenster und Legende
+        $("#tab_"+st).find(".LegendeText").html('<table>\
+            <tr><td class="LegendeTabelle"><img src="img/legende_matching_kante.png" alt="Kante" class="LegendeIcon"></td><td><span>'+LNG.K('algorithm_legende_matching_kante')+'</span></td></tr>\
+        </table>');
         $("#"+st+"_div_statusErklaerung").html("<h3>3. " + LNG.K('algorithm_paths') + "</h3>"
         + "<p>" + LNG.K('algorithm_matching_1') + "</p>"
         + "<p>" + LNG.K('algorithm_matching_2') + " <a href='"+LNG.K('algorithm_link_hungarian')+"' target='_blank'>"+LNG.K('algorithm_text_hungarian')+"</a>" + "</p>"
@@ -734,7 +740,11 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
         next = 0;
         statusID = ADD_PATHS;
-        // Erklärung im Statusfenster
+        // Erklärung im Statusfenster und Legende
+        $("#tab_"+st).find(".LegendeText").html('<table>\
+            <tr><td class="LegendeTabelle"><img src="img/legende_matching_kante.png" alt="Kante" class="LegendeIcon" ></td><td><span>'+LNG.K('algorithm_legende_matching_kante')+'</span></td></tr>\
+            <tr><td class="LegendeTabelle"><img src="img/legende_neue_kante.png" alt="Kante" class="LegendeIcon" ></td><td><span>'+LNG.K('algorithm_legende_neue_kante')+'</span></td></tr>\
+        </table>');
         $("#"+st+"_div_statusErklaerung").html("<h3>4. " + LNG.K('algorithm_new_paths') + "</h3>"
             + "<p>" + LNG.K('algorithm_new_paths_1') + "</p>"
             + "<p>" + LNG.K('algorithm_new_paths_2') + "</p>"
@@ -867,7 +877,10 @@ function algorithm(p_graph, p_canvas, p_tab) {
             graph.nodes[n].restoreLayout();
         }
         this.addNamingLabels();
-        // Erklärung im Statusfenster
+        // Erklärung im Statusfenster und Legende
+        $("#tab_"+st).find(".LegendeText").html('<table>\
+            <tr><td class="LegendeTabelle"><img src="img/legende_neue_kante.png" alt="Kante" class="LegendeIcon" ></td><td><span>'+LNG.K('algorithm_legende_neue_kante')+'</span></td></tr>\
+        </table>');
         $("#"+st+"_div_statusErklaerung").html('<h3>5. ' + LNG.K('algorithm_euler') + '</h3>' +
             '<p>' + LNG.K('algorithm_tour_hierholzer_1') + " <a href='"+LNG.K('algorithm_link_hierholzer')+"' target='_blank'>"+LNG.K('algorithm_text_hierholzer')+"</a>" + LNG.K('algorithm_tour_hierholzer_2') + '</p>' +
             '<p>' + LNG.K('algorithm_tour_hierholzer_3') + '</p>' +
@@ -1152,6 +1165,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             "next": next,
             "graph": this.graph,
             "pseudocode": $("#"+st+"_div_statusPseudocode").html(),
+            "legende": $("#tab_ta").find(".LegendeText").html(),
             "htmlSidebar": $("#"+st+"_div_statusErklaerung").html()
         });
     };
@@ -1169,6 +1183,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             this.graph = oldState.graph;
             $("#"+st+"_div_statusErklaerung").html(oldState.htmlSidebar);
             $("#"+st+"_div_statusPseudocode").html(oldState.pseudocode);
+            $("#tab_"+st).find(".LegendeText").html(oldState.legende);
             for (var key in oldState.nodeProperties) {
                 if (graph.nodes[key]) {
                     graph.nodes[key].setLayoutObject(JSON.parse(oldState.nodeProperties[key].layout));
