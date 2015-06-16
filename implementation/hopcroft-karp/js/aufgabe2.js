@@ -368,7 +368,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         node.setLayout('borderWidth',global_NodeLayout.borderWidth*1.5);
     };
     var highlightEdge = function(edge){
-        edge.setLayout("lineWidth", global_Edgelayout.lineWidth*2.4);
+        edge.setLayout("lineWidth", global_Edgelayout.lineWidth*2.9);
     };
     var setEdgeMatched = function (edge) {
         edge.setLayout("lineColor", MATCHED_EDGE_COLOR);

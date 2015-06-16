@@ -37,10 +37,10 @@
     "algorithm_infeasible": "Das Problem ist auf diesem Graphen nicht lösbar.",
 
     "algorithm_find_balanced_nodes": "Finden von Knoten mit ungleichem Eingangs- und Ausgangsgrad",
-    "algorithm_find_balanced_nodes_1": "Zuerst wird die Differenz zwischen Ausgangs- und Eingangsgrad der Knoten berechnet. Knoten mit der Differenz 0 sind balanciert. Alle anderen Knoten sind unbalanciert.",
+    "algorithm_find_balanced_nodes_1": "Zuerst wird die Differenz zwischen Ausgangs- und Eingangsgrad der Knoten berechnet. Knoten mit der Differenz 0 sind balanciert. Alle anderen Knoten sind unbalanciert. Unbalancierte Knoten sind farbig markiert. Die Differenzen sind in die Knoten eingetragen.",
     "algorithm_balanced_1": "Bei allen Knoten im Graphen stimmt der Eingangsgrad mit dem Ausgangsgrad überein. Dann existiert eine Eulertour im Graphen. Ein Eulerkreis(oder Eulertour) ist ein Weg im Graphen, der alle Kanten genau einmal enthält und bei dem die Start- und Endknoten übereinstimmen. ",
     "algorithm_balanced_2": "In der Eulertour werden die Kanten nur einmal benutzt. Also ist es die optimale Lösung.",
-    "algorithm_unbalanced_1": "Unbalancierte Knoten sind farbig markiert. Falls alle Knoten balanciert sind, so existiert ein Eulerkreis im Graphen. Ein Eulerkreis (oder Eulertour) ist ein Weg im Graphen, der alle Kanten genau einmal enthält und bei dem die Start- und Endknoten übereinstimmen. ",
+    "algorithm_unbalanced_1": "Falls alle Knoten balanciert sind, so existiert ein Eulerkreis im Graphen. Ein Eulerkreis (oder Eulertour) ist ein Weg im Graphen, der alle Kanten genau einmal enthält und bei dem die Start- und Endknoten übereinstimmen. ",
     "algorithm_unbalanced_2": "Das Ziel der nächsten Schritte ist eine Menge von Pfaden zwischen unbalancierten Knoten zu finden, sodass nach dem Einfügen dieser Pfade in den Graphen alle Knoten balanciert sind. Die Länge der zusätzlichen Pfade sollte minimal sein.",
     "algorithm_unbalanced_3": "Die Eulertour des Graphen mit zusätzlichen Pfaden ist der gesuchte kürzeste Rundgang. ",
 
