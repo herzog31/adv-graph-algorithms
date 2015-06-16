@@ -164,7 +164,6 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.registerEventHandlers = function() {
-//        canvas.on("mousemove.HKAlgorithm",function(e) {algo.canvasMouseMoveHandler(e);});
         $("#"+st+"_button_1Schritt").on("click.HKAlgorithm",function() {algo.singleStepHandler();});
         $("#"+st+"_button_vorspulen").on("click.HKAlgorithm",function() {algo.fastForwardAlgorithm();});
         $("#"+st+"_button_stoppVorspulen").on("click.HKAlgorithm",function() {algo.stopFastForward();});
@@ -431,7 +430,7 @@ function HKAlgorithm(p_graph,p_canvas,p_tab) {
      */
     this.initialize = function () {
         this.beginIteration();
-        $("#"+st+"_button_Zurueck").button("option", "disabled", false);
+        if(!fastForwardIntervalID) $("#"+st+"_button_Zurueck").button("option", "disabled", false);
     };
 
     /*

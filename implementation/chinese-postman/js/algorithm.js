@@ -353,7 +353,6 @@ function algorithm(p_graph, p_canvas, p_tab) {
                 //console.log("Fehlerhafte StatusID.");
                 break;
         }
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub,"ta_div_statusErklaerung"]);
         this.needRedraw = true;
     };
     /**
@@ -512,7 +511,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
      * @method
      */
     this.checkFeasibility = function () {
-        $("#"+st+"_button_Zurueck").button({icons: {primary: "ui-icon-seek-start"}, disabled: false});
+        if(!fastForwardIntervalID) $("#"+st+"_button_Zurueck").button({icons: {primary: "ui-icon-seek-start"}, disabled: false});
         //determine shortest paths
         distance = {};
         predecessor = {};
