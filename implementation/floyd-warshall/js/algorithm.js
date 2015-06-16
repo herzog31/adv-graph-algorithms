@@ -41,20 +41,51 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
      */
     var fastForwardIntervalID = null;
 
+    /**
+     * Der Array hilft bei der Erstellung der konsistenten Datenstrukturen
+     * (falls Knoten/Kanten mehrmals gelöscht/erstellt werden).
+     * @type Array
+     */
     var keyToIndex = new Array();
 
+    /**
+     * Die Abstandsmatrix.
+     * @type Array
+     */
 	var distance = new Array();
 
+    /**
+     * Der Array speichert aktuelle Wege.
+     * @type Array
+     */
 	var paths = new Array();
 
 	this.distance = distance;
 	this.paths = paths;
     this.contextStack = contextStack;
 
+    /**
+     * Zustand des Algorithmus (fertig/nicht fertig).
+     * @type Boolean
+     */
 	this.finished = false;
+
+    /**
+     * Hilfsvariable um die Tabelle abzubilden.
+     * @type Number
+     */
     this.startHorizontal = 0;
+
+    /**
+     * Hilfsvariable um die Tabelle abzubilden.
+     * @type Number
+     */
     this.startVertical = 0;
 
+    /**
+     * Zustand der aktuellen Iteration.
+     * @type Object
+     */
     var actualContext;
 
     /**
@@ -64,7 +95,7 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
     this.isFinished = function() {
         if (contextStack.length === 0) {
             return false;
-        };
+        }
         return this.finished;
     };
 
@@ -121,8 +152,7 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
     };
 
     /**
-     * Registriere die Eventhandler an Buttons und canvas<br>
-     * Nutzt den Event Namespace ".Dijkstra"
+     * Registriere die Eventhandler an Buttons und canvas.
      * @method
      */
     this.registerEventHandlers = function() {
@@ -158,7 +188,7 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
     };
 
     /**
-     * Entferne die Eventhandler von Buttons und canvas im Namespace ".Dijkstra"
+     * Entferne die Eventhandler von Buttons und canvas.
      * @method
      */
     this.deregisterEventHandlers = function() {
@@ -181,7 +211,7 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
     };
 
     /**
-     * Beendet den Tab und startet ihn neu
+     * Beendet den Tab und startet ihn neu.
      * @method
      */
     this.refresh = function() {
@@ -193,7 +223,7 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
     };
 
     /**
-     * Stoppt das automatische Abspielen des Algorithmus
+     * Stoppt das automatische Abspielen des Algorithmus.
      * @method
      */
     this.stopFastForward = function() {
@@ -205,6 +235,10 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
         fastForwardIntervalID = null;
     };
 
+    /**
+     * Versucht die Pfade zu verbessern.
+     * @method
+     */
 	this.findShortestPaths = function(context){
 		var isStepMade = false;
 		while(!isStepMade && (context.i < distance.length - 1 || context.j < distance.length - 1 
@@ -254,6 +288,10 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 		return isStepMade;
 	};
 
+    /**
+     * Führt den nächsten Schritt aus.
+     * @method
+     */
 	this.nextStepChoice = function(){
 		var c;
 		var contextNew;
@@ -275,7 +313,6 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 	        actualContext = contextNew;
     	}
 
-    	//TODO comment
     	var status;
     	if(isStepMade){
 			$("#ta_button_Zurueck").button("option", "disabled", false);
@@ -291,6 +328,10 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
         return algo.finished;
 	};
 
+    /**
+     * Führt den vorigen Schritt aus.
+     * @method
+     */
 	this.backStep = function(){
 		var status;
 		var lastStep = contextStack.pop();
@@ -312,6 +353,10 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 		return;
 	};
 
+    /**
+     * Initialisiert den Algorithmus.
+     * @method
+     */
 	this.initializeAlgorithm = function(){
 		var i = 0;
 		var keyDictionary = new Object();
@@ -352,6 +397,10 @@ function FloydWarshallAlgorithm(p_graph, p_canvas, p_tab){
 		changeText(distance, "ta", null, graph.nodes, 1);
 	};
 
+    /**
+     * Beendet den Algorithmus.
+     * @method
+     */
 	this.end = function(context) {
         algo.finished = true;
 

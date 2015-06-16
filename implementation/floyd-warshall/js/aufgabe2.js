@@ -1,13 +1,11 @@
 /**
  * @author Aleksejs Voroncovs
  * Forschungsaufgabe 2
- */"use strict";
+ *
+ * /"use strict";
 
 /**
- * Diese Klasse kapselt alle Informationen zu Forschungsaufgabe 2.<br>
- * In Forschungsaufgabe 2 muss der Nutzer eine mögliche Abarbeitungsreihenfolge der Knoten finden.<br>
- * Da auch diese Aufgabe wieder Dinge auf das Canvas zeichnet, erweitert diese Klasse
- * die Klasse CanvasDrawer.
+ * Instanz der Forschungsaufgabe 2.
  * @constructor
  * @augments CanvasDrawer
  * @param {Graph} p_graph Graph, auf dem der Algorithmus ausgeführt wird
@@ -50,7 +48,7 @@ function Forschungsaufgabe2(p_graph, p_canvas, p_tab) {
     };
 
     /**
-     * Beendet den Tab und startet ihn neu
+     * Beendet den Tab und startet ihn neu.
      * @method
      */
     this.refresh = function() {
@@ -69,8 +67,7 @@ function Forschungsaufgabe2(p_graph, p_canvas, p_tab) {
     };
 
     /**
-     * Registriere die Eventhandler an Buttons und canvas<br>
-     * Nutzt den Event Namespace ".Forschungsaufgabe2SN"
+     * Registriere die Eventhandler an Buttons und canvas.
      * @method
      */
     this.registerEventHandlers = function() {
@@ -83,8 +80,7 @@ function Forschungsaufgabe2(p_graph, p_canvas, p_tab) {
     };
 
     /**
-     * Entferne die Eventhandler von Buttons und canvas im Namespace ".Forschungsaufgabe2"
-     * und ".Forschungsaufgabe2SN"
+     * Entferne die Eventhandler von Buttons und canvas.
      * @method
      */
     this.deregisterEventHandlers = function() {
@@ -107,8 +103,8 @@ function Forschungsaufgabe2(p_graph, p_canvas, p_tab) {
                 this.showWeightChangeField(e, edgeID);
                 this.needRedraw = true;
                 break;
-            };
-        };
+            }
+        }
     };
 
     /**
@@ -155,11 +151,11 @@ function Forschungsaufgabe2(p_graph, p_canvas, p_tab) {
                 return 11;
             case "17":      
                 return 2;
-        };
+        }
     };
 
     /**
-     * Prüft, ob die angegebenen Kantenkosten eine Lösung sind
+     * Prüft, ob die angegebenen Kantenkosten eine Lösung sind.
      * @method
      * @returns {Boolean}
      */
@@ -175,19 +171,18 @@ function Forschungsaufgabe2(p_graph, p_canvas, p_tab) {
                 finished = false;
                 break;
             }
-            ;
-        };
+        }
         if (finished) {
             this.end();
-        };
+        }
         if (correct) {
             return true;
-        };
+        }
         return false;
     };
 
     /**
-     * Zeigt Buttons am Ende des Algorithmus an
+     * Zeigt Buttons am Ende des Algorithmus an.
      * @method
      */
     this.end = function() {
@@ -205,7 +200,6 @@ function Forschungsaufgabe2(p_graph, p_canvas, p_tab) {
      * @param {Number} edgeID ID der Kante, deren Gewicht geändert wird.
      * @method
      */
-
     this.showWeightChangeField = function(event, edgeID) {
 
         var addRightFalse = function() {
@@ -259,7 +253,7 @@ function Forschungsaufgabe2(p_graph, p_canvas, p_tab) {
         $("#WeightInput_" + edgeID.toString()).select();
     };
 
-};
+}
 
 // Vererbung realisieren
 Forschungsaufgabe2.prototype = new CanvasDrawer;

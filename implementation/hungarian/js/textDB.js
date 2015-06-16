@@ -1,3 +1,7 @@
+/**
+ * Zeigt die Labels.
+ * @method
+ */
 function showLabels(lx, ly){
     for(var i = 0; i < lx.length; i++){
         $("body").data("graph").nodes[i].setLabel(lx[i]);
@@ -6,10 +10,12 @@ function showLabels(lx, ly){
     for(var i = 0; i < ly.length; i++){
         $("body").data("graph").nodes[lx.length + i].setLabel(ly[i]);
     }
-
-    //showEqualityGraph(lx, ly);
 }
 
+/**
+ * Zeigt den Gleichheitsgraph.
+ * @method
+ */
 function showEqualityGraph(lx, ly){
     for (var edge in $("body").data("graph").edges) {
         if (lx[$("body").data("graph").edges[edge].getSourceID()] +
@@ -28,6 +34,10 @@ function showEqualityGraph(lx, ly){
     }
 }
 
+/**
+ * Zeigt die Wurzel des alternierenden Baums.
+ * @method
+ */
 function showTreeRoot(S){
     resetNodeLayout();
     for(var i = 0; i < S.length; i++){
@@ -38,6 +48,10 @@ function showTreeRoot(S){
 
 }
 
+/**
+ * Zeigt den Augmentationsweg.
+ * @method
+ */
 function showAugmentingPath(x, y, prev, xy, yx){
     var xyTemp = xy.slice();
     var yxTemp = yx.slice();
@@ -63,6 +77,10 @@ function showAugmentingPath(x, y, prev, xy, yx){
     }
 }
 
+/**
+ * Setzt den Layout von Kanten zurück.
+ * @method
+ */
 function resetEdgeLayout(){
     for(var edge in $("body").data("graph").edges){
         $("body").data("graph").edges[edge].setLayout("lineColor", $("body").data("graph").edges[edge].originalColor);
@@ -71,6 +89,10 @@ function resetEdgeLayout(){
     }
 }
 
+/**
+ * Setzt den Layout von Knoten zurück.
+ * @method
+ */
 function resetNodeLayout(){
     for(var i in $("body").data("graph").nodes){
         $("body").data("graph").nodes[i].setLayout("fillStyle", $("body").data("graph").nodes[i].originalFill);
@@ -78,6 +100,10 @@ function resetNodeLayout(){
     }
 }
 
+/**
+ * Zeigt aktuelles Matching.
+ * @method
+ */
 function showCurrentMatching(xy, otherEdges){
     var matching = [];
     if(!otherEdges) {
