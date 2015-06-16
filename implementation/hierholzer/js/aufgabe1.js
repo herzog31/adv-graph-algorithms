@@ -1229,7 +1229,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_div_statusTabs").hide();
         $("#tf1_div_questionModal").show();
         $("#tf1_questionSolution").hide();
-        $("#tf1_div_questionModal").find("form").one("keyup", function() { algo.triggerClick(); });
     };
 
     /**
@@ -1286,7 +1285,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_button_questionClose").hide();
         $("#tf1_button_questionClose2").button("option", "disabled", false);
         $("#tf1_button_questionClose2").focus();
-        $("#tf1_div_questionModal").find("form").one("keyup", function() { algo.triggerClick(); });
     };
 
     /**
@@ -1341,18 +1339,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#question"+currentQuestion+"_form").find("input[type='radio']").one("change", function() { algo.activateAnswerButton(); });
 
     };
-
-    /**
-     * Klick auf die Schließen Buttons auslösen
-     * @method
-     * @param  {jQuery.Event} event
-     */
-    this.triggerClick = function(event) {
-        if(event.keyCode == 13) {
-            $("#tf1_button_questionClose2").click();
-            $("#tf1_button_questionClose").click();
-        }
-    }
 
     /**
      * Setze Formatierung der Knotens zurück

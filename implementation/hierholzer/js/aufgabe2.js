@@ -1151,7 +1151,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_div_statusTabs").hide();
         $("#tf2_div_questionModal").show();
         $("#tf2_questionSolution").hide();
-        $("#tf2_div_questionModal").find("form").one("keyup", function() { algo.triggerClick(); });
     };
 
     /**
@@ -1166,18 +1165,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_button_vorspulen").button("option", "disabled", false);
         $("#tf2_div_questionModal").off("keyup");
     };
-
-    /**
-     * Klick auf die Schließen Buttons auslösen
-     * @method
-     * @param  {jQuery.Event} event
-     */
-    this.triggerClick = function(event) {
-        if(event.keyCode == 13) {
-            $("#tf2_button_questionClose").click();
-            $("#tf2_button_questionClose2").click();
-        }
-    }
 
     /**
      * Speichere Antwort und zeige Lösung an
@@ -1248,7 +1235,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_button_questionClose").hide();
         $("#tf2_button_questionClose2").button("option", "disabled", false);
         $("#tf2_button_questionClose2").focus();
-        $("#tf2_div_questionModal").find("form").one("keyup", function() { algo.triggerClick(); });
     };
 
     /**
