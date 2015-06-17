@@ -479,9 +479,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         this.markPseudoCodeLine([6, 7]);
 
         if(rd < wr) {
-            if(augment) {
-                x = q[rd++];
-            }
+            x = q[rd++];
 
             if(!labeling) {
 
@@ -503,31 +501,38 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
                 }
 
-            }else{
-                wr = 0;
-                rd = 0;
-                for(y = 0; y < n; y++) {
-
-                    if (!T[y] && slack[y] == 0) {
-                        if (yx[y] == -1) {
-                            x = slackx[y];
-                            // -> 8 AUGMENT_PATH_FOUND
-                            statusID = AUGMENT_PATH_FOUND;
-                            this.displayST();
-                            return;
-                        }
-
-                        T[y] = true;
-                        if (!S[yx[y]]) {
-                            q[wr++] = yx[y];
-                            this.add_to_tree(yx[y], slackx[y]);
-                        }
-                    }
-
-                }
+                // REPEAT
+                this.constructAlternatingPath();
 
             }
     
+        }
+
+        if(labeling) {
+            for(y = 0; y < n; y++) {
+
+                if (!T[y] && slack[y] == 0) {
+                    if (yx[y] == -1) {
+                        x = slackx[y];
+                        // -> 8 AUGMENT_PATH_FOUND
+                        statusID = AUGMENT_PATH_FOUND;
+                        this.displayST();
+                        return;
+                    }
+
+                    T[y] = true;
+                    if (!S[yx[y]]) {
+                        q[wr++] = yx[y];
+                        this.add_to_tree(yx[y], slackx[y]);
+                    }
+                }
+            }
+
+            labeling = false;
+
+            // REPEAT
+            this.constructAlternatingPath();
+
         }
 
         // -> 5 NO_AUGMENT_PATH_FOUND
@@ -557,7 +562,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.improveLabels = function() {
-
         delta = -1;
         for (var y = 0; y < n; y++) {
             if (!T[y] && (delta == -1 || slack[y] < delta)) {
@@ -656,7 +660,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             yx[cy] = cx;
             xy[cx] = cy;
         }
-        showCurrentMatching(xy, true);
+        this.showCurrentMatching(xy, true);
 
         // -> 10 PERFECT_MATCHING_CHECK
         statusID = PERFECT_MATCHING_CHECK;
@@ -696,7 +700,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     this.showResult = function() {
 
         $("#tf1_button_1Schritt").button("option", "disabled", true);
-        showCurrentMatching(xy, false);
+        this.showCurrentMatching(xy, false);
         this.markPseudoCodeLine([13]);
 
         if (fastForwardIntervalID != null) {
@@ -910,8 +914,8 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
 
         T.map(function(node, i) {
             if(node) {
-            graph.nodes[(S.length+i)].setLayout("fillStyle", "green");
-            tField.push(graph.nodes[i+Object.keys(graph.vnodes).length].getOuterLabel());
+                graph.nodes[(S.length+i)].setLayout("fillStyle", "green");
+                tField.push(graph.nodes[i+Object.keys(graph.vnodes).length].getOuterLabel());
             }
         });
 
@@ -941,6 +945,39 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             arr[i] = val;
         }
     };
+
+    /**
+     * Zeige aktuelles Matching in der Tabelle an
+     * @param  {Array} xy
+     * @param  {Boolean} otherEdges
+     */
+    this.showCurrentMatching = function(xy, otherEdges){
+        var matching = [];
+        if(!otherEdges) {
+            for (var edge in graph.edges) {
+                graph.edges[edge].hidden = true;
+            }
+        }
+        for(var i in xy){
+            for(var edge in graph.edges){
+                if(graph.edges[edge].getSourceID() == i
+                    && graph.edges[edge].getTargetID()-xy.length == xy[i]) {
+                    graph.edges[edge].setLayout("lineColor", "green");
+                    graph.edges[edge].originalColor = "green";
+                    graph.edges[edge].setLayout("lineWidth", 4);
+                    graph.edges[edge].hidden = false;
+                    matching.push("(" + graph.nodes[graph.edges[edge].getSourceID()].getOuterLabel() + "," + graph.nodes[graph.edges[edge].getTargetID()].getOuterLabel() + ")");
+                }else if((graph.edges[edge].getSourceID() == i
+                    || graph.edges[edge].getTargetID()-xy.length == xy[i])
+                    && graph.edges[edge].originalColor == "green"){
+                    graph.edges[edge].originalColor = "black";
+                    graph.edges[edge].setLayout("lineColor", "black");
+                }
+            }
+        }
+
+        $("#tf1_td_matching").html(matching.join(",") || "&#8709;");
+    }
 
     /**
      * Zeige die Markierungen als Label der Knoten an

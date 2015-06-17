@@ -1245,7 +1245,7 @@ function GraphDrawer(p_graph,p_canvas,p_tab) {
                 this.graph = new Graph("graphs/nikolaus.txt", null, false);
                 break;
             case "Königsberger Brücken":
-                this.canvas.css("background-image", "url(img/koenigsberg_bg.png)");
+                this.canvas.css("background-image", "url(../library/img/koenigsberg_bg.png)");
                 $("#tg_p_bildlizenz").remove();
                 this.graph = new Graph("graphs/koenigsberg.txt", null, false);
                 break;

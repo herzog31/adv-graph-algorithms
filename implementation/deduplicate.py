@@ -13,7 +13,7 @@ folders = ['library', 'chinese-postman', 'floyd-warshall', 'hierholzer', 'hopcro
 # Identity threshold
 threshold = 0.5
 # Files types to exclude
-exclude = ['library/js/mathjax']
+exclude = ['library/js/mathjax', 'chinese-postman/documentation', 'floyd-warshall/documentation', 'hierholzer/documentation', 'hopcroft-karp/documentation', 'hungarian/documentation']
 # Fill exclude with .gitignore file
 gitignore = open('../.gitignore').read().splitlines()
 exclude = exclude + gitignore;

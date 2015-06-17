@@ -14,7 +14,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
      */
     var graph = this.graph;
     /**
-     * Convenience Objekt, damit man das Canvas ohne this. ansprechen kann.
+     * Convenience Objekt, damit man das Canvas ohne this ansprechen kann.
      * @type Object
      */
     var canvas = p_canvas;
@@ -35,15 +35,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
      * @type HungarianMethod
      */
     var algo = this;
-
-    /**
-     * Hier die Variablen vom HK-Algo
-     */
-
-    /**
-     * Hier die Variablen vom UM-Algo
-     */
-
     /**
      * Alle benoetigten Information zur Wiederherstellung der vorangegangenen Schritte werden hier gespeichert.
      * @type Array
@@ -80,20 +71,25 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     const READY_TO_BUILD_TREE_AFTER_RELABELING = 10;
     const FINISHED = 11;
 
+
+    /**
+     * Hier werden die Variablen der Ungarischen Methode definiert
+     */
     var cost = new Array();
     this.cost = cost;
 
-    var n;
-    var lx, ly, xy, yx, S, T, slack, slackx, prev, maxMatch;
 
-    var wr, rd;
-    var x, y, root;
-    var q;
+    var x, y, root, n, lx, ly, xy, yx, S, T, slack,
+        slackx, prev, maxMatch, wr, rd, q;
 
     var goOn = false;
     var showedTerms = false;
     var delta = -1;
 
+    /**
+     * Vervollständige den Graph.
+     * @method
+     */
     this.completeGraph = function() {
 
         var uNodes = 0;
@@ -270,7 +266,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     };
 
     /**
-     * Startet den Algorithmus von Anfang an
+     * Startet den Algorithmus von Anfang an.
      * @method
      */
     this.refresh = function() {
@@ -288,12 +284,10 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     };
 
     /**
-     * Registriere die Eventhandler an Buttons und canvas<br>
-     * Nutzt den Event Namespace ".HungarianMethod"
+     * Registriere die Eventhandler an Buttons und canvas.
      * @method
      */
     this.registerEventHandlers = function() {
-//        canvas.on("mousemove.HungarianMethod",function(e) {algo.canvasMouseMoveHandler(e);});
         $("#ta_button_1Schritt").on("click.HungarianMethod",function() {algo.singleStepHandler();});
         $("#ta_button_vorspulen").on("click.HungarianMethod",function() {algo.fastForwardAlgorithm();});
         $("#ta_button_stoppVorspulen").on("click.HungarianMethod",function() {algo.stopFastForward();});
@@ -302,7 +296,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     };
 
     /**
-     * Entferne die Eventhandler von Buttons und canvas im Namespace ".HungarianMethod"
+     * Entferne die Eventhandler von Buttons und canvas.
      * @method
      */
     this.deregisterEventHandlers = function() {
@@ -340,7 +334,7 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     };
 
     /**
-     * Stoppt das automatische Abspielen des Algorithmus
+     * Stoppt das automatische Abspielen des Algorithmus.
      * @method
      */
     this.stopFastForward = function() {
@@ -360,15 +354,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
 
     /**
      * In dieser Funktion wird der nächste Schritt des Algorithmus ausgewählt.
-     * Welcher das ist, wird über die Variable "statusID" bestimmt.<br>
-     * Mögliche Werte sind:<br>
-     *  0: Initialisierung<br>
-     *  1: Prüfung ob Gewichte aktualisiert werden sollen, und initialierung<br>
-     *  2: Prüfe, ob anhand der aktuellen Kante ein Update vorgenommen wird (Animation)<br>
-     *  3: Update, falls nötig, den Knoten<br>
-     *  4: Untersuche, ob es eine Kante gibt, die auf einen negativen Kreis hinweist.<br>
-     *  5: Finde den negativen Kreis im Graph und beende<br>
-     *  6: Normales Ende, falls kein negativer Kreis gefunden wurde.
      *  @method
      */
     this.nextStepChoice = function () {
@@ -424,21 +409,25 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             currentDisplayStep++;
             this.needRedraw = true;
             this.addReplayStep();
-            console.log(history);
         }
     };
 
+    /**
+     * Fügt die Labels hinzu.
+     * @method
+     */
     this.addNamingLabels = function() {
-
         var nodeCounter = 1;
-
         for(var knotenID in graph.nodes) {
             graph.nodes[knotenID].setOuterLabel(String.fromCharCode("a".charCodeAt(0)+nodeCounter-1));
             nodeCounter++;
-        };
-
+        }
     };
 
+    /**
+     * Zeige S und T Mengen.
+     * @method
+     */
     this.displayST = function(S, T){
 
         var sField = [];
@@ -470,6 +459,10 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         $("#ta_td_setT").html(tField.join(",") || "&#8709;");
     };
 
+    /**
+     * Initialisiert die ursprüngliche Labels.
+     * @method
+     */
     this.initLabels = function(){
         this.setAll(S, false);
         this.setAll(T, false);
@@ -496,13 +489,16 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         return READY_TO_START;
     };
 
+    /**
+     * Sucht nach dem Augmentationsweg.
+     * @method
+     */
     this.augment = function() {
         if (maxMatch == cost.length) {
             statusID = FINISHED;
             this.end();
             $("#ta_button_1Schritt").button("option", "disabled", true);
             showCurrentMatching(xy, false);
-            //TODO show answer
             $(".marked").removeClass("marked");
             $("#ta_p_l13").addClass("marked");
             return FINISHED;
@@ -529,7 +525,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         }
         showTreeRoot(S);
         statusID = READY_FOR_SEARCHING;
-        console.log("READY_FOR_SEARCHING");
         $("#ta_div_statusErklaerung").html();
         $("#ta_div_statusErklaerung").append("<h3>" + LNG.K("algorithm_augmenting_path") + "</h3>" +
             "<p>" + LNG.K("algorithm_need_augmenting_path") + "</p>");
@@ -547,11 +542,14 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         return READY_FOR_SEARCHING;
     };
 
+    /**
+     * Sucht die Wurzel des neuen Augmentationswegs.
+     * @method
+     */
     this.iterateX = function(){
         if(rd < wr){
             x = q[rd++];
             y = 0;
-            console.log("iterateX: READY_TO_BUILD_TREE");
             if(history[history.length - 1].previousStatusId == READY_TO_BUILD_TREE
                 || history[history.length - 1].previousStatusId == READY_TO_BUILD_TREE_AFTER_RELABELING){
                 goOn = true;
@@ -564,7 +562,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
             $("#ta_p_l7").addClass("marked");
             return READY_TO_BUILD_TREE;
         }
-        console.log("AUGMENTING_PATH_NOT_FOUND");
         $("#ta_div_statusErklaerung").html(
             "<h3>" + LNG.K("algorithm_augmenting_path") + "</h3>" +
             "<p>" + LNG.K("algorithm_cannot_find_augmenting_path") + "(<span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>" + LNG.K("aufgabe2_light_green") + "</span>)" + LNG.K("algorithm_in_current_graph") + "</p>"
@@ -576,6 +573,10 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         return AUGMENTING_PATH_NOT_FOUND;
     };
 
+    /**
+     * Bildet den alternierenden Baum.
+     * @method
+     */
     this.buildAlternatingTree = function(){
         if(y < n) {
             if (cost[x][y] == lx[x] + ly[y] && !T[y]) {
@@ -613,6 +614,10 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         return READY_FOR_SEARCHING;
     };
 
+    /**
+     * Versucht den Augmentationsweg nach der Anpassung von Labels zu finden.
+     * @method
+     */
     this.findAugmentPathAfterLabeling = function(){
         wr = rd = 0;
         y = 0;
@@ -624,6 +629,10 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         return READY_TO_BUILD_TREE_AFTER_RELABELING;
     };
 
+    /**
+     * Bildet den alternierenden Baum nach der Anpassung von Labels.
+     * @method
+     */
     this.buildTreeAfterRelabeling = function(){
         if(y < n){
             if (!T[y] && slack[y] == 0) {
@@ -631,7 +640,6 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
                     x = slackx[y];
                     showAugmentingPath(x, y, prev, xy, yx);
                     statusID = AUGMENTING_PATH_FOUND;
-                    console.log("AUGMENTING_PATH_FOUND");
                     $("#ta_div_statusErklaerung").html(
                         "<h3>" + LNG.K("algorithm_augmenting_path") + "</h3>" +
                         "<p>" + LNG.K("algorithm_augmenting_path_found") + "</p>"
@@ -665,6 +673,10 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         return READY_FOR_SEARCHING;
     };
 
+    /**
+     * Erweitert das Matching.
+     * @method
+     */
     this.increaseMatching = function(){
         resetNodeLayout();
         this.showEqualityGraph(lx, ly);
@@ -692,6 +704,10 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         return MATCHING_INCREASED;
     };
 
+    /**
+     * Zeigt den Gleichheitsgraph.
+     * @method
+     */
     this.showEqualityGraph = function (lx, ly){
         for (var edge in this.graph.edges) {
             if (lx[this.graph.edges[edge].getSourceID()] +
@@ -709,6 +725,10 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         }
     };
 
+    /**
+     * Zeigt den Gleichheitsgraph und den entsprechenden Text im Bereich rechts.
+     * @method
+     */
     this.newEqualityGraph = function(){
         this.showEqualityGraph(lx, ly);
         statusID = LABELS_UPDATED;
@@ -723,6 +743,10 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         return LABELS_UPDATED;
     };
 
+    /**
+     * Füge den Knoten dem alternierenden Baum hinzu.
+     * @method
+     */
     this.add_to_tree = function (x, prevx){
         S[x] = true;
         prev[x] = prevx;
@@ -734,6 +758,10 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         }
     };
 
+    /**
+     * Passt die Markierungen an.
+     * @method
+     */
     this.update_labels = function() {
         var x, y;
         delta = -1;
@@ -770,6 +798,10 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         return SHOW_NEW_EQUALITY_GRAPH;
     };
 
+    /**
+     * Initialisiert den Array mit Werten.
+     * @method
+     */
     this.setAll = function (arr, val) {
         var i, n = arr.length;
         for (i = 0; i < n; ++i) {
@@ -826,6 +858,10 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
     };
 
 
+    /**
+     * Fügt den Replay-Schritt hinzu.
+     * @method
+     */
     this.addReplayStep = function() {
         var nodeProperties = {};
         for(var key in graph.nodes) {
@@ -844,6 +880,10 @@ function HungarianMethod(p_graph,p_canvas,p_tab) {
         });
     };
 
+    /**
+     * Spielt den Replay-Schritt ein.
+     * @method
+     */
     this.replayStep = function(current) {
         if(current > 0){
             var oldState = history[current - 1];

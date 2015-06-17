@@ -4,7 +4,7 @@
  */
 
 /**
- * Instanz der Forschungsaufgabe 3
+ * Instanz der Forschungsaufgabe 1.
  * @constructor
  * @param {Graph} p_graph Graph, auf dem der Algorithmus ausgeführt wird
  * @param {Object} p_canvas jQuery Objekt des Canvas, in dem gezeichnet wird.
@@ -90,7 +90,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
     var tabBeforeQuestion = null;
 
     /**
-     * Statistiken zu den Fragen
+     * Statistiken zu den Fragen.
      * @type Object
      */
     var questionStats = {
@@ -100,21 +100,40 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
         gestellt : 0
     };
 
+    /**
+     * Zustand der aktuellen Iteration.
+     * @type Object
+     */
     var actualContext;
 
+    /**
+     * Die Abstandsmatrix.
+     * @type Array
+     */
     var distance = new Array();
 
+    /**
+     * Der Array speichert aktuelle Wege.
+     * @type Array
+     */
     var paths = new Array();
 
+    /**
+     * Der Array hilft bei der Erstellung der konsistenten Datenstrukturen
+     * (falls Knoten/Kanten mehrmals gelöscht/erstellt werden).
+     * @type Array
+     */
     var keyToIndex = new Array();
 
+    /**
+     * Zustand des Algorithmus (fertig/nicht fertig).
+     * @type Boolean
+     */
     this.finished = false;
 
     this.paths = paths;
 
     this.contextStack = contextStack;
-
-    var extraQuestionAsked = false;
 
     /******************************************************************************************************************************************/
     /***************************************************** Funktionen aller Tabs **************************************************************/
@@ -177,7 +196,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
     };
 
     /**
-     * Beendet den Tab und startet ihn neu
+     * Beendet den Tab und startet ihn neu.
      * @method
      */
     this.refresh = function() {
@@ -189,8 +208,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
     };
 
     /**
-     * Registriere die Eventhandler an Buttons und canvas<br>
-     * Nutzt den Event Namespace ".Forschungsaufgabe1"
+     * Registriere die Eventhandler an Buttons und canvas.
      * @method
      */
     this.registerEventHandlers = function() {
@@ -217,7 +235,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
     };
 
     /**
-     * Entferne die Eventhandler von Buttons und canvas im Namespace ".Forschungsaufgabe1"
+     * Entferne die Eventhandler von Buttons und canvas.
      * @method
      */
     this.deregisterEventHandlers = function() {
@@ -245,7 +263,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
     };
 
     /**
-     * Stoppt das automatische Abspielen des Algorithmus
+     * Stoppt das automatische Abspielen des Algorithmus.
      * @method
      */
     this.stopFastForward = function() {
@@ -264,15 +282,6 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
 
     /**
      * In dieser Funktion wird der nächste Schritt des Algorithmus ausgewählt.
-     * Welcher das ist, wird über die Variable "context.statusID" bestimmt.<br>
-     * Mögliche Werte sind:<br>
-     *  0: Initialisierung<br>
-     *  1: Minimales Element aus der Priority Queue herauslöschen<br>
-     *  2: Über ausgehende Kanten/Nachbarknoten iterieren und prüfen, ob ein Update vorgenommen werden soll<br>
-     *  3: Priortät bereits besuchter Knoten verringern<br>
-     *  4: Neuen Knoten in die Priority Queue einfügen<br>
-     *  5: Bereits abgearbeiten Knoten markieren<br>
-     *  6: Algorithmus ist zu ende, da die Priority Queue nun leer ist
      *  @method
      */
     this.nextStepChoice = function(){
@@ -297,7 +306,6 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
             actualContext = contextNew;
         }
 
-        //TODO comment
         var status;
         if(isStepMade){
             $("#ta_button_Zurueck").button("option", "disabled", false);
@@ -348,46 +356,11 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
         return algo.finished;
     };
 
-    /**
-     * Kopiert den Zustand des Algorithmus
-     * @method
-     * @param {Context} oldState
-     * @returns {Context} newState
-     */
-    this.copyAlgorithmState = function(oldState) {
-        var newState = jQuery.extend(true, {}, oldState);
-        var newPQueue = oldState.pqueue.clone();
-        newState.pqueue = newPQueue;
-        return newState;
-    };
-
-    /**
-     * Setzt Farben und Texte des Graphen für Visualisierung
-     * @method
-     * @param {Context} context
-     */
-    this.visualise = function(context) {
-        for (var eID in graph.edges) {
-            if (context.edgeColors[eID] == const_Colors.ShortestPathColor) {
-                // use small arrows for shortest path
-                graph.edges[eID].setLayout("lineColor", const_Colors.NormalEdgeColor);
-                graph.edges[eID].setHighlighted(true);
-            } else {
-                graph.edges[eID].setLayout("lineColor", context.edgeColors[eID]);
-                graph.edges[eID].setHighlighted(false);
-            }
-        }
-
-        this.needRedraw = true;
-    };
-
     /******************************************************** Ausführung des Algorithmus ********************************************************/
 
     /**
      * Initialisiere den Algorithmus, stelle die Felder auf ihre Startwerte.
      * @method
-     * @param {Context} context
-     * @returns {Context} context
      */
     this.initializeAlgorithm = function(){
         var i = 0;
@@ -433,8 +406,6 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
     /**
      * Behandelt das Ende des Algorithmus.
      * @method
-     * @param {Context} context
-     * @returns {Context} context
      */
     this.end = function() {
         algo.finished = true;
@@ -532,9 +503,9 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
     /********************************************************************  Für die Fragen  *********************************************************************/
 
     /**
-     * Läd die Frage aus dem entsprechenden JSON-File und zeigt sie an.
+     * Lädt die Frage aus dem entsprechenden JSON-File und zeigt sie an.
      * @method
-     * @param {String} questionURL
+     * @param {String} questionID
      */
     this.poseQuestion = function(questionID) {
         $("#questionDiv").remove();
@@ -600,8 +571,8 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
                     });
                 };
                 f(idInput, idLabel);
-            };
-        };
+            }
+        }
 
         questionStatus = {
             "aktiv" : true,
@@ -635,7 +606,7 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
     };
 
     /**
-     * Zeigt - in eigenem Tab - die Resultate der Aufgabe an.
+     * Zeigt - in eigenem Tab - die Ergebnisse der Aufgabe an.
      * @method
      */
     this.showResults = function() {
@@ -674,8 +645,12 @@ function Forschungsaufgabe1(p_graph, p_canvas, p_tab) {
         return warnBeforeLeave;
     };
 
+    /**
+     * Versucht die Pfade zu verbessern.
+     * @method
+     */
     this.findShortestPaths = function(context){
-        if(contextStack.length == 15 && !extraQuestionAsked){
+        if(contextStack.length == 15){
             return true;
         }
         var isStepMade = false;

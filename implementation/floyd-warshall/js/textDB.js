@@ -5,12 +5,26 @@
 
 /********************************************** Erklärungstext / Anzeige in Pseudocode **********************************************/
 
+/**
+ * HTML Darstellung der Tabelle.
+ * @type String
+ */
 var table;
+
+/**
+ * Lokale Kopie der Abstandsmatrix.
+ * @type String
+ */
 var distanceMatrix;
+
+/**
+ * Lokale Kopie des Tabprefixes.
+ * @type String
+ */
 var prefix;
 
 /**
- * Passe Text in Erklärungs- und Pseudocodebereich an.
+ * Zeige die Abstandsmatrix und passe Text in Erklärungs- und Pseudocodebereich an.
  * @method
  * @param {Object} distance
  * @param {String} tabprefix
@@ -143,6 +157,14 @@ function changeText(distance, tabprefix, contextNew, nodes, statusID) {
     }
 }
 
+/**
+ * Erstelle den HTML-Code der abgebildeten Tabelle.
+ * @method
+ * @param {Object} distance
+ * @param {Object} contextNew
+ * @param {Object} nodes
+ * @param {Boolean} markChanged
+ */
 function displayMatrix(distance, contextNew, nodes, markChanged){
     var table = "<tr><td></td>";
     for(var key in nodes){
@@ -188,6 +210,7 @@ function displayMatrix(distance, contextNew, nodes, markChanged){
 
     return table;
 }
+
 
 function displayMatrixCorner(distance, contextNew, nodes, markChanged, startVertical,
                              startHorizontal, limit, displayDots){
@@ -250,6 +273,14 @@ function displayMatrixCorner(distance, contextNew, nodes, markChanged, startVert
     return table;
 }
 
+/**
+ * Erstelle den HTML-Code der Ecke der abgebildeten Tabelle am Anfang des Algorithmus.
+ * @method
+ * @param {Object} distance
+ * @param {Object} contextNew
+ * @param {Object} nodes
+ * @param {Boolean} markChanged
+ */
 function displayMatrixSmall(distance, contextNew, nodes, markChanged){
     var cols = new Array();
     var rows = new Array();
@@ -392,6 +423,11 @@ function displayMatrixSmall(distance, contextNew, nodes, markChanged){
     return table;
 }
 
+/**
+ * Markiere den aktuellen Pfad beim Hover-Event.
+ * @method
+ * @param {Object} object
+ */
 function markPath(object){
     var sourceNode = algo.graph.nodes[$(object).attr("i")],
         targetNode = algo.graph.nodes[$(object).attr("j")];
@@ -409,6 +445,11 @@ function markPath(object){
     }
 }
 
+/**
+ * Lösche die Markierung des aktuellen Pfads.
+ * @method
+ * @param {Object} object
+ */
 function unmarkPath(object){
     var sourceNode = algo.graph.nodes[$(object).attr("i")],
         targetNode = algo.graph.nodes[$(object).attr("j")];
@@ -423,12 +464,10 @@ function unmarkPath(object){
     algo.needRedraw = true;
 }
 
-//function to support scrolling of title and first column
-fnScroll = function(){
-    $('#divHeader').scrollLeft($('#table_div').scrollLeft());
-    $('#firstcol').scrollTop($('#table_div').scrollTop());
-}
-
+/**
+ * Zeige die komplette Matrix im separaten Fenster.
+ * @method
+ */
 function showMatrixPopup(){
     algo.stopFastForward();
     $("#" + prefix + "_div_completeMatrix").dialog("open");

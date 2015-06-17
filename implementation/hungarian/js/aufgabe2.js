@@ -1,5 +1,5 @@
 /**
- * Instanz der Ungarischen Methode, erweitert die Klasse CanvasDrawer
+ * Instanz der Forschungsaufgabe2
  * @constructor
  * @augments CanvasDrawer
  * @param {Graph} p_graph Graph, auf dem der Algorithmus ausgeführt wird
@@ -14,7 +14,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      */
     var graph = this.graph;
     /**
-     * Convenience Objekt, damit man das Canvas ohne this. ansprechen kann.
+     * Convenience Objekt, damit man das Canvas ohne this ansprechen kann.
      * @type Object
      */
     var canvas = p_canvas;
@@ -35,15 +35,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      * @type HungarianMethod
      */
     var algo = this;
-
-    /**
-     * Hier die Variablen vom HK-Algo
-     */
-
-    /**
-     * Hier die Variablen vom UM-Algo
-     */
-
     /**
      * Alle benoetigten Information zur Wiederherstellung der vorangegangenen Schritte werden hier gespeichert.
      * @type Array
@@ -58,12 +49,14 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      * Gibt das Statusausgabefenster an.
      */
     var statusErklaerung = "#tf2_div_statusErklaerung";
-
     /**
      * Gibt das Pseudocodefenster an.
      */
     var pseudocode = "#tf2_div_statusPseudocode";
-
+    /**
+     * Nummer des aktuellen Schritts.
+     * @type Number
+     */
     var currentDisplayStep = 0;
     /**
      * Hier werden die Statuskonstanten definiert
@@ -81,6 +74,9 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     const SHOWED_EQUALITY_GRAPH = 11;
     const READY_TO_INCREASE_MATCHING = 12;
 
+    /**
+     * Hier werden die Variablen der Ungarischen Methode definiert
+     */
     var cost = new Array();
     this.cost = cost;
 
@@ -363,19 +359,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
     /**
      * In dieser Funktion wird der nächste Schritt des Algorithmus ausgewählt.
-     * Welcher das ist, wird über die Variable "statusID" bestimmt.<br>
-     * Mögliche Werte sind:<br>
-     *  BEGIN: Initialisierung<br>
-     *  READY_FOR_SEARCHING: Wähle den Wurzel des Augmentationsweges<br>
-     *  READY_TO_BUILD_TREE: Konstruiere den alternierenden Baum<br>
-     *  AUGMENTING_PATH_NOT_FOUND: Passe die Markierungen an<br>
-     *  LABELS_UPDATED: Zeige den neuen Gleichheitsgraphen<br>
-     *  SHOWED_EQUALITY_GRAPH: Nach der Anpassung von Markierungen beginne die Suche des neuen Augmentationsweges<br>
-     *  MATCHING_INCREASED: Das Matching wurde vergrößert. Prüfe ob es perfekt ist und wenn nicht, dann rufe den Algorithmus noch mal auf.<br>
-     *  READY_TO_BUILD_TREE_AFTER_RELABELING: Konstruiere einen alternierenden Baum nach der Anpassung von Markierungen. <br>
-     *  READY_TO_START: Fange mit dem Algorithmus an. <br>
-     *  AUGMENTING_PATH_FOUND: Zeige den Augmentationsweg. <br>
-     *  READY_TO_INCREASE_MATCHING: Vergrößere das Matching. <br>
      *  @method
      */
     this.nextStepChoice = function () {
@@ -453,6 +436,10 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
     };
 
+    /**
+     * Zeigt den Gleichheitsgraph.
+     * @method
+     */
     this.showNewEqualityGraph = function(){
         this.showEqualityGraph(lx, ly);
         $("#tf2_div_statusErklaerung").html(

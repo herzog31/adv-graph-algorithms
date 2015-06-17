@@ -27,7 +27,7 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Instanz der Ungarischen Methode, erweitert die Klasse CanvasDrawer
+ * Instanz der Forschungsaufgabe2
  * @constructor
  * @augments CanvasDrawer
  * @param {Graph} p_graph Graph, auf dem der Algorithmus ausgeführt wird
@@ -42,7 +42,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      */
     var graph = this.graph;
     /**
-     * Convenience Objekt, damit man das Canvas ohne this. ansprechen kann.
+     * Convenience Objekt, damit man das Canvas ohne this ansprechen kann.
      * @type Object
      */
     var canvas = p_canvas;
@@ -63,15 +63,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      * @type HungarianMethod
      */
     var algo = this;
-
-    /**
-     * Hier die Variablen vom HK-Algo
-     */
-
-    /**
-     * Hier die Variablen vom UM-Algo
-     */
-
     /**
      * Alle benoetigten Information zur Wiederherstellung der vorangegangenen Schritte werden hier gespeichert.
      * @type Array
@@ -86,12 +77,14 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
      * Gibt das Statusausgabefenster an.
      */
     var statusErklaerung = "#tf2_div_statusErklaerung";
-
     /**
      * Gibt das Pseudocodefenster an.
      */
     var pseudocode = "#tf2_div_statusPseudocode";
-
+    /**
+     * Nummer des aktuellen Schritts.
+     * @type Number
+     */
     var currentDisplayStep = 0;
     /**
      * Hier werden die Statuskonstanten definiert
@@ -109,6 +102,9 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     const SHOWED_EQUALITY_GRAPH = 11;
     const READY_TO_INCREASE_MATCHING = 12;
 
+    /**
+     * Hier werden die Variablen der Ungarischen Methode definiert
+     */
     var cost = new Array();
     this.cost = cost;
 
@@ -391,19 +387,6 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
     /**
      * In dieser Funktion wird der nächste Schritt des Algorithmus ausgewählt.
-     * Welcher das ist, wird über die Variable "statusID" bestimmt.&lt;br>
-     * Mögliche Werte sind:&lt;br>
-     *  BEGIN: Initialisierung&lt;br>
-     *  READY_FOR_SEARCHING: Wähle den Wurzel des Augmentationsweges&lt;br>
-     *  READY_TO_BUILD_TREE: Konstruiere den alternierenden Baum&lt;br>
-     *  AUGMENTING_PATH_NOT_FOUND: Passe die Markierungen an&lt;br>
-     *  LABELS_UPDATED: Zeige den neuen Gleichheitsgraphen&lt;br>
-     *  SHOWED_EQUALITY_GRAPH: Nach der Anpassung von Markierungen beginne die Suche des neuen Augmentationsweges&lt;br>
-     *  MATCHING_INCREASED: Das Matching wurde vergrößert. Prüfe ob es perfekt ist und wenn nicht, dann rufe den Algorithmus noch mal auf.&lt;br>
-     *  READY_TO_BUILD_TREE_AFTER_RELABELING: Konstruiere einen alternierenden Baum nach der Anpassung von Markierungen. &lt;br>
-     *  READY_TO_START: Fange mit dem Algorithmus an. &lt;br>
-     *  AUGMENTING_PATH_FOUND: Zeige den Augmentationsweg. &lt;br>
-     *  READY_TO_INCREASE_MATCHING: Vergrößere das Matching. &lt;br>
      *  @method
      */
     this.nextStepChoice = function () {
@@ -481,16 +464,20 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
     };
 
+    /**
+     * Zeigt den Gleichheitsgraph.
+     * @method
+     */
     this.showNewEqualityGraph = function(){
         this.showEqualityGraph(lx, ly);
         $("#tf2_div_statusErklaerung").html(
-            "&lt;h3>Neuen Gleichheitsgraph bestimmen&lt;/h3>" +
-            "&lt;p>Zur Bestimmung eines neuen Gleichheitsgraph muss der Algorithmus zunächst die Markierungen aktualisieren.&lt;/p>" +
-            "&lt;p>Dazu wird ein \\(\\Delta\\) wie folgt bestimmt:&lt;/p>"+
-            "&lt;p>\\(\\Delta = \\min\\limits_{s \\in S\\ \\wedge\\ y \\in Y \\setminus T}\\{l(s) + l(y) - w(s,y)\\} = "+delta+"\\)&lt;/p>" +
-            "&lt;p>Die Markierungen werden dann nach folgender Formel aktualisiert:&lt;/p>" +
-            "&lt;p>\\(\\begin{equation}l^\\prime(v) =\\begin{cases}l(v) - "+delta+" &amp; v \\in S\\\\l(v) + "+delta+" &amp; v \\in T\\\\l(v) &amp; sonst\\end{cases}\\end{equation}\\)&lt;/p>" +
-            "&lt;p>Der neue Gleichheitsgraph wurde vom Algorithmus markiert (&lt;strong style='font-weight: bold; color: green;'>grün&lt;/strong> und &lt;strong>schwarz&lt;/strong>).&lt;/p>"
+            "&lt;h3>" + LNG.K("aufgabe2_find_new_equality_graph") + "&lt;/h3>" +
+            "&lt;p>" + LNG.K("aufgabe2_must_find_labels") + "&lt;/p>" +
+            "&lt;p>" + LNG.K("aufgabe2_delta_set") + "&lt;/p>"+
+            "&lt;p>" + LNG.K("aufgabe2_min_delta") + " = " + delta + "\\)&lt;/p>" +
+            "&lt;p>" + LNG.K("aufgabe2_labels_actualised") + "&lt;/p>" +
+            "&lt;p>" + LNG.K("aufgabe2_label_update_formula1") + delta + LNG.K("aufgabe2_label_update_formula2") + delta + LNG.K("aufgabe2_label_update_formula3") + "&lt;/p>" +
+            "&lt;p>" + LNG.K("aufgabe2_new_graph_marked") + "&lt;/p>"
         );
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,"tf2_div_statusErklaerung"]);
         $(".marked").removeClass("marked");
@@ -541,9 +528,9 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         });
 
         $("#tf2_div_statusErklaerung").html(
-            "&lt;h3>Augmentationsweg bestimmen&lt;/h3>" +
-            "&lt;p>Der Algorithmus versucht nun schrittweise einen alternierenden Pfad zu konstruieren.&lt;/p>" +
-            "&lt;p>Die Konstruktion stoppt, wenn der alternierende Pfad augmentierend wird oder es keine weiteren passenden Kanten mehr gibt.&lt;/p>");
+            "&lt;h3>" + LNG.K("aufgabe2_find_augmenting_path") + "&lt;/h3>" +
+            "&lt;p>" + LNG.K("aufgabe2_build_alt_path") + "&lt;/p>" +
+            "&lt;p>" + LNG.K("aufgabe2_build_stops") + "&lt;/p>");
 
         $("#tf2_td_setS").html(sField.join(",") || "&amp;#8709;");
         $("#tf2_td_setT").html(tField.join(",") || "&amp;#8709;");
@@ -570,9 +557,9 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         this.showLabels(lx, ly);
         this.showEqualityGraph(lx, ly);
         statusID = READY_TO_START;
-        $("#tf2_div_statusErklaerung").html("&lt;h3>Gleichheitsgraph bestimmen&lt;/h3>"
-        + "&lt;p>Der Algorithmus bestimmt zuerst eine initiale Markierung für jeden Knoten.&lt;/p>"
-        + "&lt;p>Anhand der Markierungen wird der Gleichheitsgraph ermittelt (&lt;strong>schwarz&lt;/strong>).&lt;/p>");
+        $("#tf2_div_statusErklaerung").html("&lt;h3>" + LNG.K("aufgabe2_find_equality_graph") + "&lt;/h3>"
+        + "&lt;p>" + LNG.K("aufgabe2_initial_labels") + "&lt;/p>"
+        + "&lt;p>" + LNG.K("aufgabe2_found_equality_graph") + "&lt;/p>");
         $(".marked").removeClass("marked");
         $("#tf2_p_l4").addClass("marked");
         return READY_TO_START;
@@ -616,9 +603,9 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
         showTreeRoot(S);
         statusID = READY_FOR_SEARCHING;
-        $("#tf2_div_statusErklaerung").html("&lt;h3>Augmentationsweg bestimmen&lt;/h3>" +
-        "&lt;h3>Wurzel eines alternierenden Pfades finden&lt;/h3>" +
-        "&lt;p>Der Algorithmus wählt als Wurzel einen Knoten, der noch nicht im Matching vorhanden ist und markiert ihn &lt;span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün&lt;/span>.&lt;/p>");
+        $("#tf2_div_statusErklaerung").html("&lt;h3>" + LNG.K("aufgabe2_find_augmenting_path") + "&lt;/h3>" +
+            "&lt;h3>" + LNG.K("aufgabe2_find_root") + "&lt;/h3>" +
+            "&lt;p>" + LNG.K("aufgabe2_choose_root") + "&lt;span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>" + LNG.K("aufgabe2_light_green") + "&lt;/span>.&lt;/p>");
         $(".marked").removeClass("marked");
         $("#tf2_p_l6").addClass("marked");
         $("#tf2_p_l7").addClass("marked");
@@ -646,8 +633,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             return READY_TO_BUILD_TREE;
         }
         $("#tf2_div_statusErklaerung").html(
-            "&lt;h3>Augmentationsweg bestimmen&lt;/h3>" +
-            "&lt;p>Der Algorithmus konnte keinen Augmentationsweg mit der gewählten Wurzel (&lt;span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>hell grün&lt;/span>) im aktuellen Gleichheitsgraph finden.&lt;/p>"
+            "&lt;h3>" + LNG.K("aufgabe2_find_augmenting_path") + "&lt;/h3>" +
+            "&lt;p>" + LNG.K("aufgabe2_cannot_find") + " (&lt;span style='font-weight: bold; color: " + const_Colors.NodeFillingHighlight + ";'>" + LNG.K("aufgabe2_light_green") + "&lt;/span>) " + LNG.K("aufgabe2_in_graph") + "&lt;/p>"
         );
         statusID = AUGMENTING_PATH_NOT_FOUND;
         $(".marked").removeClass("marked");
@@ -663,8 +650,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
     this.markAugmentingPath = function(){
         showAugmentingPath(x, y, prev, xy, yx);
         $("#tf2_div_statusErklaerung").html(
-            "&lt;h3>Augmentationsweg bestimmen&lt;/h3>" +
-            "&lt;p>Es wurde ein Augmentationsweg (&lt;span style='font-weight: bold; color: red;'>rot&lt;/span>) gefunden.&lt;/p>"
+            "&lt;h3>" + LNG.K("aufgabe2_find_augmenting_path") + "&lt;/h3>" +
+            "&lt;p>" + LNG.K("aufgabe2_found_augmenting_path") + "&lt;/p>"
         );
         statusID = READY_TO_INCREASE_MATCHING;
         return READY_TO_INCREASE_MATCHING;
@@ -776,8 +763,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         showCurrentMatching(xy, true);
         statusID = MATCHING_INCREASED;
         $("#tf2_div_statusErklaerung").html(
-            "&lt;h3>Matching vergrößern&lt;/h3>" +
-            "&lt;p>Mittels des gefundenen Augmentationsweges konnte das Matching (&lt;span style='font-weight: bold; color: green;'>grün&lt;/span>) ergänzt werden.&lt;/p>"
+            "&lt;h3>" + LNG.K("aufgabe2_increase_matching") + "&lt;/h3>" +
+            "&lt;p>" + LNG.K("aufgabe2_augment_matching") + "&lt;/p>"
         );
         $(".marked").removeClass("marked");
         if(maxMatch == cost.length){
@@ -858,13 +845,13 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         }
 
         $("#tf2_div_statusErklaerung").html(
-            "&lt;h3>Optimales Matching&lt;/h3>" +
-            "&lt;p>Die Ungarische Methode hat erfolgreich ein maximales Matching bestimmt.&lt;/p>" +
-            "&lt;p>Das Gesamtgewicht beträgt &lt;strong>"+ret+"&lt;/strong>.&lt;/p>" +
-            "&lt;h3>Was nun?&lt;/h3>" +
-            "&lt;button id='tf2_button_gotoIdee' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'>&lt;span class='ui-button-text'>Beschreibung des Algorithmus lesen&lt;/span>&lt;/button>" +
-            "&lt;h3>Forschungsaufgaben ausprobieren:&lt;/h3>" +
-            "&lt;button id='tf2_button_gotoFA1' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'>&lt;span class='ui-button-text'>FA1&lt;/span>&lt;/button>"
+            "&lt;h3>" + LNG.K("aufgabe2_optimal_matching") + "&lt;/h3>" +
+            "&lt;p>" + LNG.K("aufgabe2_matching_found") + "&lt;/p>" +
+            "&lt;p>" + LNG.K("aufgabe2_total_weight") + " &lt;strong>"+ret+"&lt;/strong>.&lt;/p>" +
+            "&lt;h3>" + LNG.K("algorithm_msg_finish") + "&lt;/h3>" +
+            "&lt;button id='tf2_button_gotoIdee' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'>&lt;span class='ui-button-text'>" + LNG.K("algorithm_btn_more") + "&lt;/span>&lt;/button>" +
+            "&lt;h3>" + LNG.K("aufgabe2_another_task") + "&lt;/h3>" +
+            "&lt;button id='tf2_button_gotoFA1' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'>&lt;span class='ui-button-text'>" + LNG.K('algorithm_btn_exe1') + "&lt;/span>&lt;/button>"
         );
 
         $("#tf2_button_gotoIdee").click(function() {
@@ -941,8 +928,8 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
                     graph.edges[key].setLayout("dashed", graph.edges[key].originalDashed);
                 }
             }
-            $("#tf2_div_statusErklaerung").html("&lt;h3>Die Ungarische Methode&lt;/h3>" +
-            "&lt;p>Klicke auf &lt;strong>Nächster Schritt&lt;/strong>, um den Algorithmus zu starten.&lt;/p>");
+            $("#tf2_div_statusErklaerung").html("&lt;h3>" + LNG.K("aufgabe2_hungarian_method") + "&lt;/h3>" +
+            "&lt;p>" + LNG.K("aufgabe2_click_next") + "&lt;/p>");
             $(".marked").removeClass("marked");
             $("#tf2_p_l2").addClass("marked");
         }
@@ -963,6 +950,11 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
         $("#tf2_div_statusTabs").hide();
         $("#tf2_div_questionModal").show();
         $("#tf2_questionSolution").hide();
+        $("#tf2_div_questionModal").find("form").submit( function( e ) {
+            e.preventDefault();
+            $("#tf2_button_questionClose2").click();
+            $("#tf2_button_questionClose").click();
+        });
     };
 
     /**
@@ -1108,6 +1100,7 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
             }
             algo.needRedraw = true;
         });
+
         this.canvas.on("click.GraphDrawer", function(e){
             algo.nodeClickHandler(e, nodeLayouts);
         });
@@ -1303,14 +1296,18 @@ function Forschungsaufgabe2(p_graph,p_canvas,p_tab) {
 
         var randomVariable = Math.random();
 
-        if(equalityGraphQuestions &lt; 2 &amp;&amp; statusID === LABELS_UPDATED &amp;&amp; randomVariable > 0.5) {
+        if(equalityGraphQuestions &lt; 3 &amp;&amp; statusID === LABELS_UPDATED
+            &amp;&amp; (equalityGraphQuestions &lt; 2 || randomVariable > 0.5)) {
+
             equalityGraphQuestions++;
             return EQUALITY_GRAPH_QUESTION;
-        }else if(statusID === LABELS_UPDATED &amp;&amp; (equalityGraphQuestions >= 2 || randomVariable &lt;= 0.5)){
+        }else if(statusID === LABELS_UPDATED &amp;&amp; (equalityGraphQuestions >= 3 || randomVariable &lt;= 0.5)){
             this.nextStepChoice();
         }
 
-        if(augmentingPathQuestions &lt; 3 &amp;&amp; statusID === AUGMENTING_PATH_FOUND &amp;&amp; randomVariable > 0.5){
+        if(augmentingPathQuestions &lt; 3 &amp;&amp; statusID === AUGMENTING_PATH_FOUND
+            &amp;&amp; (augmentingPathQuestions &lt; 1 || randomVariable > 0.5)){
+
             augmentingPathQuestions++;
             return AUGMENTING_PATH_QUESTION;
         }else if(statusID === AUGMENTING_PATH_FOUND &amp;&amp; (augmentingPathQuestions >= 3 || randomVariable &lt;= 0.5)){
@@ -1368,13 +1365,13 @@ HungarianMethod.prototype.constructor = HungarianMethod;</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CanvasDrawer.html">CanvasDrawer</a></li><li><a href="CanvasDrawMethods.html">CanvasDrawMethods</a></li><li><a href="Edge.html">Edge</a></li><li><a href="Forschungsaufgabe1.html">Forschungsaufgabe1</a></li><li><a href="Forschungsaufgabe2.html">Forschungsaufgabe2</a></li><li><a href="Graph.html">Graph</a></li><li><a href="GraphDrawer.html">GraphDrawer</a></li><li><a href="GraphNode.html">GraphNode</a></li><li><a href="HungarianMethod.html">HungarianMethod</a></li><li><a href="Utilities.html">Utilities</a></li></ul><h3>Global</h3><ul><li><a href="global.html#const_Colors">const_Colors</a></li><li><a href="global.html#global_Edgelayout">global_Edgelayout</a></li><li><a href="global.html#global_KnotenRadius">global_KnotenRadius</a></li><li><a href="global.html#global_NodeLayout">global_NodeLayout</a></li><li><a href="global.html#graph_constants">graph_constants</a></li><li><a href="global.html#initializeSiteLayout">initializeSiteLayout</a></li><li><a href="global.html#mouseDownHandler">mouseDownHandler</a></li><li><a href="global.html#refresh">refresh</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CanvasDrawer.html">CanvasDrawer</a></li><li><a href="CanvasDrawMethods.html">CanvasDrawMethods</a></li><li><a href="Edge.html">Edge</a></li><li><a href="Forschungsaufgabe1.html">Forschungsaufgabe1</a></li><li><a href="Forschungsaufgabe2.html">Forschungsaufgabe2</a></li><li><a href="Graph.html">Graph</a></li><li><a href="GraphDrawer.html">GraphDrawer</a></li><li><a href="GraphNode.html">GraphNode</a></li><li><a href="HungarianMethod.html">HungarianMethod</a></li><li><a href="Utilities.html">Utilities</a></li></ul><h3>Global</h3><ul><li><a href="global.html#const_Colors">const_Colors</a></li><li><a href="global.html#global_Edgelayout">global_Edgelayout</a></li><li><a href="global.html#global_KnotenRadius">global_KnotenRadius</a></li><li><a href="global.html#global_NodeLayout">global_NodeLayout</a></li><li><a href="global.html#graph_constants">graph_constants</a></li><li><a href="global.html#initializeSiteLayout">initializeSiteLayout</a></li><li><a href="global.html#mouseDownHandler">mouseDownHandler</a></li><li><a href="global.html#refresh">refresh</a></li><li><a href="global.html#resetEdgeLayout">resetEdgeLayout</a></li><li><a href="global.html#resetNodeLayout">resetNodeLayout</a></li><li><a href="global.html#showAugmentingPath">showAugmentingPath</a></li><li><a href="global.html#showCurrentMatching">showCurrentMatching</a></li><li><a href="global.html#showEqualityGraph">showEqualityGraph</a></li><li><a href="global.html#showLabels">showLabels</a></li><li><a href="global.html#showTreeRoot">showTreeRoot</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0</a> on Fri May 15 2015 15:12:06 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0-dev</a> on Wed Jun 17 2015 00:45:34 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

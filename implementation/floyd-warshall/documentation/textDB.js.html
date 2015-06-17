@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: textDB.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: textDB.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @author Aleksejs Voroncovs
+ * Text Management
+ */
+
+/********************************************** Erklärungstext / Anzeige in Pseudocode **********************************************/
+
+/**
+ * HTML Darstellung der Tabelle.
+ * @type String
+ */
+var table;
+
+/**
+ * Lokale Kopie der Abstandsmatrix.
+ * @type String
+ */
+var distanceMatrix;
+
+/**
+ * Lokale Kopie des Tabprefixes.
+ * @type String
+ */
+var prefix;
+
+/**
+ * Zeige die Abstandsmatrix und passe Text in Erklärungs- und Pseudocodebereich an.
+ * @method
+ * @param {Object} distance
+ * @param {String} tabprefix
+ * @param {Object} contextNew
+ * @param {Object} nodes
+ * @param {Integer} statusID
+ */
+function changeText(distance, tabprefix, contextNew, nodes, statusID) {
+    prefix = tabprefix;
+    distanceMatrix = distance;
+    switch(statusID) {
+        case 1:
+            $("#" + tabprefix + "_div_statusText").html("&lt;p>" + LNG.K("textdb_msg_the") + " &lt;strong>" + distance.length + "×"
+                + distance.length + "&lt;/strong> " + LNG.K('textdb_msg_can_start') + "&lt;/p>&lt;p> " + LNG.K("textdb_msg_hover") + "&lt;/p>");
+            table = displayMatrix(distance, contextNew, nodes, false);
+            if(distance.length > 11){
+                tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, 0, 0, 10, true);
+                $("#" + tabprefix + "_div_statusText").append(LNG.K('textdb_msg_original_matrix_big') + "&lt;h3>" + LNG.K('textdb_msg_original_matrix') + "&lt;/h3>&lt;table id='matrix'>" + tableSmall + "&lt;/table>");
+                $("#tg_button_showMatrix").show();
+            }else{
+                $("#tg_button_showMatrix").hide();
+                $("#" + tabprefix + "_div_statusText").append("&lt;h3>" + LNG.K('textdb_msg_original_matrix') + "&lt;/h3>&lt;table id='matrix'>" + table + "&lt;/table>");
+            }
+            $(".marked").removeClass("marked");
+            $("#" + tabprefix + "_p_l2").addClass("marked");
+            $("#" + tabprefix + "_p_l3").addClass("marked");
+            $("#" + tabprefix + "_p_l4").addClass("marked");
+            $("#" + tabprefix + "_p_l5").addClass("marked");
+            break;
+
+        case 2:
+            table = displayMatrix(distance, contextNew, nodes,  true);
+            var formula = "&lt;p id='formula'>" + contextNew.formula + "&lt;/p>";
+            $("#" + tabprefix + "_div_statusText").html("");
+            if(algo.contextStack.length === 0){
+                $("#" + tabprefix + "_div_statusText").append("&lt;p>" + LNG.K("textdb_msg_first_step") + "&lt;/p>");
+            }
+            $("#" + tabprefix + "_div_statusText").append("&lt;p>" + LNG.K("textdb_msg_path_length") + "&lt;strong>(" + nodes[contextNew.i].getLabel() + ", " + nodes[contextNew.j].getLabel()
+                + ")&lt;/strong>" + LNG.K("textdb_msg_minimal_value") + "&lt;strong>(" + nodes[contextNew.i].getLabel() + ", " + nodes[contextNew.k].getLabel() + ")&lt;/strong>" + LNG.K("textdb_msg_and")
+                + "&lt;strong>(" + nodes[contextNew.k].getLabel() + ", " + nodes[contextNew.j].getLabel() + ")&lt;/strong>" + LNG.K("textdb_msg_calculated") + "&lt;/p>");
+            $("#" + tabprefix + "_div_statusText").append(formula);
+            $("#" + tabprefix + "_div_statusText").append("&lt;p>" + LNG.K("textdb_msg_this_step") + "&lt;strong>" + nodes[contextNew.i].getLabel() + "&lt;/strong> "
+                + LNG.K("textdb_msg_and") + "&lt;strong>" + nodes[contextNew.j].getLabel() + "&lt;/strong>" + LNG.K("textdb_msg_improved")
+                + LNG.K("textdb_msg_new_path") + "&lt;strong>(" + nodes[contextNew.i].getLabel() + ", " + nodes[contextNew.k].getLabel() + ")&lt;/strong>"
+                + LNG.K("textdb_msg_and") + "&lt;strong>(" + nodes[contextNew.k].getLabel() + ", " + nodes[contextNew.j].getLabel() + ")&lt;/strong>" + LNG.K("textdb_msg_cheaper")
+                + "&lt;strong>(" + nodes[contextNew.i].getLabel() + ", " + nodes[contextNew.j].getLabel() + ")&lt;/strong>." + "&lt;/p>");
+
+            $("#" + tabprefix + "_div_statusText").append("&lt;p>" + LNG.K("textdb_msg_hover") + "&lt;/p>");
+            if(distance.length > 11){
+                tableSmall = displayMatrixSmall(distance, contextNew, nodes,  true);
+                $("#" + tabprefix + "_div_statusText").append("&lt;table id='matrix'>" + tableSmall + "&lt;/table>");
+            }else{
+                $("#" + tabprefix + "_div_statusText").append("&lt;table id='matrix'>" + table + "&lt;/table>");
+            }
+            $(".marked").removeClass("marked");
+            $("#" + tabprefix + "_p_l6").addClass("marked");
+            $("#" + tabprefix + "_p_l7").addClass("marked");
+            $("#" + tabprefix + "_p_l8").addClass("marked");
+            $("#" + tabprefix + "_p_l9").addClass("marked");
+            $("#" + tabprefix + "_p_l10").addClass("marked");
+            $("#" + tabprefix + "_p_l11").addClass("marked");
+            $("#" + tabprefix + "_p_l12").addClass("marked");
+            break;
+
+        case 3:
+            $("#" + tabprefix + "_div_statusText").html("&lt;h3>" + LNG.K('textdb_msg_algo_end') + "&lt;/h3>");
+            $("#" + tabprefix + "_div_statusText").append("&lt;p>" + LNG.K('textdb_msg_paths_computed') + "&lt;/p>");
+            table = displayMatrix(distance, contextNew, nodes, false);
+            if(distance.length > 11){
+                tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, algo.startVertical, algo.startHorizontal, 10, false);
+                $("#" + tabprefix + "_div_statusText").append("&lt;table id='tableWrapper' style='margin-left: -20px;'>&lt;tr>&lt;td>&lt;/td>&lt;td align='center'>&lt;div id='up' style='background-image: url(img/up.png);width: 60px;height: 30px;'>&lt;/div>&lt;/td>&lt;td>&lt;/td>&lt;/tr>&lt;tr>&lt;td>&lt;div id='left' style='background-image: url(img/left.png);width: 30px;height: 60px;'>&lt;/div>&lt;/td>&lt;td>&lt;table id='matrix'>" + tableSmall + "&lt;/table>&lt;/td>&lt;td>&lt;div id='right' style='background-image: url(img/right.png); width: 30px; height: 60px'>&lt;/div>&lt;/td>&lt;/tr>&lt;tr>&lt;td>&lt;/td>&lt;td align='center'>&lt;div id='down' style='background-image: url(img/down.png);width: 60px;height: 30px;'>&lt;/div>&lt;/td>&lt;td>&lt;/td>&lt;/tr>&lt;/table>");
+                $("#tg_button_showMatrix").hide();
+            }else{
+                $("#" + tabprefix + "_div_statusText").append("&lt;h3>" + LNG.K('textdb_msg_endmatrix') + "&lt;/h3>&lt;table id='matrix'>" + table + "&lt;/table>");
+            }
+            $("#table_div").scrollLeft(0);
+            $("#table_div").scrollTop(0);
+            $(".marked").removeClass("marked");
+            $("#" + tabprefix + "_p_l13").addClass("marked");
+            $("#" + tabprefix + "_td_i").html(distance.length);
+            $("#" + tabprefix + "_td_j").html(distance.length);
+            $("#" + tabprefix + "_td_k").html(distance.length);
+            $("#right").on("click", function(){
+                if(algo.startHorizontal + 20 &lt; algo.distance.length) {
+                    algo.startHorizontal += 10;
+                }else{
+                    algo.startHorizontal = algo.distance.length - 10;
+                }
+                tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, algo.startVertical, algo.startHorizontal, 10, false);
+                $("#matrix").html(tableSmall);
+            });
+            $("#left").on("click", function(){
+                if(algo.startHorizontal - 10 >= 0) {
+                    algo.startHorizontal -= 10;
+                }else{
+                    algo.startHorizontal = 0;
+                }
+                tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, algo.startVertical, algo.startHorizontal, 10, false);
+                console.log(tableSmall);
+                $("#matrix").html(tableSmall);
+            });
+            $("#down").on("click", function(){
+                if(algo.startVertical + 20 &lt; algo.distance.length) {
+                    algo.startVertical += 10;
+                }else{
+                    algo.startVertical = algo.distance.length - 10;
+                }
+                tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, algo.startVertical, algo.startHorizontal, 10, false);
+                $("#matrix").html(tableSmall);
+            });
+            $("#up").on("click", function(){
+                if(algo.startVertical - 10 >= 0) {
+                    algo.startVertical -= 10;
+                }else{
+                    algo.startVertical = 0;
+                }
+                tableSmall = displayMatrixCorner(distance, contextNew, nodes, false, algo.startVertical, algo.startHorizontal, 10, false);
+                $("#matrix").html(tableSmall);
+            });
+            break;
+
+        default:
+            console.log("Fehlerhafte StatusID.");
+    }
+
+    if(contextNew) {
+        $("#" + tabprefix + "_td_i").html(contextNew.i + 1);
+        $("#" + tabprefix + "_td_j").html(contextNew.j + 1);
+        $("#" + tabprefix + "_td_k  ").html(contextNew.k + 1);
+    }
+}
+
+/**
+ * Erstelle den HTML-Code der abgebildeten Tabelle.
+ * @method
+ * @param {Object} distance
+ * @param {Object} contextNew
+ * @param {Object} nodes
+ * @param {Boolean} markChanged
+ */
+function displayMatrix(distance, contextNew, nodes, markChanged){
+    var table = "&lt;tr>&lt;td>&lt;/td>";
+    for(var key in nodes){
+        table += "&lt;td class='node_label unimportant-cell'>" + nodes[key].getLabel() + "&lt;/td>";
+    }
+    table += "&lt;/tr>";
+    var finalI, finalJ;
+    for(var i = 0; i &lt; distance.length; i++){
+        var trContent = "&lt;td class='node_label unimportant-cell'>" + nodes[i].getLabel() + "&lt;/td>";
+        for(var j = 0; j &lt; distance.length; j++){
+            if(contextNew &amp;&amp; markChanged &amp;&amp; i == contextNew.changedRow &amp;&amp; j == contextNew.changedColumn){
+                finalJ = j; finalI = i;
+                trContent += "&lt;td class='";
+                if(contextNew.preliminary){
+                    trContent += "updated-cell";
+                }else{
+                    trContent += "candidate-cell";
+                }
+                trContent += " important-cell' i=" + i + " j=" + j + 
+                    " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "&lt;/th>";
+            }else if(contextNew &amp;&amp; ((i == contextNew.i &amp;&amp; j == contextNew.k) || (i == contextNew.k &amp;&amp; j == contextNew.j))){
+                trContent += "&lt;td class='";
+                if(contextNew.preliminary){
+                    trContent += "summand-cell";
+                }else{
+                    trContent += "candidate-cell";
+                }
+                trContent += " important-cell' i=" + i + " j=" + j + 
+                    " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "&lt;/th>";
+            }else{
+                trContent += "&lt;td class='";
+                if(i != j &amp;&amp; distance[i][j] != "∞"){
+                    trContent += " number-cell ";
+                } else{
+                    trContent += " not-number-cell ";
+                }
+                trContent += " matrix-cell unimportant-cell' i=" + i + " j=" + j + 
+                    " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "&lt;/td>";
+            }
+        }
+        table += "&lt;tr class='table-row'>" + trContent + "&lt;/tr>";
+    }
+
+    return table;
+}
+
+
+function displayMatrixCorner(distance, contextNew, nodes, markChanged, startVertical,
+                             startHorizontal, limit, displayDots){
+    var table = "&lt;tr>&lt;td>&lt;/td>";
+    for(var key = startHorizontal; key &lt; startHorizontal + limit; key++){
+        table += "&lt;td class='node_label unimportant-cell'>" + nodes[key].getLabel() + "&lt;/td>";
+    }
+    if(displayDots){
+        table += "&lt;td>...&lt;/td>";
+    }
+    table += "&lt;/tr>";
+    var finalI, finalJ;
+    for(var i = startVertical; i &lt; startVertical + limit; i++){
+        var trContent = "&lt;td class='node_label unimportant-cell'>" + nodes[i].getLabel() + "&lt;/td>";
+        for(var j = startHorizontal; j &lt; startHorizontal + limit; j++){
+            if(contextNew &amp;&amp; markChanged &amp;&amp; i == contextNew.changedRow &amp;&amp; j == contextNew.changedColumn){
+                finalJ = j; finalI = i;
+                trContent += "&lt;td class='";
+                if(contextNew.preliminary){
+                    trContent += "updated-cell";
+                }else{
+                    trContent += "candidate-cell";
+                }
+                trContent += " important-cell' i=" + i + " j=" + j + 
+                    " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "&lt;/th>";
+            }else if(contextNew &amp;&amp; ((i == contextNew.i &amp;&amp; j == contextNew.k) || (i == contextNew.k &amp;&amp; j == contextNew.j))){
+                trContent += "&lt;td class='";
+                if(contextNew.preliminary){
+                    trContent += "summand-cell";
+                }else{
+                    trContent += "candidate-cell";
+                }
+                trContent += " important-cell' i=" + i + " j=" + j + 
+                    " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "&lt;/th>";
+            }else{
+                trContent += "&lt;td class='";
+                if(i != j &amp;&amp; distance[i][j] != "∞"){
+                    trContent += " number-cell ";
+                } else{
+                    trContent += " not-number-cell ";
+                }
+                trContent += " matrix-cell unimportant-cell' i=" + i + " j=" + j + 
+                    " onmouseover='markPath(this)' onmouseout='unmarkPath(this)'>" + distance[i][j] + "&lt;/td>";
+            }
+        }
+        table += "&lt;tr class='table-row'>" + trContent;
+        if(displayDots){
+            table += "&lt;td>...&lt;/td>";
+        }
+        table += "&lt;/tr>";
+    }
+    if(displayDots) {
+        table += "&lt;tr class='table-row'>";
+        for (var i = 0; i &lt; limit + 1; i++) {
+            table += "&lt;td>...&lt;/td>";
+        }
+        table += "&lt;/tr>";
+    }
+
+    return table;
+}
+
+/**
+ * Erstelle den HTML-Code der Ecke der abgebildeten Tabelle am Anfang des Algorithmus.
+ * @method
+ * @param {Object} distance
+ * @param {Object} contextNew
+ * @param {Object} nodes
+ * @param {Boolean} markChanged
+ */
+function displayMatrixSmall(distance, contextNew, nodes, markChanged){
+    var cols = new Array();
+    var rows = new Array();
+    rows.push(contextNew.i);
+    rows.push(contextNew.k);
+    cols.push(contextNew.k);
+    cols.push(contextNew.j);
+    if(contextNew.i - 1 >= 0 &amp;&amp; rows.indexOf(contextNew.i - 1) == -1){
+        rows.push(contextNew.i - 1);
+    }
+    if(contextNew.i + 1 &lt; distance.length &amp;&amp; rows.indexOf(contextNew.i + 1) == -1){
+        rows.push(contextNew.i + 1);
+    }
+
+    if(contextNew.k - 1 >= 0 &amp;&amp; rows.indexOf(contextNew.k - 1) == -1){
+        rows.push(contextNew.k - 1);
+    }
+    if(contextNew.k + 1 &lt; distance.length &amp;&amp; rows.indexOf(contextNew.k + 1) == -1){
+        rows.push(contextNew.k + 1);
+    }
+
+    if(contextNew.j - 1 >= 0 &amp;&amp; cols.indexOf(contextNew.j - 1) == -1){
+        cols.push(contextNew.j - 1);
+    }
+    if(contextNew.j + 1 &lt; distance.length &amp;&amp; cols.indexOf(contextNew.j + 1) == -1){
+        cols.push(contextNew.j + 1);
+    }
+
+    if(contextNew.k - 1 >= 0 &amp;&amp; cols.indexOf(contextNew.k - 1) == -1){
+        cols.push(contextNew.k - 1);
+    }
+    if(contextNew.k + 1 &lt; distance.length &amp;&amp; cols.indexOf(contextNew.k + 1) == -1){
+        cols.push(contextNew.k + 1);
+    }
+    cols = cols.sort(function(a,b){return a - b});
+    rows = rows.sort(function(a,b){return a - b});
+    var rowCount = 1;
+    var columnCount = 1;
+
+    for(var i = 1; i &lt; rows.length; i++){
+        if(rows[i] - rows[i-1] > 1){
+            rowCount++;
+        }
+        rowCount++;
+    }
+    for(var j = 1; j &lt; cols.length; j++){
+        if(cols[j] - cols[j-1] > 1){
+            columnCount++;
+        }
+        columnCount++;
+    }
+    var table = "";
+    var prevoiusRow = -1;
+    var prevoiusCol = -1;
+    table += "&lt;tr>&lt;td>&lt;/td>";
+    for(var j = 0; j &lt; cols.length; j++){
+        if(cols[j] - prevoiusCol > 1){
+            table += "&lt;td>...&lt;/td>";
+        }
+        table += "&lt;td class='node_label'>" + nodes[cols[j]].getLabel() + "&lt;/td>";
+        prevoiusCol = cols[j];
+    }
+    if(cols[cols.length - 1] &lt; distance.length - 1){
+        table += "&lt;td>...&lt;/td>";
+    }
+    table += "&lt;/tr>";
+    for(var i = 0; i &lt; rows.length; i++){
+        if(rows[i] - prevoiusRow > 1){
+            table += "&lt;tr>"
+            if(cols[0] > 0){
+                table += "&lt;td>...&lt;/td>"
+            }
+            for(var k = 0; k &lt;= columnCount; k++){
+                table += "&lt;td>...&lt;/td>"
+            }
+            if(cols[cols.length - 1] &lt; distance.length - 1){
+                table += "&lt;td>...&lt;/td>"
+            }
+            table += "&lt;/tr>";
+        }
+
+        prevoiusCol = -1;
+        table += "&lt;tr>&lt;td class='node_label'>" + nodes[rows[i]].getLabel() + "&lt;/td>";
+        for(var j = 0; j &lt; cols.length; j++){
+            if(cols[j] - prevoiusCol > 1){
+                table += "&lt;td>...&lt;/td>";
+            }
+            if(contextNew &amp;&amp; markChanged &amp;&amp; rows[i] == contextNew.changedRow &amp;&amp; cols[j] == contextNew.changedColumn){
+                table += "&lt;td onmouseover='markPath(this)' onmouseout='unmarkPath(this)' i='" + i + "' j='" + j + "' class='";
+                if(contextNew.preliminary){
+                    table += "updated-cell";
+                }else{
+                    table += "candidate-cell";
+                }
+                table += "'>" + distance[rows[i]][cols[j]] + "&lt;/td>";
+            }else if(contextNew &amp;&amp; ((rows[i] == contextNew.i &amp;&amp; cols[j] == contextNew.k) 
+                || (rows[i] == contextNew.k &amp;&amp; cols[j] == contextNew.j))){
+                table += "&lt;td onmouseover='markPath(this)' onmouseout='unmarkPath(this)' i='" + i + "' j='" + j + "' class='";
+                if(contextNew.preliminary){
+                    table += "summand-cell";
+                }else{
+                    table += "candidate-cell";
+                }
+                table += "'>" + distance[rows[i]][cols[j]] + "&lt;/td>";
+            }else{
+                table += "&lt;td"
+                if(rows[i] != cols[j] &amp;&amp; distance[rows[i]][cols[j]] != "∞"){
+                    table += " class='number-cell'>";
+                } else{
+                    table += " class='not-number-cell'>";
+                }
+                table += distance[rows[i]][cols[j]] + "&lt;/td>";
+            }
+            prevoiusCol = cols[j];
+        }
+        if(cols[cols.length - 1] &lt; distance.length - 1){
+            table += "&lt;td>...&lt;/td>";
+        }
+        table += "&lt;/tr>";
+        prevoiusRow = rows[i];
+    }
+    prevoiusCol = -1;
+    table += "&lt;tr>";
+    if(rows[rows.length - 1] &lt; distance.length - 1){
+        for(var j = 0; j &lt; cols.length; j++){
+            if(cols[j] - prevoiusCol > 1){
+                table += "&lt;td>...&lt;/td>";
+            }
+            table += "&lt;td>...&lt;/td>";
+            prevoiusCol = cols[j];
+        }
+        if(cols[cols.length - 1] &lt; distance.length - 1){
+            table += "&lt;td>...&lt;/td>";
+        }
+    }
+    if(cols[cols.length - 1] &lt; distance.length - 1){
+        table += "&lt;td>...&lt;/td>";
+    }
+    table += "&lt;/tr>";
+    return table;
+}
+
+/**
+ * Markiere den aktuellen Pfad beim Hover-Event.
+ * @method
+ * @param {Object} object
+ */
+function markPath(object){
+    var sourceNode = algo.graph.nodes[$(object).attr("i")],
+        targetNode = algo.graph.nodes[$(object).attr("j")];
+    sourceNode.setLayout("borderColor", "green");
+    sourceNode.setLayout("borderWidth", 5);
+    targetNode.setLayout("borderColor", "green");
+    targetNode.setLayout("borderWidth", 5);
+    $(object).css("background-color", "#007C30");
+    if(algo.paths[$(object).attr("i")][$(object).attr("j")]){
+        var edges = algo.paths[$(object).attr("i")][$(object).attr("j")].split(",");
+        for(var i = 0; i &lt; edges.length; i++){
+            algo.graph.edges[edges[i]].setLayout("lineColor", "#007C30");
+        }
+        algo.needRedraw = true;
+    }
+}
+
+/**
+ * Lösche die Markierung des aktuellen Pfads.
+ * @method
+ * @param {Object} object
+ */
+function unmarkPath(object){
+    var sourceNode = algo.graph.nodes[$(object).attr("i")],
+        targetNode = algo.graph.nodes[$(object).attr("j")];
+    sourceNode.setLayout("borderColor", const_Colors.NodeBorder);
+    sourceNode.setLayout("borderWidth", 3);
+    targetNode.setLayout("borderColor", const_Colors.NodeBorder);
+    targetNode.setLayout("borderWidth", 3);
+    $(object).css("background-color", "");
+    for(var edge in algo.graph.edges){
+        algo.graph.edges[edge].setLayout("lineColor", "black");
+    }
+    algo.needRedraw = true;
+}
+
+/**
+ * Zeige die komplette Matrix im separaten Fenster.
+ * @method
+ */
+function showMatrixPopup(){
+    algo.stopFastForward();
+    $("#" + prefix + "_div_completeMatrix").dialog("open");
+    $("#" + prefix + "_div_completeMatrix").html("&lt;table id='matrix-display'>" + table + "&lt;/table>");
+    $("#" + prefix + "_div_completeMatrix").css("width", (distanceMatrix.length + 1)*18 + "px");
+    $( "[aria-describedby='ta_div_completeMatrix']").resizable({ handles: 'w, s' });
+    $("[aria-describedby='ta_div_completeMatrix']").css("overflow", "auto");
+    $("[aria-describedby='ta_div_completeMatrix']").css("width", (44+(distanceMatrix.length + 1)*18) + "px");
+    $("[aria-describedby='ta_div_completeMatrix']").css("left", $( document ).width()-(64+(distanceMatrix.length + 1)*18) + "px");
+    $("[aria-describedby='ta_div_completeMatrix']").css("top", "20px");
+    $("#matrix-display td").removeAttr("onmouseover onmouseout").removeClass("not-number-cell candidate-cell summand-cell updated-cell");
+    $(window).scrollTop(0);
+    return;
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CanvasDrawer.html">CanvasDrawer</a></li><li><a href="CanvasDrawMethods.html">CanvasDrawMethods</a></li><li><a href="Edge.html">Edge</a></li><li><a href="FloydWarshallAlgorithm.html">FloydWarshallAlgorithm</a></li><li><a href="Forschungsaufgabe1.html">Forschungsaufgabe1</a></li><li><a href="Forschungsaufgabe2.html">Forschungsaufgabe2</a></li><li><a href="Graph.html">Graph</a></li><li><a href="GraphDrawer.html">GraphDrawer</a></li><li><a href="GraphNode.html">GraphNode</a></li><li><a href="Utilities.html">Utilities</a></li></ul><h3>Global</h3><ul><li><a href="global.html#changeText">changeText</a></li><li><a href="global.html#const_Colors">const_Colors</a></li><li><a href="global.html#displayMatrix">displayMatrix</a></li><li><a href="global.html#displayMatrixSmall">displayMatrixSmall</a></li><li><a href="global.html#distanceMatrix">distanceMatrix</a></li><li><a href="global.html#global_Edgelayout">global_Edgelayout</a></li><li><a href="global.html#global_KnotenRadius">global_KnotenRadius</a></li><li><a href="global.html#global_NodeLayout">global_NodeLayout</a></li><li><a href="global.html#initializeSiteLayout">initializeSiteLayout</a></li><li><a href="global.html#markPath">markPath</a></li><li><a href="global.html#prefix">prefix</a></li><li><a href="global.html#showMatrixPopup">showMatrixPopup</a></li><li><a href="global.html#table">table</a></li><li><a href="global.html#unmarkPath">unmarkPath</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0-dev</a> on Wed Jun 17 2015 00:38:23 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

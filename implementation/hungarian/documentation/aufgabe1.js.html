@@ -585,7 +585,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
      * @method
      */
     this.improveLabels = function() {
-
         delta = -1;
         for (var y = 0; y &lt; n; y++) {
             if (!T[y] &amp;&amp; (delta == -1 || slack[y] &lt; delta)) {
@@ -684,7 +683,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             yx[cy] = cx;
             xy[cx] = cy;
         }
-        showCurrentMatching(xy, true);
+        this.showCurrentMatching(xy, true);
 
         // -> 10 PERFECT_MATCHING_CHECK
         statusID = PERFECT_MATCHING_CHECK;
@@ -724,7 +723,7 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
     this.showResult = function() {
 
         $("#tf1_button_1Schritt").button("option", "disabled", true);
-        showCurrentMatching(xy, false);
+        this.showCurrentMatching(xy, false);
         this.markPseudoCodeLine([13]);
 
         if (fastForwardIntervalID != null) {
@@ -742,9 +741,9 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
             "&lt;p>"+LNG.K('aufgabe1_result_t1')+"&lt;/p>" +
             "&lt;p>"+LNG.K('aufgabe1_result_t2')+ret+LNG.K('aufgabe1_result_t3')+"&lt;/p>" +
             "&lt;h3>"+LNG.K('algorithm_msg_finish')+"&lt;/h3>" +
-            "&lt;button id='ta_button_gotoIdee' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'>&lt;span class='ui-button-text'>"+LNG.K('algorithm_btn_more')+"&lt;/span>&lt;/button>" +
+            "&lt;button id='tf1_button_gotoIdee' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'>&lt;span class='ui-button-text'>"+LNG.K('algorithm_btn_more')+"&lt;/span>&lt;/button>" +
             "&lt;h3>"+LNG.K('algorithm_msg_test')+"&lt;/h3>" +
-            "&lt;button id='ta_button_gotoFA2' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'>&lt;span class='ui-button-text'>"+LNG.K('algorithm_btn_exe2')+"&lt;/span>&lt;/button>"
+            "&lt;button id='tf1_button_gotoFA2' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' role='button'>&lt;span class='ui-button-text'>"+LNG.K('algorithm_btn_exe2')+"&lt;/span>&lt;/button>"
         );
 
         $("#tf1_button_gotoIdee").click(function() {
@@ -970,6 +969,34 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         }
     };
 
+    this.showCurrentMatching = function(xy, otherEdges){
+        var matching = [];
+        if(!otherEdges) {
+            for (var edge in graph.edges) {
+                graph.edges[edge].hidden = true;
+            }
+        }
+        for(var i in xy){
+            for(var edge in graph.edges){
+                if(graph.edges[edge].getSourceID() == i
+                    &amp;&amp; graph.edges[edge].getTargetID()-xy.length == xy[i]) {
+                    graph.edges[edge].setLayout("lineColor", "green");
+                    graph.edges[edge].originalColor = "green";
+                    graph.edges[edge].setLayout("lineWidth", 4);
+                    graph.edges[edge].hidden = false;
+                    matching.push("(" + graph.nodes[graph.edges[edge].getSourceID()].getOuterLabel() + "," + graph.nodes[graph.edges[edge].getTargetID()].getOuterLabel() + ")");
+                }else if((graph.edges[edge].getSourceID() == i
+                    || graph.edges[edge].getTargetID()-xy.length == xy[i])
+                    &amp;&amp; graph.edges[edge].originalColor == "green"){
+                    graph.edges[edge].originalColor = "black";
+                    graph.edges[edge].setLayout("lineColor", "black");
+                }
+            }
+        }
+
+        $("#tf1_td_matching").html(matching.join(",") || "&amp;#8709;");
+    }
+
     /**
      * Zeige die Markierungen als Label der Knoten an
      * @method
@@ -1038,7 +1065,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_div_statusTabs").hide();
         $("#tf1_div_questionModal").show();
         $("#tf1_questionSolution").hide();
-        $("#tf1_div_questionModal").find("form").one("keyup", function() { algo.triggerClick(); });
     };
 
     /**
@@ -1053,18 +1079,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_button_vorspulen").button("option", "disabled", false);
         $("#tf1_div_questionModal").off("keyup");
     };
-
-    /**
-     * Klick auf die Schließen Buttons auslösen
-     * @method
-     * @param  {jQuery.Event} event
-     */
-    this.triggerClick = function(event) {
-        if(event.keyCode == 13) {
-            $("#tf1_button_questionClose2").click();
-            $("#tf1_button_questionClose").click();
-        }
-    }
 
     /**
      * Generiere Frage zum nächsten Algorithmenschritt
@@ -1419,7 +1433,6 @@ function Forschungsaufgabe1(p_graph,p_canvas,p_tab) {
         $("#tf1_button_questionClose").hide();
         $("#tf1_button_questionClose2").button("option", "disabled", false);
         $("#tf1_button_questionClose2").focus();
-        $("#tf1_div_questionModal").find("form").one("keyup", function() { algo.triggerClick(); });
 
     };
 
@@ -1517,13 +1530,13 @@ Forschungsaufgabe1.prototype.constructor = Forschungsaufgabe1;</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CanvasDrawer.html">CanvasDrawer</a></li><li><a href="CanvasDrawMethods.html">CanvasDrawMethods</a></li><li><a href="Edge.html">Edge</a></li><li><a href="Forschungsaufgabe1.html">Forschungsaufgabe1</a></li><li><a href="Forschungsaufgabe2.html">Forschungsaufgabe2</a></li><li><a href="Graph.html">Graph</a></li><li><a href="GraphDrawer.html">GraphDrawer</a></li><li><a href="GraphNode.html">GraphNode</a></li><li><a href="HungarianMethod.html">HungarianMethod</a></li><li><a href="Utilities.html">Utilities</a></li></ul><h3>Global</h3><ul><li><a href="global.html#const_Colors">const_Colors</a></li><li><a href="global.html#global_Edgelayout">global_Edgelayout</a></li><li><a href="global.html#global_KnotenRadius">global_KnotenRadius</a></li><li><a href="global.html#global_NodeLayout">global_NodeLayout</a></li><li><a href="global.html#graph_constants">graph_constants</a></li><li><a href="global.html#initializeSiteLayout">initializeSiteLayout</a></li><li><a href="global.html#mouseDownHandler">mouseDownHandler</a></li><li><a href="global.html#refresh">refresh</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CanvasDrawer.html">CanvasDrawer</a></li><li><a href="CanvasDrawMethods.html">CanvasDrawMethods</a></li><li><a href="Edge.html">Edge</a></li><li><a href="Forschungsaufgabe1.html">Forschungsaufgabe1</a></li><li><a href="Forschungsaufgabe2.html">Forschungsaufgabe2</a></li><li><a href="Graph.html">Graph</a></li><li><a href="GraphDrawer.html">GraphDrawer</a></li><li><a href="GraphNode.html">GraphNode</a></li><li><a href="HungarianMethod.html">HungarianMethod</a></li><li><a href="Utilities.html">Utilities</a></li></ul><h3>Global</h3><ul><li><a href="global.html#const_Colors">const_Colors</a></li><li><a href="global.html#global_Edgelayout">global_Edgelayout</a></li><li><a href="global.html#global_KnotenRadius">global_KnotenRadius</a></li><li><a href="global.html#global_NodeLayout">global_NodeLayout</a></li><li><a href="global.html#graph_constants">graph_constants</a></li><li><a href="global.html#initializeSiteLayout">initializeSiteLayout</a></li><li><a href="global.html#mouseDownHandler">mouseDownHandler</a></li><li><a href="global.html#refresh">refresh</a></li><li><a href="global.html#resetEdgeLayout">resetEdgeLayout</a></li><li><a href="global.html#resetNodeLayout">resetNodeLayout</a></li><li><a href="global.html#showAugmentingPath">showAugmentingPath</a></li><li><a href="global.html#showCurrentMatching">showCurrentMatching</a></li><li><a href="global.html#showEqualityGraph">showEqualityGraph</a></li><li><a href="global.html#showLabels">showLabels</a></li><li><a href="global.html#showTreeRoot">showTreeRoot</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0</a> on Fri May 15 2015 15:12:06 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0-dev</a> on Wed Jun 17 2015 00:45:34 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
