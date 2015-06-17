@@ -11,7 +11,7 @@
     "algorithm_btn_exe1": "Wie würde der Algorithmus entscheiden?",
     "algorithm_btn_exe2": "Finde die Augmentationswege",
     "algorithm_btn_match": "Zeige das Matching",
-    "algorithm_btn_match1": "Zeige den Graph",
+    "algorithm_btn_match1": "Zeige den Graphen",
     "algorithm_status1": "Kosten des Anfangsknotens: ",
     "algorithm_status2": "Kosten der Kante: ",
     "algorithm_status3": "Kosten des Zielknotens: ",

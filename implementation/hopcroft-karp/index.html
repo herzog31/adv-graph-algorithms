@@ -186,10 +186,11 @@
                         </ul>
                         <div id="ta_div_statusErklaerung">
                             <h3>Initialisierung des Algorithmus.</h3>
-                            <p>Am Anfang des Algorithmus besitzt kein Knoten einen Matching-Partner. Dementsprechend ist das Matching M leer.</p>
+                            <p>Am Anfang des Algorithmus besitzt kein Knoten einen Matching-Partner. Dementsprechend ist das Matching leer.</p>
                             <p>In jeder Iteration suchen wir eine inklusions-maximale Menge von kürzesten knotendisjunkten Augmentationswegen.</p>
                             <p>Ein Augmentationsweg ist ein Weg, der mit einem ungematchten Knoten anfängt, mit einem ungematchten Knoten endet und abwechselnd Matching-Kanten und Nicht-Matching-Kanten benutzt.</p>
                             <p>Inklusions-maximal bedeutet, dass es zusätzlich zu den gefundenen Wegen keinen anderen kürzesten Augmentationsweg gibt, der knotendisjunkt bezüglich der bereits gefundenen ist.</p>
+                            <p>Wenn keine Augmentationswege mehr gefunden werden können, ist das Matching optimal und der Algorithmus terminiert.</p>
                         </div>
                         <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
                             <p class="pseudocode" id="ta_p_begin">BEGIN</p>
@@ -245,7 +246,7 @@
                 <h1>Idee des Algorithmus</h1>
                 <p>
                     Sei M das aktuelle Matching (am Anfang ist es leer). Kanten in M heißen Matching-Kanten, alle anderen freie Kanten. Die freien Kanten sind auf den Bildern schwarz gekennzeichnet und die Matching-Kanten grün.
-                    Ein Knoten, der auf einer Matching-Kante liegt, heißt besetzt(oder gematcht). Anderenfalls ist der Knoten frei. Die besetzten Knoten besitzen auf den Bildern grüne Farbe und freie Knoten blaue Farbe.
+                    Ein Knoten, der auf einer Matching-Kante liegt, heißt besetzt (oder gematcht). Anderenfalls ist der Knoten frei. Die besetzten Knoten besitzen auf den Bildern grüne Farbe und freie Knoten blaue Farbe.
                     Ein <b>Augmentationsweg</b> im Graphen G ist ein Weg, der
                     <ul>
                         <li>mit einem freien Knoten startet,</li>
@@ -279,25 +280,25 @@
                 <h1>Finden von kürzesten Augmentationswegen</h1>
                 <p>
                     Die kürzesten Augmentationswege können mit <b><a href="http://de.wikipedia.org/wiki/Breitensuche">Breiten-</a> und <a href="http://de.wikipedia.org/wiki/Tiefensuche">Tiefensuche</a></b> gefunden werden.
-                    Man startet mit allen freien Knoten einer Partition und fügt diese in die erste Schicht eines Schichtgraphen ein, der eine Zerlegung von V in mehrere Schichten darstellt und im Folgenden genauer erklärt wird. Schrittweise erzeugt man den Schichtgraphen, bis ein freier Knoten gefunden wurde oder alle Knoten bereits untersucht wurden.
+                    Man startet mit allen freien Knoten einer Knotenmenge (egal welcher) und fügt diese in die erste Schicht eines Schichtgraphen ein, der eine Zerlegung von V in mehrere Schichten darstellt und im Folgenden genauer erklärt wird. Schrittweise erzeugt man den Schichtgraphen, bis ein freier Knoten gefunden wurde oder alle Knoten bereits untersucht wurden.
                     Der <b>Schichtgraph</b> wird mit der folgenden Prozedur aufgebaut:
                 </p>
                 <p>
-                    Von den Knoten der aktuellen Partition folgt man den Kanten zu allen noch nicht untersuchten Nachbarn dieser Knoten, die jetzt die nächste Schicht darstellen.
+                    Von den Knoten der aktuellen Schicht folgt man den Kanten zu allen noch nicht untersuchten Nachbarn dieser Knoten, die jetzt die nächste Schicht darstellen.
                     Befindet sich ein freier Knoten in der neuen Schicht, so wird die Prozedur beendet. Ist die Schicht leer, so wird die Prozedur ebenfalls gestoppt und es wird ausgegeben, dass keine Augmentationswege existieren.
-                    Andererseits erweitert man den so erstellten Schichtgraphen um eine weitere Schicht mit den Matching-Partnern der letzten Schicht.
+                    Anderenfalls erweitert man den so erstellten Schichtgraphen um eine weitere Schicht mit den Matching-Partnern der letzten Schicht.
                     Die Schicht mit den Matching-Partnern wird zur aktuellen Schicht und die Prozedur wird wiederholt. Am Ende entsteht ein Schichtgraph, der alle kürzesten (und nur die kürzesten) Augmentationswege enthält, falls Augmentationswege existieren.
                 </p>
                 <p>
-                    Das dritte Bild zeigt den Schichtgraphen mit vier Schichten. Die erste Schicht besteht aus zwei freien Knoten einer Partition. Alle ihre Nachbarn werden zur zweiten Schicht hinzugefügt.
+                    Das dritte Bild zeigt den Schichtgraphen mit vier Schichten. Die erste Schicht besteht aus zwei freien Knoten der oberen Knotenmenge. Ihre Nachbarn werden zur zweiten Schicht hinzugefügt.
                     Da kein freier Knoten unter den Knoten der zweiten Schicht existiert, wird eine dritte Schicht mit den Matching-Partnern der zweiten Schicht erstellt.
                     Alle noch nicht betrachteten Nachbarn der dritten Schicht werden zur vierten Schicht hinzugefügt. Unter ihnen existieren zwei freie Knoten. Also endet die Prozedur.
                 </p>
                 <p>
                     Um eine inklusions-maximale Menge von knotendisjunkten Augmentationswegen zu finden, benutzt man den Schichtgraphen aus dem letzten Schritt. Man startet mit den freien Knoten der ersten Schicht und wendet die <b>Tiefensuche</b> darauf an.
-                    Falls es einen Augmentationsweg gibt, der mit diesem Knoten anfängt, wird er gefunden. Alle Knoten, die auf diesem Weg vorkommen, werden aus dem Schichtgraphen entfernt oder markiert.
+                    Falls es einen Augmentationsweg gibt, der mit einem von diesen Knoten anfängt, wird er gefunden. Alle Knoten, die auf diesem Weg vorkommen, werden aus dem Schichtgraphen entfernt oder markiert.
                     Während der Ausführung des Algorithmus werden diese Knoten grau markiert. Wendet man diese Prozedur auf alle Knoten der
-                    ersten Schicht an, so ist die gefundene Menge der kürzesten Augmentationswege knotendisjunkt und nach dem Ende dieser Prozedur existiert kein kürzester Augmentationsweg, der bzgl. der bereits gefundenen knotendisjunkt ist.
+                    ersten Schicht an, so ist die gefundene Menge der kürzesten Augmentationswege knotendisjunkt und nach dem Ende dieser Prozedur existiert kein kürzester Augmentationsweg, der bezüglich der bereits gefundenen knotendisjunkt ist.
                 </p>
                 <p>
                     Auf dem dritten Bild sind die knotendisjunkten Augmentationswege durch dicke Pfeile hervorgehoben. In dieser Iteration würde also das Matching mit diesen beiden Augmentationswegen augmentiert werden.
