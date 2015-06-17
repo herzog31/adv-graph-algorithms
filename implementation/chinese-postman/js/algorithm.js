@@ -164,6 +164,8 @@ function algorithm(p_graph, p_canvas, p_tab) {
     const START_TOUR = 16;
     const SHOW_TOUR = 15;
     const END = 10;
+    const INFEASIBLE = 17;
+
     /*
      * Entferne alle Knoten, die zu keiner Kante inzident sind.
      * @method
@@ -207,11 +209,16 @@ function algorithm(p_graph, p_canvas, p_tab) {
      * @method
      */
     this.destroy = function () {
-        clearInterval(animationId);//stop animations
-        this.deleteInsertedEdges();//delete all new edges
+        clearInterval(animationId);//beende animation
+        this.deleteInsertedEdges();
         this.stopFastForward();
         this.destroyCanvasDrawer();
         this.deregisterEventHandlers();
+        //legende wiederherstellen
+        $("#tab_"+st).find(".LegendeText").html('<table>\
+            <tr><td class="LegendeTabelle"><img src="img/knoten.png" alt="Knoten" class="LegendeIcon" ></td><td><span>'+LNG.K('algorithm_legende_knoten')+'</span></td></tr>\
+            <tr><td class="LegendeTabelle"><img src="img/kante.png" alt="Kante" class="LegendeIcon" ></td><td><span>'+LNG.K('algorithm_legende_kante')+'</span></td></tr>\
+        </table>');
     };
     /**
      * Alle in den Graphen neu eingefuegten Kanten werden geloescht.
@@ -348,6 +355,9 @@ function algorithm(p_graph, p_canvas, p_tab) {
                 break;
             case END:
                 this.endAlgorithm();
+                break;
+            case INFEASIBLE:
+                this.appendEndButtons();
                 break;
             default:
                 //console.log("Fehlerhafte StatusID.");
@@ -539,7 +549,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
                 + "<p>" + LNG.K('algorithm_feasible') + "</p>");
         }
         else {
-            statusID = END;
+            statusID = INFEASIBLE;
             if (!strongly_connected) $("#"+st+"_div_statusErklaerung").append("<p>" + LNG.K('algorithm_infeasible_1') + "</p>");
             if (negative_cycle) $("#"+st+"_div_statusErklaerung").append("<p>" + LNG.K('algorithm_infeasible_2') + "</p>");
             $("#"+st+"_div_statusErklaerung").append("<p>" + LNG.K('algorithm_infeasible') + "</p>");
@@ -1056,6 +1066,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
     };
     /**
      * Zeigt Texte und Buttons zum Ende des Algorithmus
+     * Faerbe die Kanten und entferne Subtouren
      * @method
      */
     this.endAlgorithm = function () {
@@ -1067,6 +1078,13 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }
         $("#"+st+"_div_statusErklaerung").append("<p><b>" + LNG.K('algorithm_cost_optimal') + cost + "</b></p>");
         $("#"+st+"_div_statusErklaerung").append("<br><h3>" + LNG.K('algorithm_msg_finish') + "</h3>");
+        this.appendEndButtons();
+    };
+    /**
+     * Zeige Buttons zum Ende des Algorithmus
+     * @method
+     */
+    this.appendEndButtons = function(){
         $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoIdee>" + LNG.K('algorithm_btn_more') + "</button>");
         $("#"+st+"_div_statusErklaerung").append("<h3>" + LNG.K('algorithm_msg_test') + "</h3>");
         $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoFA1>" + LNG.K('algorithm_btn_exe1') + "</button>");

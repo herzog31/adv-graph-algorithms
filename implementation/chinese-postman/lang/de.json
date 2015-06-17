@@ -14,6 +14,8 @@
     "algorithm_legende_negative": "Knoten mit zu vielen Eingangskanten",
     "algorithm_legende_matching_kante": "Matching-Kante",
     "algorithm_legende_neue_kante": "Neu eingefügte Kante",
+    "algorithm_legende_kante": "Kante mit Gewicht 50",
+    "algorithm_legende_knoten": "Knoten",
 
     "algorithm_text_phase": "Phase",
     "algorithm_text_of": "von",
