@@ -483,24 +483,21 @@
                     <p>
                         Angenommen der Graph enthält n Knoten und m Kanten.
                         In jeder Iteration des Algorithmus wird eine inklusions-maximale Menge von kürzesten knotendisjunkten Augmentationswegen gefunden.
-                        Dies hat zur Folge, dass die Länge des kürzesten Augmentationsweges nach jeder Iteration um mindestens 1 erhöht wird.
+                        Sei M ein Matching und M* das optimale Matching. Dann existieren \( |M^*|-|M| \) knotendisjunkte Augmentationswege bzgl. M. Untersuche die symmetrische Differenz M* &oplus; M = M*\M &cup; M\M*.
+                        Ein Knoten kann hier maximal auf zwei Kanten liegen (eine aus M* und eine aus M). Dann enthält die symmetrische Differenz nur knotendisjunkte alternierende Kreise und Wege. In einem Kreis ist die Anzahl der Kanten aus M  gleich der Anzahl der Kanten aus M*.
+                        Dann aber müssen \( |M^*|-|M| \) knotendisjunkte alternierende Wege existieren, die mehr Kanten aus M* enthalten als aus M. Diese sind genau die Augmentationswege bezüglich M.
                     </p>
                     <p>
-                        Sei M ein Matching und M* das optimale Matching. Dann existieren |M*|-|M| knotendisjunkte Augmentationswege bzgl. M. Untersuche die symmetrische Differenz M* &oplus; M = M*\M &cup; M\M*.
-                        Ein Knoten kann hier maximal auf zwei Kanten liegen (eine aus M* und eine aus M). Dann enthält die symmetrische Differenz nur alternierende Kreise und alternierende Wege. In einem Kreis ist die Anzahl der Kanten aus M  gleich der Anzahl der Kanten aus M*.
-                        Dann aber müssen |M*|-|M| knotendisjunkte Wege existieren, die Augmentationswege bezüglich M sind.
-                    </p>
-                    <p>
-                        Sei M ein Matching und l die Länge des kürzesten Augmentationsweges bzgl. M. Dann ist die Kardinalität des optimalen Matchings maximal \( |M| + \frac{n}{(l+1)}\).
-                        Es existieren |M*|-|M| knotendisjunkte Augmentationswege bzgl. M. Alle diese Wege enthalten mindestens l+1 Knoten, da die Länge des kürzesten Augmantationsweges l ist.
-                        Dann gilt: \( (|M^*|-|M|)*(l+1) < |V| \), da die Wege knotendisjunkt sind. Deshalb ist \( |M^*|-|M| < \frac{n}{(l+1)}\)
+                        Sei M ein Matching und l die Länge des kürzesten Augmentationsweges bezüglich M. Dann ist die Kardinalität des optimalen Matchings maximal \( |M| + \frac{n}{(l+1)}\).
+                        Es existieren \( |M^*|-|M| \) knotendisjunkte Augmentationswege bezüglich M. Jeder Augmentationsweg enthält mindestens l+1 Knoten, da die Länge des kürzesten Augmantationsweges l ist.
+                        Dann gilt: \( (|M^*|-|M|)*(l+1) \leq n \), da die Wege knotendisjunkt sind und die Anzahl der Knoten im Graph n ist. Deshalb ist \( |M^*|-|M| \leq \frac{n}{(l+1)}\)
                         Das heißt, es gibt maximal \( \frac{n}{(l+1)}\) Augmentationen bezüglich M.
                     </p>
                     <p>
                         Die Länge des kürzesten Augmentationsweges wird mit jeder Iteration länger. Dies wird hier nicht bewiesen. Den Beweis kann der interessierte Leser in der geeigneten Literatur nachlesen.
-                        Intuitiv ist es jedoch klar, dass die Augmentationswege nicht kürzer werden können. Wegen der inklusions-maximalen Eigenschaft der gefundenen Menge von knotendisjunkten Augmentationswegen wird die Länge sogar länger.
-                        Dann muss aber nach der \(\sqrt{n}\) Iteration des Algorithmen die Länge des kürzesten Augmentationsweges mindestens \(\sqrt{n}\) betragen.
-                        Dann existieren maximal \(\frac{n}{\sqrt{n}}=\sqrt{n}\) zusätzliche Augmentationen. In jeder Iteration wird mindestens ein Augmentationsweg gefunden.
+                        Intuitiv ist es jedoch klar, dass die Augmentationswege nicht kürzer werden können.
+                        Dann muss aber nach der \(\sqrt{n}\) Iteration des Algorithmus die Länge des kürzesten Augmentationsweges mindestens \(\sqrt{n}\) betragen.
+                        Dann existieren maximal \(\frac{n}{\sqrt{n}+1} \leq \sqrt{n}\) zusätzliche Augmentationen. In jeder Iteration wird mindestens ein Augmentationsweg gefunden.
                         Daraus geht hervor, dass es maximal \(2\sqrt{n}\) Iterationen geben kann.
                     </p>
                     <p> Jede Kante wird im Laufe einer Iteration nur konstant viele Male betrachtet und verarbeitet. Es wird die Breitensuche und die Tiefensuche ausgeführt, wo jede Kante nur einmal betrachtet wird.
@@ -513,12 +510,9 @@
                 <div>
                     <p>
                         In jeder Iteration des Algorithmus wird nach Augmentationswegen gesucht und das Matching wird verbessert. Es können nur endlich viele Verbesserungen durchgeführt werden, sodass der
-                        Algorithmus terminiert. Nach der letzten Iteration des Algorithmus existieren keine Augmentationswege mehr.
-                        Dann ist das Matching optimal und der Hopcroft-Karp-Algorithmus berechnet das richtige Ergebnis.
-                    </p>
-                    <p>
+                        Algorithmus terminiert.
                         Ein Theorem aus der Graphentheorie besagt:<br>
-                        <i>Ein Matching M in G(V,E) ist genau dann kardinalitäts-maximal, wenn es keinen Augmentationsweg gibt.</i> <br>
+                        <i>Ein Matching M in G(V,E) ist genau dann kardinalitäts-maximal, wenn es keinen Augmentationsweg gibt.</i> <a href="https://en.wikipedia.org/wiki/Berge%27s_lemma" target="_blank">(Berge´s Lemma)</a><br>
                         Nach der letzten Iteration des Hopcroft-Karp-Algorithmus existieren keine Augmentationswege mehr. Dann ist das gefundene Matching optimal und der Hopcroft-Karp-Algorithmus berechnet das richtige Ergebnis.
                     </p>
                 </div>
