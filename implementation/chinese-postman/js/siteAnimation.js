@@ -31,7 +31,7 @@ function initializeSiteLayout() {
                 $("#tab_tg").data("algo").destroy();
             }
             if(ui.oldPanel[0].id == "tab_ta") {
-                if($("#tab_ta").data("algo").getStatusID() != null && $("#tab_ta").data("algo").getStatusID() < 5) {
+                if($("#tab_ta").data("algo").getStatusID() != null && $("#tab_ta").data("algo").getWarnBeforeLeave()) {
                     if($("#tabs").data("tabChangeDialogOpen") == null) {
                         event.preventDefault();
                         $( "#tabs" ).data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);
@@ -47,7 +47,7 @@ function initializeSiteLayout() {
                 }
             }
             if(ui.oldPanel[0].id == "tab_tf1") {
-                if($("#tab_tf1").data("algo").getStatusID() != null && $("#tab_tf1").data("algo").getStatusID() < 5) {
+                if($("#tab_tf1").data("algo").getStatusID() != null && $("#tab_tf1").data("algo").getWarnBeforeLeave()) {
                     if($("#tabs").data("tabChangeDialogOpen") == null) {
                         event.preventDefault();
                         $( "#tabs" ).data("requestedTab",$("#" +ui.newPanel.attr("id")).index()-1);

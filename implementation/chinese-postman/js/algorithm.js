@@ -151,6 +151,11 @@ function algorithm(p_graph, p_canvas, p_tab) {
      * Gibt das Ausgabefenster an.
      */
     var st = "ta";//"#ta_div_statusErklaerung
+    /**
+     * Zeigt an, ob vor dem Verlassen des Tabs gewarnt werden soll.
+     * @type Boolean
+     */
+    var warnBeforeLeave = true;
     
     /*
      * Hier werden die Statuskonstanten definiert
@@ -241,7 +246,13 @@ function algorithm(p_graph, p_canvas, p_tab) {
         $("#tab_"+st).data("algo", algo);
         algo.run();
     };
-
+    /**
+     * Zeigt and, ob vor dem Verlassen des Tabs gewarnt werden soll.
+     * @returns {Boolean}
+     */
+    this.getWarnBeforeLeave = function() {
+        return warnBeforeLeave;
+    };
     /**
      * Zeigt and, in welchem Zustand sich der Algorithmus im Moment befindet.
      * @returns {Number} StatusID des Algorithmus
@@ -1085,26 +1096,27 @@ function algorithm(p_graph, p_canvas, p_tab) {
      * @method
      */
     this.appendEndButtons = function(){
-        $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoIdee>" + LNG.K('algorithm_btn_more') + "</button>");
+        $("#"+st+"_div_statusErklaerung").append("<button id="+st+"_button_gotoIdee>" + LNG.K('algorithm_btn_more') + "</button>");
         $("#"+st+"_div_statusErklaerung").append("<h3>" + LNG.K('algorithm_msg_test') + "</h3>");
-        $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoFA1>" + LNG.K('algorithm_btn_exe1') + "</button>");
-        $("#"+st+"_div_statusErklaerung").append("<button id=ta_button_gotoFA2>" + LNG.K('algorithm_btn_exe2') + "</button>");
+        $("#"+st+"_div_statusErklaerung").append("<button id="+st+"_button_gotoFA1>" + LNG.K('algorithm_btn_exe1') + "</button>");
+        $("#"+st+"_div_statusErklaerung").append("<button id="+st+"_button_gotoFA2>" + LNG.K('algorithm_btn_exe2') + "</button>");
         $("#"+st+"_button_gotoIdee").button();
         $("#"+st+"_button_gotoFA1").button();
         $("#"+st+"_button_gotoFA2").button();
         $("#"+st+"_button_gotoIdee").click(function () {
-            $("#"+st+"bs").tabs("option", "active", 3);
+            $("#tabs").tabs("option", "active", 3);
         });
         $("#"+st+"_button_gotoFA1").click(function () {
-            $("#"+st+"bs").tabs("option", "active", 4);
+            $("#tabs").tabs("option", "active", 4);
         });
         $("#"+st+"_button_gotoFA2").click(function () {
-            $("#"+st+"bs").tabs("option", "active", 5);
+            $("#tabs").tabs("option", "active", 5);
         });
         // Falls wir im "Vorspulen" Modus waren, daktiviere diesen
         if (fastForwardIntervalID != null) {
             this.stopFastForward();
         }
+        warnBeforeLeave = false;
         $("#"+st+"_button_1Schritt").button("option", "disabled", true);
         $("#"+st+"_button_vorspulen").button("option", "disabled", true);
     };
@@ -1182,6 +1194,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             "phase": phase,
             "next": next,
             "graph": this.graph,
+            "warnBeforeLeave": warnBeforeLeave,
             "pseudocode": $("#"+st+"_div_statusPseudocode").html(),
             "legende": $("#tab_ta").find(".LegendeText").html(),
             "htmlSidebar": $("#"+st+"_div_statusErklaerung").html()
@@ -1194,10 +1207,10 @@ function algorithm(p_graph, p_canvas, p_tab) {
     this.replayStep = function () {
         if (history.length > 0) {
             var oldState = history.pop();
-            //remove new edges from the graph
             statusID = oldState.previousStatusId;
             phase = oldState.phase;
             next = oldState.next;
+            warnBeforeLeave = oldState.warnBeforeLeave;
             this.graph = oldState.graph;
             $("#"+st+"_div_statusErklaerung").html(oldState.htmlSidebar);
             $("#"+st+"_div_statusPseudocode").html(oldState.pseudocode);
