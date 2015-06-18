@@ -566,7 +566,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             $("#"+st+"_div_statusErklaerung").append("<p>" + LNG.K('algorithm_infeasible') + "</p>");
         }
         $(".marked").removeClass("marked");
-        $("#ta_p_feasible").addClass("marked");
+        $("#"+st+"_p_feasible").addClass("marked");
     };
     /*
      * Findet nicht balancierte Knoten und hebt diese hervor.
@@ -612,7 +612,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
                  + "<p>" + LNG.K('algorithm_unbalanced_3') + "</p>");
         }
         $(".marked").removeClass("marked");
-        $("#ta_p_2").addClass("marked");
+        $("#"+st+"_p_2").addClass("marked");
     };
     /**
      * Methoden fuer die Visualisierung. Das Aussehen wird hier bestimmt.
@@ -694,7 +694,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         + "<p>" + LNG.K('algorithm_paths_3') + "</p>"
         + "<p>" + LNG.K('algorithm_paths_4') + "</p>");
         $(".marked").removeClass("marked");
-        $("#ta_p_3").addClass("marked");
+        $("#"+st+"_p_3").addClass("marked");
     };
     /**
      * Nur die Matchingkanten bleiben im Matchinggraphen.
@@ -721,7 +721,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         + "<p>" + LNG.K('algorithm_matching_2') + " <a href='"+LNG.K('algorithm_link_hungarian')+"' target='_blank'>"+LNG.K('algorithm_text_hungarian')+"</a>" + "</p>"
         + "<p>" + LNG.K('algorithm_matching_3') + "</p>");
         $(".marked").removeClass("marked");
-        $("#ta_p_3").addClass("marked");
+        $("#"+st+"_p_3").addClass("marked");
     };
     /**
      * Es wird zurueck zum normalen Graphen gewechselt.
@@ -771,7 +771,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             + "<p>" + LNG.K('algorithm_new_paths_2') + "</p>"
             + "<p>" + LNG.K('algorithm_new_paths_3') + "</p>");
         $(".marked").removeClass("marked");
-        $("#ta_p_4").addClass("marked");
+        $("#"+st+"_p_4").addClass("marked");
     };
     /**
      * Falls die Animation nicht am Ende war, wird das Einfuegen eines Pfades beendet.
@@ -866,7 +866,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
             statusID = ADD_PATHS;
         }
         $(".marked").removeClass("marked");
-        $("#ta_p_4").addClass("marked");
+        $("#"+st+"_p_4").addClass("marked");
     };
 
 
@@ -915,7 +915,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         }).click({org: this}, this.animateTourStop);
         statusID = SHOW_TOUR;
         $(".marked").removeClass("marked");
-        $("#ta_p_5").addClass("marked");
+        $("#"+st+"_p_5").addClass("marked");
     };
     /*
      * Der eulersche Graph mit Knotenlabels wird angezeigt.
@@ -934,7 +934,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
         this.appendTours();
         statusID = END;
         $(".marked").removeClass("marked");
-        $("#ta_p_5").addClass("marked");
+        $("#"+st+"_p_5").addClass("marked");
     };
     /*
      * Die Subtouren werden an die Erklaerung angehaengt.
@@ -1081,9 +1081,7 @@ function algorithm(p_graph, p_canvas, p_tab) {
      * @method
      */
     this.endAlgorithm = function () {
-        $(".marked").removeClass("marked");
-        $("#ta_p_end").addClass("marked");
-        $( "#ta_div_subtours" ).remove();
+        $( "#"+st+"_div_subtours" ).remove();
         for(var e in graph.edges){//faerbe die Kanten
             graph.edges[e].setLayout("lineColor", tourColors[color[e]]);
         }
@@ -1117,6 +1115,8 @@ function algorithm(p_graph, p_canvas, p_tab) {
             this.stopFastForward();
         }
         warnBeforeLeave = false;
+        $(".marked").removeClass("marked");
+        $("#"+st+"_p_end").addClass("marked");
         $("#"+st+"_button_1Schritt").button("option", "disabled", true);
         $("#"+st+"_button_vorspulen").button("option", "disabled", true);
     };
